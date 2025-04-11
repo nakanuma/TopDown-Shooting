@@ -1,0 +1,3 @@
+[submodule "Engine-Develop"]
+	path = Engine-Develop
+	url = https://github.com/nakanuma/Engine-Develop.git
