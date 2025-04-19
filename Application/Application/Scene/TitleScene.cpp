@@ -6,8 +6,6 @@
 #include "SceneManager.h"
 //#include "GamePlayScene.h"
 
-#include "GlobalVariables.h"
-
 void TitleScene::Initialize()
 {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -120,11 +118,6 @@ void TitleScene::Draw()
 	///
 	/// ↑ ここまでスプライトの描画コマンド
 	/// 
-
-
-#ifdef _DEBUG
-	GlobalVariables::getInstance()->Update();
-#endif // _DEBUG
 
 	ImGui::Begin("window");
 

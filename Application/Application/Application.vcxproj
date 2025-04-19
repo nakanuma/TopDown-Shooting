@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="TestScene\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="TestScene\TestScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
