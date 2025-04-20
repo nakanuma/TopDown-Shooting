@@ -9,7 +9,7 @@ void GamePlayScene::Initialize()
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 15.0f, -40.0f}, Float3{0.3f, 0.0f, 0.0f}, 0.45f);
+	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -60.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -34,17 +34,9 @@ void GamePlayScene::Initialize()
 	///	↓ ゲームシーン用 
 	///	
 	
-	// Texture読み込み
-	uint32_t uvCheckerGH = TextureManager::Load("resources/Images/uvChecker.png", dxBase->GetDevice());
-
-	// モデルの読み込みとテクスチャの設定
-	model_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
-	model_.material.textureHandle = uvCheckerGH;
-
-	// オブジェクトの生成とモデル設定
-	object_ = std::make_unique<Object3D>();
-	object_->model_ = &model_;
-	object_->transform_.rotate = {0.0f, 3.14f, 0.0f};
+	// フィールド生成
+	field_ = std::make_unique<Field>();
+	field_->Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -52,7 +44,7 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update() { 
-	object_->UpdateMatrix();
+	field_->Update();
 }
 
 void GamePlayScene::Draw()
@@ -76,8 +68,7 @@ void GamePlayScene::Draw()
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	/// 
 
-	// オブジェクトの描画
-	object_->Draw();
+	field_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -94,11 +85,10 @@ void GamePlayScene::Draw()
 	/// ↑ ここまでスプライトの描画コマンド
 	/// 
 
-	ImGui::Begin("window");
-
-	ImGui::DragFloat3("translation", &object_->transform_.translate.x, 0.01f);
-	ImGui::DragFloat3("rotation", &object_->transform_.rotate.x, 0.01f);
-
+	ImGui::Begin("GameSceneInfo");
+	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
+	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
+	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::End();
 
 	// ImGuiの内部コマンドを生成する

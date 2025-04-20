@@ -1,4 +1,6 @@
 #pragma once 
+
+// Engine
 #include "BaseScene.h"
 #include "Camera.h"
 #include "SpriteCommon.h"
@@ -10,7 +12,9 @@
 #include "Input.h"
 #include "LightManager.h"
 
-// ゲームプレイシーン
+// Application
+#include <src/Game/Field/Field.h>
+
 class GamePlayScene : public BaseScene
 {
 public:
@@ -37,11 +41,7 @@ private:
 	/// ↓ ゲームシーン用
 	///
 
-	// モデルデータ
-	ModelManager::ModelData model_;
-	// 3Dオブジェクト
-	std::unique_ptr<Object3D> object_;
-
-	uint32_t dummy_;
+	// 床
+	std::unique_ptr<Field> field_;
 };
 
