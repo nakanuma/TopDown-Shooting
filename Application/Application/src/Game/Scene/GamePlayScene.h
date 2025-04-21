@@ -3,6 +3,7 @@
 // Engine
 #include "BaseScene.h"
 #include "Camera.h"
+#include "DebugCamera.h"
 #include "SpriteCommon.h"
 #include "TextureManager.h"
 #include "Sprite.h"
@@ -31,7 +32,16 @@ public:
 	void Draw() override;
 
 private:
+#ifdef _DEBUG
+	bool useDebugCamera = false;    // デバッグカメラが有効か
+	Transform savedCameraTransform; // 通常カメラのTransformを保持
+
+	void DebugCameraUpdate(Input* input);
+#endif
+
+private:
 	std::unique_ptr<Camera> camera = nullptr;
+	std::unique_ptr<DebugCamera> debugCamera = nullptr;
 	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;
 	std::unique_ptr<SoundManager> soundManager = nullptr;
 	Input* input = nullptr;
@@ -40,6 +50,9 @@ private:
 	///
 	/// ↓ ゲームシーン用
 	///
+
+	// レンダーテクスチャ
+	uint32_t renderTexture_;
 
 	// 床
 	std::unique_ptr<Field> field_;

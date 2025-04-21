@@ -30,8 +30,11 @@ void Field::Draw()
 {
 	objectFloor_->Draw();
 
-	ImGui::Begin("a");
-	ImGui::DragFloat3("a", &objectFloor_->transform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("b", &objectFloor_->transform_.scale.x, 0.01f);
+#ifdef _DEBUG
+	ImGui::Begin("Field");
+	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate.x, 0.01f);
+	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale.x, 0.01f);
 	ImGui::End();
+#endif // _DEBUG
 }

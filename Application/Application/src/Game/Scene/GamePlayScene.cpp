@@ -3,6 +3,7 @@
 #include "DirectXBase.h"
 #include "SRVManager.h"
 #include "SpriteCommon.h"
+#include "RTVManager.h"
 
 void GamePlayScene::Initialize()
 {
@@ -11,6 +12,10 @@ void GamePlayScene::Initialize()
 	// カメラのインスタンスを生成
 	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -60.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
+
+	// デバッグカメラの生成と初期化
+	debugCamera = std::make_unique<DebugCamera>();
+	debugCamera->Initialize();
 
 	// SpriteCommonの生成と初期化
 	spriteCommon = std::make_unique<SpriteCommon>();
@@ -34,6 +39,9 @@ void GamePlayScene::Initialize()
 	///	↓ ゲームシーン用 
 	///	
 	
+	// レンダーテクスチャ生成
+	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
+
 	// フィールド生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
@@ -44,7 +52,13 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update() { 
+
 	field_->Update();
+
+#ifdef _DEBUG 
+	// デバッグカメラ更新
+	DebugCameraUpdate(input);
+#endif
 }
 
 void GamePlayScene::Draw()
@@ -63,6 +77,12 @@ void GamePlayScene::Draw()
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager->TransferContantBuffer();
+
+#ifdef _DEBUG
+	// レンダーターゲットをレンダーテクスチャにセット
+	RTVManager::SetRenderTarget(renderTexture_);
+	RTVManager::ClearRTV(renderTexture_);
+#endif // DEBUG
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
@@ -85,12 +105,18 @@ void GamePlayScene::Draw()
 	/// ↑ ここまでスプライトの描画コマンド
 	/// 
 
+#ifdef _DEBUG 
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
+	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 	ImGui::End();
 
+	// レンダーテクスチャをImGuiWindowに描画
+	ImGuiUtil::ImageWindow("Scene", renderTexture_);
+	RTVManager::SetRTtoBB();
+#endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
 	// 描画後処理
@@ -98,3 +124,30 @@ void GamePlayScene::Draw()
 	// フレーム終了処理
 	dxBase->EndFrame();
 }
+
+#ifdef _DEBUG
+void GamePlayScene::DebugCameraUpdate(Input* input)
+{
+	// 前回のカメラモード状態を保持
+	static bool prevUseDebugCamera = false;
+
+	// デバッグカメラが有効になった瞬間に通常カメラのTransformを保存
+	if (useDebugCamera && !prevUseDebugCamera) {
+		savedCameraTransform = camera->transform;
+	}
+
+	// デバッグカメラが有効の場合
+	if (useDebugCamera) {
+		// デバッグカメラの更新
+		debugCamera->Update(input);
+		// 通常カメラにデバッグカメラのTransformを適用
+		camera->transform = debugCamera->transform_;
+	} else if (!useDebugCamera && prevUseDebugCamera) {
+		// 通常カメラのTransformを再現
+		camera->transform = savedCameraTransform;
+	}
+
+	// 現在のカメラモードを保存して次のフレームで使う
+	prevUseDebugCamera = useDebugCamera;
+}
+#endif // _DEBUG
