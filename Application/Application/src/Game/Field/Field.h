@@ -10,8 +10,10 @@ public:
 	void Update();
 	void Draw();
 
+	void Debug();
+
 private:
-	// 床オブジェクト
+	// オブジェクト
 	ModelManager::ModelData modelFloor_;
 	std::unique_ptr<Object3D> objectFloor_;
 };

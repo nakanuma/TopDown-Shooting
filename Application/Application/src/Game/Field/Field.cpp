@@ -31,10 +31,25 @@ void Field::Draw()
 	objectFloor_->Draw();
 
 #ifdef _DEBUG
-	ImGui::Begin("Field");
-	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate.x, 0.01f);
-	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale.x, 0.01f);
-	ImGui::End();
+	Debug();
 #endif // _DEBUG
+}
+
+void Field::Debug() {
+#ifdef _DEBUG
+	ImGui::Begin("Field");
+
+	/* Translate */
+	ImGui::Text("Translate");
+
+	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate.x, 0.01f);
+
+	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate.x, 0.01f);
+
+	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale.x, 0.01f);
+
+	/*  */
+
+	ImGui::End();
+#endif
 }

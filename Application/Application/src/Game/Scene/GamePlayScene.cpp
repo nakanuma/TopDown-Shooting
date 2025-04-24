@@ -5,12 +5,15 @@
 #include "SpriteCommon.h"
 #include "RTVManager.h"
 
+// C++
+#include <numbers>
+
 void GamePlayScene::Initialize()
 {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -60.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
+	camera = std::make_unique<Camera>(Float3{0.0f, 50.0f, -55.0f}, Float3{std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// デバッグカメラの生成と初期化
@@ -35,16 +38,20 @@ void GamePlayScene::Initialize()
 	lightManager = LightManager::GetInstance();
 	lightManager->Initialize();
 
+	// レンダーテクスチャ生成
+	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
+
 	///
 	///	↓ ゲームシーン用 
 	///	
-	
-	// レンダーテクスチャ生成
-	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
 
 	// フィールド生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
+
+	// プレイヤー生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -54,6 +61,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update() { 
 
 	field_->Update();
+	player_->Update();
 
 #ifdef _DEBUG 
 	// デバッグカメラ更新
@@ -89,6 +97,7 @@ void GamePlayScene::Draw()
 	/// 
 
 	field_->Draw();
+	player_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド

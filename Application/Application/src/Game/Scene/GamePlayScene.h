@@ -15,6 +15,7 @@
 
 // Application
 #include <src/Game/Field/Field.h>
+#include <src/Game/Player/Player.h>
 
 class GamePlayScene : public BaseScene
 {
@@ -47,14 +48,16 @@ private:
 	Input* input = nullptr;
 	LightManager* lightManager = nullptr;
 
+	// レンダーテクスチャ
+	uint32_t renderTexture_;
+
 	///
 	/// ↓ ゲームシーン用
 	///
 
-	// レンダーテクスチャ
-	uint32_t renderTexture_;
-
 	// 床
 	std::unique_ptr<Field> field_;
+	// プレイヤー
+	std::unique_ptr<Player> player_;
 };
 
