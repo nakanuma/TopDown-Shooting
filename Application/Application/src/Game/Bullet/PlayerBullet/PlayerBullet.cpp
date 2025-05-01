@@ -1,13 +1,10 @@
 ﻿#include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(const Float3& position, const Float3& direciton) { 
+void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
-	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice()); 
-	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
 	objectBullet_ = std::make_unique<Object3D>();
-	objectBullet_->model_ = &modelBullet_;
+	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
 
 	// パラメーター設定

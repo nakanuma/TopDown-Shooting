@@ -59,8 +59,9 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update() { 
-
+	// フィールド更新
 	field_->Update();
+	// プレイヤー更新
 	player_->Update();
 
 #ifdef _DEBUG 
@@ -96,7 +97,9 @@ void GamePlayScene::Draw()
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	/// 
 
+	// フィールド描画
 	field_->Draw();
+	// プレイヤー描画
 	player_->Draw();
 
 	///
@@ -109,6 +112,9 @@ void GamePlayScene::Draw()
 	///
 	/// ↓ ここからスプライトの描画コマンド
 	/// 
+
+	// プレイヤーUI描画
+	player_->DrawUI();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

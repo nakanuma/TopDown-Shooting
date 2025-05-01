@@ -5,7 +5,7 @@
 
 class PlayerBullet : public Bullet {
 public:
-	void Initialize(const Float3& position, const Float3& direciton) override;
+	void Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) override;
 	void Update() override;
 	void Draw() override;
 };

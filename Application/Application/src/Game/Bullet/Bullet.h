@@ -8,13 +8,12 @@
 /// </summary>
 class Bullet {
 public:
-	virtual void Initialize(const Float3& position, const Float3& direciton) = 0;
+	virtual void Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
 protected:
 	// オブジェクト
-	ModelManager::ModelData modelBullet_;
 	std::unique_ptr<Object3D> objectBullet_;
 
 	// パラメーター
