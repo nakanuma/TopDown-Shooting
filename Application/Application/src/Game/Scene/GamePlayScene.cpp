@@ -52,6 +52,10 @@ void GamePlayScene::Initialize()
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+
+	// 敵のスポーンマネージャー生成
+	enemySpawnManager_ = std::make_unique<EnemySpawnManager>();
+	enemySpawnManager_->Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -63,6 +67,8 @@ void GamePlayScene::Update() {
 	field_->Update();
 	// プレイヤー更新
 	player_->Update();
+	// 敵のスポーンマネージャー更新
+	enemySpawnManager_->Update();
 
 #ifdef _DEBUG 
 	// デバッグカメラ更新
@@ -101,6 +107,8 @@ void GamePlayScene::Draw()
 	field_->Draw();
 	// プレイヤー描画
 	player_->Draw();
+	// 敵のスポーンマネージャー描画
+	enemySpawnManager_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド

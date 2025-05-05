@@ -9,6 +9,9 @@
 // Application
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
 
+/// <summary>
+/// プレイヤー
+/// </summary>
 class Player
 {
 public:
