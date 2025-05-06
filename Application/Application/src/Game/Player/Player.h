@@ -60,6 +60,11 @@ private:
 	/// </summary>
 	void HandleShooting();
 
+	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	void UpdateBullets();
+
 private:
 	// ---------------------------------------------------------
 	// システム関連

@@ -72,17 +72,4 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="LineDrawer.hlsli">
-      <Filter>リソース ファイル</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="LineDrawer.PS.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="LineDrawer.VS.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-  </ItemGroup>
 </Project>

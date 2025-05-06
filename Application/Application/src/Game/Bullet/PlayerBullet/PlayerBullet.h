@@ -26,6 +26,11 @@ public:
 	/// <param name="other"></param>
 	void OnCollision(Collider* other) override;
 
+	/// <summary>
+	/// 破棄される際に呼ばれる関数
+	/// </summary>
+	void OnDestroy() override;
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理

@@ -49,18 +49,6 @@ void NormalEnemy::Draw()
 {
 	// オブジェクト描画
 	objectEnemy_->Draw();
-
-
-#ifdef _DEBUG
-	ImGui::Begin("enemy collider");
-
-	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
-
-	ImGui::DragFloat3("center", &collider_->center_.x);
-	ImGui::DragFloat("radius", &radius_);
-
-	ImGui::End();
-#endif
 }
 
 // ---------------------------------------------------------
@@ -70,8 +58,7 @@ void NormalEnemy::OnCollision(Collider* other)
 {
 	// 衝突したコライダーがPlayerBulletだった場合の処理
 	if (other->GetTag() == "PlayerBullet") {
-		// テスト用
-		objectEnemy_->transform_.scale.x = 10.0f;
+		objectEnemy_->transform_.translate.x += 2.0f;
 	}
 }
 

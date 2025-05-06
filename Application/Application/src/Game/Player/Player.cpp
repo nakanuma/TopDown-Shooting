@@ -61,19 +61,11 @@ void Player::Update() {
 	HandleMove();
 	// 弾の発射処理
 	HandleShooting();
-
-	// 全ての弾を更新
-	for (auto& bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// 画面外の弾を削除
-	// あとで記述
-
+	// 弾の更新処理
+	UpdateBullets();
 
 	// プレイヤーオブジェクト更新
 	objectPlayer_->UpdateMatrix();
-
 	// ターゲットスプライト更新
 	spriteTarget_->Update();
 }
@@ -244,4 +236,29 @@ void Player::HandleShooting()
 
 		bullets_.push_back(std::move(newBullet));
 	}
+}
+
+// ---------------------------------------------------------
+// 弾の更新処理
+// ---------------------------------------------------------
+void Player::UpdateBullets()
+{
+	// 全ての弾を更新
+	for (auto& bullet : bullets_) {
+		bullet->Update();
+	}
+
+	// 弾の削除処理
+	for (auto& bullet : bullets_) {
+		if (bullet->IsDead()) {
+			bullet->OnDestroy();
+		}
+	}
+	bullets_.erase(
+		std::remove_if(bullets_.begin(), bullets_.end(),
+			[](const std::unique_ptr<Bullet>& bullet) {
+				return bullet->IsDead();
+			}),
+		bullets_.end()
+	);
 }

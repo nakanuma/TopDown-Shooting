@@ -13,7 +13,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 	///	オブジェクト生成
 	/// 
-	
+
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
@@ -32,7 +32,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 	///	パラメーター設定
 	/// 
-	
+
 	speed_ = 1.0f;
 	velocity_ = direciton * speed_;
 }
@@ -40,7 +40,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void PlayerBullet::Update() { 
+void PlayerBullet::Update() {
 	// 移動処理
 	objectBullet_->transform_.translate += velocity_;
 
@@ -53,27 +53,30 @@ void PlayerBullet::Update() {
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void PlayerBullet::Draw() { 
+void PlayerBullet::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
-
-#ifdef _DEBUG
-	ImGui::Begin("playerBullet Collider");
-
-	ImGui::DragFloat3("center", &collider_->center_.x);
-	ImGui::DragFloat("radius", &collider_->radius_);
-
-	ImGui::End();
-#endif
 }
 
+// ---------------------------------------------------------
+// 衝突時コールバック
+// ---------------------------------------------------------
 void PlayerBullet::OnCollision(Collider* other)
 {
 	// 衝突したコライダーがNormalEnemyだった場合の処理
 	if (other->GetTag() == "NormalEnemy") {
-		// テスト用
-		objectBullet_->transform_.scale.y = 10.0f;
+		// 死亡させる
+		isDead_ = true;
 	}
+}
+
+// ---------------------------------------------------------
+// 破棄される際に呼ばれる関数
+// ---------------------------------------------------------
+void PlayerBullet::OnDestroy()
+{
+	// コリジョンマネージャーからコライダーの登録を解除
+	CollisionManager::GetInstance()->Unregister(collider_.get());
 }
 
 // ---------------------------------------------------------

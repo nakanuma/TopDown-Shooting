@@ -24,6 +24,16 @@ public:
 	/// </summary>
 	virtual void Draw() = 0;
 
+	/// <summary>
+	/// 死亡フラグの取得
+	/// </summary>
+	virtual bool IsDead() const { return isDead_; }
+
+	/// <summary>
+	/// 破棄される際に呼ぶ関数
+	/// </summary>
+	virtual void OnDestroy() = 0;
+
 protected:
 	// ---------------------------------------------------------
 	// オブジェクト関連
@@ -48,4 +58,7 @@ protected:
 
 	// 速度
 	Float3 velocity_;
+
+	// 死亡フラグ
+	bool isDead_ = false;
 };
