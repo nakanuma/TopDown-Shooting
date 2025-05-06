@@ -104,6 +104,6 @@ private:
 	// ---------------------------------------------------------
 
 	// 弾リスト
-	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
+	std::vector<std::unique_ptr<Bullet>> bullets_;
 };
 

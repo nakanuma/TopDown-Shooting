@@ -2,6 +2,7 @@
 
 // Engine
 #include <Engine/3D/Object3D.h>
+#include <Collider/Collider.h>
 
 /// <summary>
 /// 敵の基底クラス
@@ -31,6 +32,13 @@ protected:
 
 	// 敵オブジェクト
 	std::unique_ptr<Object3D> objectEnemy_;
+
+	// ---------------------------------------------------------
+	// オブジェクト関連
+	// ---------------------------------------------------------
+
+	// 球体コライダー
+	std::unique_ptr<SphereCollider> collider_;
 
 	// ---------------------------------------------------------
 	// パラメーター

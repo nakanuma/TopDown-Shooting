@@ -2,6 +2,7 @@
 
 // Engine
 #include <Engine/3D/Object3D.h>
+#include <Collider/Collider.h>
 
 /// <summary>
 /// 弾の基底クラス
@@ -30,6 +31,13 @@ protected:
 
 	// 弾オブジェクト
 	std::unique_ptr<Object3D> objectBullet_;
+
+	// ---------------------------------------------------------
+	// コライダー
+	// ---------------------------------------------------------
+
+	// 球体コライダー
+	std::unique_ptr<SphereCollider> collider_;
 
 	// ---------------------------------------------------------
 	// パラメーター

@@ -6,7 +6,7 @@
 /// <summary>
 /// 通常敵
 /// </summary>
-class NormalEnemy : public Enemy
+class NormalEnemy : public Enemy, public ICollisionCallback
 {
 public:
 	/// <summary>
@@ -23,5 +23,27 @@ public:
 	/// 描画処理
 	/// </summary>
 	void Draw() override;
+
+	/// <summary>
+	/// 衝突時コールバック
+	/// </summary>
+	void OnCollision(Collider* other) override;
+
+private:
+	// ---------------------------------------------------------
+	// 内部処理
+	// ---------------------------------------------------------
+
+	/// <summary>
+	/// コライダー更新処理
+	/// </summary>
+	void UpdateCollider();
+
+private:
+	// ---------------------------------------------------------
+	// パラメーター
+	// ---------------------------------------------------------
+
+	float radius_ = 1.0f;
 };
 

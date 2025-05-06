@@ -12,6 +12,7 @@
 #include "SoundManager.h"
 #include "Input.h"
 #include "LightManager.h"
+#include <Collider/CollisionManager.h>
 
 // Application
 #include <src/Game/Field/Field.h>

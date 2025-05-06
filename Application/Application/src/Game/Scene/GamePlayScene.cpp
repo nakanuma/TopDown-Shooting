@@ -70,6 +70,10 @@ void GamePlayScene::Update() {
 	// 敵のスポーンマネージャー更新
 	enemySpawnManager_->Update();
 
+
+	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
+	CollisionManager::GetInstance()->Update();
+
 #ifdef _DEBUG 
 	// デバッグカメラ更新
 	DebugCameraUpdate(input);
