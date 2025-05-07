@@ -18,6 +18,7 @@
 #include <src/Game/Field/Field.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Enemy/Manager/EnemySpawnManager.h>
+#include <src/Game/Camera/FollowCamera.h>
 
 class GamePlayScene : public BaseScene
 {
@@ -57,11 +58,18 @@ private:
 	/// ↓ ゲームシーン用
 	///
 
+	/* オブジェクト関連 */
+
 	// 床
 	std::unique_ptr<Field> field_;
 	// プレイヤー
 	std::unique_ptr<Player> player_;
 	// 敵のスポーンマネージャー
 	std::unique_ptr<EnemySpawnManager> enemySpawnManager_;
+
+	/* その他 */
+
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 };
 

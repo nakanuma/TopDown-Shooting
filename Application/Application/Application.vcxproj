@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Camera\FollowCamera.cpp" />
     <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp" />
     <ClCompile Include="src\Game\Enemy\Manager\EnemySpawnManager.cpp" />
     <ClCompile Include="src\Game\Bullet\PlayerBullet\PlayerBullet.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="TestScene\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Camera\FollowCamera.h" />
     <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h" />
     <ClInclude Include="src\Game\Enemy\Manager\EnemySpawnManager.h" />
     <ClInclude Include="src\Game\Enemy\Base\Enemy.h" />

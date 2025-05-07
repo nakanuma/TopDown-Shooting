@@ -35,6 +35,11 @@ public:
 	/// </summary>
 	void DrawUI();
 
+	/// <summary>
+	/// 位置の取得
+	/// </summary>
+	Float3& GetTranslate() const { return objectPlayer_->transform_.translate; }
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理

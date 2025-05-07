@@ -45,6 +45,8 @@ void GamePlayScene::Initialize()
 	///	↓ ゲームシーン用 
 	///	
 
+	/* オブジェクト関連 */
+
 	// フィールド生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
@@ -56,6 +58,14 @@ void GamePlayScene::Initialize()
 	// 敵のスポーンマネージャー生成
 	enemySpawnManager_ = std::make_unique<EnemySpawnManager>();
 	enemySpawnManager_->Initialize();
+
+
+	/* その他 */
+
+	// 追従カメラ生成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
+	followCamera_->SetTarget(&player_->GetTranslate()); // プレイヤーを追従対象にセット
 }
 
 void GamePlayScene::Finalize()
@@ -63,6 +73,11 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update() { 
+	// 追従カメラの更新
+	followCamera_->Update();
+	camera->transform.translate = followCamera_->GetCameraPosition();
+
+
 	// フィールド更新
 	field_->Update();
 	// プレイヤー更新
@@ -139,6 +154,9 @@ void GamePlayScene::Draw()
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 	ImGui::End();
+
+	// コリジョンマネージャーのデバッグ表示
+	CollisionManager::GetInstance()->Debug();
 
 	// レンダーテクスチャをImGuiWindowに描画
 	ImGuiUtil::ImageWindow("Scene", renderTexture_);
