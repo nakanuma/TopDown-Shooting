@@ -1,4 +1,4 @@
-#include "EnemySpawnManager.h"
+#include "EnemyManager.h"
 
 // Externals
 #include <ImguiWrapper.h>
@@ -9,7 +9,7 @@
 // ---------------------------------------------------------
 // ‰Šú‰»ˆ—
 // ---------------------------------------------------------
-void EnemySpawnManager::Initialize()
+void EnemyManager::Initialize()
 {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
@@ -28,18 +28,32 @@ void EnemySpawnManager::Initialize()
 // ---------------------------------------------------------
 // XVˆ—
 // ---------------------------------------------------------
-void EnemySpawnManager::Update()
+void EnemyManager::Update()
 {
 	// ‘S‚Ä‚Ì“G‚ðXV
 	for (auto& enemy : enemies_) {
 		enemy->Update();
 	}
+
+	// “G‚Ìíœˆ—
+	for (auto& enemy : enemies_) {
+		if (enemy->IsDead()) {
+			enemy->OnDestroy();
+		}
+	}
+	enemies_.erase(
+		std::remove_if(enemies_.begin(), enemies_.end(),
+			[](const std::unique_ptr<Enemy>& enemy) {
+				return enemy->IsDead();
+			}),
+		enemies_.end()
+	);
 }
 
 // ---------------------------------------------------------
 // •`‰æˆ—
 // ---------------------------------------------------------
-void EnemySpawnManager::Draw()
+void EnemyManager::Draw()
 {
 	// ‘S‚Ä‚Ì“G‚ð•`‰æ
 	for (auto& enemy : enemies_) {
@@ -54,9 +68,20 @@ void EnemySpawnManager::Draw()
 }
 
 // ---------------------------------------------------------
+// UI•`‰æˆ—
+// ---------------------------------------------------------
+void EnemyManager::DrawUI()
+{
+	// ‘S‚Ä‚Ì“G‚ÌUI‚ð•`‰æ
+	for (auto& enemy : enemies_) {
+		enemy->DrawUI();
+	}
+}
+
+// ---------------------------------------------------------
 // ƒfƒoƒbƒO•\Ž¦
 // ---------------------------------------------------------
-void EnemySpawnManager::Debug()
+void EnemyManager::Debug()
 {
 #ifdef _DEBUG
 

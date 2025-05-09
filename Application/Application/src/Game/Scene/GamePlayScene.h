@@ -17,7 +17,7 @@
 // Application
 #include <src/Game/Field/Field.h>
 #include <src/Game/Player/Player.h>
-#include <src/Game/Enemy/Manager/EnemySpawnManager.h>
+#include <src/Game/Enemy/Manager/EnemyManager.h>
 #include <src/Game/Camera/FollowCamera.h>
 
 class GamePlayScene : public BaseScene
@@ -64,8 +64,8 @@ private:
 	std::unique_ptr<Field> field_;
 	// プレイヤー
 	std::unique_ptr<Player> player_;
-	// 敵のスポーンマネージャー
-	std::unique_ptr<EnemySpawnManager> enemySpawnManager_;
+	// 敵の管理クラス
+	std::unique_ptr<EnemyManager> enemyManager_;
 
 	/* その他 */
 

@@ -55,9 +55,9 @@ void GamePlayScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
-	// 敵のスポーンマネージャー生成
-	enemySpawnManager_ = std::make_unique<EnemySpawnManager>();
-	enemySpawnManager_->Initialize();
+	// 敵の管理クラス生成
+	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_->Initialize();
 
 
 	/* その他 */
@@ -82,8 +82,8 @@ void GamePlayScene::Update() {
 	field_->Update();
 	// プレイヤー更新
 	player_->Update();
-	// 敵のスポーンマネージャー更新
-	enemySpawnManager_->Update();
+	// 敵の更新
+	enemyManager_->Update();
 
 
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
@@ -126,8 +126,8 @@ void GamePlayScene::Draw()
 	field_->Draw();
 	// プレイヤー描画
 	player_->Draw();
-	// 敵のスポーンマネージャー描画
-	enemySpawnManager_->Draw();
+	// 敵の描画
+	enemyManager_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -142,6 +142,8 @@ void GamePlayScene::Draw()
 
 	// プレイヤーUI描画
 	player_->DrawUI();
+	// 敵UI描画
+	enemyManager_->DrawUI();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

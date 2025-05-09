@@ -7,9 +7,9 @@
 #include <src/Game/Enemy/Base/Enemy.h>
 
 /// <summary>
-/// 敵のスポーンを管理
+/// 敵を管理
 /// </summary>
-class EnemySpawnManager
+class EnemyManager
 {
 public:
 	/// <summary>
@@ -26,6 +26,11 @@ public:
 	/// 描画処理
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// UI描画処理
+	/// </summary>
+	void DrawUI();
 
 private:
 	// ---------------------------------------------------------

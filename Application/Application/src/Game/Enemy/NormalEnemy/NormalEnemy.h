@@ -25,9 +25,19 @@ public:
 	void Draw() override;
 
 	/// <summary>
+	/// UI描画処理
+	/// </summary>
+	void DrawUI() override;
+
+	/// <summary>
 	/// 衝突時コールバック
 	/// </summary>
 	void OnCollision(Collider* other) override;
+
+	/// <summary>
+	/// 破棄される際に呼ばれる関数
+	/// </summary>
+	void OnDestroy() override;
 
 private:
 	// ---------------------------------------------------------
