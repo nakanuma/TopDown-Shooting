@@ -30,6 +30,11 @@ public:
 	virtual bool IsDead() const { return isDead_; }
 
 	/// <summary>
+	/// 攻撃力の取得
+	/// </summary>
+	virtual int32_t GetDamage() const { return damage_; }
+
+	/// <summary>
 	/// 破棄される際に呼ぶ関数
 	/// </summary>
 	virtual void OnDestroy() = 0;
@@ -52,6 +57,9 @@ protected:
 	// ---------------------------------------------------------
 	// パラメーター
 	// ---------------------------------------------------------
+
+	// 攻撃力
+	int32_t damage_;
 
 	// 速さ
 	float speed_;

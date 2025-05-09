@@ -10,6 +10,7 @@
 
 // Application
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Bullet/Base/Bullet.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -70,7 +71,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	/// 
 
 	// HPの設定
-	currentHP_ = 5;
+	currentHP_ = 10;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
 }
 
@@ -159,8 +160,12 @@ void NormalEnemy::OnCollision(Collider* other)
 {
 	// 衝突したコライダーがPlayerBulletだった場合の処理
 	if (other->GetTag() == "PlayerBullet") {
+		// PlayerBulletのdamageを取得
+		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
+		int32_t damage = bullet->GetDamage();
+
 		// HPを減らす
-		currentHP_ -= 1;
+		currentHP_ -= damage;
 
 		// HPが0になった敵を死亡させる
 		if (currentHP_ <= 0) {
