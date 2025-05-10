@@ -3,6 +3,7 @@
 // Engine
 #include <Engine/3D/Object3D.h>
 #include <Collider/Collider.h>
+#include <Collider/CollisionManager.h>
 
 /// <summary>
 /// 弾の基底クラス
@@ -37,7 +38,7 @@ public:
 	/// <summary>
 	/// 破棄される際に呼ぶ関数
 	/// </summary>
-	virtual void OnDestroy() = 0;
+	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
 protected:
 	// ---------------------------------------------------------
@@ -51,8 +52,8 @@ protected:
 	// コライダー
 	// ---------------------------------------------------------
 
-	// 球体コライダー
-	std::unique_ptr<SphereCollider> collider_;
+	// コライダー
+	std::unique_ptr<Collider> collider_;
 
 	// ---------------------------------------------------------
 	// パラメーター

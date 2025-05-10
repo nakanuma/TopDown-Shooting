@@ -26,6 +26,10 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	collider_->SetTag("PlayerBullet");
 	collider_->SetOwner(this);
 
+	/*collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("PlayerBullet");
+	collider_->SetOwner(this);*/
+
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
 
@@ -49,6 +53,12 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 void PlayerBullet::Update() {
 	// 移動処理
 	objectBullet_->transform_.translate += velocity_;
+
+	// 時間経過による削除
+	elapsedTime_ += 1.0f / 60.0f;
+	if (elapsedTime_ > kMaxLifeTime) {
+		isDead_ = true;
+	}
 
 	// コライダー更新処理
 	UpdateCollider();
@@ -77,21 +87,23 @@ void PlayerBullet::OnCollision(Collider* other)
 }
 
 // ---------------------------------------------------------
-// 破棄される際に呼ばれる関数
-// ---------------------------------------------------------
-void PlayerBullet::OnDestroy()
-{
-	// コリジョンマネージャーからコライダーの登録を解除
-	CollisionManager::GetInstance()->Unregister(collider_.get());
-}
-
-// ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
 void PlayerBullet::UpdateCollider()
 {
-	// 中心座標
-	collider_->center_ = objectBullet_->transform_.translate;
-	// 半径
-	collider_->radius_ = radius_;
+	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
+		// 中心
+		sphere->center_ = objectBullet_->transform_.translate;
+		// 半径
+		sphere->radius_ = radius_;
+	}
+
+	//if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+	//	Float3 center = objectBullet_->transform_.translate;
+	//	Float3 size = objectBullet_->transform_.scale;
+
+	//	// min
+	//	aabb->min_ = center - size;
+	//	aabb->max_ = center + size;
+	//}
 }

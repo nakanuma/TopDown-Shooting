@@ -34,11 +34,6 @@ public:
 	/// </summary>
 	void OnCollision(Collider* other) override;
 
-	/// <summary>
-	/// ”jŠü‚³‚ê‚éÛ‚ÉŒÄ‚Î‚ê‚éŠÖ”
-	/// </summary>
-	void OnDestroy() override;
-
 private:
 	// ---------------------------------------------------------
 	// “à•”ˆ—

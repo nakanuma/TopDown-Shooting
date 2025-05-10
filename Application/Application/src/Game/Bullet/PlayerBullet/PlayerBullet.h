@@ -26,11 +26,6 @@ public:
 	/// <param name="other"></param>
 	void OnCollision(Collider* other) override;
 
-	/// <summary>
-	/// 破棄される際に呼ばれる関数
-	/// </summary>
-	void OnDestroy() override;
-
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -48,4 +43,9 @@ private:
 
 	// 半径
 	float radius_ = 1.0f;
+
+	// 経過時間
+	float elapsedTime_ = 0.0f;
+	// 生存時間
+	const float kMaxLifeTime = 1.0f; // 1秒で消える
 };

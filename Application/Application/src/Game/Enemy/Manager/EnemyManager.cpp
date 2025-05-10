@@ -85,10 +85,9 @@ void EnemyManager::Debug()
 {
 #ifdef _DEBUG
 
-	ImGui::Begin("enemySpawnManager");
+	ImGui::Begin("enemyManager");
 
-	/* spawnTest */
-
+	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
 		enemy->Initialize({ -5.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
@@ -96,7 +95,32 @@ void EnemyManager::Debug()
 		enemies_.push_back(std::move(enemy));
 	}
 
-	/*  */
+	ImGui::Separator();
+	ImGui::Text("Total Enemies: %zu", enemies_.size());
+
+	// 敵ごとの情報表示
+	for (size_t i = 0; i < enemies_.size(); ++i) {
+		Enemy* enemy = enemies_[i].get();
+		if (!enemy) continue;
+
+		std::string label = "Enemy[" + std::to_string(i) + "]";
+		if (ImGui::TreeNode(label.c_str())) {
+
+			// タイプの表示
+			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
+
+			// 座標の表示
+			const Float3& translate = enemy->GetTranslate();
+			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
+
+			// HPの表示
+			ImGui::Text("HP : %d", enemy->GetHP());
+
+			// ここから他の項目追加
+
+			ImGui::TreePop();
+		}
+	}
 
 	ImGui::End();
 

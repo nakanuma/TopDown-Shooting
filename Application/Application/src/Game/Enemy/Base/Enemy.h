@@ -3,6 +3,7 @@
 // Engine
 #include <Engine/3D/Object3D.h>
 #include <Collider/Collider.h>
+#include <Collider/CollisionManager.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
@@ -35,12 +36,27 @@ public:
 	/// <summary>
 	/// 破棄される際に呼ぶ関数
 	/// </summary>
-	virtual void OnDestroy() = 0;
+	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
 	/// <summary>
 	/// 死亡フラグの取得
 	/// </summary>
 	bool IsDead() { return isDead_; }
+
+	/// <summary>
+	/// タグの取得（コライダーに設定してあるタグ）
+	/// </summary>
+	std::string GetTag() const { return collider_->GetTag(); }
+
+	/// <summary>
+	/// 現在位置の取得
+	/// </summary>
+	Float3& GetTranslate() const { return objectEnemy_->transform_.translate; }
+		 
+	/// <summary>
+	/// 残りHPの取得
+	/// </summary>
+	int32_t GetHP() const { return currentHP_; }
 
 protected:
 	// ---------------------------------------------------------
@@ -60,8 +76,8 @@ protected:
 	// オブジェクト関連
 	// ---------------------------------------------------------
 
-	// 球体コライダー
-	std::unique_ptr<SphereCollider> collider_;
+	// コライダー
+	std::unique_ptr<Collider> collider_;
 
 	// ---------------------------------------------------------
 	// スプライト関連

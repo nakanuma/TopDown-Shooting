@@ -36,12 +36,22 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
+	objectEnemy_->transform_.scale = { 6.0f, 1.0f, 1.0f };
+	objectEnemy_->transform_.rotate = { 0.0f, 0.7f, 0.0f };
 
 	///
 	///	コライダー生成
 	/// 
 
-	collider_ = std::make_unique<SphereCollider>();
+	/*collider_ = std::make_unique<SphereCollider>();
+	collider_->SetTag("NormalEnemy");
+	collider_->SetOwner(this);*/
+
+	/*collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("NormalEnemy");
+	collider_->SetOwner(this);*/
+
+	collider_ = std::make_unique<OBBCollider>();
 	collider_->SetTag("NormalEnemy");
 	collider_->SetOwner(this);
 
@@ -175,21 +185,39 @@ void NormalEnemy::OnCollision(Collider* other)
 }
 
 // ---------------------------------------------------------
-// 破棄される際に呼ばれる関数
-// ---------------------------------------------------------
-void NormalEnemy::OnDestroy()
-{
-	// コリジョンマネージャーからコライダーの登録を解除
-	CollisionManager::GetInstance()->Unregister(collider_.get());
-}
-
-// ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateCollider()
 {
-	// 中心点
-	collider_->center_ = objectEnemy_->transform_.translate;
-	// 半径
-	collider_->radius_ = radius_;
+	//if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
+	//	// 中心点
+	//	sphere->center_ = objectEnemy_->transform_.translate;
+	//	// 半径
+	//	sphere->radius_ = radius_;
+	//}
+
+	//if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+	//	Float3 center = objectEnemy_->transform_.translate;
+	//	Float3 size = objectEnemy_->transform_.scale;
+
+	//	// min
+	//	aabb->min_ = center - size;
+	//	aabb->max_ = center + size;
+	//}
+
+	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
+		// 中心
+		obb->center_ = objectEnemy_->transform_.translate;
+
+		// 半サイズ
+		obb->halfSize_ = objectEnemy_->transform_.scale;
+
+		// 回転行列の取得
+		Matrix rotMat = Matrix::Rotation(objectEnemy_->transform_.rotate);
+
+		// ローカル軸を回転行列から取り出して設定
+		obb->axes_[0] = Float3::Normalize({ rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0] });
+		obb->axes_[1] = Float3::Normalize({ rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1] });
+		obb->axes_[2] = Float3::Normalize({ rotMat.r[0][2], rotMat.r[1][2], rotMat.r[2][2] });
+	}
 }
