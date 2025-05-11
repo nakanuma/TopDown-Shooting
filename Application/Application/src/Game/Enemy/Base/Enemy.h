@@ -73,7 +73,7 @@ protected:
 	std::unique_ptr<Object3D> objectEnemy_;
 
 	// ---------------------------------------------------------
-	// オブジェクト関連
+	// コライダー
 	// ---------------------------------------------------------
 
 	// コライダー
@@ -84,7 +84,7 @@ protected:
 	// ---------------------------------------------------------
 
 	// HPバーの最大サイズ
-	const Float2 kHPBarSize = { 100.0f, 25.0f };
+	const Float2 kHPBarSize = { 100.0f, 20.0f };
 
 	// HPバー（後景）
 	std::unique_ptr<Sprite> spriteHPBackground_;

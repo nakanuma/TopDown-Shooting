@@ -5,6 +5,8 @@
 #include <Input/Input.h>
 #include <SpriteCommon.h>
 #include <Sprite.h>
+#include <Collider/Collider.h>
+#include <Collider/CollisionManager.h>
 
 // Application
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
@@ -94,6 +96,25 @@ private:
 	ModelManager::ModelData modelBullet_;
 
 	// ---------------------------------------------------------
+	// スプライト関連
+	// ---------------------------------------------------------
+
+	/* レティクル */
+
+	// 仮のレティクル画像
+	std::unique_ptr<Sprite> spriteTarget_;
+
+	/* HPバー */
+
+	// HPバーの最大サイズ
+	const Float2 kHPBarSize = { 300.0f, 30.0f };
+
+	// HPバー（後景）
+	std::unique_ptr<Sprite> spriteHPBackground_;
+	// HPバー（前景）
+	std::unique_ptr<Sprite> spriteHPForeground_;
+
+	// ---------------------------------------------------------
 	// パラメーター
 	// ---------------------------------------------------------
 
@@ -103,11 +124,10 @@ private:
 	// 速さ
 	float speed_ = 0.25f;
 
-	// ---------------------------------------------------------
-	// スプライト
-	// ---------------------------------------------------------
-
-	std::unique_ptr<Sprite> spriteTarget_;
+	// 最大HP
+	int32_t maxHP_;
+	// 現在HP
+	int32_t currentHP_;
 
 	// ---------------------------------------------------------
 	// 未分類

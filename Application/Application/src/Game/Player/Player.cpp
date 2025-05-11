@@ -9,12 +9,12 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void Player::Initialize() { 
+void Player::Initialize() {
 	///
 	///	基盤機能
 	/// 
-	
-	DirectXBase* dxBase = DirectXBase::GetInstance(); 
+
+	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// 入力
 	input_ = Input::GetInstance();
@@ -26,7 +26,7 @@ void Player::Initialize() {
 	///
 	///	オブジェクト関連
 	/// 
-	
+
 	// プレイヤーモデル読み込み
 	modelPlayer_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
 	modelPlayer_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
@@ -34,8 +34,7 @@ void Player::Initialize() {
 	// プレイヤーオブジェクト生成
 	objectPlayer_ = std::make_unique<Object3D>();
 	objectPlayer_->model_ = &modelPlayer_;
-	objectPlayer_->transform_.translate = {0.0f, 1.0f, 0.0f};
-
+	objectPlayer_->transform_.translate = { 0.0f, 1.0f, 0.0f };
 
 	// 弾モデル読み込み
 	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
@@ -44,19 +43,48 @@ void Player::Initialize() {
 	///
 	///	スプライト関連
 	/// 
-	
+
+	/* レティクル */
+
 	// ターゲットスプライト初期化
 	uint32_t textureTarget = TextureManager::Load("resources/Images/game/target.png", dxBase->GetDevice());
 	spriteTarget_ = std::make_unique<Sprite>();
 	spriteTarget_->Initialize(spriteCommon_.get(), textureTarget);
 	spriteTarget_->SetAnchorPoint({ 0.5f, 0.5f });
 	spriteTarget_->SetSize({ 100.0f, 100.0f });
+
+	/* HPバー */
+
+	// HPバー（後景）
+	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteHPBackground_ = std::make_unique<Sprite>();
+	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
+	spriteHPBackground_->SetSize(kHPBarSize);
+	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+	// HPバー（前景）
+	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteHPForeground_ = std::make_unique<Sprite>();
+	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
+	spriteHPForeground_->SetSize(kHPBarSize);
+	spriteHPForeground_->SetColor({ 1.0f, 0.2f, 0.2f, 1.0f });
+
+	///
+	///	パラメーター設定
+	/// 
+	
+	currentHP_ = 100;
+	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定しておく
 }
 
 // ---------------------------------------------------------
 // 毎フレーム更新処理
 // ---------------------------------------------------------
-void Player::Update() { 
+void Player::Update() {
+	///
+	///	内部処理
+	/// 
+
 	// 移動処理
 	HandleMove();
 	// 弾の発射処理
@@ -64,10 +92,28 @@ void Player::Update() {
 	// 弾の更新処理
 	UpdateBullets();
 
+	///
+	///	オブジェクト更新処理
+	/// 
+
 	// プレイヤーオブジェクト更新
 	objectPlayer_->UpdateMatrix();
+
+	///
+	///	スプライト更新処理
+	/// 
+
+	/* レティクル */
+
 	// ターゲットスプライト更新
 	spriteTarget_->Update();
+
+	/* HPバー */
+
+	// HPバー（後景）
+	spriteHPBackground_->Update();
+	// HPバー（前景）
+	spriteHPForeground_->Update();
 }
 
 // ---------------------------------------------------------
@@ -94,6 +140,14 @@ void Player::Draw() {
 // ---------------------------------------------------------
 void Player::DrawUI()
 {
+	/*--------------*/
+	/* レティクル関連 */
+	/*--------------*/
+
+	///
+	///	レティクル描画
+	/// 
+
 	// カーソルのワールド座標をスクリーン座標に変換してスプライト位置を設定（あとで整理）
 	Float3 screenPos = Float3::Transform(CalclateCursorPosition(), Camera::GetCurrent()->GetViewProjectionMatrix());
 
@@ -107,6 +161,35 @@ void Player::DrawUI()
 
 	// ターゲットスプライト描画
 	spriteTarget_->Draw();
+
+	/*--------------*/
+	/*   HPバー関連   */
+	/*--------------*/
+
+	///
+	/// HPバー（後景）描画
+	/// 
+	
+	spriteHPBackground_->SetPosition({
+		Window::GetWidth() / 2.0f - kHPBarSize.x / 2.0f, // 画面の中央 - サイズ半分で中央揃え
+		(Window::GetHeight() / 8.0f) * 7.0f // 画面縦サイズの 7/8 の位置へ設定
+		});
+	spriteHPBackground_->Draw();
+
+	///
+	/// HPバー（前景）描画
+	/// 
+
+	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_); // HP割合
+
+	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
+	spriteHPForeground_->SetSize(hpBarForegroundSize); // 現在HPに応じてサイズ変更
+
+	spriteHPForeground_->SetPosition({
+		Window::GetWidth() / 2.0f - kHPBarSize.x / 2.0f, // 画面の中央 - サイズ半分で中央揃え
+		(Window::GetHeight() / 8.0f) * 7.0f // 画面縦サイズの 7/8 の位置へ設定
+		});
+	spriteHPForeground_->Draw();
 }
 
 // ---------------------------------------------------------
@@ -129,10 +212,12 @@ void Player::Debug() {
 	ImGui::Text("Parameter");
 
 	ImGui::BeginDisabled(true); // 操作不可
-	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f); 
+	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);
 	ImGui::EndDisabled();
 
 	ImGui::DragFloat("Speed", &speed_, 0.01f);
+
+	ImGui::DragInt("HP", &currentHP_);
 
 	/*  */
 

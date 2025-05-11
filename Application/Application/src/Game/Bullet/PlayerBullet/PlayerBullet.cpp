@@ -26,10 +26,6 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	collider_->SetTag("PlayerBullet");
 	collider_->SetOwner(this);
 
-	/*collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("PlayerBullet");
-	collider_->SetOwner(this);*/
-
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
 
@@ -97,13 +93,4 @@ void PlayerBullet::UpdateCollider()
 		// 半径
 		sphere->radius_ = radius_;
 	}
-
-	//if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-	//	Float3 center = objectBullet_->transform_.translate;
-	//	Float3 size = objectBullet_->transform_.scale;
-
-	//	// min
-	//	aabb->min_ = center - size;
-	//	aabb->max_ = center + size;
-	//}
 }
