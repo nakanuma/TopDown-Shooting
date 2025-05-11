@@ -41,6 +41,16 @@ void Player::Initialize() {
 	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
+	///	コライダー生成
+	/// 
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("Player");
+	collider_->SetOwner(this);
+
+	CollisionManager::GetInstance()->Register(collider_.get());
+
+	///
 	///	スプライト関連
 	/// 
 
@@ -91,6 +101,12 @@ void Player::Update() {
 	HandleShooting();
 	// 弾の更新処理
 	UpdateBullets();
+
+	///
+	///	コライダー更新処理
+	/// 
+
+	UpdateCollider();
 
 	///
 	///	オブジェクト更新処理
@@ -190,6 +206,16 @@ void Player::DrawUI()
 		(Window::GetHeight() / 8.0f) * 7.0f // 画面縦サイズの 7/8 の位置へ設定
 		});
 	spriteHPForeground_->Draw();
+}
+
+// ---------------------------------------------------------
+// 衝突時コールバック
+// ---------------------------------------------------------
+void Player::OnCollision(Collider* other)
+{
+	if (other->GetTag() == "NormalEnemy") {
+		objectPlayer_->transform_.translate.x += 1.0f;
+	}
 }
 
 // ---------------------------------------------------------
@@ -346,4 +372,19 @@ void Player::UpdateBullets()
 			}),
 		bullets_.end()
 	);
+}
+
+// ---------------------------------------------------------
+// コライダー更新処理
+// ---------------------------------------------------------
+void Player::UpdateCollider()
+{
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		Float3 center = objectPlayer_->transform_.translate;
+		Float3 size = objectPlayer_->transform_.scale;
+
+		// min
+		aabb->min_ = center - size;
+		aabb->max_ = center + size;
+	}
 }

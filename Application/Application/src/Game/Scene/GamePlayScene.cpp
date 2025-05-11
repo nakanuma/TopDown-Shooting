@@ -50,7 +50,7 @@ void GamePlayScene::Initialize()
 	// フィールド生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
-
+	
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize();

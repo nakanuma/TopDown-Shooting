@@ -14,7 +14,7 @@
 /// <summary>
 /// プレイヤー
 /// </summary>
-class Player
+class Player : public ICollisionCallback
 {
 public:
 	/// <summary>
@@ -36,6 +36,11 @@ public:
 	/// UI描画処理
 	/// </summary>
 	void DrawUI();
+
+	/// <summary>
+	/// 衝突時コールバック
+	/// </summary>
+	void OnCollision(Collider* other) override;
 
 	/// <summary>
 	/// 位置の取得
@@ -72,6 +77,11 @@ private:
 	/// </summary>
 	void UpdateBullets();
 
+	/// <summary>
+	/// コライダー更新処理
+	/// </summary>
+	void UpdateCollider();
+
 private:
 	// ---------------------------------------------------------
 	// システム関連
@@ -94,6 +104,12 @@ private:
 
 	// プレイヤー弾モデル
 	ModelManager::ModelData modelBullet_;
+
+	// ---------------------------------------------------------
+	// コライダー
+	// ---------------------------------------------------------
+
+	std::unique_ptr<Collider> collider_;
 
 	// ---------------------------------------------------------
 	// スプライト関連
