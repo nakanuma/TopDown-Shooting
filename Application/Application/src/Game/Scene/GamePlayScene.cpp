@@ -59,6 +59,9 @@ void GamePlayScene::Initialize()
 	enemyManager_ = std::make_unique<EnemyManager>();
 	enemyManager_->Initialize();
 
+	// 障害物の管理クラス生成
+	obstacleManager_ = std::make_unique<ObstacleManager>();
+	obstacleManager_->Initialize();
 
 	/* その他 */
 
@@ -84,6 +87,8 @@ void GamePlayScene::Update() {
 	player_->Update();
 	// 敵の更新
 	enemyManager_->Update();
+	// 障害物の更新
+	obstacleManager_->Update();
 
 
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
@@ -128,6 +133,8 @@ void GamePlayScene::Draw()
 	player_->Draw();
 	// 敵の描画
 	enemyManager_->Draw();
+	// 障害物の描画
+	obstacleManager_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド

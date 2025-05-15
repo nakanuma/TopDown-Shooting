@@ -4,12 +4,12 @@
 #include <Engine/Model/ModelManager.h>
 
 // Application
-#include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Obstacle/Base/Obstacle.h>
 
 /// <summary>
-/// 敵の管理
+/// 障害物の管理
 /// </summary>
-class EnemyManager
+class ObstacleManager 
 {
 public:
 	/// <summary>
@@ -27,11 +27,6 @@ public:
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// UI描画処理
-	/// </summary>
-	void DrawUI();
-
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -48,16 +43,14 @@ private:
 	// ---------------------------------------------------------
 
 	// 通常敵
-	ModelManager::ModelData modelNormalEnemy_;
-	
-	// 追加
+	ModelManager::ModelData modelNormalObstacle_;
 
+	// 追加
 
 	// ---------------------------------------------------------
 	// 敵
 	// ---------------------------------------------------------
 
 	// 敵のコンテナ
-	std::vector<std::unique_ptr<Enemy>> enemies_;
+	std::vector<std::unique_ptr<Obstacle>> obstacles_;
 };
-

@@ -37,6 +37,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
 	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
+	objectEnemy_->materialCB_.data_->color = {1.0f, 0.5f, 0.0f, 1.0f};
 
 	///
 	///	コライダー生成

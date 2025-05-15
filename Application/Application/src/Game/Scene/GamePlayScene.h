@@ -18,6 +18,8 @@
 #include <src/Game/Field/Field.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Enemy/Manager/EnemyManager.h>
+#include <src/Game/Obstacle/Manager/ObstacleManager.h>
+
 #include <src/Game/Camera/FollowCamera.h>
 
 class GamePlayScene : public BaseScene
@@ -66,6 +68,8 @@ private:
 	std::unique_ptr<Player> player_;
 	// 敵の管理クラス
 	std::unique_ptr<EnemyManager> enemyManager_;
+	// 障害物の管理クラス
+	std::unique_ptr<ObstacleManager> obstacleManager_;
 
 	/* その他 */
 

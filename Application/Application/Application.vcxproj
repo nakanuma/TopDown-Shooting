@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.cpp" />
+    <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp" />
     <ClCompile Include="src\Game\Camera\FollowCamera.cpp" />
     <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp" />
     <ClCompile Include="src\Game\Enemy\Manager\EnemyManager.cpp" />
@@ -31,6 +33,9 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.h" />
+    <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h" />
+    <ClInclude Include="src\Game\Obstacle\Base\Obstacle.h" />
     <ClInclude Include="src\Game\Camera\FollowCamera.h" />
     <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h" />
     <ClInclude Include="src\Game\Enemy\Manager\EnemyManager.h" />

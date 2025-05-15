@@ -9,7 +9,8 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void Player::Initialize() {
+void Player::Initialize() 
+{
 	///
 	///	基盤機能
 	/// 
@@ -35,6 +36,7 @@ void Player::Initialize() {
 	objectPlayer_ = std::make_unique<Object3D>();
 	objectPlayer_->model_ = &modelPlayer_;
 	objectPlayer_->transform_.translate = { 0.0f, 1.0f, 0.0f };
+	objectPlayer_->materialCB_.data_->color = {0.0f, 0.5f, 1.0f, 1.0f};
 
 	// 弾モデル読み込み
 	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
@@ -90,7 +92,8 @@ void Player::Initialize() {
 // ---------------------------------------------------------
 // 毎フレーム更新処理
 // ---------------------------------------------------------
-void Player::Update() {
+void Player::Update() 
+{
 	///
 	///	内部処理
 	/// 
@@ -135,7 +138,8 @@ void Player::Update() {
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void Player::Draw() {
+void Player::Draw() 
+{
 
 	// 全ての弾を描画
 	for (const auto& bullet : bullets_) {
@@ -214,14 +218,15 @@ void Player::DrawUI()
 void Player::OnCollision(Collider* other)
 {
 	if (other->GetTag() == "NormalEnemy") {
-		objectPlayer_->transform_.translate.x += 1.0f;
+		
 	}
 }
 
 // ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
-void Player::Debug() {
+void Player::Debug() 
+{
 #ifdef  _DEBUG
 	ImGui::Begin("Player");
 
