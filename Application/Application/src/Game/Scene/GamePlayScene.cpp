@@ -45,6 +45,12 @@ void GamePlayScene::Initialize()
 	///	↓ ゲームシーン用 
 	///	
 
+	/* ステージデータ */
+
+	// ローダー生成
+	loader_ = std::make_unique<Loader>();
+	loader_->LoadFromFile("resources/Stages/data.json");
+
 	/* オブジェクト関連 */
 
 	// フィールド生成
@@ -57,11 +63,11 @@ void GamePlayScene::Initialize()
 
 	// 敵の管理クラス生成
 	enemyManager_ = std::make_unique<EnemyManager>();
-	enemyManager_->Initialize();
+	enemyManager_->Initialize(loader_->GetAllDatas());
 
 	// 障害物の管理クラス生成
 	obstacleManager_ = std::make_unique<ObstacleManager>();
-	obstacleManager_->Initialize();
+	obstacleManager_->Initialize(loader_->GetAllDatas());
 
 	/* その他 */
 

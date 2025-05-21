@@ -15,6 +15,7 @@
 #include <Collider/CollisionManager.h>
 
 // Application
+#include <src/Game/Loader/Loader.h>
 #include <src/Game/Field/Field.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Enemy/Manager/EnemyManager.h>
@@ -59,6 +60,11 @@ private:
 	///
 	/// ↓ ゲームシーン用
 	///
+
+	/* ステージデータ */
+
+	// ローダー
+	std::unique_ptr<Loader> loader_;
 
 	/* オブジェクト関連 */
 

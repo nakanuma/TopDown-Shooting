@@ -4,6 +4,7 @@
 #include <Engine/Model/ModelManager.h>
 
 // Application
+#include <src/Game/Loader/Loader.h>
 #include <src/Game/Enemy/Base/Enemy.h>
 
 /// <summary>
@@ -15,7 +16,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize();
+	void Initialize(const std::vector<Loader::TransformData> datas);
 
 	/// <summary>
 	/// 更新処理

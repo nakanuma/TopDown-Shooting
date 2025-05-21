@@ -9,19 +9,32 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void ObstacleManager::Initialize() 
-{
+void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///
 	///	各モデル読み込み
 	///
 
-	// 通常敵
+	// 通常障害物
 	modelNormalObstacle_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
 	modelNormalObstacle_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
-	// 追加
+	// 新しく追加
+
+	///
+	///	各障害物の生成
+	/// 
+	
+	for (const auto& data : datas) {
+		// 通常障害物
+		if (data.tag == "NORMAL_OBSTACLE") {
+			auto obstacle = std::make_unique<NormalObstacle>();
+			obstacle->Initialize(data.translate, data.scale, &modelNormalObstacle_);
+
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+	}
 }
 
 // ---------------------------------------------------------
@@ -64,7 +77,7 @@ void ObstacleManager::Debug()
 		auto obstacle = std::make_unique<NormalObstacle>();
 		obstacle->Initialize({10.0f, 1.0f, 0.0f}, {3.0f, 1.0f, 3.0f}, &modelNormalObstacle_);
 
-		obstacles_.push_back(std::move(obstacle));
+		obstacles_.emplace_back(std::move(obstacle));
 	}
 
 	ImGui::Separator();

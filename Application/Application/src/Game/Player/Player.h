@@ -9,6 +9,7 @@
 #include <Collider/CollisionManager.h>
 
 // Application
+#include <src/Game/Loader/Loader.h>
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
 
 /// <summary>

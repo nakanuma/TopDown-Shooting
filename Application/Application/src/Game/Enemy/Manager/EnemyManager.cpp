@@ -9,8 +9,7 @@
 // ---------------------------------------------------------
 // ‰Šú‰»ˆ—
 // ---------------------------------------------------------
-void EnemyManager::Initialize()
-{
+void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///
@@ -21,8 +20,24 @@ void EnemyManager::Initialize()
 	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
 	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
-	// ’Ç‰Á
+	// V‚µ‚­’Ç‰Á
 
+	///
+	///	Še“G‚Ì¶¬
+	/// 
+	
+	for (const auto& data : datas) {
+		// ’Êí“G
+		if (data.tag == "NORMAL_ENEMY") {
+			auto enemy = std::make_unique<NormalEnemy>();
+			enemy->Initialize(data.translate, &modelNormalEnemy_);
+
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// V‚µ‚­’Ç‰Á
+
+	}
 }
 
 // ---------------------------------------------------------
@@ -92,7 +107,7 @@ void EnemyManager::Debug()
 		auto enemy = std::make_unique<NormalEnemy>();
 		enemy->Initialize({ -5.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
 
-		enemies_.push_back(std::move(enemy));
+		enemies_.emplace_back(std::move(enemy));
 	}
 
 	ImGui::Separator();
