@@ -83,7 +83,15 @@ void PlayerBullet::OnCollision(Collider* other)
 
 	// vs NormalObstacle
 	if (other->GetTag() == "NormalObstacle") {
-		
+		AABBCollider* aabb = dynamic_cast<AABBCollider*>(other);
+		if (aabb) {
+			// 法線を取得
+			Float3 normal = aabb->GetContactNormalFromSphere(objectBullet_->transform_.translate);
+
+			// 速度ベクトルを法線で反射させる
+			float dot = Float3::Dot(velocity_, normal);
+			velocity_ = velocity_ - 2.0f * dot * normal;
+		}
 	}
 }
 
