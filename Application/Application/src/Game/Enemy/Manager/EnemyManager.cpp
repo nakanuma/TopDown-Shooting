@@ -105,7 +105,7 @@ void EnemyManager::Debug()
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize({ -5.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
+		enemy->Initialize({ 0.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
 
 		enemies_.emplace_back(std::move(enemy));
 	}

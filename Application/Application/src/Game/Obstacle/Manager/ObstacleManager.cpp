@@ -34,6 +34,9 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 			obstacles_.emplace_back(std::move(obstacle));
 		}
+
+		// 新しく追加
+
 	}
 }
 
@@ -75,7 +78,7 @@ void ObstacleManager::Debug()
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto obstacle = std::make_unique<NormalObstacle>();
-		obstacle->Initialize({10.0f, 1.0f, 0.0f}, {3.0f, 1.0f, 3.0f}, &modelNormalObstacle_);
+		obstacle->Initialize({0.0f, 1.0f, 0.0f}, {3.0f, 1.0f, 3.0f}, &modelNormalObstacle_);
 
 		obstacles_.emplace_back(std::move(obstacle));
 	}

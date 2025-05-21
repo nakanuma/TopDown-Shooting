@@ -75,10 +75,15 @@ void PlayerBullet::Draw() {
 // ---------------------------------------------------------
 void PlayerBullet::OnCollision(Collider* other)
 {
-	// 衝突したコライダーがNormalEnemyだった場合の処理
+	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
 		// 死亡させる
 		isDead_ = true;
+	}
+
+	// vs NormalObstacle
+	if (other->GetTag() == "NormalObstacle") {
+		
 	}
 }
 

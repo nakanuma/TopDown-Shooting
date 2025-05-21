@@ -9,7 +9,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void Player::Initialize() {
+void Player::Initialize(const Loader::TransformData& data) {
 	///
 	///	基盤機能
 	/// 
@@ -34,7 +34,7 @@ void Player::Initialize() {
 	// プレイヤーオブジェクト生成
 	objectPlayer_ = std::make_unique<Object3D>();
 	objectPlayer_->model_ = &modelPlayer_;
-	objectPlayer_->transform_.translate = { 0.0f, 1.0f, 0.0f };
+	objectPlayer_->transform_.translate = data.translate;
 	objectPlayer_->materialCB_.data_->color = {0.0f, 0.5f, 1.0f, 1.0f};
 
 	// 弾モデル読み込み
@@ -216,8 +216,27 @@ void Player::DrawUI()
 // ---------------------------------------------------------
 void Player::OnCollision(Collider* other)
 {
+	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
 		
+	}
+
+	// vs NormalObstacle
+	if (other->GetTag() == "NormalObstacle") {
+		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
+		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
+
+		// 押し戻し処理
+		if (myAABB && otherAABB) {
+			// 押し戻しベクトル取得
+			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
+			// プレイヤー位置を補正
+			objectPlayer_->transform_.translate += pushVec;
+
+			// コライダーも更新しておく
+			myAABB->min_ += pushVec;
+			myAABB->max_ += pushVec;
+		}
 	}
 }
 

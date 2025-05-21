@@ -59,7 +59,7 @@ void GamePlayScene::Initialize()
 	
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	player_->Initialize(loader_->GetDataByTag("PLAYER"));
 
 	// 敵の管理クラス生成
 	enemyManager_ = std::make_unique<EnemyManager>();

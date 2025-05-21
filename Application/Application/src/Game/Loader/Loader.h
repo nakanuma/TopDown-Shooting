@@ -28,7 +28,12 @@ public:
 	/// <summary>
 	/// 全データ取得
 	/// </summary>
-	const std::vector<TransformData>& GetAllDatas() const { return objects_; }
+	const std::vector<TransformData>& GetAllDatas() const { return datas_; }
+
+	/// <summary>
+	/// 単体データ取得
+	/// </summary>
+	TransformData GetDataByTag(const std::string& tag) const;
 
 private:
 	// ---------------------------------------------------------
@@ -38,5 +43,5 @@ private:
 	/// <summary>
 	/// 全データのコンテナ
 	/// </summary>
-	std::vector<TransformData> objects_;
+	std::vector<TransformData> datas_;
 };

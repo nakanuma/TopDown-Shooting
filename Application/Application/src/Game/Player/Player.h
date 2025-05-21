@@ -21,7 +21,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize();
+	void Initialize(const Loader::TransformData& data);
 
 	/// <summary>
 	/// 毎フレーム更新処理
