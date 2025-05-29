@@ -4,6 +4,9 @@
 #include <Camera.h>
 #include <Engine/Util/TimeManager.h>
 
+// Application
+#include <src/Game/Utility/Utility.h>
+
 // externals
 #include <ImguiWrapper.h>
 
@@ -53,40 +56,17 @@ void Player::Initialize(const Loader::TransformData& data) {
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	///
-	///	スプライト関連
+	///	UI
 	/// 
 
-	/* レティクル） */
-
-	// クロスヘア（十字線）スプライト初期化
-	uint32_t textureTarget = TextureManager::Load("resources/Images/game/crosshair.png", dxBase->GetDevice());
-	spriteCrosshair_ = std::make_unique<Sprite>();
-	spriteCrosshair_->Initialize(spriteCommon_.get(), textureTarget);
-	spriteCrosshair_->SetAnchorPoint({ 0.5f, 0.5f });
-	spriteCrosshair_->SetSize({ 64.0f, 64.0f });
-
-	/* HPバー */
-
-	// HPバー（後景）
-	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-	spriteHPBackground_ = std::make_unique<Sprite>();
-	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
-	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
-
-	// HPバー（前景）
-	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-	spriteHPForeground_ = std::make_unique<Sprite>();
-	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
-	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({ 1.0f, 0.2f, 0.2f, 1.0f });
+	ui_ = std::make_unique<PlayerUI>();
+	ui_->Initialize();
 
 	///
 	///	パラメーター設定
 	/// 
 	
-	currentHP_ = 100;
-	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定しておく
+	currentHP_ = kMaxHP; // 現在HPには最大HPをセット
 	currentAmmo_ = kMaxAmmo; // マガジンには最大弾数をセット
 }
 
@@ -122,20 +102,9 @@ void Player::Update()
 	objectPlayer_->UpdateMatrix();
 
 	///
-	///	スプライト更新処理
+	///	UI更新処理
 	/// 
-
-	/* レティクル */
-
-	// クロスヘア（十字線）
-	spriteCrosshair_->Update();
-
-	/* HPバー */
-
-	// HPバー（後景）
-	spriteHPBackground_->Update();
-	// HPバー（前景）
-	spriteHPForeground_->Update();
+	ui_->Update();
 }
 
 // ---------------------------------------------------------
@@ -161,57 +130,8 @@ void Player::Draw()
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void Player::DrawUI()
-{
-	/*--------------*/
-	/* レティクル関連 */
-	/*--------------*/
-
-	///
-	///	クロスヘア描画
-	/// 
-
-	// カーソルのワールド座標をスクリーン座標に変換してスプライト位置を設定（あとで整理）
-	Float3 screenPos = Float3::Transform(CalclateCursorPosition(), Camera::GetCurrent()->GetViewProjectionMatrix());
-
-	float screenWidth = static_cast<float>(Window::GetWidth());
-	float screenHeight = static_cast<float>(Window::GetHeight());
-
-	float screenX = (screenPos.x + 1.0f) * 0.5f * screenWidth;
-	float screenY = (1.0f - screenPos.y) * 0.5f * screenHeight;
-
-	spriteCrosshair_->SetPosition({ screenX, screenY });
-
-	spriteCrosshair_->Draw();
-
-	/*--------------*/
-	/*   HPバー関連   */
-	/*--------------*/
-
-	///
-	/// HPバー（後景）描画
-	/// 
-	
-	spriteHPBackground_->SetPosition({
-		Window::GetWidth() / 2.0f - kHPBarSize.x / 2.0f, // 画面の中央 - サイズ半分で中央揃え
-		(Window::GetHeight() / 8.0f) * 7.0f // 画面縦サイズの 7/8 の位置へ設定
-		});
-	spriteHPBackground_->Draw();
-
-	///
-	/// HPバー（前景）描画
-	/// 
-
-	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_); // HP割合
-
-	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
-	spriteHPForeground_->SetSize(hpBarForegroundSize); // 現在HPに応じてサイズ変更
-
-	spriteHPForeground_->SetPosition({
-		Window::GetWidth() / 2.0f - kHPBarSize.x / 2.0f, // 画面の中央 - サイズ半分で中央揃え
-		(Window::GetHeight() / 8.0f) * 7.0f // 画面縦サイズの 7/8 の位置へ設定
-		});
-	spriteHPForeground_->Draw();
+void Player::DrawUI() { 
+	ui_->Draw(this); 
 }
 
 // ---------------------------------------------------------
@@ -221,7 +141,7 @@ void Player::OnCollision(Collider* other)
 {
 	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
-		
+		currentHP_--;
 	}
 
 	// vs NormalObstacle
@@ -282,60 +202,6 @@ void Player::Debug()
 }
 
 // ---------------------------------------------------------
-// カーソル位置のワールド座標を取得
-// ---------------------------------------------------------
-Float3 Player::CalclateCursorPosition()
-{
-	// マウス位置の取得
-	Float2 mousePos = Float2(input_->GetMousePosition().x, input_->GetMousePosition().y);
-
-	// 画面サイズ取得
-	float screenWidth = static_cast<float>(Window::GetWidth());
-	float screenHeight = static_cast<float>(Window::GetHeight());
-
-	// スクリーン座標 -> 正規化デバイス座標（NDC）へ変換
-	float ndcX = (2.0f * mousePos.x / screenWidth) - 1.0f;
-	float ndcY = 1.0f - (2.0f * mousePos.y / screenHeight);
-
-	// NDC -> ワールド空間へ変換
-	Float4 clipNear = Float4(ndcX, ndcY, 0.0f, 1.0f);
-	Float4 clipFar = Float4(ndcX, ndcY, 1.0f, 1.0f);
-
-	Matrix matVPInv = Matrix::Inverse(Camera::GetCurrent()->GetViewProjectionMatrix());
-
-	// ワールド座標に変換
-	Float4 worldNear = Float4::Transform(clipNear, matVPInv);
-	Float4 worldFar = Float4::Transform(clipFar, matVPInv);
-
-	// w除算で正しい座標に変換
-	worldNear /= worldNear.w;
-	worldFar /= worldFar.w;
-
-	// レイの始点と方向
-	Float3 rayOrigin = { worldNear.x, worldNear.y, worldNear.z };
-	Float3 rayDir = Float3::Normalize({
-		worldFar.x - worldNear.x,
-		worldFar.y - worldNear.y,
-		worldFar.z - worldNear.z
-		});
-
-	if (std::abs(rayDir.y) > 0.0001f) {
-		float t = -rayOrigin.y / rayDir.y;
-
-		Float3 hitPos = {
-			rayOrigin.x + rayDir.x * t,
-			1.0f,
-			rayOrigin.z + rayDir.z * t
-		};
-
-		return hitPos;
-	}
-
-	// 計算できない場合には無効値を返す
-	return Float3(0.0f, 0.0f, 0.0f);
-}
-
-// ---------------------------------------------------------
 // 移動処理
 // ---------------------------------------------------------
 void Player::HandleMove()
@@ -375,7 +241,7 @@ void Player::HandleShooting()
 	// 左クリックで弾を生成
 	if (input_->IsTriggerMouse(0)) {
 		// カーソル位置の取得
-		Float3 cursorPos = CalclateCursorPosition();
+		Float3 cursorPos = Utility::CalclateCursorPosition();
 		// プレイヤー位置の取得
 		Float3 playerPos = objectPlayer_->transform_.translate;
 

@@ -11,6 +11,7 @@
 // Application
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
+#include <src/Game/Player/PlayerUI.h>
 
 /// <summary>
 /// プレイヤー
@@ -48,6 +49,16 @@ public:
 	/// </summary>
 	Float3& GetTranslate() const { return objectPlayer_->transform_.translate; }
 
+	/// <summary>
+	/// 現在HPの取得
+	/// </summary>
+	int32_t GetCurrentHP() const { return currentHP_; }
+
+	/// <summary>
+	/// 最大HPの取得
+	/// </summary>
+	int32_t GetMaxHP() const { return kMaxHP; }
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -57,11 +68,6 @@ private:
 	/// デバッグ表示
 	/// </summary>
 	void Debug();
-
-	/// <summary>
-	/// カーソル位置のワールド座標を取得
-	/// </summary>
-	Float3 CalclateCursorPosition();
 
 	/// <summary>
 	/// 移動処理
@@ -118,23 +124,10 @@ private:
 	std::unique_ptr<Collider> collider_;
 
 	// ---------------------------------------------------------
-	// スプライト関連
+	// UI
 	// ---------------------------------------------------------
 
-	/* レティクル */
-
-	// クロスヘア（十字線）
-	std::unique_ptr<Sprite> spriteCrosshair_;
-
-	/* HPバー */
-
-	// HPバーの最大サイズ
-	const Float2 kHPBarSize = { 300.0f, 30.0f };
-
-	// HPバー（後景）
-	std::unique_ptr<Sprite> spriteHPBackground_;
-	// HPバー（前景）
-	std::unique_ptr<Sprite> spriteHPForeground_;
+	std::unique_ptr<PlayerUI> ui_;
 
 	// ---------------------------------------------------------
 	// パラメーター
@@ -147,7 +140,7 @@ private:
 	float speed_ = 0.25f;
 
 	// 最大HP
-	int32_t maxHP_;
+	const int32_t kMaxHP = 100;
 	// 現在HP
 	int32_t currentHP_;
 
@@ -165,7 +158,7 @@ private:
 	// リロード中フラグ
 	bool isReloading_ = false;
 	// リロードにかかる時間
-	const float kReloadTime = 1.0f;
+	const float kReloadTime = 0.5f;
 	// リロード時間計測タイマー
 	float reloadTimer_ = 0.0f;
 };
