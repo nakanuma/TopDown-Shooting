@@ -17,6 +17,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
+	objectBullet_->transform_.scale = {radius_, radius_, radius_};
 
 	///
 	///	コライダー生成

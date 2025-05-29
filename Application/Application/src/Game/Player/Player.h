@@ -74,6 +74,11 @@ private:
 	void HandleShooting();
 
 	/// <summary>
+	/// 弾のリロード処理
+	/// </summary>
+	void HandleReloading();
+
+	/// <summary>
 	/// 弾の更新処理
 	/// </summary>
 	void UpdateBullets();
@@ -118,8 +123,8 @@ private:
 
 	/* レティクル */
 
-	// 仮のレティクル画像
-	std::unique_ptr<Sprite> spriteTarget_;
+	// クロスヘア（十字線）
+	std::unique_ptr<Sprite> spriteCrosshair_;
 
 	/* HPバー */
 
@@ -147,10 +152,20 @@ private:
 	int32_t currentHP_;
 
 	// ---------------------------------------------------------
-	// 未分類
+	// 弾関連
 	// ---------------------------------------------------------
 
 	// 弾リスト
 	std::vector<std::unique_ptr<Bullet>> bullets_;
-};
 
+	// 最大弾数
+	const int32_t kMaxAmmo = 30;
+	// 現在の弾数
+	int32_t currentAmmo_;
+	// リロード中フラグ
+	bool isReloading_ = false;
+	// リロードにかかる時間
+	const float kReloadTime = 1.0f;
+	// リロード時間計測タイマー
+	float reloadTimer_ = 0.0f;
+};

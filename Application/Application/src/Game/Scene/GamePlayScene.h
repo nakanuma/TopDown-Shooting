@@ -12,7 +12,8 @@
 #include "SoundManager.h"
 #include "Input.h"
 #include "LightManager.h"
-#include <Collider/CollisionManager.h>
+#include <Engine/Collider/CollisionManager.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
 #include <src/Game/Loader/Loader.h>

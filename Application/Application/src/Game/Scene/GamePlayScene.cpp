@@ -82,10 +82,11 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update() { 
+	/*ShowCursor(FALSE);*/
+
 	// 追従カメラの更新
 	followCamera_->Update();
 	camera->transform.translate = followCamera_->GetCameraPosition();
-
 
 	// フィールド更新
 	field_->Update();
@@ -99,6 +100,8 @@ void GamePlayScene::Update() {
 
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
 	CollisionManager::GetInstance()->Update();
+	// タイムマネージャー更新（deltaTime計算）
+	TimeManager::GetInstance()->Update();
 
 #ifdef _DEBUG 
 	// デバッグカメラ更新

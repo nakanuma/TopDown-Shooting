@@ -2,6 +2,7 @@
 
 // Engine
 #include <Camera.h>
+#include <Engine/Util/TimeManager.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -55,14 +56,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	スプライト関連
 	/// 
 
-	/* レティクル */
+	/* レティクル） */
 
-	// ターゲットスプライト初期化
-	uint32_t textureTarget = TextureManager::Load("resources/Images/game/target.png", dxBase->GetDevice());
-	spriteTarget_ = std::make_unique<Sprite>();
-	spriteTarget_->Initialize(spriteCommon_.get(), textureTarget);
-	spriteTarget_->SetAnchorPoint({ 0.5f, 0.5f });
-	spriteTarget_->SetSize({ 100.0f, 100.0f });
+	// クロスヘア（十字線）スプライト初期化
+	uint32_t textureTarget = TextureManager::Load("resources/Images/game/crosshair.png", dxBase->GetDevice());
+	spriteCrosshair_ = std::make_unique<Sprite>();
+	spriteCrosshair_->Initialize(spriteCommon_.get(), textureTarget);
+	spriteCrosshair_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteCrosshair_->SetSize({ 64.0f, 64.0f });
 
 	/* HPバー */
 
@@ -86,6 +87,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	
 	currentHP_ = 100;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定しておく
+	currentAmmo_ = kMaxAmmo; // マガジンには最大弾数をセット
 }
 
 // ---------------------------------------------------------
@@ -101,6 +103,8 @@ void Player::Update()
 	HandleMove();
 	// 弾の発射処理
 	HandleShooting();
+	// 弾のリロード処理
+	HandleReloading();
 	// 弾の更新処理
 	UpdateBullets();
 
@@ -123,8 +127,8 @@ void Player::Update()
 
 	/* レティクル */
 
-	// ターゲットスプライト更新
-	spriteTarget_->Update();
+	// クロスヘア（十字線）
+	spriteCrosshair_->Update();
 
 	/* HPバー */
 
@@ -164,7 +168,7 @@ void Player::DrawUI()
 	/*--------------*/
 
 	///
-	///	レティクル描画
+	///	クロスヘア描画
 	/// 
 
 	// カーソルのワールド座標をスクリーン座標に変換してスプライト位置を設定（あとで整理）
@@ -176,10 +180,9 @@ void Player::DrawUI()
 	float screenX = (screenPos.x + 1.0f) * 0.5f * screenWidth;
 	float screenY = (1.0f - screenPos.y) * 0.5f * screenHeight;
 
-	spriteTarget_->SetPosition({ screenX, screenY });
+	spriteCrosshair_->SetPosition({ screenX, screenY });
 
-	// ターゲットスプライト描画
-	spriteTarget_->Draw();
+	spriteCrosshair_->Draw();
 
 	/*--------------*/
 	/*   HPバー関連   */
@@ -268,6 +271,10 @@ void Player::Debug()
 
 	ImGui::DragInt("HP", &currentHP_);
 
+	ImGui::Text("Ammo : %d", currentAmmo_);
+
+	ImGui::Text("reloadTimer : %f", reloadTimer_);
+
 	/*  */
 
 	ImGui::End();
@@ -352,6 +359,19 @@ void Player::HandleMove()
 // ---------------------------------------------------------
 void Player::HandleShooting()
 {
+	///
+	///	弾が撃てない場合には早期リターン
+	/// 
+
+	// リロード中は撃てないように
+	if (isReloading_) return;
+	// 弾数が0なら撃てないように
+	if (currentAmmo_ <= 0) return;
+
+	///
+	///	左クリックで弾の生成
+	/// 
+
 	// 左クリックで弾を生成
 	if (input_->IsTriggerMouse(0)) {
 		// カーソル位置の取得
@@ -369,6 +389,35 @@ void Player::HandleShooting()
 		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
 
 		bullets_.push_back(std::move(newBullet));
+
+		// 残弾を減らす
+		currentAmmo_--;
+	}
+}
+
+// ---------------------------------------------------------
+// 弾のリロード処理
+// ---------------------------------------------------------
+void Player::HandleReloading() 
+{ 
+	///
+	///	リロード中更新処理
+	/// 
+	if (isReloading_) {
+		// 必要リロード時間まで加算
+		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		if (reloadTimer_ >= kReloadTime) {
+			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
+			isReloading_ = false; // リロード状態解除
+		}
+	///
+	///	Rキー押下でリロード開始
+	/// 
+	} else {
+		if (input_->TriggerKey(DIK_R)) {
+			isReloading_ = true; // リロード中にする
+			reloadTimer_ = 0.0f; // タイマー初期化
+		}
 	}
 }
 
