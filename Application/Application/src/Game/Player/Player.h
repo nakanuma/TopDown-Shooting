@@ -60,11 +60,24 @@ public:
 	int32_t GetMaxHP() const { return kMaxHP; }
 
 	/// <summary>
+	/// リロード中かの取得
+	/// </summary>
+	bool IsReloading() const { return isReloading_; }
+
+	/// <summary>
 	/// リロードタイマーの取得
 	/// </summary>
 	float GetReloadTimer() const { return reloadTimer_; } 
 
+	/// <summary>
+	/// 最大リロード時間の取得
+	/// </summary>
 	float GetMaxReloadTime() const { return kMaxReloadTime; }
+
+	/// <summary>
+	/// 残弾数の取得
+	/// </summary>
+	int32_t GetCurrentAmmo() const { return currentAmmo_; }
 
 private:
 	// ---------------------------------------------------------

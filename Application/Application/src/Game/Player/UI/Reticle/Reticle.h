@@ -26,10 +26,6 @@ public:
 	void Draw();
 
 private:
-	///
-	///	スプライト
-	/// 
-
 	// クロスヘア（十字線）
 	std::unique_ptr<Sprite> spriteCrosshair_;
 };
