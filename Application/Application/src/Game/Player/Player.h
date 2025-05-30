@@ -11,7 +11,7 @@
 // Application
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
-#include <src/Game/Player/PlayerUI.h>
+#include <src/Game/Player/UI/PlayerUIManager.h>
 
 /// <summary>
 /// プレイヤー
@@ -58,6 +58,13 @@ public:
 	/// 最大HPの取得
 	/// </summary>
 	int32_t GetMaxHP() const { return kMaxHP; }
+
+	/// <summary>
+	/// リロードタイマーの取得
+	/// </summary>
+	float GetReloadTimer() const { return reloadTimer_; } 
+
+	float GetMaxReloadTime() const { return kMaxReloadTime; }
 
 private:
 	// ---------------------------------------------------------
@@ -127,7 +134,7 @@ private:
 	// UI
 	// ---------------------------------------------------------
 
-	std::unique_ptr<PlayerUI> ui_;
+	std::unique_ptr<PlayerUIManager> ui_;
 
 	// ---------------------------------------------------------
 	// パラメーター
@@ -135,7 +142,6 @@ private:
 
 	// 速度
 	Float3 velocity_ = {0.0f, 0.0f, 0.0f};
-
 	// 速さ
 	float speed_ = 0.25f;
 
@@ -158,7 +164,7 @@ private:
 	// リロード中フラグ
 	bool isReloading_ = false;
 	// リロードにかかる時間
-	const float kReloadTime = 0.5f;
+	const float kMaxReloadTime = 1.0f;
 	// リロード時間計測タイマー
 	float reloadTimer_ = 0.0f;
 };

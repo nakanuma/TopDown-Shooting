@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\Player\PlayerUI.cpp" />
+    <ClCompile Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.cpp" />
+    <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp" />
+    <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp" />
+    <ClCompile Include="src\Game\Player\UI\PlayerUIManager.cpp" />
     <ClCompile Include="src\Game\Loader\Loader.cpp" />
     <ClCompile Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.cpp" />
     <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp" />
@@ -35,7 +38,10 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\Player\PlayerUI.h" />
+    <ClInclude Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.h" />
+    <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h" />
+    <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h" />
+    <ClInclude Include="src\Game\Player\UI\PlayerUIManager.h" />
     <ClInclude Include="src\Game\Loader\Loader.h" />
     <ClInclude Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.h" />
     <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h" />

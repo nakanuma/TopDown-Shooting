@@ -4,12 +4,17 @@
 #include <SpriteCommon.h>
 #include <Sprite.h>
 
+// Application
+#include <src/Game/Player/UI/Reticle/Reticle.h>
+#include <src/Game/Player/UI/HPBar/HPBar.h>
+#include <src/Game/Player/UI/RemainingBullets/RemainingBullets.h>
+
 class Player;
 
 /// <summary>
 /// PlayerUI管理クラス
 /// </summary>
-class PlayerUI 
+class PlayerUIManager 
 {
 public:
 	/// <summary>
@@ -20,12 +25,12 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const Player* player);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw(const Player* player);
+	void Draw();
 
 private:
 	// ---------------------------------------------------------
@@ -36,21 +41,13 @@ private:
 	std::unique_ptr<SpriteCommon> spriteCommon_;
 
 	// ---------------------------------------------------------
-	// スプライト関連
+	// UI
 	// ---------------------------------------------------------
 
-	/* レティクル */
-
-	// クロスヘア（十字線）
-	std::unique_ptr<Sprite> spriteCrosshair_;
-
-	/* HPバー */
-
-	// HPバーの最大サイズ
-	const Float2 kHPBarSize = {300.0f, 30.0f};
-
-	// HPバー（後景）
-	std::unique_ptr<Sprite> spriteHPBackground_;
-	// HPバー（前景）
-	std::unique_ptr<Sprite> spriteHPForeground_;
+	// レティクル
+	std::unique_ptr<Reticle> reticle_;
+	// HPバー
+	std::unique_ptr<HPBar> hpBar_;
+	// 残弾表示
+	std::unique_ptr<RemainingBullets> remainingBullets_;
 };

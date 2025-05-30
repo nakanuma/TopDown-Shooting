@@ -1,4 +1,7 @@
-C:\school\TopDown-Shooting\Application\Application\src\Game\Player\PlayerUI.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\PlayerUI.obj
+C:\school\TopDown-Shooting\Application\Application\src\Game\Player\UI\RemainingBullets\RemainingBullets.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\RemainingBullets.obj
+C:\school\TopDown-Shooting\Application\Application\src\Game\Player\UI\HPBar\HPBar.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\HPBar.obj
+C:\school\TopDown-Shooting\Application\Application\src\Game\Player\UI\Reticle\Reticle.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\Reticle.obj
+C:\school\TopDown-Shooting\Application\Application\src\Game\Player\UI\PlayerUIManager.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\PlayerUIManager.obj
 C:\school\TopDown-Shooting\Application\Application\src\Game\Loader\Loader.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\Loader.obj
 C:\school\TopDown-Shooting\Application\Application\src\Game\Obstacle\NormalObstacle\NormalObstacle.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\NormalObstacle.obj
 C:\school\TopDown-Shooting\Application\Application\src\Game\Obstacle\Manager\ObstacleManager.cpp;C:\school\TopDown-Shooting\Application\Application\x64\Debug\ObstacleManager.obj

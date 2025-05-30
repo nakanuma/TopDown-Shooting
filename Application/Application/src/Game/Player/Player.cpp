@@ -59,7 +59,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	UI
 	/// 
 
-	ui_ = std::make_unique<PlayerUI>();
+	ui_ = std::make_unique<PlayerUIManager>();
 	ui_->Initialize();
 
 	///
@@ -104,7 +104,8 @@ void Player::Update()
 	///
 	///	UI更新処理
 	/// 
-	ui_->Update();
+	
+	ui_->Update(this);
 }
 
 // ---------------------------------------------------------
@@ -131,7 +132,7 @@ void Player::Draw()
 // UI描画処理
 // ---------------------------------------------------------
 void Player::DrawUI() { 
-	ui_->Draw(this); 
+	ui_->Draw(); 
 }
 
 // ---------------------------------------------------------
@@ -272,7 +273,7 @@ void Player::HandleReloading()
 	if (isReloading_) {
 		// 必要リロード時間まで加算
 		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (reloadTimer_ >= kReloadTime) {
+		if (reloadTimer_ >= kMaxReloadTime) {
 			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
 			isReloading_ = false; // リロード状態解除
 		}
