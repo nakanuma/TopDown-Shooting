@@ -38,7 +38,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	damage_ = 1;
 
 	// 速さ
-	speed_ = 1.0f;
+	speed_ = 1.8f;
 
 	// 速度
 	velocity_ = direciton * speed_;

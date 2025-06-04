@@ -42,7 +42,7 @@ private:
 	// ---------------------------------------------------------
 
 	// 半径
-	float radius_ = 1.0f;
+	float radius_ = 0.5f;
 
 	// 経過時間
 	float elapsedTime_ = 0.0f;

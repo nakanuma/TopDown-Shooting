@@ -180,4 +180,7 @@ private:
 	const float kMaxReloadTime = 1.0f;
 	// リロード時間計測タイマー
 	float reloadTimer_ = 0.0f;
+
+	// ブレ幅の最大角度（ラジアン）
+	const float kMaxRandomAngle = 0.087f;
 };

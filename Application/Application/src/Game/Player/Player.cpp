@@ -1,5 +1,8 @@
 ﻿#include "Player.h"
 
+// C++
+#include <random>
+
 // Engine
 #include <Camera.h>
 #include <Engine/Util/TimeManager.h>
@@ -250,6 +253,21 @@ void Player::HandleShooting()
 		Float3 direction = cursorPos - playerPos;
 		direction.y = 0.0f;
 		direction = Float3::Normalize(direction);
+
+		// 少しだけ方向をブレさせる
+		float blurAmount = kMaxRandomAngle;
+
+		if (Float3::Length(velocity_) > 0.01f) {
+			blurAmount *= 3.0f; // プレイヤーが動いていたらブレの幅を増やす
+		}
+
+		std::mt19937 rng(std::random_device{}());
+		std::uniform_real_distribution<float> blurDist(-blurAmount, blurAmount);
+
+		// Y成分以外のランダムベクトルを加算
+		direction.x += blurDist(rng);
+		direction.z += blurDist(rng);
+		direction = Float3::Normalize(direction); // 再正規化
 
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();

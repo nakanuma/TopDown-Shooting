@@ -1,268 +1,56 @@
-﻿  EnemyManager.cpp
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
+﻿  PlayerBullet.cpp
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\Sprite.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\SpriteCommon.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/Manager/EnemyManager.cpp' をコンパイルしています)
-  
-  NormalEnemy.cpp
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\Collider.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\Sprite.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\SpriteCommon.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\Camera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Enemy/NormalEnemy/NormalEnemy.cpp' をコンパイルしています)
-  
-  Player.cpp
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Input\Input.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\SpriteCommon.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\Sprite.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\Camera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Player/Player.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Player\Player.cpp(206,53): warning C4244: '初期化中': 'const LONG' から 'float' への変換です。データが失われる可能性があります。
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Player\Player.cpp(206,83): warning C4244: '初期化中': 'const LONG' から 'float' への変換です。データが失われる可能性があります。
-  GamePlayScene.cpp
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Scene\GamePlayScene.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Scene\GamePlayScene.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\Scene\BaseScene.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\Camera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\DebugCamera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\Input\Input.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\SpriteCommon.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\2D\Sprite.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\Sound\SoundManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\engine\3D\LightManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Scene/GamePlayScene.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
   
   Application.vcxproj -> D:\k023g0121\TopDown-Shooting\Engine-Develop\project\x64\Release\Application.lib
