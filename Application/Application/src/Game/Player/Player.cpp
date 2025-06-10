@@ -71,6 +71,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	
 	currentHP_ = kMaxHP; // 現在HPには最大HPをセット
 	currentAmmo_ = kMaxAmmo; // マガジンには最大弾数をセット
+
+	///
+	///	調整パラメーター登録
+	/// 
+	
+	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
+	RegisterParam("maxReloadTime", &maxReloadTime_, 0.0f, 10.0f, 0.01f);
+	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 }
 
 // ---------------------------------------------------------
@@ -128,6 +136,10 @@ void Player::Draw()
 #ifdef _DEBUG
 	// デバッグ表示
 	Debug();
+
+	// 調整パラメーター
+	DrawConfigWindow("PlayerConfig");
+
 #endif //  _DEBUG
 }
 
@@ -291,7 +303,7 @@ void Player::HandleReloading()
 	if (isReloading_) {
 		// 必要リロード時間まで加算
 		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (reloadTimer_ >= kMaxReloadTime) {
+		if (reloadTimer_ >= maxReloadTime_) {
 			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
 			isReloading_ = false; // リロード状態解除
 		}

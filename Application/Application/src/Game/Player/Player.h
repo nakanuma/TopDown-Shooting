@@ -7,6 +7,7 @@
 #include <Sprite.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Util/ParameterSystem.h>
 
 // Application
 #include <src/Game/Loader/Loader.h>
@@ -16,7 +17,7 @@
 /// <summary>
 /// プレイヤー
 /// </summary>
-class Player : public ICollisionCallback
+class Player : public ICollisionCallback, public IConfigurable
 {
 public:
 	/// <summary>
@@ -72,7 +73,7 @@ public:
 	/// <summary>
 	/// 最大リロード時間の取得
 	/// </summary>
-	float GetMaxReloadTime() const { return kMaxReloadTime; }
+	float GetMaxReloadTime() const { return maxReloadTime_; }
 
 	/// <summary>
 	/// 残弾数の取得
@@ -177,7 +178,7 @@ private:
 	// リロード中フラグ
 	bool isReloading_ = false;
 	// リロードにかかる時間
-	const float kMaxReloadTime = 1.0f;
+	float maxReloadTime_ = 1.0f;
 	// リロード時間計測タイマー
 	float reloadTimer_ = 0.0f;
 
