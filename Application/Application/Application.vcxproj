@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Shrink.cpp" />
     <ClCompile Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.cpp" />
     <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp" />
     <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Shrink.h" />
     <ClInclude Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.h" />
     <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h" />
     <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h" />

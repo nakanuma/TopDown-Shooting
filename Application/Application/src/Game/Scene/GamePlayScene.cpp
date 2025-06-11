@@ -5,6 +5,8 @@
 #include "SpriteCommon.h"
 #include "RTVManager.h"
 
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
+
 // C++
 #include <numbers>
 
@@ -75,6 +77,14 @@ void GamePlayScene::Initialize()
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate()); // プレイヤーを追従対象にセット
+
+
+	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
+	modelSpark_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
+	modelSpark_.material.textureHandle = textureGlow;
+	
+	auto sparkParticle = std::make_unique<SparkParticle_Shrink>(modelSpark_);
+	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
 }
 
 void GamePlayScene::Finalize()
@@ -102,6 +112,8 @@ void GamePlayScene::Update() {
 	CollisionManager::GetInstance()->Update();
 	// タイムマネージャー更新（deltaTime計算）
 	TimeManager::GetInstance()->Update();
+	// パーティクルエフェクトマネージャー更新
+	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 #ifdef _DEBUG 
 	// デバッグカメラ更新
@@ -145,6 +157,9 @@ void GamePlayScene::Draw()
 	// 障害物の描画
 	obstacleManager_->Draw();
 
+	// パーティクル描画
+	ParticleEffectManager::GetInstance()->Draw();
+
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
 	/// 
@@ -171,6 +186,11 @@ void GamePlayScene::Draw()
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
+
+	if (ImGui::Button("Emit")) {
+		ParticleEffectManager::GetInstance()->Emit("spark", {0.0f, 0.0f, 0.0f}, 15);
+	}
+
 	ImGui::End();
 
 	// コリジョンマネージャーのデバッグ表示

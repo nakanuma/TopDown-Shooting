@@ -36,6 +36,11 @@ public:
 	virtual int32_t GetDamage() const { return damage_; }
 
 	/// <summary>
+	/// 位置の取得
+	/// </summary>
+	virtual Float3 GetTranslate() const { return objectBullet_->transform_.translate; }
+
+	/// <summary>
 	/// 破棄される際に呼ぶ関数
 	/// </summary>
 	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
