@@ -78,13 +78,13 @@ void GamePlayScene::Initialize()
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate()); // プレイヤーを追従対象にセット
 
-
+	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
 	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
-	modelSpark_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelSpark_.material.textureHandle = textureGlow;
+	modelSparkShrink_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
+	modelSparkShrink_.material.textureHandle = textureGlow;
 	
-	auto sparkParticle = std::make_unique<SparkParticle_Shrink>(modelSpark_);
-	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
+	auto sparkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
+	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkParticle));
 }
 
 void GamePlayScene::Finalize()
@@ -96,7 +96,7 @@ void GamePlayScene::Update() {
 
 	// 追従カメラの更新
 	followCamera_->Update();
-	camera->transform.translate = followCamera_->GetCameraPosition();
+	/*camera->transform.translate = followCamera_->GetCameraPosition();*/
 
 	// フィールド更新
 	field_->Update();
@@ -188,7 +188,7 @@ void GamePlayScene::Draw()
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("spark", {0.0f, 0.0f, 0.0f}, 15);
+		ParticleEffectManager::GetInstance()->Emit("spark", {0.0f, 4.0f, 0.0f}, 15);
 	}
 
 	ImGui::End();

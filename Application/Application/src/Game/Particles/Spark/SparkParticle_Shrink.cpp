@@ -29,14 +29,14 @@ SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos)
 { 
 	float randAngle = RandomGenerator::GetInstance()->RandomValue(0.0f, std::numbers::pi_v<float> * 2.0f); // 角度。0 ~ 360度
 	float randSpeed = RandomGenerator::GetInstance()->RandomValue(0.1f, 0.2f); // 速さ
-	float randLifeTime = RandomGenerator::GetInstance()->RandomValue(0.2f, 0.5f); // 生存時間
+	float randLifeTime = RandomGenerator::GetInstance()->RandomValue(0.2f, 0.4f); // 生存時間
 
 	SparkParticleShrinkData p;
 	p.transform.translate = pos;
 	p.transform.rotate = {randAngle + 2.0f * std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
-	p.transform.scale = {1.0f, 0.1f, 0.1f};
+	p.transform.scale = {1.6f, 0.2f, 1.0f};
 	p.velocity = {std::cosf(randAngle) * randSpeed, std::sinf(randAngle) * randSpeed, 0.0f};
-	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	p.color = {1.0f, 0.5f, 0.2f, 1.0f};
 	p.lifeTime = randLifeTime;
 	p.currentTime = 0.0f;
 
@@ -51,17 +51,15 @@ SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos)
 // ---------------------------------------------------------
 void SparkParticle_Shrink::UpdateParticle(SparkParticleShrinkData& p, float dt) 
 {
-	// 減速
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
+
+	// 減速
 	Float3 easedMove = p.velocity * (1.0f - t) * 2.0f;
 	p.transform.translate += easedMove;
 
-	if (!p.isUpdate) 
-	{
-		// 縮小
-		SimpleEasing::Animate(p.transform.scale.x, p.initScale.x, p.initScale.x * 0.1f, Easing::EaseInQuad, p.lifeTime);
-		// 透明化
-		SimpleEasing::Animate(p.color.w, 1.0f, 0.0f, Easing::EaseInExpo, p.lifeTime);
-	}
-	p.isUpdate = true;
+	// 縮小（初期値->初期値の10%）
+	p.transform.scale.x = Easing::Lerp(p.initScale.x, p.initScale.x * 0.1f, Easing::EaseInQuad(t));
+
+	// 透明化（1.0->0.0）
+	p.color.w = Easing::Lerp(1.0f, 0.0f, Easing::EaseInExpo(t));
 }

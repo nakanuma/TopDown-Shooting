@@ -1,56 +1,65 @@
-﻿  PlayerBullet.cpp
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
+﻿  SparkParticle_Shrink.cpp
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\ParticleEffect\BaseParticleEffect.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Camera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\Collider.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\ParticleEffect\IParticleEffect.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/PlayerBullet/PlayerBullet.cpp' をコンパイルしています)
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Easing.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
+  
+D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\RandomGenerator.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Particles/Spark/SparkParticle_Shrink.cpp' をコンパイルしています)
   
   Application.vcxproj -> D:\k023g0121\TopDown-Shooting\Engine-Develop\project\x64\Release\Application.lib

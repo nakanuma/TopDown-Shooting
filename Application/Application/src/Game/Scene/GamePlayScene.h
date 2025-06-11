@@ -85,6 +85,7 @@ private:
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
-	ModelManager::ModelData modelSpark_;
+	/* パーティクル用モデル（あとで適切な位置に整理） */
+	ModelManager::ModelData modelSparkShrink_;
 };
 

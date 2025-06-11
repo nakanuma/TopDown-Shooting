@@ -2,6 +2,7 @@
 
 // Engine
 #include <Collider/CollisionManager.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -78,6 +79,9 @@ void PlayerBullet::OnCollision(Collider* other)
 {
 	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
+		// 火花パーティクル（縮小）発生
+		ParticleEffectManager::GetInstance()->Emit("sparkShrink", this->objectBullet_->transform_.translate, 15);
+
 		// 死亡させる
 		isDead_ = true;
 	}

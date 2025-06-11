@@ -183,5 +183,5 @@ private:
 	float reloadTimer_ = 0.0f;
 
 	// ブレ幅の最大角度（ラジアン）
-	const float kMaxRandomAngle = 0.087f;
+	const float kMaxRandomAngle = 0.02f;
 };
