@@ -5,8 +5,8 @@ on:
       - master
 
 env:
-  # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
-  SOLUTION_FILE_PATH: Engine-Develop/project/Engine.sln
+  # ソリューションのフルパスを指定
+  SOLUTION_FILE_PATH: D:\a\TopDown-Shooting\TopDown-Shooting\Engine-Develop\project\Engine.sln
   # Visual Studio の構成(Debug / Release)
   CONFIGURATION: Debug
 
@@ -24,7 +24,7 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: Check Solution FIle
-        run: ls -R
+        run: ls -R Engine-Develop/project
         
       - name: Add MSBuild to Path
         uses: microsoft/setup-msbuild@v2
