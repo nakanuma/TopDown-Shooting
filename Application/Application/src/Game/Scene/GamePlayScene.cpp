@@ -4,11 +4,13 @@
 #include "SRVManager.h"
 #include "SpriteCommon.h"
 #include "RTVManager.h"
-
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // C++
 #include <numbers>
+
+// Application
+#include <src/Game/Camera/CameraShake.h>
 
 void GamePlayScene::Initialize()
 {
@@ -96,7 +98,11 @@ void GamePlayScene::Update() {
 
 	// 追従カメラの更新
 	followCamera_->Update();
-	/*camera->transform.translate = followCamera_->GetCameraPosition();*/
+	// カメラシェイクの更新
+	CameraShake::GetInstance()->Update();
+	// 追従カメラ + カメラシェイクを現在カメラに適用
+	camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+
 
 	// フィールド更新
 	field_->Update();
@@ -187,8 +193,8 @@ void GamePlayScene::Draw()
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("spark", {0.0f, 4.0f, 0.0f}, 15);
+	if (ImGui::Button("Shake")) {
+		CameraShake::GetInstance()->StartShake(1.0f, 0.2f);
 	}
 
 	ImGui::End();
