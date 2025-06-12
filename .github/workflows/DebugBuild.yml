@@ -22,6 +22,9 @@ jobs:
           
       - name: Update Submodules
         run: git submodule update --init --recursive
+
+      - name: Check Solution FIle
+        run: ls -R
         
       - name: Add MSBuild to Path
         uses: microsoft/setup-msbuild@v2
