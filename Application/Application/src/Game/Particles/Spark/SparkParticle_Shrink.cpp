@@ -41,7 +41,6 @@ SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos)
 	p.currentTime = 0.0f;
 
 	p.initScale = p.transform.scale;
-	p.isUpdate = false;
 
 	return p;
 }

@@ -5,6 +5,9 @@
 #include <Engine/ParticleEffect/BaseParticleEffect.h>
 #include <Engine/Model/ModelManager.h>
 
+/// <summary>
+/// パーティクルデータ
+/// </summary>
 struct SparkParticleShrinkData
 {
 	Transform transform;
@@ -15,7 +18,6 @@ struct SparkParticleShrinkData
 
 	// その他固有パラメーター
 	Float3 initScale;
-	bool isUpdate;
 };
 
 /// <summary>

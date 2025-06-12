@@ -21,9 +21,6 @@
 #include <src/Game/Player/Player.h>
 #include <src/Game/Enemy/Manager/EnemyManager.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
-
-#include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
-
 #include <src/Game/Camera/FollowCamera.h>
 
 class GamePlayScene : public BaseScene
@@ -87,5 +84,7 @@ private:
 
 	/* パーティクル用モデル（あとで適切な位置に整理） */
 	ModelManager::ModelData modelSparkShrink_;
+	ModelManager::ModelData modelSparkStar_;
+	ModelManager::ModelData modelCircleExpand_;
 };
 

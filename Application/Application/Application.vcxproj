@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\Circle\CircleParticle_Expand.cpp" />
+    <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Star.cpp" />
     <ClCompile Include="src\Game\Camera\CameraShake.cpp" />
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Shrink.cpp" />
     <ClCompile Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.cpp" />
@@ -40,6 +42,8 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\Circle\CircleParticle_Expand.h" />
+    <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Star.h" />
     <ClInclude Include="src\Game\Camera\CameraShake.h" />
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Shrink.h" />
     <ClInclude Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.h" />
@@ -62,6 +66,9 @@
     <ClInclude Include="src\Game\Scene\TitleScene.h" />
     <ClInclude Include="TestScene\TestScene.h" />
     <ClInclude Include="src\Game\Utility\Utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

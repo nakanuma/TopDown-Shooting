@@ -12,6 +12,10 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 
+#include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
+#include <src/Game/Particles/Spark/SparkParticle_Star.h>
+#include <src/Game/Particles/Circle/CircleParticle_Expand.h>
+
 void GamePlayScene::Initialize()
 {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -80,13 +84,36 @@ void GamePlayScene::Initialize()
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate()); // プレイヤーを追従対象にセット
 
+
+
 	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
+
+
 	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
+	uint32_t textureStar = TextureManager::Load("resources/Images/Effect/star.png", dxBase->GetDevice());
+	uint32_t textureCircle = TextureManager::Load("resources/Images/Effect/circle.png", dxBase->GetDevice());
+
+
+
 	modelSparkShrink_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
 	modelSparkShrink_.material.textureHandle = textureGlow;
 	
-	auto sparkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
-	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkParticle));
+	auto sparkShrinkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
+	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkShrinkParticle));
+
+
+	modelSparkStar_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
+	modelSparkStar_.material.textureHandle = textureStar;
+
+	auto sparkStarParticle = std::make_unique<SparkParticle_Star>(modelSparkStar_);
+	ParticleEffectManager::GetInstance()->Register("sparkStar", std::move(sparkStarParticle));
+
+
+	modelCircleExpand_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
+	modelCircleExpand_.material.textureHandle = textureCircle;
+
+	auto circleExpandParticle = std::make_unique<CircleParticle_Expand>(modelCircleExpand_);
+	ParticleEffectManager::GetInstance()->Register("circleExpand", std::move(circleExpandParticle));
 }
 
 void GamePlayScene::Finalize()
@@ -192,6 +219,10 @@ void GamePlayScene::Draw()
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
+
+	if (ImGui::Button("Emit")) {
+		ParticleEffectManager::GetInstance()->Emit("circleExpand", {0.0f, 5.0f, 0.0f}, 1);
+	}
 
 	if (ImGui::Button("Shake")) {
 		CameraShake::GetInstance()->StartShake(1.0f, 0.2f);
