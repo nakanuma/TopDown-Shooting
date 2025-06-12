@@ -6,7 +6,7 @@ on:
 
 env:
   # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
-  SOLUTION_FILE_PATH: project/Engine.sln
+  SOLUTION_FILE_PATH: Engine-Develop/project/Engine.sln
   # Visual Studio の構成(Debug / Release)
   CONFIGURATION: Debug
 
