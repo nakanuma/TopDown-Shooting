@@ -17,6 +17,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true # サブモジュール取得
+          
+      - name: Update Submodules
+        run: git submodule update --init --recursive
+
+      - name: Check Solution FIle
+        run: ls -R Engine-Develop/project
         
       - name: Add MSBuild to Path
         uses: microsoft/setup-msbuild@v2
@@ -24,6 +32,6 @@ jobs:
           msbuild-architecture: x64
 
       - name: Build
+        working-directory: Engine-Develop/project
         run: |
           msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
-      
