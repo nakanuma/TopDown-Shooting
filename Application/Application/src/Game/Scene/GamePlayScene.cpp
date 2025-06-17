@@ -71,11 +71,12 @@ void GamePlayScene::Initialize()
 
 	// 敵の管理クラス生成
 	enemyManager_ = std::make_unique<EnemyManager>();
-	enemyManager_->Initialize(loader_->GetAllDatas());
+	enemyManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
+	enemyManager_->SetPlayer(player_.get()); // プレイヤーのポインタをセット
 
 	// 障害物の管理クラス生成
 	obstacleManager_ = std::make_unique<ObstacleManager>();
-	obstacleManager_->Initialize(loader_->GetAllDatas());
+	obstacleManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
 
 	/* その他 */
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Engine/3D/Object3D.h>
@@ -6,6 +6,11 @@
 #include <Collider/CollisionManager.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
+
+// Application
+#include <src/Game/Bullet/Base/Bullet.h>
+
+class Player;
 
 /// <summary>
 /// 敵の基底クラス
@@ -21,7 +26,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	virtual void Update() = 0;
+	virtual void Update(Player* player) = 0;
 
 	/// <summary>
 	/// 描画処理
@@ -78,6 +83,12 @@ protected:
 
 	// コライダー
 	std::unique_ptr<Collider> collider_;
+
+	// ---------------------------------------------------------
+	// 弾
+	// ---------------------------------------------------------
+
+	std::vector<std::unique_ptr<Bullet>> bullets_;
 
 	// ---------------------------------------------------------
 	// スプライト関連

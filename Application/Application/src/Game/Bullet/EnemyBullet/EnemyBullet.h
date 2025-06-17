@@ -3,10 +3,12 @@
 // Application
 #include <src/Game/Bullet/Base/Bullet.h>
 
+
 /// <summary>
-/// プレイヤー弾
+/// 敵弾
 /// </summary>
-class PlayerBullet : public Bullet, public ICollisionCallback {
+class EnemyBullet : public Bullet, public ICollisionCallback
+{
 public:
 	/// <summary>
 	/// 初期化処理

@@ -7,50 +7,53 @@
 #include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 
 // ---------------------------------------------------------
-// ‰Šú‰»ˆ—
+// åˆæœŸåŒ–å‡¦ç†
 // ---------------------------------------------------------
 void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///
-	///	Šeƒ‚ƒfƒ‹“Ç‚İ‚İ
+	///	å„ãƒ¢ãƒ‡ãƒ«èª­ã¿è¾¼ã¿
 	/// 
 	
-	// ’Êí“G
+	// é€šå¸¸æ•µãƒ¢ãƒ‡ãƒ«
 	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
 	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	// ï¼ˆè¿½åŠ ï¼‰æ•µãƒ¢ãƒ‡ãƒ«
 
-	// V‚µ‚­’Ç‰Á
+	// å¼¾ãƒ¢ãƒ‡ãƒ«
+	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
-	///	Še“G‚Ì¶¬
+	///	å„æ•µã®ç”Ÿæˆ
 	/// 
 	
 	for (const auto& data : datas) {
-		// ’Êí“G
+		// é€šå¸¸æ•µ
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
 			enemy->Initialize(data.translate, &modelNormalEnemy_);
-
+			enemy->SetBulletModel(&modelEnemyBullet_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
-		// V‚µ‚­’Ç‰Á
+		// æ–°ã—ãè¿½åŠ 
 
 	}
 }
 
 // ---------------------------------------------------------
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 // ---------------------------------------------------------
 void EnemyManager::Update()
 {
-	// ‘S‚Ä‚Ì“G‚ğXV
+	// å…¨ã¦ã®æ•µã‚’æ›´æ–°
 	for (auto& enemy : enemies_) {
-		enemy->Update();
+		enemy->Update(player_);
 	}
 
-	// “G‚Ìíœˆ—
+	// æ•µã®å‰Šé™¤å‡¦ç†
 	for (auto& enemy : enemies_) {
 		if (enemy->IsDead()) {
 			enemy->OnDestroy();
@@ -66,35 +69,35 @@ void EnemyManager::Update()
 }
 
 // ---------------------------------------------------------
-// •`‰æˆ—
+// æç”»å‡¦ç†
 // ---------------------------------------------------------
 void EnemyManager::Draw()
 {
-	// ‘S‚Ä‚Ì“G‚ğ•`‰æ
+	// å…¨ã¦ã®æ•µã‚’æç”»
 	for (auto& enemy : enemies_) {
 		enemy->Draw();
 	}
 
 
 #ifdef _DEBUG
-	// ƒfƒoƒbƒO•\¦
+	// ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º
 	Debug();
 #endif // _DEBUG
 }
 
 // ---------------------------------------------------------
-// UI•`‰æˆ—
+// UIæç”»å‡¦ç†
 // ---------------------------------------------------------
 void EnemyManager::DrawUI()
 {
-	// ‘S‚Ä‚Ì“G‚ÌUI‚ğ•`‰æ
+	// å…¨ã¦ã®æ•µã®UIã‚’æç”»
 	for (auto& enemy : enemies_) {
 		enemy->DrawUI();
 	}
 }
 
 // ---------------------------------------------------------
-// ƒfƒoƒbƒO•\¦
+// ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º
 // ---------------------------------------------------------
 void EnemyManager::Debug()
 {
@@ -102,7 +105,7 @@ void EnemyManager::Debug()
 
 	ImGui::Begin("enemyManager");
 
-	// ƒXƒ|[ƒ“ƒ{ƒ^ƒ“iƒfƒoƒbƒO—pj
+	// ã‚¹ãƒãƒ¼ãƒ³ãƒœã‚¿ãƒ³ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
 		enemy->Initialize({ 0.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
@@ -113,7 +116,7 @@ void EnemyManager::Debug()
 	ImGui::Separator();
 	ImGui::Text("Total Enemies: %zu", enemies_.size());
 
-	// “G‚²‚Æ‚Ìî•ñ•\¦
+	// æ•µã”ã¨ã®æƒ…å ±è¡¨ç¤º
 	for (size_t i = 0; i < enemies_.size(); ++i) {
 		Enemy* enemy = enemies_[i].get();
 		if (!enemy) continue;
@@ -121,17 +124,17 @@ void EnemyManager::Debug()
 		std::string label = "Enemy[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {
 
-			// ƒ^ƒCƒv‚Ì•\¦
+			// ã‚¿ã‚¤ãƒ—ã®è¡¨ç¤º
 			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
 
-			// À•W‚Ì•\¦
+			// åº§æ¨™ã®è¡¨ç¤º
 			const Float3& translate = enemy->GetTranslate();
 			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
 
-			// HP‚Ì•\¦
+			// HPã®è¡¨ç¤º
 			ImGui::Text("HP : %d", enemy->GetHP());
 
-			// ‚±‚±‚©‚ç‘¼‚Ì€–Ú’Ç‰Á
+			// ã“ã“ã‹ã‚‰ä»–ã®é …ç›®è¿½åŠ 
 
 			ImGui::TreePop();
 		}

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Engine/Model/ModelManager.h>
@@ -6,6 +6,8 @@
 // Application
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Enemy/Base/Enemy.h>
+
+class Player;
 
 /// <summary>
 /// 敵の管理
@@ -33,6 +35,11 @@ public:
 	/// </summary>
 	void DrawUI();
 
+	/// <summary>
+	/// プレイヤーのポインタをセット
+	/// </summary>
+	void SetPlayer(Player* player) { player_ = player; }
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -48,11 +55,12 @@ private:
 	// モデル
 	// ---------------------------------------------------------
 
-	// 通常敵
+	// 通常敵モデル
 	ModelManager::ModelData modelNormalEnemy_;
-	
-	// 追加
+	// （追加）敵モデル
 
+	// 弾モデル
+	ModelManager::ModelData modelEnemyBullet_;
 
 	// ---------------------------------------------------------
 	// 敵
@@ -60,5 +68,12 @@ private:
 
 	// 敵のコンテナ
 	std::vector<std::unique_ptr<Enemy>> enemies_;
+
+	// ---------------------------------------------------------
+	// その他
+	// ---------------------------------------------------------
+
+	// プレイヤーのポインタ
+	Player* player_ = nullptr;
 };
 

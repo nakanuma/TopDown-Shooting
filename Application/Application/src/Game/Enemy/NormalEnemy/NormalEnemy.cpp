@@ -7,21 +7,25 @@
 #include <DirectXBase.h>
 #include <Collider/CollisionManager.h>
 #include <Camera.h>
+#include <Engine/Util/RandomGenerator.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
 #include <src/Game/Utility/Utility.h>
 #include <src/Game/Bullet/Base/Bullet.h>
+#include <src/Game/Player/Player.h>
+#include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
 
 // Externals
 #include <ImguiWrapper.h>
 
 // ---------------------------------------------------------
-// ‰Šú‰»ˆ—
+// åˆæœŸåŒ–å‡¦ç†
 // ---------------------------------------------------------
 void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* model)
 {
 	///
-	///	Šî”Õ‹@”\¶¬
+	///	åŸºç›¤æ©Ÿèƒ½ç”Ÿæˆ
 	/// 
 
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -30,7 +34,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteCommon_->Initialize(dxBase);
 
 	///
-	/// ƒIƒuƒWƒFƒNƒg¶¬
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	///
 
 	objectEnemy_ = std::make_unique<Object3D>();
@@ -40,28 +44,28 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->materialCB_.data_->color = {1.0f, 0.5f, 0.0f, 1.0f};
 
 	///
-	///	ƒRƒ‰ƒCƒ_[¶¬
+	///	ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ç”Ÿæˆ
 	/// 
 
 	collider_ = std::make_unique<AABBCollider>();
 	collider_->SetTag("NormalEnemy");
 	collider_->SetOwner(this);
 
-	// ƒRƒ‰ƒCƒ_[‚ğ“o˜^
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ç™»éŒ²
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	///
-	///	ƒXƒvƒ‰ƒCƒg¶¬
+	///	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”Ÿæˆ
 	/// 
 
-	// HPƒo[iŒãŒij
+	// HPãƒãƒ¼ï¼ˆå¾Œæ™¯ï¼‰
 	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
 	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
-	// HPƒo[i‘OŒij
+	// HPãƒãƒ¼ï¼ˆå‰æ™¯ï¼‰
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
@@ -69,105 +73,124 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f });
 
 	///
-	///	ƒpƒ‰ƒ[ƒ^[İ’è
+	///	ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼è¨­å®š
 	/// 
 
-	// HP‚Ìİ’è
+	// HPã®è¨­å®š
 	currentHP_ = 10;
-	maxHP_ = currentHP_; // Å‘åHP‚É‚Íİ’è‚µ‚½Œ»İHP‚ğİ’èi‘SEnemyƒNƒ‰ƒX‹¤’Êj
+	maxHP_ = currentHP_; // æœ€å¤§HPã«ã¯è¨­å®šã—ãŸç¾åœ¨HPã‚’è¨­å®šï¼ˆå…¨Enemyã‚¯ãƒ©ã‚¹å…±é€šï¼‰
 }
 
 // ---------------------------------------------------------
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 // ---------------------------------------------------------
-void NormalEnemy::Update()
+void NormalEnemy::Update(Player* player)
 {
 	///
-	/// ƒRƒ‰ƒCƒ_[XVˆ—
+	/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼æ›´æ–°å‡¦ç†
 	///
 
 	UpdateCollider();
 
 	///
-	/// ƒIƒuƒWƒFƒNƒgXVˆ—
+	///	ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
+	/// 
+
+	UpdateState(player);
+
+	///
+	///	å¼¾ã®æ›´æ–°å‡¦ç†
+	/// 
+
+	UpdateBullets();
+
+	///
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ›´æ–°å‡¦ç†
 	/// 
 
 	objectEnemy_->UpdateMatrix();
 
 	///
-	///	ƒXƒvƒ‰ƒCƒgXVˆ—
+	///	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæ›´æ–°å‡¦ç†
 	/// 
 
-	// HPƒo[iŒãŒijXV
+	// HPãƒãƒ¼ï¼ˆå¾Œæ™¯ï¼‰æ›´æ–°
 	spriteHPBackground_->Update();
-	// HPƒo[i‘OŒijXV
+	// HPãƒãƒ¼ï¼ˆå‰æ™¯ï¼‰æ›´æ–°
 	spriteHPForeground_->Update();
 }
 
 // ---------------------------------------------------------
-// •`‰æˆ—
+// æç”»å‡¦ç†
 // ---------------------------------------------------------
 void NormalEnemy::Draw()
 {
-	// ƒIƒuƒWƒFƒNƒg•`‰æ
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 	objectEnemy_->Draw();
+
+	// å…¨ã¦ã®å¼¾ã‚’æç”»
+	for (const auto& bullet : bullets_)
+	{
+		bullet->Draw();
+	}
 }
 
 // ---------------------------------------------------------
-// UI•`‰æˆ—
+// UIæç”»å‡¦ç†
 // ---------------------------------------------------------
 void NormalEnemy::DrawUI()
 {
-	// ƒIƒuƒWƒFƒNƒg‚Ìƒ[ƒ‹ƒhÀ•W->ƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™->ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã«å¤‰æ›
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
-	// ã‚É‚¸‚ç‚·•ª‚ÌƒIƒtƒZƒbƒg
+	// ä¸Šã«ãšã‚‰ã™åˆ†ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 	float offset = 60.0f;
 
-	// HPŠ„‡
+	// HPå‰²åˆ
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
 	///
-	/// HPƒo[iŒãŒij•`‰æ
+	/// HPãƒãƒ¼ï¼ˆå¾Œæ™¯ï¼‰æç”»
 	/// 
 
-	// ƒXƒNƒŠ[ƒ“À•W‚ğƒZƒbƒg
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
 	spriteHPBackground_->SetPosition({
-		screenPosition.x - kHPBarSize.x / 2.0f, // HPƒo[‚ª’†S‚É‚È‚é‚æ‚¤‚Éİ’è,
-		screenPosition.y - offset // ƒIƒtƒZƒbƒg•ªã‚É‚¸‚ç‚·
+		screenPosition.x - kHPBarSize.x / 2.0f, // HPãƒãƒ¼ãŒä¸­å¿ƒã«ãªã‚‹ã‚ˆã†ã«è¨­å®š,
+		screenPosition.y - offset // ã‚ªãƒ•ã‚»ãƒƒãƒˆåˆ†ä¸Šã«ãšã‚‰ã™
 		});
 	spriteHPBackground_->Draw();
 
 	///
-	///	HPƒo[i‘OŒij•`‰æ
+	///	HPãƒãƒ¼ï¼ˆå‰æ™¯ï¼‰æç”»
 	/// 
 	
-	// Œ»İHP‚É‰‚¶‚ÄƒTƒCƒY•ÏX
+	// ç¾åœ¨HPã«å¿œã˜ã¦ã‚µã‚¤ã‚ºå¤‰æ›´
 	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
 
-	// ƒXƒNƒŠ[ƒ“À•W‚ğƒZƒbƒg
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
 	spriteHPForeground_->SetPosition({
-		screenPosition.x - kHPBarSize.x / 2.0f, // HPƒo[‚ª’†S‚É‚È‚é‚æ‚¤‚Éİ’è
-		screenPosition.y - offset // ƒIƒtƒZƒbƒg•ªã‚É‚¸‚ç‚·
+		screenPosition.x - kHPBarSize.x / 2.0f, // HPãƒãƒ¼ãŒä¸­å¿ƒã«ãªã‚‹ã‚ˆã†ã«è¨­å®š
+		screenPosition.y - offset // ã‚ªãƒ•ã‚»ãƒƒãƒˆåˆ†ä¸Šã«ãšã‚‰ã™
 		});
 	spriteHPForeground_->Draw();
 }
 
 // ---------------------------------------------------------
-// Õ“ËƒR[ƒ‹ƒoƒbƒN
+// è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 // ---------------------------------------------------------
 void NormalEnemy::OnCollision(Collider* other)
 {
-	// Õ“Ë‚µ‚½ƒRƒ‰ƒCƒ_[‚ªPlayerBullet‚¾‚Á‚½ê‡‚Ìˆ—
-	if (other->GetTag() == "PlayerBullet") {
-		// PlayerBullet‚Ìdamage‚ğæ“¾
+	// è¡çªã—ãŸã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãŒPlayerBulletã ã£ãŸå ´åˆã®å‡¦ç†
+	if (other->GetTag() == "PlayerBullet") 
+	{
+		// PlayerBulletã®damageã‚’å–å¾—
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
 
-		// HP‚ğŒ¸‚ç‚·
+		// HPã‚’æ¸›ã‚‰ã™
 		currentHP_ -= damage;
 
-		// HP‚ª0‚É‚È‚Á‚½“G‚ğ€–S‚³‚¹‚é
+		// HPãŒ0ã«ãªã£ãŸæ•µã‚’æ­»äº¡ã•ã›ã‚‹
 		if (currentHP_ <= 0) {
 			isDead_ = true;
 		}
@@ -175,7 +198,7 @@ void NormalEnemy::OnCollision(Collider* other)
 }
 
 // ---------------------------------------------------------
-// ƒRƒ‰ƒCƒ_[XVˆ—
+// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼æ›´æ–°å‡¦ç†
 // ---------------------------------------------------------
 void NormalEnemy::UpdateCollider()
 {
@@ -187,4 +210,111 @@ void NormalEnemy::UpdateCollider()
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;
 	}
+}
+
+// ---------------------------------------------------------
+// ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
+// ---------------------------------------------------------
+void NormalEnemy::UpdateState(Player* player)
+{
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ»æ•µã®ä½ç½®
+	Float3 playerPos = player->GetTranslate();
+	Float3 enemyPos = objectEnemy_->transform_.translate;
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®è·é›¢
+	float distanceToPlayer = Float3::Length(playerPos - enemyPos);
+
+	switch (state_)
+	{
+	///	
+	/// å¾…æ©Ÿæ™‚å‡¦ç†
+	///
+	case EnemyState::Idle:
+	{
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸€å®šè·é›¢ã«å…¥ã£ãŸã‚‰ç§»å‹•ã‚¹ãƒ†ãƒ¼ãƒˆã¸
+		if (distanceToPlayer < detectionRange_)
+		{
+			state_ = EnemyState::Move;
+		}
+
+		break;
+	}
+	///
+	/// ç§»å‹•æ™‚å‡¦ç†
+	/// 
+	case EnemyState::Move:
+	{
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ã¸ç§»å‹•
+		Float3 direction = playerPos - enemyPos;
+		direction = Float3::Normalize(direction);
+
+		objectEnemy_->transform_.translate += direction * moveSpeed_;
+
+		// æ”»æ’ƒè·é›¢ã«å…¥ã£ãŸã‚‰æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆã¸
+		if (distanceToPlayer < attackRange_)
+		{
+			state_ = EnemyState::Attack;
+			attackTimer_ = 0.0f;
+		}
+
+		break;
+	}
+	///
+	///	æ”»æ’ƒæ™‚å‡¦ç†
+	/// 
+	case EnemyState::Attack:
+	{
+		attackTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		if (attackTimer_ < attackCooldown_) return; // ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ä¸­ã¯æ—©æœŸãƒªã‚¿ãƒ¼ãƒ³
+
+		attackTimer_ = 0.0f;
+
+		// æ•µã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®
+		Float3 enemyPos = objectEnemy_->transform_.translate;
+		Float3 playerPos = player->GetTranslate();
+
+		// ç™ºå°„æ–¹å‘
+		Float3 direction = playerPos - enemyPos;
+		direction.y = 0.0f;
+		direction = Float3::Normalize(direction);
+
+		// æ‹¡æ•£ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«è¨­å®š
+		float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
+		direction.x += randSpread;
+		direction.y += randSpread;
+		direction = Float3::Normalize(direction);
+
+		// å¼¾ã®ç”Ÿæˆãƒ»åˆæœŸåŒ–
+		auto newBullet = std::make_unique<EnemyBullet>();
+		newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
+
+		bullets_.push_back(std::move(newBullet));
+
+		break;
+	}
+	}
+}
+
+// ---------------------------------------------------------
+// å¼¾ã®æ›´æ–°å‡¦ç†
+// ---------------------------------------------------------
+void NormalEnemy::UpdateBullets()
+{
+	// å…¨ã¦ã®å¼¾ã‚’æ›´æ–°
+	for (auto& bullet : bullets_) {
+		bullet->Update();
+	}
+
+	// å¼¾ã®å‰Šé™¤å‡¦ç†
+	for (auto& bullet : bullets_) {
+		if (bullet->IsDead()) {
+			bullet->OnDestroy();
+		}
+	}
+	bullets_.erase(
+		std::remove_if(bullets_.begin(), bullets_.end(),
+			[](const std::unique_ptr<Bullet>& bullet) {
+				return bullet->IsDead();
+			}),
+		bullets_.end()
+	);
 }

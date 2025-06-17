@@ -4,51 +4,97 @@
 #include <src/Game/Enemy/Base/Enemy.h>
 
 /// <summary>
-/// ’Êí“G
+/// ã‚¹ãƒ†ãƒ¼ãƒˆ
+/// </summary>
+enum class EnemyState
+{
+	Idle, // å¾…æ©Ÿ
+	Move, // æ¥è¿‘ä¸­
+	Attack, // æ”»æ’ƒä¸­
+};
+
+/// <summary>
+/// é€šå¸¸æ•µ
 /// </summary>
 class NormalEnemy : public Enemy, public ICollisionCallback
 {
 public:
 	/// <summary>
-	/// ‰Šú‰»ˆ—
+	/// åˆæœŸåŒ–å‡¦ç†
 	/// </summary>
 	void Initialize(const Float3& position, ModelManager::ModelData* model) override;
 
 	/// <summary>
-	/// XVˆ—
+	/// æ›´æ–°å‡¦ç†
 	/// </summary>
-	void Update() override;
+	void Update(Player* player) override;
 	
 	/// <summary>
-	/// •`‰æˆ—
+	/// æç”»å‡¦ç†
 	/// </summary>
 	void Draw() override;
 
 	/// <summary>
-	/// UI•`‰æˆ—
+	/// UIæç”»å‡¦ç†
 	/// </summary>
 	void DrawUI() override;
 
 	/// <summary>
-	/// Õ“ËƒR[ƒ‹ƒoƒbƒN
+	/// è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 	/// </summary>
 	void OnCollision(Collider* other) override;
 
+	///
+	///	å¼¾ãƒ¢ãƒ‡ãƒ«ã®ã‚»ãƒƒãƒˆ
+	/// 
+	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
+
 private:
 	// ---------------------------------------------------------
-	// “à•”ˆ—
+	// å†…éƒ¨å‡¦ç†
 	// ---------------------------------------------------------
 
 	/// <summary>
-	/// ƒRƒ‰ƒCƒ_[XVˆ—
+	/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼æ›´æ–°å‡¦ç†
 	/// </summary>
 	void UpdateCollider();
 
+	/// <summary>
+	/// ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
+	/// </summary>
+	void UpdateState(Player* player);
+
+	/// <summary>
+	/// å¼¾ã®æ›´æ–°å‡¦ç†
+	/// </summary>
+	void UpdateBullets();
+
 private:
 	// ---------------------------------------------------------
-	// ƒpƒ‰ƒ[ƒ^[
+	// ãƒ¢ãƒ‡ãƒ«
 	// ---------------------------------------------------------
 
-	float radius_ = 1.0f;
+	ModelManager::ModelData* modelEnemyBullet_;
+
+	// ---------------------------------------------------------
+	// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼
+	// ---------------------------------------------------------
+
+	// ã‚¹ãƒ†ãƒ¼ãƒˆ
+	EnemyState state_ = EnemyState::Idle;
+
+	// ç´¢æ•µè·é›¢
+	float detectionRange_ = 15.0f;
+	// æ”»æ’ƒè·é›¢
+	float attackRange_ = 5.0f;
+	// ç§»å‹•é€Ÿåº¦
+	float moveSpeed_ = 0.05f;
+
+	// æ”»æ’ƒé€Ÿåº¦é–¢é€£
+	float attackCooldown_ = 1.0f;
+	float attackTimer_ = 0.0f;
+
+	// å¼¾ã®æ‹¡æ•£è§’
+	float bulletSpreadAngle_ = 0.1f;
 };
 

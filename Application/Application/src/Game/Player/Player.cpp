@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 
 // C++
 #include <random>
@@ -9,6 +9,7 @@
 
 // Application
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Camera/CameraShake.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -16,7 +17,8 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void Player::Initialize(const Loader::TransformData& data) {
+void Player::Initialize(const Loader::TransformData& data) 
+{
 	///
 	///	基盤機能
 	/// 
@@ -126,7 +128,8 @@ void Player::Draw()
 {
 
 	// 全ての弾を描画
-	for (const auto& bullet : bullets_) {
+	for (const auto& bullet : bullets_) 
+	{
 		bullet->Draw();
 	}
 
@@ -146,7 +149,8 @@ void Player::Draw()
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void Player::DrawUI() { 
+void Player::DrawUI() 
+{ 
 	ui_->Draw(); 
 }
 
@@ -156,17 +160,20 @@ void Player::DrawUI() {
 void Player::OnCollision(Collider* other)
 {
 	// vs NormalEnemy
-	if (other->GetTag() == "NormalEnemy") {
+	if (other->GetTag() == "NormalEnemy") 
+	{
 		currentHP_--;
 	}
 
 	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
+	if (other->GetTag() == "NormalObstacle") 
+	{
 		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
 		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
 
 		// 押し戻し処理
-		if (myAABB && otherAABB) {
+		if (myAABB && otherAABB) 
+		{
 			// 押し戻しベクトル取得
 			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 			// プレイヤー位置を補正
@@ -229,7 +236,8 @@ void Player::HandleMove()
 	if (input_->PushKey(DIK_A)) velocity_.x -= 1.0f;
 	if (input_->PushKey(DIK_D)) velocity_.x += 1.0f;
 
-	if (velocity_.x != 0.0f || velocity_.z != 0.0f) {
+	if (velocity_.x != 0.0f || velocity_.z != 0.0f) 
+	{
 		velocity_ = Float3::Normalize(velocity_);
 	}
 
@@ -255,7 +263,8 @@ void Player::HandleShooting()
 	/// 
 
 	// 左クリックで弾を生成
-	if (input_->IsTriggerMouse(0)) {
+	if (input_->IsTriggerMouse(0)) 
+	{
 		// カーソル位置の取得
 		Float3 cursorPos = Utility::CalclateCursorPosition();
 		// プレイヤー位置の取得
@@ -269,7 +278,8 @@ void Player::HandleShooting()
 		// 少しだけ方向をブレさせる
 		float blurAmount = kMaxRandomAngle;
 
-		if (Float3::Length(velocity_) > 0.01f) {
+		if (Float3::Length(velocity_) > 0.01f) 
+		{
 			blurAmount *= 3.0f; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
@@ -289,6 +299,9 @@ void Player::HandleShooting()
 
 		// 残弾を減らす
 		currentAmmo_--;
+
+		// シェイク
+		CameraShake::GetInstance()->StartShake(0.2f, 0.1f);
 	}
 }
 
@@ -300,10 +313,12 @@ void Player::HandleReloading()
 	///
 	///	リロード中更新処理
 	/// 
-	if (isReloading_) {
+	if (isReloading_) 
+	{
 		// 必要リロード時間まで加算
 		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (reloadTimer_ >= maxReloadTime_) {
+		if (reloadTimer_ >= maxReloadTime_) 
+		{
 			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
 			isReloading_ = false; // リロード状態解除
 		}
@@ -311,7 +326,8 @@ void Player::HandleReloading()
 	///	Rキー押下でリロード開始
 	/// 
 	} else {
-		if (input_->TriggerKey(DIK_R)) {
+		if (input_->TriggerKey(DIK_R)) 
+		{
 			isReloading_ = true; // リロード中にする
 			reloadTimer_ = 0.0f; // タイマー初期化
 		}
@@ -324,19 +340,23 @@ void Player::HandleReloading()
 void Player::UpdateBullets()
 {
 	// 全ての弾を更新
-	for (auto& bullet : bullets_) {
+	for (auto& bullet : bullets_) 
+	{
 		bullet->Update();
 	}
 
 	// 弾の削除処理
-	for (auto& bullet : bullets_) {
-		if (bullet->IsDead()) {
+	for (auto& bullet : bullets_) 
+	{
+		if (bullet->IsDead()) 
+		{
 			bullet->OnDestroy();
 		}
 	}
 	bullets_.erase(
 		std::remove_if(bullets_.begin(), bullets_.end(),
-			[](const std::unique_ptr<Bullet>& bullet) {
+			[](const std::unique_ptr<Bullet>& bullet) 
+			{
 				return bullet->IsDead();
 			}),
 		bullets_.end()
@@ -348,7 +368,8 @@ void Player::UpdateBullets()
 // ---------------------------------------------------------
 void Player::UpdateCollider()
 {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) 
+	{
 		Float3 center = objectPlayer_->transform_.translate;
 		Float3 size = objectPlayer_->transform_.scale;
 

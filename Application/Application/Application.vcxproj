@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp" />
     <ClCompile Include="src\Game\Particles\Circle\CircleParticle_Expand.cpp" />
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Star.cpp" />
     <ClCompile Include="src\Game\Camera\CameraShake.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Bullet\EnemyBullet\EnemyBullet.h" />
     <ClInclude Include="src\Game\Particles\Circle\CircleParticle_Expand.h" />
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Star.h" />
     <ClInclude Include="src\Game\Camera\CameraShake.h" />
