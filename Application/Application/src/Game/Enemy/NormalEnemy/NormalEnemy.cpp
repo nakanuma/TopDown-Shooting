@@ -180,7 +180,9 @@ void NormalEnemy::DrawUI()
 // ---------------------------------------------------------
 void NormalEnemy::OnCollision(Collider* other)
 {
-	// 衝突したコライダーがPlayerBulletだった場合の処理
+	///	
+	/// vs PlayerBullet
+	///
 	if (other->GetTag() == "PlayerBullet") 
 	{
 		// PlayerBulletのdamageを取得
@@ -193,6 +195,28 @@ void NormalEnemy::OnCollision(Collider* other)
 		// HPが0になった敵を死亡させる
 		if (currentHP_ <= 0) {
 			isDead_ = true;
+		}
+	}
+
+	///
+	/// vs NormalObstacle
+	/// 
+	if (other->GetTag() == "NormalObstacle")
+	{
+		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
+		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
+
+		// 押し戻し処理
+		if (myAABB && otherAABB)
+		{
+			// 押し戻しベクトル取得
+			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
+			// 位置を補正
+			objectEnemy_->transform_.translate += pushVec;
+
+			// コライダーも更新しておく
+			myAABB->min_ += pushVec;
+			myAABB->max_ += pushVec;
 		}
 	}
 }

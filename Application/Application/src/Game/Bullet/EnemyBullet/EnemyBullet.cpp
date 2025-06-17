@@ -37,7 +37,7 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	/// 
 
 	// 攻撃力
-	damage_ = 1;
+	damage_ = 5;
 
 	// 速さ
 	speed_ = 1.8f;
@@ -58,7 +58,10 @@ void EnemyBullet::Update()
 	elapsedTime_ += 1.0f / 60.0f;
 	if (elapsedTime_ > kMaxLifeTime) 
 	{
+		// 死亡させる
 		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
 	}
 
 	// コライダー更新処理
@@ -93,6 +96,8 @@ void EnemyBullet::OnCollision(Collider* other)
 
 		// 死亡させる
 		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
 	}
 
 	// vs NormalObstacle
@@ -105,6 +110,8 @@ void EnemyBullet::OnCollision(Collider* other)
 
 		// 死亡させる
 		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
 	}
 }
 

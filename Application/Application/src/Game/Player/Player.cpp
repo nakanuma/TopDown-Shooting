@@ -159,13 +159,31 @@ void Player::DrawUI()
 // ---------------------------------------------------------
 void Player::OnCollision(Collider* other)
 {
-	// vs NormalEnemy
+	///
+	/// vs NormalEnemy
+	/// 
 	if (other->GetTag() == "NormalEnemy") 
 	{
-		currentHP_--;
+		/*currentHP_--;*/
 	}
 
-	// vs NormalObstacle
+	///
+	///	vs EnemyBullet
+	/// 
+
+	if (other->GetTag() == "EnemyBullet")
+	{
+		// EnemyBulletのDamageを取得
+		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
+		int32_t damage = bullet->GetDamage();
+
+		// HPを減らす
+		currentHP_ -= damage;
+	}
+
+	///
+	/// vs NormalObstacle
+	/// 
 	if (other->GetTag() == "NormalObstacle") 
 	{
 		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());

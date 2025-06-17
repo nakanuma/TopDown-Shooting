@@ -54,7 +54,8 @@ void PlayerBullet::Update() {
 
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
-	if (elapsedTime_ > kMaxLifeTime) {
+	if (elapsedTime_ > kMaxLifeTime) 
+	{
 		isDead_ = true;
 	}
 
