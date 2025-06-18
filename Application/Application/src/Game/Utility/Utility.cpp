@@ -5,7 +5,7 @@
 #include <Engine/Input/Input.h>
 
 // ---------------------------------------------------------
-// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·
+// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã«å¤‰æ›
 // ---------------------------------------------------------
 Float3 Utility::WorldToScreen(Float3 worldPosition)
 {
@@ -19,36 +19,36 @@ Float3 Utility::WorldToScreen(Float3 worldPosition)
 }
 
 // ---------------------------------------------------------
-// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·
+// ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å–å¾—
 // ---------------------------------------------------------
 Float3 Utility::CalclateCursorPosition() 
 {
-	// ƒ}ƒEƒXˆÊ’u‚Ìæ“¾
+	// ãƒã‚¦ã‚¹ä½ç½®ã®å–å¾—
 	Float2 mousePos = Float2(Input::GetInstance()->GetMousePosition().x, Input::GetInstance()->GetMousePosition().y);
 
-	// ‰æ–ÊƒTƒCƒYæ“¾
+	// ç”»é¢ã‚µã‚¤ã‚ºå–å¾—
 	float screenWidth = static_cast<float>(Window::GetWidth());
 	float screenHeight = static_cast<float>(Window::GetHeight());
 
-	// ƒXƒNƒŠ[ƒ“À•W -> ³‹K‰»ƒfƒoƒCƒXÀ•WiNDCj‚Ö•ÏŠ·
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ -> æ­£è¦åŒ–ãƒ‡ãƒã‚¤ã‚¹åº§æ¨™ï¼ˆNDCï¼‰ã¸å¤‰æ›
 	float ndcX = (2.0f * mousePos.x / screenWidth) - 1.0f;
 	float ndcY = 1.0f - (2.0f * mousePos.y / screenHeight);
 
-	// NDC -> ƒ[ƒ‹ƒh‹óŠÔ‚Ö•ÏŠ·
+	// NDC -> ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã¸å¤‰æ›
 	Float4 clipNear = Float4(ndcX, ndcY, 0.0f, 1.0f);
 	Float4 clipFar = Float4(ndcX, ndcY, 1.0f, 1.0f);
 
 	Matrix matVPInv = Matrix::Inverse(Camera::GetCurrent()->GetViewProjectionMatrix());
 
-	// ƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›
 	Float4 worldNear = Float4::Transform(clipNear, matVPInv);
 	Float4 worldFar = Float4::Transform(clipFar, matVPInv);
 
-	// wœZ‚Å³‚µ‚¢À•W‚É•ÏŠ·
+	// wé™¤ç®—ã§æ­£ã—ã„åº§æ¨™ã«å¤‰æ›
 	worldNear /= worldNear.w;
 	worldFar /= worldFar.w;
 
-	// ƒŒƒC‚Ìn“_‚Æ•ûŒü
+	// ãƒ¬ã‚¤ã®å§‹ç‚¹ã¨æ–¹å‘
 	Float3 rayOrigin = {worldNear.x, worldNear.y, worldNear.z};
 	Float3 rayDir = Float3::Normalize({worldFar.x - worldNear.x, worldFar.y - worldNear.y, worldFar.z - worldNear.z});
 
@@ -60,6 +60,6 @@ Float3 Utility::CalclateCursorPosition()
 		return hitPos;
 	}
 
-	// ŒvZ‚Å‚«‚È‚¢ê‡‚É‚Í–³Œø’l‚ğ•Ô‚·
+	// è¨ˆç®—ã§ããªã„å ´åˆã«ã¯ç„¡åŠ¹å€¤ã‚’è¿”ã™
 	return Float3(0.0f, 0.0f, 0.0f);
 }

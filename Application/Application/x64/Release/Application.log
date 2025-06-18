@@ -1,66 +1,18 @@
-﻿  EnemyBullet.cpp
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Bullet\EnemyBullet\EnemyBullet.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Bullet\EnemyBullet\EnemyBullet.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\3D\Object3D.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
+﻿  FollowCamera.cpp
+D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Camera\FollowCamera.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Camera\FollowCamera.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル 'src/Game/Camera/FollowCamera.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\MyMath.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Camera/FollowCamera.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Float3.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Camera/FollowCamera.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Matrix.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Camera/FollowCamera.cpp' をコンパイルしています)
   
 D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Math\Quaternion.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Model\ModelManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\TextureManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Debugger\Logger.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Texture\SRVManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXBase.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Window\MyWindow.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ShaderManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\FPSController.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\ConstBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\DirectX\DirectXUtil.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Util\StructuredBuffer.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\Collider.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\Collider\CollisionManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\ParticleEffect\ParticleEffectManager.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
-  
-D:\k023g0121\TopDown-Shooting\Engine-Develop\project\Engine\ParticleEffect\IParticleEffect.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル 'src/Game/Bullet/EnemyBullet/EnemyBullet.cpp' をコンパイルしています)
+  (ソース ファイル 'src/Game/Camera/FollowCamera.cpp' をコンパイルしています)
   
   Application.vcxproj -> D:\k023g0121\TopDown-Shooting\Engine-Develop\project\x64\Release\Application.lib
