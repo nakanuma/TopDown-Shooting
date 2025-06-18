@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Object3D.h>
@@ -91,7 +91,7 @@ private:
 	void Debug();
 
 	/// <summary>
-	/// 移動処理
+	/// 移動処理 & ダッシュ入力
 	/// </summary>
 	void HandleMove();
 
@@ -163,6 +163,25 @@ private:
 	const int32_t kMaxHP = 100;
 	// 現在HP
 	int32_t currentHP_;
+
+	// ---------------------------------------------------------
+	// ダッシュ関連
+	// ---------------------------------------------------------
+
+	// ダッシュ中か
+	bool isDashing_ = false;
+	// ダッシュ継続時間
+	const float kDashDuration = 0.2f;
+	// ダッシュ中タイマー
+	float dashTimer_ = 0.0f;
+
+	// ダッシュのクールタイム時間
+	const float kDashCoolDown = 1.5f;
+	// ダッシュのクールタイムのタイマー
+	float dashCooldownTimer_ = 0.0f;
+
+	// ダッシュ時のスピード倍率
+	float kDashSpeedMultiplier = 3.0f;
 
 	// ---------------------------------------------------------
 	// 弾関連

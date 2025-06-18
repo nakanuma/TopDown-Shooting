@@ -234,7 +234,9 @@ void Player::Debug()
 
 	ImGui::Text("Ammo : %d", currentAmmo_);
 
-	ImGui::Text("reloadTimer : %f", reloadTimer_);
+	ImGui::Text("reloadTimer : %.2f", reloadTimer_);
+
+	ImGui::Text("dashCooldown : %.2f", dashCooldownTimer_);
 
 	/*  */
 
@@ -254,12 +256,56 @@ void Player::HandleMove()
 	if (input_->PushKey(DIK_A)) velocity_.x -= 1.0f;
 	if (input_->PushKey(DIK_D)) velocity_.x += 1.0f;
 
-	if (velocity_.x != 0.0f || velocity_.z != 0.0f) 
+	// 移動しているか
+	bool isMoving = (velocity_.x != 0.0f || velocity_.z != 0.0f);
+
+	// 正規化
+	if (isMoving)
 	{
 		velocity_ = Float3::Normalize(velocity_);
 	}
 
-	objectPlayer_->transform_.translate += velocity_ * speed_;
+	///
+	///	ダッシュ処理
+	/// 
+
+	// クールタイム更新
+	if (dashCooldownTimer_ > 0.0f)
+	{
+		dashCooldownTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+	}
+
+	// ダッシュ中処理
+	if (isDashing_)
+	{
+		dashTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		if (dashTimer_ <= 0.0f)
+		{
+			isDashing_ = false; // ダッシュ終了
+			dashCooldownTimer_ = kDashCoolDown; // クールタイムをセット
+		}
+	}
+
+	// ダッシュ入力
+	bool dashInput = input_->TriggerKey(DIK_LSHIFT) || input_->IsTriggerMouse(2); // 左SHIFT or 中央クリック
+	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput)
+	{
+		isDashing_ = true; // ダッシュ中へ
+		dashTimer_ = kDashDuration; // ダッシュ時間をセット
+	}
+
+	// 速度を更新
+	float currentSpeed = speed_;
+	if (isDashing_)
+	{
+		currentSpeed *= kDashSpeedMultiplier; // ダッシュ中は速度に倍率をかける
+	}
+	velocity_ = velocity_ * currentSpeed;
+	
+
+
+	// プレイヤー位置更新
+	objectPlayer_->transform_.translate += velocity_;
 }
 
 // ---------------------------------------------------------
