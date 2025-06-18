@@ -287,6 +287,23 @@ void NormalEnemy::UpdateState(Player* player)
 	/// 
 	case EnemyState::Attack:
 	{
+		// プレイヤーとの間に障害物があるか判定
+		RayCastHit hit{};
+		bool isBlocked = CollisionManager::GetInstance()->RayCast(
+			enemyPos, 
+			Float3::Normalize(playerPos - enemyPos), 
+			distanceToPlayer, 
+			&hit
+		);
+
+		// プレイヤー以外と衝突したら待機ステートへ
+		if (isBlocked && hit.hitCollider->GetTag() != "Player")
+		{
+			state_ = EnemyState::Idle;
+			return;
+		}
+
+		// 攻撃のクールタイム更新
 		attackTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 		if (attackTimer_ < attackCooldown_) return; // クールダウン中は早期リターン
 
