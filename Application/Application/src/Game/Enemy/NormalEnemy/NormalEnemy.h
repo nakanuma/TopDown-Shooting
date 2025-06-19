@@ -44,10 +44,15 @@ public:
 	/// </summary>
 	void OnCollision(Collider* other) override;
 
-	///
-	///	弾モデルのセット
-	/// 
+	/// <summary>
+	/// 弾モデルのセット
+	/// </summary>
 	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
+
+	/// <summary>
+	/// 現在のステートを取得
+	/// </summary>
+	EnemyState GetState() const { return state_; }
 
 private:
 	// ---------------------------------------------------------
@@ -60,14 +65,30 @@ private:
 	void UpdateCollider();
 
 	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	void UpdateBullets();
+
+	/// <summary>
 	/// ステート管理
 	/// </summary>
 	void UpdateState(Player* player);
 
+	/* 各State更新処理 */
 	/// <summary>
-	/// 弾の更新処理
+	/// 待機ステート更新処理
 	/// </summary>
-	void UpdateBullets();
+	void UpdateIdleState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer);
+
+	/// <summary>
+	/// 移動ステート更新処理
+	/// </summary>
+	void UpdateMoveState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer);
+
+	/// <summary>
+	/// 攻撃ステート更新処理
+	/// </summary>
+	void UpdateAttackState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer);
 
 private:
 	// ---------------------------------------------------------

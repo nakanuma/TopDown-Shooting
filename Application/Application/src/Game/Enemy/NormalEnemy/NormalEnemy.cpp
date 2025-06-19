@@ -237,109 +237,9 @@ void NormalEnemy::UpdateCollider()
 }
 
 // ---------------------------------------------------------
-// ステート管理
-// ---------------------------------------------------------
-void NormalEnemy::UpdateState(Player* player)
-{
-	// プレイヤー・敵の位置
-	Float3 playerPos = player->GetTranslate();
-	Float3 enemyPos = objectEnemy_->transform_.translate;
-	// プレイヤーとの距離
-	float distanceToPlayer = Float3::Length(playerPos - enemyPos);
-
-	switch (state_)
-	{
-	///	
-	/// 待機時処理
-	///
-	case EnemyState::Idle:
-	{
-		// プレイヤーが一定距離に入ったら移動ステートへ
-		if (distanceToPlayer < detectionRange_)
-		{
-			state_ = EnemyState::Move;
-		}
-
-		break;
-	}
-	///
-	/// 移動時処理
-	/// 
-	case EnemyState::Move:
-	{
-		// プレイヤーの方向へ移動
-		Float3 direction = playerPos - enemyPos;
-		direction = Float3::Normalize(direction);
-
-		objectEnemy_->transform_.translate += direction * moveSpeed_;
-
-		// 攻撃距離に入ったら攻撃ステートへ
-		if (distanceToPlayer < attackRange_)
-		{
-			state_ = EnemyState::Attack;
-			attackTimer_ = 0.0f;
-		}
-
-		break;
-	}
-	///
-	///	攻撃時処理
-	/// 
-	case EnemyState::Attack:
-	{
-		// プレイヤーとの間に障害物があるか判定
-		RayCastHit hit{};
-		bool isBlocked = CollisionManager::GetInstance()->RayCast(
-			enemyPos, 
-			Float3::Normalize(playerPos - enemyPos), 
-			distanceToPlayer, 
-			&hit
-		);
-
-		// プレイヤー以外と衝突したら待機ステートへ
-		if (isBlocked && hit.hitCollider->GetTag() != "Player")
-		{
-			state_ = EnemyState::Idle;
-			return;
-		}
-
-		// 攻撃のクールタイム更新
-		attackTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (attackTimer_ < attackCooldown_) return; // クールダウン中は早期リターン
-
-		attackTimer_ = 0.0f;
-
-		// 敵とプレイヤーの位置
-		Float3 enemyPos = objectEnemy_->transform_.translate;
-		Float3 playerPos = player->GetTranslate();
-
-		// 発射方向
-		Float3 direction = playerPos - enemyPos;
-		direction.y = 0.0f;
-		direction = Float3::Normalize(direction);
-
-		// 拡散をランダムに設定
-		float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
-		direction.x += randSpread;
-		direction.y += randSpread;
-		direction = Float3::Normalize(direction);
-
-		// 弾の生成・初期化
-		auto newBullet = std::make_unique<EnemyBullet>();
-		newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
-
-		bullets_.push_back(std::move(newBullet));
-
-		break;
-	}
-	}
-}
-
-// ---------------------------------------------------------
 // 弾の更新処理
 // ---------------------------------------------------------
-void NormalEnemy::UpdateBullets()
-{
+void NormalEnemy::UpdateBullets() {
 	// 全ての弾を更新
 	for (auto& bullet : bullets_) {
 		bullet->Update();
@@ -351,11 +251,104 @@ void NormalEnemy::UpdateBullets()
 			bullet->OnDestroy();
 		}
 	}
-	bullets_.erase(
-		std::remove_if(bullets_.begin(), bullets_.end(),
-			[](const std::unique_ptr<Bullet>& bullet) {
-				return bullet->IsDead();
-			}),
-		bullets_.end()
-	);
+	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), [](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), bullets_.end());
+}
+
+
+// ---------------------------------------------------------
+// ステート管理
+// ---------------------------------------------------------
+void NormalEnemy::UpdateState(Player* player)
+{
+	Float3 playerPos = player->GetTranslate(); // プレイヤー位置
+	Float3 enemyPos = this->objectEnemy_->transform_.translate; // 敵位置
+	float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
+
+
+	switch (state_)
+	{
+	// 待機ステート更新処理
+	case EnemyState::Idle: 
+		UpdateIdleState(playerPos, enemyPos, distanceToPlayer); 
+		break;
+	
+	// 移動ステート更新処理
+	case EnemyState::Move: 
+		UpdateMoveState(playerPos, enemyPos, distanceToPlayer); 
+		break;
+
+	// 攻撃ステート更新処理
+	case EnemyState::Attack: 
+		UpdateAttackState(playerPos, enemyPos, distanceToPlayer); 
+		break;
+	}
+}
+
+// ---------------------------------------------------------
+// 待機ステート更新処理
+// ---------------------------------------------------------
+void NormalEnemy::UpdateIdleState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) 
+{
+	// プレイヤーが一定距離に入ったら移動ステートへ
+	if (distanceToPlayer < detectionRange_) {
+		state_ = EnemyState::Move;
+	}
+}
+
+// ---------------------------------------------------------
+// 移動ステート更新処理
+// ---------------------------------------------------------
+void NormalEnemy::UpdateMoveState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) 
+{
+	// プレイヤーの方向へ移動
+	Float3 direction = playerPos - enemyPos;
+	direction = Float3::Normalize(direction);
+
+	objectEnemy_->transform_.translate += direction * moveSpeed_;
+
+	// 攻撃距離に入ったら攻撃ステートへ
+	if (distanceToPlayer < attackRange_) {
+		state_ = EnemyState::Attack;
+		attackTimer_ = 0.0f;
+	}
+}
+
+// ---------------------------------------------------------
+// 攻撃ステート更新処理
+// ---------------------------------------------------------
+void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) 
+{
+	// プレイヤーとの間に障害物があるか判定
+	RayCastHit hit{};
+	bool isBlocked = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
+
+	// 間に障害物があれば待機ステートへ
+	if (isBlocked && hit.hitCollider->GetTag() == "NormalObstacle") {
+		state_ = EnemyState::Idle;
+		return;
+	}
+
+	// 攻撃のクールタイム更新
+	attackTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	if (attackTimer_ < attackCooldown_)
+		return; // クールダウン中は早期リターン
+
+	attackTimer_ = 0.0f;
+
+	// 発射方向
+	Float3 direction = playerPos - enemyPos;
+	direction.y = 0.0f;
+	direction = Float3::Normalize(direction);
+
+	// 拡散をランダムに設定
+	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
+	direction.x += randSpread;
+	direction.y += randSpread;
+	direction = Float3::Normalize(direction);
+
+	// 弾の生成・初期化
+	auto newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
+
+	bullets_.push_back(std::move(newBullet));
 }

@@ -124,6 +124,10 @@ void EnemyManager::Debug()
 		std::string label = "Enemy[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {
 
+			///	
+			///	共通の情報を表示
+			/// 
+
 			// タイプの表示
 			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
 
@@ -134,7 +138,33 @@ void EnemyManager::Debug()
 			// HPの表示
 			ImGui::Text("HP : %d", enemy->GetHP());
 
-			// ここから他の項目追加
+			// 他の項目追加
+
+			///
+			///	種類毎の情報を表示
+			/// 
+
+			/* NormalEnemy */
+			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy))
+			{
+				// 現在ステートの表示
+				const char* stateName = "Empty";
+				switch (normalEnemy->GetState()) 
+				{
+				case EnemyState::Idle: 
+					stateName = "Idle"; 
+					break;
+				case EnemyState::Move: 
+					stateName = "Move"; 
+					break;
+				case EnemyState::Attack: 
+					stateName = "Attack"; 
+					break;
+				}
+				ImGui::Text("State : %s", stateName);
+			}
+
+			/* Add */
 
 			ImGui::TreePop();
 		}
