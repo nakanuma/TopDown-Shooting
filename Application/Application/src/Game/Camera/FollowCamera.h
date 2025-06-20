@@ -6,8 +6,7 @@
 /// <summary>
 /// カメラ追従
 /// </summary>
-class FollowCamera
-{
+class FollowCamera {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -39,4 +38,3 @@ private:
 	// 現在の位置
 	Float3 currentPos_;
 };
-

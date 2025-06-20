@@ -6,18 +6,16 @@
 /// <summary>
 /// ステート
 /// </summary>
-enum class EnemyState
-{
-	Idle, // 待機
-	Move, // 接近中
+enum class EnemyState {
+	Alert,   // 警戒中
+	Move,   // 接近中
 	Attack, // 攻撃中
 };
 
 /// <summary>
 /// 通常敵
 /// </summary>
-class NormalEnemy : public Enemy, public ICollisionCallback
-{
+class NormalEnemy : public Enemy, public ICollisionCallback {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -28,7 +26,7 @@ public:
 	/// 更新処理
 	/// </summary>
 	void Update(Player* player) override;
-	
+
 	/// <summary>
 	/// 描画処理
 	/// </summary>
@@ -76,9 +74,9 @@ private:
 
 	/* 各State更新処理 */
 	/// <summary>
-	/// 待機ステート更新処理
+	/// 警戒ステート更新処理
 	/// </summary>
-	void UpdateIdleState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer);
+	void UpdateAlertState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer);
 
 	/// <summary>
 	/// 移動ステート更新処理
@@ -102,7 +100,7 @@ private:
 	// ---------------------------------------------------------
 
 	// ステート
-	EnemyState state_ = EnemyState::Idle;
+	EnemyState state_ = EnemyState::Alert;
 
 	// 索敵距離
 	float detectionRange_ = 15.0f;
@@ -118,4 +116,3 @@ private:
 	// 弾の拡散角
 	float bulletSpreadAngle_ = 0.1f;
 };
-

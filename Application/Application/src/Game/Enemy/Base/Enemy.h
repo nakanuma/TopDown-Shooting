@@ -1,9 +1,9 @@
 #pragma once
 
 // Engine
-#include <Engine/3D/Object3D.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Engine/3D/Object3D.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
@@ -15,8 +15,7 @@ class Player;
 /// <summary>
 /// 敵の基底クラス
 /// </summary>
-class Enemy
-{
+class Enemy {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -57,7 +56,7 @@ public:
 	/// 現在位置の取得
 	/// </summary>
 	Float3& GetTranslate() const { return objectEnemy_->transform_.translate; }
-		 
+
 	/// <summary>
 	/// 残りHPの取得
 	/// </summary>
@@ -95,7 +94,7 @@ protected:
 	// ---------------------------------------------------------
 
 	// HPバーの最大サイズ
-	const Float2 kHPBarSize = { 100.0f, 20.0f };
+	const Float2 kHPBarSize = {100.0f, 20.0f};
 
 	// HPバー（後景）
 	std::unique_ptr<Sprite> spriteHPBackground_;

@@ -1,15 +1,14 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Engine/Math/MyMath.h>
-#include <Engine/ParticleEffect/BaseParticleEffect.h>
 #include <Engine/Model/ModelManager.h>
+#include <Engine/ParticleEffect/BaseParticleEffect.h>
 
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct SparkParticleShrinkData
-{
+struct SparkParticleShrinkData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
@@ -23,8 +22,7 @@ struct SparkParticleShrinkData
 /// <summary>
 /// 火花パーティクル（縮小）
 /// </summary>
-class SparkParticle_Shrink : public BaseParticleEffect<SparkParticleShrinkData>
-{
+class SparkParticle_Shrink : public BaseParticleEffect<SparkParticleShrinkData> {
 public:
 	/// <summary>
 	/// コンストラクタ

@@ -7,8 +7,7 @@
 // ---------------------------------------------------------
 // ワールド座標をスクリーン座標に変換
 // ---------------------------------------------------------
-Float3 Utility::WorldToScreen(Float3 worldPosition)
-{
+Float3 Utility::WorldToScreen(Float3 worldPosition) {
 	Matrix worldViewProjMatrix = Camera::GetCurrent()->GetViewProjectionMatrix();
 	Float3 screenPosition = Float3::Transform(worldPosition, worldViewProjMatrix);
 
@@ -21,8 +20,7 @@ Float3 Utility::WorldToScreen(Float3 worldPosition)
 // ---------------------------------------------------------
 // カーソル位置のワールド座標を取得
 // ---------------------------------------------------------
-Float3 Utility::CalclateCursorPosition() 
-{
+Float3 Utility::CalclateCursorPosition() {
 	// マウス位置の取得
 	Float2 mousePos = Float2(Input::GetInstance()->GetMousePosition().x, Input::GetInstance()->GetMousePosition().y);
 

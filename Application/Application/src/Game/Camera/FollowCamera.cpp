@@ -6,17 +6,14 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void FollowCamera::Initialize(const Float3& offset)
-{
-	offset_ = offset;
-}
+void FollowCamera::Initialize(const Float3& offset) { offset_ = offset; }
 
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void FollowCamera::Update()
-{
-	if (!targetTranslate_) return;
+void FollowCamera::Update() {
+	if (!targetTranslate_)
+		return;
 
 	// 追従位置（プレイヤー + オフセット）
 	Float3 targetPos = *targetTranslate_ + offset_;
@@ -41,8 +38,7 @@ void FollowCamera::Update()
 // ---------------------------------------------------------
 // 追従目標をセット
 // ---------------------------------------------------------
-void FollowCamera::SetTarget(const Float3* translate)
-{
+void FollowCamera::SetTarget(const Float3* translate) {
 	targetTranslate_ = translate;
 	if (targetTranslate_) {
 		currentPos_ = *targetTranslate_ + offset_;

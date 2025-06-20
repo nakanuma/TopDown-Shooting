@@ -1,10 +1,9 @@
-﻿#include "NormalObstacle.h"
+#include "NormalObstacle.h"
 
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void NormalObstacle::Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) 
-{
+void NormalObstacle::Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) {
 	///
 	/// オブジェクト生成
 	///
@@ -29,8 +28,7 @@ void NormalObstacle::Initialize(const Float3& position, const Float3& scale, Mod
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void NormalObstacle::Update() 
-{
+void NormalObstacle::Update() {
 	///
 	/// コライダー更新処理
 	///
@@ -47,8 +45,7 @@ void NormalObstacle::Update()
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void NormalObstacle::Draw() 
-{
+void NormalObstacle::Draw() {
 	// オブジェクト描画
 	objectObstacle_->Draw();
 }
@@ -56,16 +53,12 @@ void NormalObstacle::Draw()
 // ---------------------------------------------------------
 // 衝突時コールバック
 // ---------------------------------------------------------
-void NormalObstacle::OnCollision(Collider* other) 
-{
-
-}
+void NormalObstacle::OnCollision(Collider* other) {}
 
 // ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
-void NormalObstacle::UpdateCollider() 
-{
+void NormalObstacle::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectObstacle_->transform_.translate;
 		Float3 size = objectObstacle_->transform_.scale;

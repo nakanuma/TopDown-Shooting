@@ -1,16 +1,15 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <SpriteCommon.h>
 #include <Sprite.h>
+#include <SpriteCommon.h>
 
 class Player;
 
 /// <summary>
 /// HPバー
 /// </summary>
-class HPBar 
-{
+class HPBar {
 public:
 	/// <summary>
 	/// 初期化処理

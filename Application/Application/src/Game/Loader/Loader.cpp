@@ -1,4 +1,4 @@
-﻿#include "Loader.h"
+#include "Loader.h"
 
 // C++
 #include <fstream>
@@ -10,9 +10,8 @@
 // ---------------------------------------------------------
 // JSONファイルの読み込み
 // ---------------------------------------------------------
-void Loader::LoadFromFile(const std::string& filepath) 
-{ 
-	std::ifstream file(filepath); 
+void Loader::LoadFromFile(const std::string& filepath) {
+	std::ifstream file(filepath);
 	if (!file.is_open()) {
 		std::cerr << "Failed to open JSON file: " << filepath << std::endl;
 		return;
@@ -43,8 +42,7 @@ void Loader::LoadFromFile(const std::string& filepath)
 // ---------------------------------------------------------
 // 単体データ取得
 // ---------------------------------------------------------
-Loader::TransformData Loader::GetDataByTag(const std::string& tag) const 
-{ 
+Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 	for (const auto& data : datas_) {
 		if (data.tag == tag) {
 			return data;

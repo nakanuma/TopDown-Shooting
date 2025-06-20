@@ -14,8 +14,8 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 	///
 	///	各モデル読み込み
-	/// 
-	
+	///
+
 	// 通常敵モデル
 	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
 	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
@@ -27,8 +27,8 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 	///
 	///	各敵の生成
-	/// 
-	
+	///
+
 	for (const auto& data : datas) {
 		// 通常敵
 		if (data.tag == "NORMAL_ENEMY") {
@@ -39,15 +39,13 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 		}
 
 		// 新しく追加
-
 	}
 }
 
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void EnemyManager::Update()
-{
+void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
 		enemy->Update(player_);
@@ -59,25 +57,17 @@ void EnemyManager::Update()
 			enemy->OnDestroy();
 		}
 	}
-	enemies_.erase(
-		std::remove_if(enemies_.begin(), enemies_.end(),
-			[](const std::unique_ptr<Enemy>& enemy) {
-				return enemy->IsDead();
-			}),
-		enemies_.end()
-	);
+	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(), [](const std::unique_ptr<Enemy>& enemy) { return enemy->IsDead(); }), enemies_.end());
 }
 
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void EnemyManager::Draw()
-{
+void EnemyManager::Draw() {
 	// 全ての敵を描画
 	for (auto& enemy : enemies_) {
 		enemy->Draw();
 	}
-
 
 #ifdef _DEBUG
 	// デバッグ表示
@@ -88,8 +78,7 @@ void EnemyManager::Draw()
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void EnemyManager::DrawUI()
-{
+void EnemyManager::DrawUI() {
 	// 全ての敵のUIを描画
 	for (auto& enemy : enemies_) {
 		enemy->DrawUI();
@@ -99,8 +88,7 @@ void EnemyManager::DrawUI()
 // ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
-void EnemyManager::Debug()
-{
+void EnemyManager::Debug() {
 #ifdef _DEBUG
 
 	ImGui::Begin("enemyManager");
@@ -108,7 +96,7 @@ void EnemyManager::Debug()
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize({ 0.0f, 1.0f, 0.0f }, &modelNormalEnemy_);
+		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_);
 
 		enemies_.emplace_back(std::move(enemy));
 	}
@@ -119,14 +107,15 @@ void EnemyManager::Debug()
 	// 敵ごとの情報表示
 	for (size_t i = 0; i < enemies_.size(); ++i) {
 		Enemy* enemy = enemies_[i].get();
-		if (!enemy) continue;
+		if (!enemy)
+			continue;
 
 		std::string label = "Enemy[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {
 
-			///	
+			///
 			///	共通の情報を表示
-			/// 
+			///
 
 			// タイプの表示
 			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
@@ -142,23 +131,21 @@ void EnemyManager::Debug()
 
 			///
 			///	種類毎の情報を表示
-			/// 
+			///
 
 			/* NormalEnemy */
-			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy))
-			{
+			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
 				// 現在ステートの表示
 				const char* stateName = "Empty";
-				switch (normalEnemy->GetState()) 
-				{
-				case EnemyState::Idle: 
-					stateName = "Idle"; 
+				switch (normalEnemy->GetState()) {
+				case EnemyState::Alert:
+					stateName = "Alert";
 					break;
-				case EnemyState::Move: 
-					stateName = "Move"; 
+				case EnemyState::Move:
+					stateName = "Move";
 					break;
-				case EnemyState::Attack: 
-					stateName = "Attack"; 
+				case EnemyState::Attack:
+					stateName = "Attack";
 					break;
 				}
 				ImGui::Text("State : %s", stateName);

@@ -1,24 +1,23 @@
 #pragma once
 
 // Engine
-#include <Object3D.h>
-#include <Input/Input.h>
-#include <SpriteCommon.h>
-#include <Sprite.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Input/Input.h>
+#include <Object3D.h>
+#include <Sprite.h>
+#include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
 
 // Application
-#include <src/Game/Loader/Loader.h>
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
+#include <src/Game/Loader/Loader.h>
 #include <src/Game/Player/UI/PlayerUIManager.h>
 
 /// <summary>
 /// プレイヤー
 /// </summary>
-class Player : public ICollisionCallback, public IConfigurable
-{
+class Player : public ICollisionCallback, public IConfigurable {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -68,7 +67,7 @@ public:
 	/// <summary>
 	/// リロードタイマーの取得
 	/// </summary>
-	float GetReloadTimer() const { return reloadTimer_; } 
+	float GetReloadTimer() const { return reloadTimer_; }
 
 	/// <summary>
 	/// 最大リロード時間の取得

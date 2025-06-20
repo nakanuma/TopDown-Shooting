@@ -8,8 +8,8 @@
 #include <Engine/Util/TimeManager.h>
 
 // Application
-#include <src/Game/Utility/Utility.h>
 #include <src/Game/Camera/CameraShake.h>
+#include <src/Game/Utility/Utility.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -17,11 +17,10 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void Player::Initialize(const Loader::TransformData& data) 
-{
+void Player::Initialize(const Loader::TransformData& data) {
 	///
 	///	基盤機能
-	/// 
+	///
 
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
@@ -34,7 +33,7 @@ void Player::Initialize(const Loader::TransformData& data)
 
 	///
 	///	オブジェクト関連
-	/// 
+	///
 
 	// プレイヤーモデル読み込み
 	modelPlayer_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
@@ -52,7 +51,7 @@ void Player::Initialize(const Loader::TransformData& data)
 
 	///
 	///	コライダー生成
-	/// 
+	///
 
 	collider_ = std::make_unique<AABBCollider>();
 	collider_->SetTag("Player");
@@ -62,22 +61,22 @@ void Player::Initialize(const Loader::TransformData& data)
 
 	///
 	///	UI
-	/// 
+	///
 
 	ui_ = std::make_unique<PlayerUIManager>();
 	ui_->Initialize();
 
 	///
 	///	パラメーター設定
-	/// 
-	
-	currentHP_ = kMaxHP; // 現在HPには最大HPをセット
+	///
+
+	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
 	currentAmmo_ = kMaxAmmo; // マガジンには最大弾数をセット
 
 	///
 	///	調整パラメーター登録
-	/// 
-	
+	///
+
 	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
 	RegisterParam("maxReloadTime", &maxReloadTime_, 0.0f, 10.0f, 0.01f);
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
@@ -86,11 +85,10 @@ void Player::Initialize(const Loader::TransformData& data)
 // ---------------------------------------------------------
 // 毎フレーム更新処理
 // ---------------------------------------------------------
-void Player::Update() 
-{
+void Player::Update() {
 	///
 	///	内部処理
-	/// 
+	///
 
 	// 移動処理
 	HandleMove();
@@ -103,33 +101,31 @@ void Player::Update()
 
 	///
 	///	コライダー更新処理
-	/// 
+	///
 
 	UpdateCollider();
 
 	///
 	///	オブジェクト更新処理
-	/// 
+	///
 
 	// プレイヤーオブジェクト更新
 	objectPlayer_->UpdateMatrix();
 
 	///
 	///	UI更新処理
-	/// 
-	
+	///
+
 	ui_->Update(this);
 }
 
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void Player::Draw() 
-{
+void Player::Draw() {
 
 	// 全ての弾を描画
-	for (const auto& bullet : bullets_) 
-	{
+	for (const auto& bullet : bullets_) {
 		bullet->Draw();
 	}
 
@@ -149,30 +145,24 @@ void Player::Draw()
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void Player::DrawUI() 
-{ 
-	ui_->Draw(); 
-}
+void Player::DrawUI() { ui_->Draw(); }
 
 // ---------------------------------------------------------
 // 衝突時コールバック
 // ---------------------------------------------------------
-void Player::OnCollision(Collider* other)
-{
+void Player::OnCollision(Collider* other) {
 	///
 	/// vs NormalEnemy
-	/// 
-	if (other->GetTag() == "NormalEnemy") 
-	{
+	///
+	if (other->GetTag() == "NormalEnemy") {
 		/*currentHP_--;*/
 	}
 
 	///
 	///	vs EnemyBullet
-	/// 
+	///
 
-	if (other->GetTag() == "EnemyBullet")
-	{
+	if (other->GetTag() == "EnemyBullet") {
 		// EnemyBulletのDamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -183,15 +173,13 @@ void Player::OnCollision(Collider* other)
 
 	///
 	/// vs NormalObstacle
-	/// 
-	if (other->GetTag() == "NormalObstacle") 
-	{
+	///
+	if (other->GetTag() == "NormalObstacle") {
 		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
 		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
 
 		// 押し戻し処理
-		if (myAABB && otherAABB) 
-		{
+		if (myAABB && otherAABB) {
 			// 押し戻しベクトル取得
 			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 			// プレイヤー位置を補正
@@ -207,9 +195,8 @@ void Player::OnCollision(Collider* other)
 // ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
-void Player::Debug() 
-{
-#ifdef  _DEBUG
+void Player::Debug() {
+#ifdef _DEBUG
 	ImGui::Begin("Player");
 
 	/* Translate */
@@ -247,62 +234,57 @@ void Player::Debug()
 // ---------------------------------------------------------
 // 移動処理
 // ---------------------------------------------------------
-void Player::HandleMove()
-{
-	velocity_ = { 0.0f, 0.0f, 0.0f };
+void Player::HandleMove() {
+	velocity_ = {0.0f, 0.0f, 0.0f};
 
-	if (input_->PushKey(DIK_W)) velocity_.z += 1.0f;
-	if (input_->PushKey(DIK_S)) velocity_.z -= 1.0f;
-	if (input_->PushKey(DIK_A)) velocity_.x -= 1.0f;
-	if (input_->PushKey(DIK_D)) velocity_.x += 1.0f;
+	if (input_->PushKey(DIK_W))
+		velocity_.z += 1.0f;
+	if (input_->PushKey(DIK_S))
+		velocity_.z -= 1.0f;
+	if (input_->PushKey(DIK_A))
+		velocity_.x -= 1.0f;
+	if (input_->PushKey(DIK_D))
+		velocity_.x += 1.0f;
 
 	// 移動しているか
 	bool isMoving = (velocity_.x != 0.0f || velocity_.z != 0.0f);
 
 	// 正規化
-	if (isMoving)
-	{
+	if (isMoving) {
 		velocity_ = Float3::Normalize(velocity_);
 	}
 
 	///
 	///	ダッシュ処理
-	/// 
+	///
 
 	// クールタイム更新
-	if (dashCooldownTimer_ > 0.0f)
-	{
+	if (dashCooldownTimer_ > 0.0f) {
 		dashCooldownTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 	}
 
 	// ダッシュ中処理
-	if (isDashing_)
-	{
+	if (isDashing_) {
 		dashTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
-		if (dashTimer_ <= 0.0f)
-		{
-			isDashing_ = false; // ダッシュ終了
+		if (dashTimer_ <= 0.0f) {
+			isDashing_ = false;                 // ダッシュ終了
 			dashCooldownTimer_ = kDashCoolDown; // クールタイムをセット
 		}
 	}
 
 	// ダッシュ入力
 	bool dashInput = input_->TriggerKey(DIK_LSHIFT) || input_->IsTriggerMouse(2); // 左SHIFT or 中央クリック
-	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput)
-	{
-		isDashing_ = true; // ダッシュ中へ
+	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
+		isDashing_ = true;          // ダッシュ中へ
 		dashTimer_ = kDashDuration; // ダッシュ時間をセット
 	}
 
 	// 速度を更新
 	float currentSpeed = speed_;
-	if (isDashing_)
-	{
+	if (isDashing_) {
 		currentSpeed *= kDashSpeedMultiplier; // ダッシュ中は速度に倍率をかける
 	}
 	velocity_ = velocity_ * currentSpeed;
-	
-
 
 	// プレイヤー位置更新
 	objectPlayer_->transform_.translate += velocity_;
@@ -311,24 +293,24 @@ void Player::HandleMove()
 // ---------------------------------------------------------
 // 弾の発射処理
 // ---------------------------------------------------------
-void Player::HandleShooting()
-{
+void Player::HandleShooting() {
 	///
 	///	弾が撃てない場合には早期リターン
-	/// 
+	///
 
 	// リロード中は撃てないように
-	if (isReloading_) return;
+	if (isReloading_)
+		return;
 	// 弾数が0なら撃てないように
-	if (currentAmmo_ <= 0) return;
+	if (currentAmmo_ <= 0)
+		return;
 
 	///
 	///	左クリックで弾の生成
-	/// 
+	///
 
 	// 左クリックで弾を生成
-	if (input_->IsTriggerMouse(0)) 
-	{
+	if (input_->IsTriggerMouse(0)) {
 		// カーソル位置の取得
 		Float3 cursorPos = Utility::CalclateCursorPosition();
 		// プレイヤー位置の取得
@@ -342,8 +324,7 @@ void Player::HandleShooting()
 		// 少しだけ方向をブレさせる
 		float blurAmount = kMaxRandomAngle;
 
-		if (Float3::Length(velocity_) > 0.01f) 
-		{
+		if (Float3::Length(velocity_) > 0.01f) {
 			blurAmount *= 3.0f; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
@@ -372,26 +353,22 @@ void Player::HandleShooting()
 // ---------------------------------------------------------
 // 弾のリロード処理
 // ---------------------------------------------------------
-void Player::HandleReloading() 
-{ 
+void Player::HandleReloading() {
 	///
 	///	リロード中更新処理
-	/// 
-	if (isReloading_) 
-	{
+	///
+	if (isReloading_) {
 		// 必要リロード時間まで加算
 		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (reloadTimer_ >= maxReloadTime_) 
-		{
+		if (reloadTimer_ >= maxReloadTime_) {
 			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
-			isReloading_ = false; // リロード状態解除
+			isReloading_ = false;    // リロード状態解除
 		}
-	///
-	///	Rキー押下でリロード開始
-	/// 
+		///
+		///	Rキー押下でリロード開始
+		///
 	} else {
-		if (input_->TriggerKey(DIK_R)) 
-		{
+		if (input_->TriggerKey(DIK_R)) {
 			isReloading_ = true; // リロード中にする
 			reloadTimer_ = 0.0f; // タイマー初期化
 		}
@@ -401,39 +378,26 @@ void Player::HandleReloading()
 // ---------------------------------------------------------
 // 弾の更新処理
 // ---------------------------------------------------------
-void Player::UpdateBullets()
-{
+void Player::UpdateBullets() {
 	// 全ての弾を更新
-	for (auto& bullet : bullets_) 
-	{
+	for (auto& bullet : bullets_) {
 		bullet->Update();
 	}
 
 	// 弾の削除処理
-	for (auto& bullet : bullets_) 
-	{
-		if (bullet->IsDead()) 
-		{
+	for (auto& bullet : bullets_) {
+		if (bullet->IsDead()) {
 			bullet->OnDestroy();
 		}
 	}
-	bullets_.erase(
-		std::remove_if(bullets_.begin(), bullets_.end(),
-			[](const std::unique_ptr<Bullet>& bullet) 
-			{
-				return bullet->IsDead();
-			}),
-		bullets_.end()
-	);
+	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), [](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), bullets_.end());
 }
 
 // ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
-void Player::UpdateCollider()
-{
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) 
-	{
+void Player::UpdateCollider() {
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectPlayer_->transform_.translate;
 		Float3 size = objectPlayer_->transform_.scale;
 

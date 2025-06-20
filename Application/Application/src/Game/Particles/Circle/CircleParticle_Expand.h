@@ -2,14 +2,13 @@
 
 // Engine
 #include <Engine/Math/MyMath.h>
-#include <Engine/ParticleEffect/BaseParticleEffect.h>
 #include <Engine/Model/ModelManager.h>
+#include <Engine/ParticleEffect/BaseParticleEffect.h>
 
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct CircleParticleExpandData
-{
+struct CircleParticleExpandData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
@@ -23,8 +22,7 @@ struct CircleParticleExpandData
 /// <summary>
 /// 円パーティクル（拡大）
 /// </summary>
-class CircleParticle_Expand : public BaseParticleEffect<CircleParticleExpandData> 
-{
+class CircleParticle_Expand : public BaseParticleEffect<CircleParticleExpandData> {
 public:
 	/// <summary>
 	/// コンストラクタ

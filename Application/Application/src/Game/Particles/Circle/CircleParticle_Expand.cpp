@@ -10,8 +10,7 @@
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-CircleParticle_Expand::CircleParticle_Expand(ModelManager::ModelData& model) 
-{
+CircleParticle_Expand::CircleParticle_Expand(ModelManager::ModelData& model) {
 	object_.model_ = &model;
 	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
 	object_.gTransformationMatrices.Create();
@@ -25,8 +24,7 @@ CircleParticle_Expand::CircleParticle_Expand(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-CircleParticleExpandData CircleParticle_Expand::CreateParticle(const Float3& pos) 
-{ 
+CircleParticleExpandData CircleParticle_Expand::CreateParticle(const Float3& pos) {
 	CircleParticleExpandData p;
 	p.transform.translate = pos;
 	p.transform.rotate = {0.0f, 0.0f, 0.0f};
@@ -43,10 +41,9 @@ CircleParticleExpandData CircleParticle_Expand::CreateParticle(const Float3& pos
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void CircleParticle_Expand::UpdateParticle(CircleParticleExpandData& p, float dt) 
-{ 
-	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f); 
-	
+void CircleParticle_Expand::UpdateParticle(CircleParticleExpandData& p, float dt) {
+	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
+
 	// 拡大（初期値->初期値の500%）
 	p.transform.scale = Float3::Lerp(p.initScale, p.initScale * 5.0f, Easing::EaseInQuad(t));
 

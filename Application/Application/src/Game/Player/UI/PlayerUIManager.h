@@ -1,21 +1,20 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <SpriteCommon.h>
 #include <Sprite.h>
+#include <SpriteCommon.h>
 
 // Application
-#include <src/Game/Player/UI/Reticle/Reticle.h>
 #include <src/Game/Player/UI/HPBar/HPBar.h>
 #include <src/Game/Player/UI/RemainingBullets/RemainingBullets.h>
+#include <src/Game/Player/UI/Reticle/Reticle.h>
 
 class Player;
 
 /// <summary>
 /// PlayerUI管理クラス
 /// </summary>
-class PlayerUIManager 
-{
+class PlayerUIManager {
 public:
 	/// <summary>
 	/// 初期化処理

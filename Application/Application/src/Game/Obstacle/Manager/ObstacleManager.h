@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Engine/Model/ModelManager.h>
@@ -10,8 +10,7 @@
 /// <summary>
 /// 障害物の管理
 /// </summary>
-class ObstacleManager 
-{
+class ObstacleManager {
 public:
 	/// <summary>
 	/// 初期化処理

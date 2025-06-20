@@ -1,17 +1,16 @@
-#include "TitleScene.h" 
-#include "ImguiWrapper.h"
+#include "TitleScene.h"
 #include "DirectXBase.h"
+#include "ImguiWrapper.h"
 #include "SRVManager.h"
-#include "SpriteCommon.h"
 #include "SceneManager.h"
-//#include "GamePlayScene.h"
+#include "SpriteCommon.h"
+// #include "GamePlayScene.h"
 
-void TitleScene::Initialize()
-{
+void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{ 0.0f, 0.0f, -10.0f }, Float3{ 0.0f, 0.0f, 0.0f }, 0.45f);
+	camera = std::make_unique<Camera>(Float3{0.0f, 0.0f, -10.0f}, Float3{0.0f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -30,7 +29,7 @@ void TitleScene::Initialize()
 
 	///
 	///	↓ ゲームシーン用
-	///	
+	///
 
 	// Texture読み込み
 	uint32_t titleGH = TextureManager::Load("resources/Images/title.png", dxBase->GetDevice());
@@ -38,7 +37,7 @@ void TitleScene::Initialize()
 	// スプライトの生成と初期化
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(spriteCommon.get(), titleGH);
-	sprite_->SetSize({ 500.0f, 500.0f });
+	sprite_->SetSize({500.0f, 500.0f});
 
 	// モデル読み込み
 	model_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
@@ -46,17 +45,12 @@ void TitleScene::Initialize()
 	// 3Dオブジェクトの生成とモデル指定
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = &model_;
-	object_->transform_.rotate = { 0.0f, 3.14f, 0.0f };
-
-	
+	object_->transform_.rotate = {0.0f, 3.14f, 0.0f};
 }
 
-void TitleScene::Finalize()
-{
-}
+void TitleScene::Finalize() {}
 
-void TitleScene::Update()
-{
+void TitleScene::Update() {
 	// スプライトの更新
 	sprite_->Update();
 
@@ -66,29 +60,28 @@ void TitleScene::Update()
 
 	///
 	///	シーン切り替え
-	/// 
+	///
 
 	// ENTERキーを押したら
 	if (input->TriggerKey(DIK_RETURN)) {
 		//// ゲームプレイシーン（次シーンを生成）
-		//BaseScene* scene = new GamePlayScene();
+		// BaseScene* scene = new GamePlayScene();
 		//// シーン切り替え依頼
-		//SceneManager::GetInstance()->SetNextScene(scene);
+		// SceneManager::GetInstance()->SetNextScene(scene);
 
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 }
 
-void TitleScene::Draw()
-{
+void TitleScene::Draw() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 	SRVManager* srvManager = SRVManager::GetInstance();
 
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -97,27 +90,27 @@ void TitleScene::Draw()
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
-	/// 
+	///
 
 	object_->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
-	/// 
+	///
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
 	spriteCommon->PreDraw();
 
 	///
 	/// ↓ ここからスプライトの描画コマンド
-	/// 
+	///
 
 	// スプライトの描画
 	sprite_->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
-	/// 
+	///
 
 	ImGui::Begin("window");
 

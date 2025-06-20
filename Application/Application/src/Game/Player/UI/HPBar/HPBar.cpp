@@ -1,4 +1,4 @@
-﻿#include "HPBar.h"
+#include "HPBar.h"
 
 // Engine
 #include <Engine/Texture/TextureManager.h>
@@ -9,12 +9,11 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) 
-{
+void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	///
 	/// HPバー（後景）
 	///
-	
+
 	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon, textureHPBackground);
@@ -24,7 +23,7 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon)
 	///
 	/// HPバー（前景）
 	///
-	
+
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon, textureHPForeground);
@@ -38,15 +37,15 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon)
 void HPBar::Update(const Player* player) {
 	///
 	/// HPバー（後景）
-	/// 
-	
+	///
+
 	spriteHPBackground_->SetPosition(kHPBarPosition);
 	spriteHPBackground_->Update();
 
 	///
 	/// HPバー（前景）
-	/// 
-	
+	///
+
 	// 現在HPに応じてサイズを変更
 	float hpRatio = static_cast<float>(player->GetCurrentHP()) / static_cast<float>(player->GetMaxHP()); // HP割合
 
@@ -63,13 +62,13 @@ void HPBar::Update(const Player* player) {
 void HPBar::Draw() {
 	///
 	///	HPバー（後景）
-	/// 
+	///
 
 	spriteHPBackground_->Draw();
 
 	///
 	///	HPバー（前景）
-	/// 
-	
+	///
+
 	spriteHPForeground_->Draw();
 }

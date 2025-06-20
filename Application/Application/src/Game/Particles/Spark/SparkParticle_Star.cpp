@@ -10,8 +10,7 @@
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-SparkParticle_Star::SparkParticle_Star(ModelManager::ModelData& model) 
-{
+SparkParticle_Star::SparkParticle_Star(ModelManager::ModelData& model) {
 	object_.model_ = &model;
 	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
 	object_.gTransformationMatrices.Create();
@@ -25,8 +24,7 @@ SparkParticle_Star::SparkParticle_Star(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-SparkParticleStarData SparkParticle_Star::CreateParticle(const Float3& pos) 
-{
+SparkParticleStarData SparkParticle_Star::CreateParticle(const Float3& pos) {
 	Float3 randVelocity = RandomGenerator::GetInstance()->RandomValue({-0.2f, -0.2f, 0.0f}, {0.2f, 0.2f, 0.0f});
 	float randLifeTime = RandomGenerator::GetInstance()->RandomValue(0.2f, 0.5f); // 生存時間
 
@@ -45,8 +43,7 @@ SparkParticleStarData SparkParticle_Star::CreateParticle(const Float3& pos)
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void SparkParticle_Star::UpdateParticle(SparkParticleStarData& p, float dt) 
-{
+void SparkParticle_Star::UpdateParticle(SparkParticleStarData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 減速

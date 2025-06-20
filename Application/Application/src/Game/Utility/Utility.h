@@ -3,17 +3,15 @@
 // Engine
 #include <MyMath.h>
 
-class Utility
-{
+class Utility {
 public:
 	/// <summary>
-	/// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã«å¤‰æ›
 	/// </summary>
 	static Float3 WorldToScreen(Float3 worldPosition);
 
 	/// <summary>
-	/// ƒJ[ƒ\ƒ‹ˆÊ’u‚Ìƒ[ƒ‹ƒhÀ•W‚ğæ“¾
+	/// ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å–å¾—
 	/// </summary>
 	static Float3 CalclateCursorPosition();
 };
-

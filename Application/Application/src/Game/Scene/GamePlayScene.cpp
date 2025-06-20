@@ -1,9 +1,9 @@
-#include "GamePlayScene.h" 
-#include "ImguiWrapper.h" 
+#include "GamePlayScene.h"
 #include "DirectXBase.h"
+#include "ImguiWrapper.h"
+#include "RTVManager.h"
 #include "SRVManager.h"
 #include "SpriteCommon.h"
-#include "RTVManager.h"
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // C++
@@ -12,12 +12,11 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 
+#include <src/Game/Particles/Circle/CircleParticle_Expand.h>
 #include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
 #include <src/Game/Particles/Spark/SparkParticle_Star.h>
-#include <src/Game/Particles/Circle/CircleParticle_Expand.h>
 
-void GamePlayScene::Initialize()
-{
+void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
@@ -50,8 +49,8 @@ void GamePlayScene::Initialize()
 	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
 
 	///
-	///	↓ ゲームシーン用 
-	///	
+	///	↓ ゲームシーン用
+	///
 
 	/* ステージデータ */
 
@@ -64,7 +63,7 @@ void GamePlayScene::Initialize()
 	// フィールド生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
-	
+
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize(loader_->GetDataByTag("PLAYER"));
@@ -72,7 +71,7 @@ void GamePlayScene::Initialize()
 	// 敵の管理クラス生成
 	enemyManager_ = std::make_unique<EnemyManager>();
 	enemyManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
-	enemyManager_->SetPlayer(player_.get()); // プレイヤーのポインタをセット
+	enemyManager_->SetPlayer(player_.get());           // プレイヤーのポインタをセット
 
 	// 障害物の管理クラス生成
 	obstacleManager_ = std::make_unique<ObstacleManager>();
@@ -83,32 +82,25 @@ void GamePlayScene::Initialize()
 	// 追従カメラ生成
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
-	followCamera_->SetTarget(&player_->GetTranslate()); // プレイヤーを追従対象にセット
-
-
+	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
-
 
 	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
 	uint32_t textureStar = TextureManager::Load("resources/Images/Effect/star.png", dxBase->GetDevice());
 	uint32_t textureCircle = TextureManager::Load("resources/Images/Effect/circle.png", dxBase->GetDevice());
 
-
-
 	modelSparkShrink_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
 	modelSparkShrink_.material.textureHandle = textureGlow;
-	
+
 	auto sparkShrinkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
 	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkShrinkParticle));
-
 
 	modelSparkStar_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
 	modelSparkStar_.material.textureHandle = textureStar;
 
 	auto sparkStarParticle = std::make_unique<SparkParticle_Star>(modelSparkStar_);
 	ParticleEffectManager::GetInstance()->Register("sparkStar", std::move(sparkStarParticle));
-
 
 	modelCircleExpand_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
 	modelCircleExpand_.material.textureHandle = textureCircle;
@@ -117,11 +109,9 @@ void GamePlayScene::Initialize()
 	ParticleEffectManager::GetInstance()->Register("circleExpand", std::move(circleExpandParticle));
 }
 
-void GamePlayScene::Finalize()
-{
-}
+void GamePlayScene::Finalize() {}
 
-void GamePlayScene::Update() { 
+void GamePlayScene::Update() {
 	/*ShowCursor(FALSE);*/
 
 	// 追従カメラの更新
@@ -130,7 +120,6 @@ void GamePlayScene::Update() {
 	CameraShake::GetInstance()->Update();
 	// 追従カメラ + カメラシェイクを現在カメラに適用
 	camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
-
 
 	// フィールド更新
 	field_->Update();
@@ -141,7 +130,6 @@ void GamePlayScene::Update() {
 	// 障害物の更新
 	obstacleManager_->Update();
 
-
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
 	CollisionManager::GetInstance()->Update();
 	// タイムマネージャー更新（deltaTime計算）
@@ -149,21 +137,20 @@ void GamePlayScene::Update() {
 	// パーティクルエフェクトマネージャー更新
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
-#ifdef _DEBUG 
+#ifdef _DEBUG
 	// デバッグカメラ更新
 	DebugCameraUpdate(input);
 #endif
 }
 
-void GamePlayScene::Draw()
-{
+void GamePlayScene::Draw() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 	SRVManager* srvManager = SRVManager::GetInstance();
 
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -180,7 +167,7 @@ void GamePlayScene::Draw()
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
-	/// 
+	///
 
 	// フィールド描画
 	field_->Draw();
@@ -196,14 +183,14 @@ void GamePlayScene::Draw()
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
-	/// 
+	///
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
 	spriteCommon->PreDraw();
 
 	///
 	/// ↓ ここからスプライトの描画コマンド
-	/// 
+	///
 
 	// プレイヤーUI描画
 	player_->DrawUI();
@@ -212,9 +199,9 @@ void GamePlayScene::Draw()
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
-	/// 
+	///
 
-#ifdef _DEBUG 
+#ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
@@ -247,8 +234,7 @@ void GamePlayScene::Draw()
 }
 
 #ifdef _DEBUG
-void GamePlayScene::DebugCameraUpdate(Input* input)
-{
+void GamePlayScene::DebugCameraUpdate(Input* input) {
 	// 前回のカメラモード状態を保持
 	static bool prevUseDebugCamera = false;
 

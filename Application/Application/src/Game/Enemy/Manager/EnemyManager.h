@@ -4,16 +4,15 @@
 #include <Engine/Model/ModelManager.h>
 
 // Application
-#include <src/Game/Loader/Loader.h>
 #include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Loader/Loader.h>
 
 class Player;
 
 /// <summary>
 /// 敵の管理
 /// </summary>
-class EnemyManager
-{
+class EnemyManager {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -76,4 +75,3 @@ private:
 	// プレイヤーのポインタ
 	Player* player_ = nullptr;
 };
-
