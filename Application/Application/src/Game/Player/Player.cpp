@@ -90,6 +90,8 @@ void Player::Update() {
 	///	内部処理
 	///
 
+	// カーソル方向へ向くよう回転
+	FaceCursor();
 	// 移動処理
 	HandleMove();
 	// 弾の発射処理
@@ -229,6 +231,20 @@ void Player::Debug() {
 
 	ImGui::End();
 #endif //  _DEBUG
+}
+
+// ---------------------------------------------------------
+// カーソル方向へ向くよう回転させる
+// ---------------------------------------------------------
+void Player::FaceCursor() {
+	// プレイヤーからカーソルへの方向ベクトル
+	Float3 direction = Utility::CalclateCursorPosition() - objectPlayer_->transform_.translate;
+
+	// 方向ベクトルからY軸回転角度を計算
+	float angle = std::atan2(direction.x, direction.z);
+
+	// Y軸に回転を適用
+	objectPlayer_->transform_.rotate.y = angle;
 }
 
 // ---------------------------------------------------------

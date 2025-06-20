@@ -28,6 +28,11 @@ public:
 	virtual void Update(Player* player) = 0;
 
 	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	virtual void UpdateBullets() = 0;
+
+	/// <summary>
 	/// 描画処理
 	/// </summary>
 	virtual void Draw() = 0;

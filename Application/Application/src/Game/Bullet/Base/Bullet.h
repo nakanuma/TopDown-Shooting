@@ -31,6 +31,11 @@ public:
 	virtual bool IsDead() const { return isDead_; }
 
 	/// <summary>
+	/// 死亡させる
+	/// </summary>
+	virtual void Dead() { isDead_ = true; }
+
+	/// <summary>
 	/// 攻撃力の取得
 	/// </summary>
 	virtual int32_t GetDamage() const { return damage_; }

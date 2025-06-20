@@ -18,18 +18,18 @@ void FollowCamera::Update() {
 	// 追従位置（プレイヤー + オフセット）
 	Float3 targetPos = *targetTranslate_ + offset_;
 
-	//// カーソルのワールド座標を取得
-	//Float3 cursorPos = Utility::CalclateCursorPosition();
+	// カーソルのワールド座標を取得
+	Float3 cursorPos = Utility::CalclateCursorPosition();
 
-	//// カーソルの方向へ補正
-	//Float3 cursorOffset = cursorPos - *targetTranslate_;
+	// カーソルの方向へ補正
+	Float3 cursorOffset = cursorPos - *targetTranslate_;
 
-	//// カメラ補正の強さ（小さくしてカメラが少しだけ動くように）
-	//float influence = 0.25f;
-	//cursorOffset *= influence;
+	// カメラ補正の強さ（小さくしてカメラが少しだけ動くように）
+	float influence = 0.25f;
+	cursorOffset *= influence;
 
-	//// 最終的なターゲット位置にカーソル補正を加える
-	//targetPos += cursorOffset;
+	// 最終的なターゲット位置にカーソル補正を加える
+	targetPos += cursorOffset;
 
 	// なめらかに追従
 	currentPos_ = Float3::Lerp(currentPos_, targetPos, 0.75f);

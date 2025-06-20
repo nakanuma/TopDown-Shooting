@@ -120,6 +120,28 @@ void NormalEnemy::Update(Player* player) {
 }
 
 // ---------------------------------------------------------
+// 弾の更新処理
+// ---------------------------------------------------------
+void NormalEnemy::UpdateBullets()
+{
+	// 全ての弾を更新
+	for (auto& bullet : bullets_) {
+		bullet->Update();
+	}
+
+	// 弾の削除処理
+	for (auto& bullet : bullets_) {
+		if (bullet->IsDead()) {
+			bullet->OnDestroy();
+		}
+	}
+
+	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), 
+		[](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), 
+		bullets_.end());
+}
+
+// ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
 void NormalEnemy::Draw() {
@@ -232,24 +254,6 @@ void NormalEnemy::UpdateCollider() {
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;
 	}
-}
-
-// ---------------------------------------------------------
-// 弾の更新処理
-// ---------------------------------------------------------
-void NormalEnemy::UpdateBullets() {
-	// 全ての弾を更新
-	for (auto& bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// 弾の削除処理
-	for (auto& bullet : bullets_) {
-		if (bullet->IsDead()) {
-			bullet->OnDestroy();
-		}
-	}
-	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), [](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), bullets_.end());
 }
 
 // ---------------------------------------------------------

@@ -90,6 +90,11 @@ private:
 	void Debug();
 
 	/// <summary>
+	/// カーソル方向へ向くよう回転させる
+	/// </summary>
+	void FaceCursor();
+
+	/// <summary>
 	/// 移動処理 & ダッシュ入力
 	/// </summary>
 	void HandleMove();
