@@ -36,8 +36,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	// プレイヤーモデル読み込み
-	modelPlayer_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
-	modelPlayer_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelPlayer_ = ModelManager::LoadModelFile("resources/Models", "Character/Player/player.obj", dxBase->GetDevice());
+	modelPlayer_.material.textureHandle = TextureManager::Load("resources/Images/Character/Player/player.png", dxBase->GetDevice());
 
 	// プレイヤーオブジェクト生成
 	objectPlayer_ = std::make_unique<Object3D>();
@@ -399,7 +399,7 @@ void Player::UpdateBullets() {
 void Player::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectPlayer_->transform_.translate;
-		Float3 size = objectPlayer_->transform_.scale;
+		Float3 size = kColliderSize;
 
 		// min
 		aabb->min_ = center - size;

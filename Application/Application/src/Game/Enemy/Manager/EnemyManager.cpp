@@ -17,8 +17,8 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	///
 
 	// 通常敵モデル
-	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
-	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/NormalEnemy/normalEnemy.obj", dxBase->GetDevice());
+	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/NormalEnemy/normalEnemy.png", dxBase->GetDevice());
 	// （追加）敵モデル
 
 	// 弾モデル

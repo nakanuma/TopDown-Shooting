@@ -49,6 +49,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	collider_ = std::make_unique<AABBCollider>();
 	collider_->SetTag("NormalEnemy");
 	collider_->SetOwner(this);
+	colliderSize_ = { 1.0f, 2.0f, 1.0f };
 
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
@@ -178,6 +179,13 @@ void NormalEnemy::OnCollision(Collider* other) {
 	/// vs PlayerBullet
 	///
 	if (other->GetTag() == "PlayerBullet") {
+		///
+		///	現在が警戒ステートなら移動ステートへ移行
+		/// 
+		if (state_ == EnemyState::Alert) {
+			state_ = EnemyState::Move;
+		}
+
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -218,7 +226,7 @@ void NormalEnemy::OnCollision(Collider* other) {
 void NormalEnemy::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = objectEnemy_->transform_.scale;
+		Float3 size = colliderSize_;
 
 		// min
 		aabb->min_ = center - size;
@@ -274,8 +282,15 @@ void NormalEnemy::UpdateState(Player* player) {
 // 警戒ステート更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) {
-	// プレイヤーが一定距離に入ったら移動ステートへ
-	if (distanceToPlayer < detectionRange_) {
+	// プレイヤー方向へのレイキャスト
+	RayCastHit hit{};
+	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
+
+	bool isInDetectionRange = distanceToPlayer < detectionRange_; // プレイヤーが索敵範囲内かどうか
+	bool hasLineOfSight = rayCastHit && hit.hitCollider->GetTag() != "NormalObstacle"; // プレイヤーとの間に障害物がない場合（視線が通っている場合）
+
+	// 条件を満たしていれば移動ステートへ移行
+	if (isInDetectionRange && hasLineOfSight) {
 		state_ = EnemyState::Move;
 	}
 }
