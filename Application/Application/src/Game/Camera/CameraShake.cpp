@@ -4,26 +4,24 @@
 #include <random>
 
 // ---------------------------------------------------------
-// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìæ“¾
+// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å–å¾—
 // ---------------------------------------------------------
-CameraShake* CameraShake::GetInstance() 
-{ 
+CameraShake* CameraShake::GetInstance() {
 	static CameraShake instance;
 	return &instance;
 }
 
 // ---------------------------------------------------------
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 // ---------------------------------------------------------
-void CameraShake::Update() 
-{
+void CameraShake::Update() {
 	if (isShaking_) {
 		elapsedTime_ += kDeltaTime;
-		// ƒVƒFƒCƒNI—¹
+		// ã‚·ã‚§ã‚¤ã‚¯çµ‚äº†
 		if (elapsedTime_ >= duration_) {
 			isShaking_ = false;
-			offset_ = Float3(0.0f, 0.0f, 0.0f); // ƒIƒtƒZƒbƒg‚ÌƒŠƒZƒbƒg
-			// ƒVƒFƒCƒN’†
+			offset_ = Float3(0.0f, 0.0f, 0.0f); // ã‚ªãƒ•ã‚»ãƒƒãƒˆã®ãƒªã‚»ãƒƒãƒˆ
+			                                    // ã‚·ã‚§ã‚¤ã‚¯ä¸­
 		} else {
 			ApplyShake();
 		}
@@ -31,23 +29,21 @@ void CameraShake::Update()
 }
 
 // ---------------------------------------------------------
-// ƒVƒFƒCƒNŠJn
+// ã‚·ã‚§ã‚¤ã‚¯é–‹å§‹
 // ---------------------------------------------------------
-void CameraShake::StartShake(float duration, float intensity) 
-{
-	duration_ = duration; // Œp‘±ŠÔƒZƒbƒg
-	intensity_ = intensity; // ‹­“xƒZƒbƒg
-	elapsedTime_ = 0.0f; // Œo‰ßŠÔƒŠƒZƒbƒg
-	isShaking_ = true; // ƒVƒFƒCƒNŠJn
+void CameraShake::StartShake(float duration, float intensity) {
+	duration_ = duration;   // ç¶™ç¶šæ™‚é–“ã‚»ãƒƒãƒˆ
+	intensity_ = intensity; // å¼·åº¦ã‚»ãƒƒãƒˆ
+	elapsedTime_ = 0.0f;    // çµŒéæ™‚é–“ãƒªã‚»ãƒƒãƒˆ
+	isShaking_ = true;      // ã‚·ã‚§ã‚¤ã‚¯é–‹å§‹
 }
 
 // ---------------------------------------------------------
-// ƒVƒFƒCƒN“K—p
+// ã‚·ã‚§ã‚¤ã‚¯é©ç”¨
 // ---------------------------------------------------------
-void CameraShake::ApplyShake() 
-{
-	// c‚èŠÔ‚ÉŠî‚Ã‚¢‚Ä‹­“x‚ğüŒ`‚ÉŒ¸­‚³‚¹‚é
-	float remainingTime = duration_ - elapsedTime_; // c‚èŠÔ
+void CameraShake::ApplyShake() {
+	// æ®‹ã‚Šæ™‚é–“ã«åŸºã¥ã„ã¦å¼·åº¦ã‚’ç·šå½¢ã«æ¸›å°‘ã•ã›ã‚‹
+	float remainingTime = duration_ - elapsedTime_; // æ®‹ã‚Šæ™‚é–“
 	float currentIntensity = intensity_ * (remainingTime / duration_);
 
 	std::random_device rd;

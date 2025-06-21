@@ -1,4 +1,4 @@
-﻿#include "ObstacleManager.h"
+#include "ObstacleManager.h"
 
 // Externals
 #include <ImguiWrapper.h>
@@ -24,8 +24,8 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 	///
 	///	各障害物の生成
-	/// 
-	
+	///
+
 	for (const auto& data : datas) {
 		// 通常障害物
 		if (data.tag == "NORMAL_OBSTACLE") {
@@ -36,15 +36,13 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 		}
 
 		// 新しく追加
-
 	}
 }
 
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void ObstacleManager::Update() 
-{
+void ObstacleManager::Update() {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
 		obstacle->Update();
@@ -54,8 +52,7 @@ void ObstacleManager::Update()
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void ObstacleManager::Draw() 
-{
+void ObstacleManager::Draw() {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
 		obstacle->Draw();
@@ -70,8 +67,7 @@ void ObstacleManager::Draw()
 // ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
-void ObstacleManager::Debug() 
-{
+void ObstacleManager::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("obstacleManager");
 

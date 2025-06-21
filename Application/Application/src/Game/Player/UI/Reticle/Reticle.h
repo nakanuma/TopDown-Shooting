@@ -1,14 +1,13 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <SpriteCommon.h>
 #include <Sprite.h>
+#include <SpriteCommon.h>
 
 /// <summary>
 /// レティクル
 /// </summary>
-class Reticle 
-{
+class Reticle {
 public:
 	/// <summary>
 	/// 更新処理

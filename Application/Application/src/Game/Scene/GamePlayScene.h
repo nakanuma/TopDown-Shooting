@@ -1,33 +1,29 @@
-#pragma once 
+#pragma once
 
 // Engine
 #include "BaseScene.h"
 #include "Camera.h"
 #include "DebugCamera.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
-#include "Sprite.h"
+#include "Input.h"
+#include "LightManager.h"
 #include "ModelManager.h"
 #include "Object3D.h"
 #include "SoundManager.h"
-#include "Input.h"
-#include "LightManager.h"
+#include "Sprite.h"
+#include "SpriteCommon.h"
+#include "TextureManager.h"
 #include <Engine/Collider/CollisionManager.h>
 #include <Engine/Util/TimeManager.h>
 
 // Application
-#include <src/Game/Loader/Loader.h>
-#include <src/Game/Field/Field.h>
-#include <src/Game/Player/Player.h>
-#include <src/Game/Enemy/Manager/EnemyManager.h>
-#include <src/Game/Obstacle/Manager/ObstacleManager.h>
-
-#include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
-
 #include <src/Game/Camera/FollowCamera.h>
+#include <src/Game/Enemy/Manager/EnemyManager.h>
+#include <src/Game/Field/Field.h>
+#include <src/Game/Loader/Loader.h>
+#include <src/Game/Obstacle/Manager/ObstacleManager.h>
+#include <src/Game/Player/Player.h>
 
-class GamePlayScene : public BaseScene
-{
+class GamePlayScene : public BaseScene {
 public:
 	// 初期化
 	void Initialize() override;
@@ -87,5 +83,6 @@ private:
 
 	/* パーティクル用モデル（あとで適切な位置に整理） */
 	ModelManager::ModelData modelSparkShrink_;
+	ModelManager::ModelData modelSparkStar_;
+	ModelManager::ModelData modelCircleExpand_;
 };
-

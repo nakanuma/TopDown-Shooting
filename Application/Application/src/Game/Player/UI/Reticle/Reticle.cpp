@@ -1,8 +1,8 @@
-﻿#include "Reticle.h"
+#include "Reticle.h"
 
 // Engine
-#include <Engine/Texture/TextureManager.h>
 #include <Engine/3D/Camera.h>
+#include <Engine/Texture/TextureManager.h>
 
 // Application
 #include <src/Game/Utility/Utility.h>
@@ -13,7 +13,7 @@
 void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	///
 	///	クロスへア（十字線）
-	/// 
+	///
 
 	uint32_t textureTarget = TextureManager::Load("resources/Images/UI/crosshair.png", dxBase->GetDevice());
 	spriteCrosshair_ = std::make_unique<Sprite>();
@@ -25,11 +25,10 @@ void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void Reticle::Update() 
-{
+void Reticle::Update() {
 	///
 	///	クロスヘア（十字線）
-	/// 
+	///
 
 	spriteCrosshair_->Update();
 
@@ -48,11 +47,10 @@ void Reticle::Update()
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void Reticle::Draw() 
-{
+void Reticle::Draw() {
 	///
 	///	クロスヘア（十字線）
-	/// 
-	
+	///
+
 	spriteCrosshair_->Draw();
 }

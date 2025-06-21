@@ -65,11 +65,26 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
             self.report({'ERROR'}, f"Unknown tag: {self.tag}")
             return {'CANCELLED'}
         
+        # 初期配置位置（デフォルト）
+        location = (0, 0, 1)
+        # 初期Zスケール（デフォルト）
+        z_scale = 1.0
+
+        # PLAYERタグの場合はZ=2に調整
+        if self.tag == "PLAYER":
+            location = (0, 0, 2)
+            z_scale = 2.0
+        # NORMAL_ENEMYタグの場合はZ=2に調整
+        elif self.tag == "NORMAL_ENEMY":
+            location = (0, 0, 2)
+            z_scale = 2.0
+
         # キューブ生成
-        bpy.ops.mesh.primitive_cube_add(size=2, location=(0, 0, 1))
+        bpy.ops.mesh.primitive_cube_add(size=2, location=location)
         obj = context.active_object
         obj.name = f"{info['name']}"
         obj["object_tag"] = self.tag # カスタムプロパティとして保存
+        obj.scale = (1.0, 1.0, z_scale) # Zスケール調整
 
         # マテリアル設定
         mat = create_material(self.tag)
@@ -86,9 +101,15 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
 # ---------------------------
 class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
     bl_idname = "object.export_tagged_objects_json"
-    bl_label = "Export Tagged Objects as JSON"
+    bl_description = "Export tagged objects to a JSON file"
+    bl_label = "Export"
 
-    filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+    filepath: bpy.props.StringProperty(
+        name="File Path",
+        description="File path to export the JSON data",
+        default="",
+        subtype="FILE_PATH"
+        )
 
     def execute(self, context):
         export_data = []

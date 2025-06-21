@@ -1,24 +1,23 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <Object3D.h>
-#include <Input/Input.h>
-#include <SpriteCommon.h>
-#include <Sprite.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Input/Input.h>
+#include <Object3D.h>
+#include <Sprite.h>
+#include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
 
 // Application
-#include <src/Game/Loader/Loader.h>
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
+#include <src/Game/Loader/Loader.h>
 #include <src/Game/Player/UI/PlayerUIManager.h>
 
 /// <summary>
 /// プレイヤー
 /// </summary>
-class Player : public ICollisionCallback, public IConfigurable
-{
+class Player : public ICollisionCallback, public IConfigurable {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -68,7 +67,7 @@ public:
 	/// <summary>
 	/// リロードタイマーの取得
 	/// </summary>
-	float GetReloadTimer() const { return reloadTimer_; } 
+	float GetReloadTimer() const { return reloadTimer_; }
 
 	/// <summary>
 	/// 最大リロード時間の取得
@@ -91,7 +90,12 @@ private:
 	void Debug();
 
 	/// <summary>
-	/// 移動処理
+	/// カーソル方向へ向くよう回転させる
+	/// </summary>
+	void FaceCursor();
+
+	/// <summary>
+	/// 移動処理 & ダッシュ入力
 	/// </summary>
 	void HandleMove();
 
@@ -144,6 +148,9 @@ private:
 
 	std::unique_ptr<Collider> collider_;
 
+	// コライダーのサイズ
+	const Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };
+
 	// ---------------------------------------------------------
 	// UI
 	// ---------------------------------------------------------
@@ -163,6 +170,25 @@ private:
 	const int32_t kMaxHP = 100;
 	// 現在HP
 	int32_t currentHP_;
+
+	// ---------------------------------------------------------
+	// ダッシュ関連
+	// ---------------------------------------------------------
+
+	// ダッシュ中か
+	bool isDashing_ = false;
+	// ダッシュ継続時間
+	const float kDashDuration = 0.2f;
+	// ダッシュ中タイマー
+	float dashTimer_ = 0.0f;
+
+	// ダッシュのクールタイム時間
+	const float kDashCoolDown = 1.5f;
+	// ダッシュのクールタイムのタイマー
+	float dashCooldownTimer_ = 0.0f;
+
+	// ダッシュ時のスピード倍率
+	float kDashSpeedMultiplier = 3.0f;
 
 	// ---------------------------------------------------------
 	// 弾関連

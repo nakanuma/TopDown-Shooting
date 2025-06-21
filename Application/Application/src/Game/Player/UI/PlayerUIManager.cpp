@@ -1,4 +1,4 @@
-﻿#include "PlayerUIManager.h"
+#include "PlayerUIManager.h"
 
 // Engine
 #include <Engine/Texture/TextureManager.h>
@@ -9,8 +9,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void PlayerUIManager::Initialize() 
-{
+void PlayerUIManager::Initialize() {
 	///
 	///	基盤機能
 	///
@@ -23,7 +22,7 @@ void PlayerUIManager::Initialize()
 
 	///
 	///	UI生成・初期化
-	/// 
+	///
 
 	// レティクル
 	reticle_ = std::make_unique<Reticle>();
@@ -55,8 +54,7 @@ void PlayerUIManager::Update(const Player* player) {
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void PlayerUIManager::Draw() 
-{
+void PlayerUIManager::Draw() {
 	// レティクル
 	reticle_->Draw();
 

@@ -1,17 +1,21 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <Engine/3D/Object3D.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Engine/3D/Object3D.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
+
+// Application
+#include <src/Game/Bullet/Base/Bullet.h>
+
+class Player;
 
 /// <summary>
 /// 敵の基底クラス
 /// </summary>
-class Enemy
-{
+class Enemy {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -21,7 +25,12 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	virtual void Update() = 0;
+	virtual void Update(Player* player) = 0;
+
+	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	virtual void UpdateBullets() = 0;
 
 	/// <summary>
 	/// 描画処理
@@ -52,7 +61,7 @@ public:
 	/// 現在位置の取得
 	/// </summary>
 	Float3& GetTranslate() const { return objectEnemy_->transform_.translate; }
-		 
+
 	/// <summary>
 	/// 残りHPの取得
 	/// </summary>
@@ -79,12 +88,21 @@ protected:
 	// コライダー
 	std::unique_ptr<Collider> collider_;
 
+	// コライダーのサイズ
+	Float3 colliderSize_;
+
+	// ---------------------------------------------------------
+	// 弾
+	// ---------------------------------------------------------
+
+	std::vector<std::unique_ptr<Bullet>> bullets_;
+
 	// ---------------------------------------------------------
 	// スプライト関連
 	// ---------------------------------------------------------
 
 	// HPバーの最大サイズ
-	const Float2 kHPBarSize = { 100.0f, 20.0f };
+	const Float2 kHPBarSize = {100.0f, 20.0f};
 
 	// HPバー（後景）
 	std::unique_ptr<Sprite> spriteHPBackground_;

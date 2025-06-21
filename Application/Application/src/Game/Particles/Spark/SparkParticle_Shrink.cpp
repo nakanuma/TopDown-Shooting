@@ -1,4 +1,4 @@
-﻿#include "SparkParticle_Shrink.h"
+#include "SparkParticle_Shrink.h"
 
 // C++
 #include <numbers>
@@ -10,9 +10,8 @@
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-SparkParticle_Shrink::SparkParticle_Shrink(ModelManager::ModelData& model) 
-{ 
-	object_.model_ = &model; 
+SparkParticle_Shrink::SparkParticle_Shrink(ModelManager::ModelData& model) {
+	object_.model_ = &model;
 	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
 	object_.gTransformationMatrices.Create();
 
@@ -25,11 +24,10 @@ SparkParticle_Shrink::SparkParticle_Shrink(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos) 
-{ 
+SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos) {
 	float randAngle = RandomGenerator::GetInstance()->RandomValue(0.0f, std::numbers::pi_v<float> * 2.0f); // 角度。0 ~ 360度
-	float randSpeed = RandomGenerator::GetInstance()->RandomValue(0.1f, 0.2f); // 速さ
-	float randLifeTime = RandomGenerator::GetInstance()->RandomValue(0.2f, 0.4f); // 生存時間
+	float randSpeed = RandomGenerator::GetInstance()->RandomValue(0.1f, 0.2f);                             // 速さ
+	float randLifeTime = RandomGenerator::GetInstance()->RandomValue(0.2f, 0.4f);                          // 生存時間
 
 	SparkParticleShrinkData p;
 	p.transform.translate = pos;
@@ -41,7 +39,6 @@ SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos)
 	p.currentTime = 0.0f;
 
 	p.initScale = p.transform.scale;
-	p.isUpdate = false;
 
 	return p;
 }
@@ -49,8 +46,7 @@ SparkParticleShrinkData SparkParticle_Shrink::CreateParticle(const Float3& pos)
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void SparkParticle_Shrink::UpdateParticle(SparkParticleShrinkData& p, float dt) 
-{
+void SparkParticle_Shrink::UpdateParticle(SparkParticleShrinkData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 減速

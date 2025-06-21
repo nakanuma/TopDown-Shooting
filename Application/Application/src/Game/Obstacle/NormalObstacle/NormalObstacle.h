@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Application
 #include <src/Game/Obstacle/Base/Obstacle.h>
@@ -6,8 +6,7 @@
 /// <summary>
 /// 通常の障害物
 /// </summary>
-class NormalObstacle : public Obstacle, public ICollisionCallback
-{
+class NormalObstacle : public Obstacle, public ICollisionCallback {
 public:
 	/// <summary>
 	/// 初期化処理

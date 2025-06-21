@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 
 // Engine
-#include <Engine/3D/Object3D.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
+#include <Engine/3D/Object3D.h>
 
 /// <summary>
 /// 弾の基底クラス
@@ -29,6 +29,11 @@ public:
 	/// 死亡フラグの取得
 	/// </summary>
 	virtual bool IsDead() const { return isDead_; }
+
+	/// <summary>
+	/// 死亡させる
+	/// </summary>
+	virtual void Dead() { isDead_ = true; }
 
 	/// <summary>
 	/// 攻撃力の取得

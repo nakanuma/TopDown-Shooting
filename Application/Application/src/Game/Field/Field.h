@@ -1,10 +1,9 @@
-﻿#pragma once
+#pragma once
 
 // Engine
 #include <Object3D.h>
 
-class Field
-{
+class Field {
 public:
 	void Initialize();
 	void Update();
@@ -17,4 +16,3 @@ private:
 	ModelManager::ModelData modelFloor_;
 	std::unique_ptr<Object3D> objectFloor_;
 };
-

@@ -1,4 +1,4 @@
-﻿#include "PlayerBullet.h"
+#include "PlayerBullet.h"
 
 // Engine
 #include <Collider/CollisionManager.h>
@@ -13,7 +13,7 @@
 void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
-	/// 
+	///
 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
@@ -22,7 +22,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 
 	///
 	///	コライダー生成
-	/// 
+	///
 
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->SetTag("PlayerBullet");
@@ -33,7 +33,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 
 	///
 	///	パラメーター設定
-	/// 
+	///
 
 	// 攻撃力
 	damage_ = 1;
@@ -75,12 +75,15 @@ void PlayerBullet::Draw() {
 // ---------------------------------------------------------
 // 衝突時コールバック
 // ---------------------------------------------------------
-void PlayerBullet::OnCollision(Collider* other)
-{
+void PlayerBullet::OnCollision(Collider* other) {
+	Float3 bulletPos = this->objectBullet_->transform_.translate;
+
 	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
-		// 火花パーティクル（縮小）発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", this->objectBullet_->transform_.translate, 15);
+		// ヒットエフェクト発生
+		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
+		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
+		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
 
 		// 死亡させる
 		isDead_ = true;
@@ -88,23 +91,30 @@ void PlayerBullet::OnCollision(Collider* other)
 
 	// vs NormalObstacle
 	if (other->GetTag() == "NormalObstacle") {
-		AABBCollider* aabb = dynamic_cast<AABBCollider*>(other);
-		if (aabb) {
-			// 法線を取得
-			Float3 normal = aabb->GetContactNormalFromSphere(objectBullet_->transform_.translate);
+		// ヒットエフェクト発生
+		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
+		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
+		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
 
-			// 速度ベクトルを法線で反射させる
-			float dot = Float3::Dot(velocity_, normal);
-			velocity_ = velocity_ - 2.0f * dot * normal;
-		}
+		// 死亡させる
+		isDead_ = true;
+
+		// AABBCollider* aabb = dynamic_cast<AABBCollider*>(other);
+		// if (aabb) {
+		//	// 法線を取得
+		//	Float3 normal = aabb->GetContactNormalFromSphere(objectBullet_->transform_.translate);
+
+		//	// 速度ベクトルを法線で反射させる
+		//	float dot = Float3::Dot(velocity_, normal);
+		//	velocity_ = velocity_ - 2.0f * dot * normal;
+		//}
 	}
 }
 
 // ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
-void PlayerBullet::UpdateCollider()
-{
+void PlayerBullet::UpdateCollider() {
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
 		// 中心
 		sphere->center_ = objectBullet_->transform_.translate;

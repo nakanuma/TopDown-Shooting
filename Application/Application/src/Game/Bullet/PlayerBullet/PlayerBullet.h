@@ -1,8 +1,11 @@
-﻿#pragma once
+#pragma once
 
 // Application
 #include <src/Game/Bullet/Base/Bullet.h>
 
+/// <summary>
+/// プレイヤー弾
+/// </summary>
 class PlayerBullet : public Bullet, public ICollisionCallback {
 public:
 	/// <summary>

@@ -1,17 +1,16 @@
 #pragma once
 #include "BaseScene.h"
 #include "Camera.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
-#include "Sprite.h"
+#include "Input.h"
 #include "ModelManager.h"
 #include "Object3D.h"
 #include "SoundManager.h"
-#include "Input.h"
+#include "Sprite.h"
+#include "SpriteCommon.h"
+#include "TextureManager.h"
 
 // ゲームプレイシーン
-class TitleScene : public BaseScene
-{
+class TitleScene : public BaseScene {
 public:
 	// 初期化
 	void Initialize() override;
@@ -43,4 +42,3 @@ private:
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
 };
-
