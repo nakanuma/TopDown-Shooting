@@ -2,6 +2,8 @@
 
 // C++
 #include <algorithm>
+#include <Windows.h>
+#include <cstdio>
 
 // Engine
 #include <Camera.h>
@@ -279,6 +281,9 @@ void NormalEnemy::UpdateState(Player* player) {
 	case EnemyState::Attack:
 		UpdateAttackState(playerPos, enemyPos, distanceToPlayer);
 		break;
+
+	default:
+		break;
 	}
 }
 
@@ -311,7 +316,7 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 	case AlertSubState::Rotate: {
 		if (alertRotateDuration_ == 0.0f) {
 			alertRotateDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime); // ランダムな回転時間を設定
-			isRotatingRight_ = RandomGenerator::GetInstance()->RandomValue(false, true); // ランダムな回転方向を設定
+			isRotatingRight_ = RandomGenerator::GetInstance()->RandomValueBool();
 		}
 
 		// 回転方向への回転適用
@@ -348,7 +353,7 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 
 		// 向いている方向へ直進
 		Float3 forward = { std::sinf(objectEnemy_->transform_.rotate.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate.y) };
-		objectEnemy_->transform_.translate += forward * moveSpeed_;
+		objectEnemy_->transform_.translate += forward * (moveSpeed_ * 0.5f); // ゆっくりめに移動
 
 		// 直進時間を過ぎたら直進後ステートへ
 		if (alertStateTimer_ >= moveForwardDuration_) {
@@ -373,6 +378,10 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 
 		break;
 	}
+	default:
+
+		break;
+
 	}
 }
 
@@ -381,54 +390,170 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 // 移動ステート更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateMoveState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) {
-	// プレイヤーの方向へ移動
-	Float3 direction = playerPos - enemyPos;
-	direction = Float3::Normalize(direction);
+	moveStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
-	objectEnemy_->transform_.translate += direction * moveSpeed_;
+	///
+	/// プレイヤーとの視線チェック（障害物判定）
+	/// 
 
-	// 攻撃距離に入ったら攻撃ステートへ
-	if (distanceToPlayer < attackRange_) {
-		state_ = EnemyState::Attack;
-		attackTimer_ = 0.0f;
+	// プレイヤー方向へのレイキャスト
+	RayCastHit hit{};
+	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
+
+	// 障害物に遮られている時間を計測
+	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
+		obstacleLostTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		// 上限に達したら警戒ステートへ
+		if (obstacleLostTimer_ >= kLostTime) {
+			state_ = EnemyState::Alert;
+			moveStateTimer_ = 0.0f;
+			obstacleLostTimer_ = 0.0f;
+			return;
+		}
+	// 遮られていなければタイマーリセット
+	} else {
+		obstacleLostTimer_ = 0.0f;
 	}
+
+	///
+	///	プレイヤー方向へ向く
+	/// 
+
+	// プレイヤーへの方向ベクトル
+	Float3 toPlayer = playerPos - enemyPos;
+	// 方向ベクトルからY軸回転角度を計算
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸に回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
+
+	///
+	/// プレイヤーとの距離に応じた動き
+	///
+
+	Float3 moveDir;
+	// 適正戦闘範囲外なら接近
+	if (distanceToPlayer > kOptimalCombatRange) {
+		moveDir = Float3::Normalize(toPlayer);
+	}
+	// 適正戦闘範囲内なら離脱
+	else if (distanceToPlayer < kOptimalCombatRange * 0.7f) {
+		moveDir = Float3::Normalize(toPlayer * -1.0f);
+	}
+	// それ以外は斜め移動
+	else {
+		moveDir = Float3::Normalize({ -toPlayer.z, 0.0f, toPlayer.x });
+	}
+
+	// 移動を適用
+	objectEnemy_->transform_.translate += moveDir * moveSpeed_;
+
+	///
+	///	攻撃ステートへ
+	/// 
+
+	// 一時的に2秒移動したら攻撃ステートへ
+	if (moveStateTimer_ >= 2.0f) {
+		state_ = EnemyState::Attack;
+	}
+
 }
 
 // ---------------------------------------------------------
 // 攻撃ステート更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) {
-	// プレイヤーとの間に障害物があるか判定
-	RayCastHit hit{};
-	bool isBlocked = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
+	attackStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
-	// 間に障害物があれば警戒ステートへ
-	if (isBlocked && hit.hitCollider->GetTag() == "NormalObstacle") {
-		state_ = EnemyState::Alert;
+	///
+	/// プレイヤーとの視線チェック（障害物判定）
+	/// 
+
+	// プレイヤー方向へのレイキャスト
+	RayCastHit hit{};
+	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
+
+	// 障害物に遮られている時間を計測
+	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
+		obstacleLostTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		// 上限に達したら警戒ステートへ
+		if (obstacleLostTimer_ >= kLostTime) {
+			state_ = EnemyState::Alert;
+			moveStateTimer_ = 0.0f;
+			obstacleLostTimer_ = 0.0f;
+			return;
+		}
+		// 遮られていなければタイマーリセット
+	} else {
+		obstacleLostTimer_ = 0.0f;
+	}
+
+	///
+	///	プレイヤー方向へ向く
+	/// 
+
+	// プレイヤーへの方向ベクトル
+	Float3 toPlayer = playerPos - enemyPos;
+	// 方向ベクトルからY軸回転角度を計算
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸に回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
+
+	///
+	///	リロード処理
+	/// 
+	
+	if (isReloading_) {
+		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		// リロード時間に達したらリロード完了
+		if (reloadTimer_ >= kReloadTime) {
+			bulletRemaining_ = kMaxBullet; // 最大弾数を込める
+			reloadTimer_ = 0.0f; // リロードタイマーリセット
+			isReloading_ = false; // リロード終了
+		}
 		return;
 	}
 
-	// 攻撃のクールタイム更新
-	attackTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-	if (attackTimer_ < attackCooldown_)
-		return; // クールダウン中は早期リターン
+	///
+	///	発射間隔の調整
+	/// 
 
-	attackTimer_ = 0.0f;
+	if (attackStateTimer_ < nextShotInterval_) {
+		return;
+	}
+
+	///
+	///	弾数制限処理
+	/// 
+
+	// 残弾が0になったらリロード開始
+	if (bulletRemaining_ <= 0) {
+		isReloading_ = true;
+		reloadTimer_ = 0.0f;
+		return;
+	}
+
+	///
+	///	弾生成処理
+	/// 
 
 	// 発射方向
 	Float3 direction = playerPos - enemyPos;
-	direction.y = 0.0f;
-	direction = Float3::Normalize(direction);
-
 	// 拡散をランダムに設定
 	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
 	direction.x += randSpread;
-	direction.y += randSpread;
+	direction.z += randSpread;
 	direction = Float3::Normalize(direction);
 
-	// 弾の生成・初期化
+	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
-
 	bullets_.push_back(std::move(newBullet));
+
+	bulletRemaining_--; // 残弾を減らす
+	attackStateTimer_ = 0.0f; // 攻撃ステートタイマーをリセット
+	nextShotInterval_ = RandomGenerator::GetInstance()->RandomValue(0.0f, 0.5f); // 次までの発射間隔をランダムに設定
+
+	// 一時的に一発撃ったら移動ステートに戻す
+	state_ = EnemyState::Move;
+	moveStateTimer_ = 0.0f;
 }

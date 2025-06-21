@@ -112,6 +112,10 @@ private:
 	// 全体ステート
 	EnemyState state_ = EnemyState::Alert;
 
+	// 移動速度
+	float moveSpeed_ = 0.1f;
+
+
 	/*待機ステート関連*/
 	AlertSubState alertSubState_ = AlertSubState::Rotate;
 
@@ -133,20 +137,38 @@ private:
 	float moveForwardDuration_ = 0.0f;
 	const float kMinMoveTime = 0.8f;
 	const float kMaxMoveTime = 1.2f;
-
-
-
 	// 索敵距離
 	float detectionRange_ = 15.0f;
-	// 攻撃距離
-	float attackRange_ = 5.0f;
-	// 移動速度
-	float moveSpeed_ = 0.05f;
 
-	// 攻撃速度関連
-	float attackCooldown_ = 1.0f;
-	float attackTimer_ = 0.0f;
 
+	/* 移動ステート関連 */
+
+	// 移動ステート時タイマー
+	float moveStateTimer_ = 0.0f;
+	// 視線が障害物に遮られている時間を計測
+	float obstacleLostTimer_ = 0.0f;
+	// 警戒ステートへ戻るまでの時間上限
+	const float kLostTime = 2.0f;
+	// 適正戦闘範囲
+	const float kOptimalCombatRange = 10.0;
+
+
+	/* 攻撃ステート関連 */
+
+	// 攻撃ステート時タイマー
+	float attackStateTimer_ = 0.0f;
+	// 残弾数
+	int32_t bulletRemaining_ = 5;
+	// 弾の上限
+	const int32_t kMaxBullet = 5;
+	// リロード時フラグ
+	bool isReloading_ = false;
+	// リロード時タイマー
+	float reloadTimer_ = 0.0f;
+	// リロード時間
+	const float kReloadTime = 1.0f;
+	// 次の発射までの待ち時間
+	float nextShotInterval_ = 0.0f;
 	// 弾の拡散角
 	float bulletSpreadAngle_ = 0.1f;
 };
