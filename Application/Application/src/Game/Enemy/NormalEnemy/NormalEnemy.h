@@ -4,12 +4,22 @@
 #include <src/Game/Enemy/Base/Enemy.h>
 
 /// <summary>
-/// ステート
+/// 全体ステート
 /// </summary>
 enum class EnemyState {
 	Alert,   // 警戒中
 	Move,   // 接近中
 	Attack, // 攻撃中
+};
+
+/// <summary>
+/// 警戒時サブステート
+/// </summary>
+enum class AlertSubState {
+	Rotate, // 回転
+	WaitAfterRotate, // 回転後待機
+	MoveForward, // 直進
+	WaitAfterMove // 直進後待機
 };
 
 /// <summary>
@@ -99,8 +109,32 @@ private:
 	// パラメーター
 	// ---------------------------------------------------------
 
-	// ステート
+	// 全体ステート
 	EnemyState state_ = EnemyState::Alert;
+
+	/*待機ステート関連*/
+	AlertSubState alertSubState_ = AlertSubState::Rotate;
+
+	// 警戒ステート時タイマー
+	float alertStateTimer_ = 0.0f;
+	// 待機時間（ランダム）
+	float waitDuration_ = 0.0f;
+	const float kMinWaitTime = 2.0f;
+	const float kMaxWaitTime = 4.0f;
+	// 回転時間（ランダム）
+	float alertRotateDuration_ = 0.0f;
+	const float kMinRotateTime = 1.0f;
+	const float kMaxRotateTime = 2.0f;
+	// 回転速度
+	float rotationSpeed_ = 0.01f;
+	// 回転方向（trueなら右回り、falseなら左回り）
+	float isRotatingRight_ = true;
+	// 移動時間（ランダム）
+	float moveForwardDuration_ = 0.0f;
+	const float kMinMoveTime = 0.8f;
+	const float kMaxMoveTime = 1.2f;
+
+
 
 	// 索敵距離
 	float detectionRange_ = 15.0f;

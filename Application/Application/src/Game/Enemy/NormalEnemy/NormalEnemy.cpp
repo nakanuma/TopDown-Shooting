@@ -39,8 +39,8 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
-	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
-	objectEnemy_->materialCB_.data_->color = {1.0f, 0.5f, 0.0f, 1.0f};
+	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
+	objectEnemy_->materialCB_.data_->color = { 1.0f, 0.5f, 0.0f, 1.0f };
 
 	///
 	///	コライダー生成
@@ -63,14 +63,14 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});
+	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({0.0f, 1.0f, 0.5f, 1.0f});
+	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f });
 
 	///
 	///	パラメーター設定
@@ -136,8 +136,8 @@ void NormalEnemy::UpdateBullets()
 		}
 	}
 
-	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), 
-		[](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), 
+	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+		[](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }),
 		bullets_.end());
 }
 
@@ -172,9 +172,9 @@ void NormalEnemy::DrawUI() {
 
 	// スクリーン座標をセット
 	spriteHPBackground_->SetPosition({
-	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-	    screenPosition.y - offset               // オフセット分上にずらす
-	});
+		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
+		screenPosition.y - offset               // オフセット分上にずらす
+		});
 	spriteHPBackground_->Draw();
 
 	///
@@ -182,14 +182,14 @@ void NormalEnemy::DrawUI() {
 	///
 
 	// 現在HPに応じてサイズ変更
-	Float2 hpBarForegroundSize = {kHPBarSize.x * hpRatio, kHPBarSize.y};
+	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
 
 	// スクリーン座標をセット
 	spriteHPForeground_->SetPosition({
-	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-	    screenPosition.y - offset               // オフセット分上にずらす
-	});
+		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
+		screenPosition.y - offset               // オフセット分上にずらす
+		});
 	spriteHPForeground_->Draw();
 }
 
@@ -265,17 +265,17 @@ void NormalEnemy::UpdateState(Player* player) {
 	float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
 
 	switch (state_) {
-	// 警戒ステート更新処理
+		// 警戒ステート更新処理
 	case EnemyState::Alert:
 		UpdateAlertState(playerPos, enemyPos, distanceToPlayer);
 		break;
 
-	// 移動ステート更新処理
+		// 移動ステート更新処理
 	case EnemyState::Move:
 		UpdateMoveState(playerPos, enemyPos, distanceToPlayer);
 		break;
 
-	// 攻撃ステート更新処理
+		// 攻撃ステート更新処理
 	case EnemyState::Attack:
 		UpdateAttackState(playerPos, enemyPos, distanceToPlayer);
 		break;
@@ -286,6 +286,10 @@ void NormalEnemy::UpdateState(Player* player) {
 // 警戒ステート更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) {
+	///
+	///	プレイヤーを発見したら移動ステートへ
+	/// 
+
 	// プレイヤー方向へのレイキャスト
 	RayCastHit hit{};
 	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
@@ -293,11 +297,85 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 	bool isInDetectionRange = distanceToPlayer < detectionRange_; // プレイヤーが索敵範囲内かどうか
 	bool hasLineOfSight = rayCastHit && hit.hitCollider->GetTag() != "NormalObstacle"; // プレイヤーとの間に障害物がない場合（視線が通っている場合）
 
-	// 条件を満たしていれば移動ステートへ移行
 	if (isInDetectionRange && hasLineOfSight) {
 		state_ = EnemyState::Move;
 	}
+
+	///
+	///	警戒モーション処理（待機 -> 回転 -> 待機 -> 移動 -> 待機 -> 回転...）
+	/// 
+
+	alertStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+
+	switch (alertSubState_) {
+	case AlertSubState::Rotate: {
+		if (alertRotateDuration_ == 0.0f) {
+			alertRotateDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime); // ランダムな回転時間を設定
+			isRotatingRight_ = RandomGenerator::GetInstance()->RandomValue(false, true); // ランダムな回転方向を設定
+		}
+
+		// 回転方向への回転適用
+		float rotateSpeed = (isRotatingRight_ ? 1.0f : -1.0f) * rotationSpeed_;
+		objectEnemy_->transform_.rotate.y += rotateSpeed;
+
+		// 回転時間を過ぎたら回転後ステートへ
+		if (alertStateTimer_ >= alertRotateDuration_) {
+			alertStateTimer_ = 0.0f; // タイマーリセット
+			alertRotateDuration_ = 0.0f; // 回転時間リセット
+			alertSubState_ = AlertSubState::WaitAfterRotate;
+		}
+
+		break;
+	}
+	case AlertSubState::WaitAfterRotate: {
+		if (waitDuration_ == 0.0f) {
+			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
+		}
+
+		// 待機時間が過ぎたら直進ステートへ
+		if (alertStateTimer_ >= waitDuration_) {
+			alertStateTimer_ = 0.0f; // タイマーリセット
+			waitDuration_ = 0.0f; // 待機時間リセット
+			alertSubState_ = AlertSubState::MoveForward;
+		}
+
+		break;
+	}
+	case AlertSubState::MoveForward: {
+		if (moveForwardDuration_ == 0.0f) {
+			moveForwardDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinMoveTime, kMaxMoveTime); // 直進時間をランダムに設定
+		}
+
+		// 向いている方向へ直進
+		Float3 forward = { std::sinf(objectEnemy_->transform_.rotate.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate.y) };
+		objectEnemy_->transform_.translate += forward * moveSpeed_;
+
+		// 直進時間を過ぎたら直進後ステートへ
+		if (alertStateTimer_ >= moveForwardDuration_) {
+			alertStateTimer_ = 0.0f; // タイマーリセット
+			moveForwardDuration_ = 0.0f; // 直進時間リセット
+			alertSubState_ = AlertSubState::WaitAfterMove;
+		}
+
+		break;
+	}
+	case AlertSubState::WaitAfterMove: {
+		if (waitDuration_ == 0.0f) {
+			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
+		}
+
+		// 待機時間が過ぎたら回転ステートへ
+		if (alertStateTimer_ >= waitDuration_) {
+			alertStateTimer_ = 0.0f; // タイマーリセット
+			waitDuration_ = 0.0f; // 待機時間リセット
+			alertSubState_ = AlertSubState::Rotate;
+		}
+
+		break;
+	}
+	}
 }
+
 
 // ---------------------------------------------------------
 // 移動ステート更新処理
