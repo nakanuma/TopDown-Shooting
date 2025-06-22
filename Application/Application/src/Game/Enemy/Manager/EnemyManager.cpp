@@ -149,9 +149,21 @@ void EnemyManager::Debug() {
 					break;
 				}
 				ImGui::Text("State : %s", stateName);
-			}
 
-			/* Add */
+				// リロード中？
+				if (normalEnemy->isReloading_) {
+					ImGui::Text("isReloading : true");
+				} else {
+					ImGui::Text("isReloading : false");
+				}
+
+				// リロード時間
+				ImGui::Text("reloadTimer : %.2f", normalEnemy->reloadTimer_);
+
+				// 残弾数
+				ImGui::Text("remainingBullets : %d", normalEnemy->bulletRemaining_);
+
+			}
 
 			ImGui::TreePop();
 		}

@@ -117,23 +117,25 @@ private:
 
 
 	/*待機ステート関連*/
-	AlertSubState alertSubState_ = AlertSubState::Rotate;
+	AlertSubState alertSubState_ = AlertSubState::WaitAfterMove;
 
 	// 警戒ステート時タイマー
 	float alertStateTimer_ = 0.0f;
 	// 待機時間（ランダム）
 	float waitDuration_ = 0.0f;
-	const float kMinWaitTime = 2.0f;
-	const float kMaxWaitTime = 4.0f;
+	const float kMinWaitTime = 1.5f;
+	const float kMaxWaitTime = 2.0f;
 	// 回転時間（ランダム）
 	float alertRotateDuration_ = 0.0f;
-	const float kMinRotateTime = 1.0f;
+	const float kMinRotateTime = 0.8f;
 	const float kMaxRotateTime = 2.0f;
 	// 回転速度
 	float rotationSpeed_ = 0.01f;
 	// 回転方向（trueなら右回り、falseなら左回り）
 	float isRotatingRight_ = true;
-	// 移動時間（ランダム）
+	// 回転後に直進する確率
+	const float kMoveForwardProbability = 0.25f; // 25%
+	// 直進時間（ランダム）
 	float moveForwardDuration_ = 0.0f;
 	const float kMinMoveTime = 0.8f;
 	const float kMaxMoveTime = 1.2f;
@@ -158,17 +160,25 @@ private:
 	// 攻撃ステート時タイマー
 	float attackStateTimer_ = 0.0f;
 	// 残弾数
-	int32_t bulletRemaining_ = 5;
+	/*int32_t bulletRemaining_ = 5;*/
 	// 弾の上限
 	const int32_t kMaxBullet = 5;
-	// リロード時フラグ
-	bool isReloading_ = false;
-	// リロード時タイマー
-	float reloadTimer_ = 0.0f;
-	// リロード時間
+	//// リロード時フラグ
+	//bool isReloading_ = false;
+	//// リロード時タイマー
+	//float reloadTimer_ = 0.0f;
+	// リロードにかかる時間
 	const float kReloadTime = 1.0f;
 	// 次の発射までの待ち時間
 	float nextShotInterval_ = 0.0f;
 	// 弾の拡散角
 	float bulletSpreadAngle_ = 0.1f;
+
+public:
+	// リロード時フラグ
+	bool isReloading_ = false;
+	// リロード時タイマー
+	float reloadTimer_ = 0.0f;
+	// 残弾数
+	int32_t bulletRemaining_ = 5;
 };

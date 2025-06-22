@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <Windows.h>
 #include <cstdio>
+#include <numbers>
 
 // Engine
 #include <Camera.h>
@@ -42,6 +43,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
 	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
+	objectEnemy_->transform_.rotate = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = { 1.0f, 0.5f, 0.0f, 1.0f };
 
 	///
@@ -65,14 +67,22 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f }); // 黒
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f });
+	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f }); // 緑
+
+
+	// リロード表示
+	uint32_t textureReload = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteReload_ = std::make_unique<Sprite>();
+	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
+	spriteReload_->SetSize(kReloadSize);
+	spriteReload_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 白
 
 	///
 	///	パラメーター設定
@@ -122,6 +132,9 @@ void NormalEnemy::Update(Player* player) {
 	spriteHPBackground_->Update();
 	// HPバー（前景）更新
 	spriteHPForeground_->Update();
+
+	// リロード表示更新
+	spriteReload_->Update();
 }
 
 // ---------------------------------------------------------
@@ -163,28 +176,28 @@ void NormalEnemy::Draw() {
 // UI描画処理
 // ---------------------------------------------------------
 void NormalEnemy::DrawUI() {
+	///
+	/// HPバー描画
+	///
+
 	// オブジェクトのワールド座標->スクリーン座標に変換
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
 	// 上にずらす分のオフセット
-	float offset = 60.0f;
+	const float kOffsetHPBar = 90.0f;
 
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
-	///
-	/// HPバー（後景）描画
-	///
+	/* HPバー（後景）*/
 
 	// スクリーン座標をセット
 	spriteHPBackground_->SetPosition({
 		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-		screenPosition.y - offset               // オフセット分上にずらす
+		screenPosition.y - kOffsetHPBar               // オフセット分上にずらす
 		});
 	spriteHPBackground_->Draw();
 
-	///
-	///	HPバー（前景）描画
-	///
+	/* HPバー（前景）描画 */
 
 	// 現在HPに応じてサイズ変更
 	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
@@ -193,9 +206,38 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPForeground_->SetPosition({
 		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-		screenPosition.y - offset               // オフセット分上にずらす
+		screenPosition.y - kOffsetHPBar               // オフセット分上にずらす
 		});
 	spriteHPForeground_->Draw();
+
+
+	///
+	///	リロード表示
+	/// 
+	
+	// 上にずらす分のオフセット
+	const float kOffsetReload = 60.0f;
+
+	// リロード時間割合
+	float reloadRatio = reloadTimer_ / kReloadTime;
+
+	// リロード時間に応じてサイズ変更
+	spriteReload_->SetSize({
+		kReloadSize.x - (kReloadSize.x * reloadRatio),
+		kReloadSize.y
+		});
+
+	// スクリーン座標をセット
+	spriteReload_->SetPosition({
+		screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
+		screenPosition.y - kOffsetReload
+		});
+
+	// リロード時のみ描画
+	if (isReloading_) {
+		spriteReload_->Draw();
+	}
+
 }
 
 // ---------------------------------------------------------
@@ -340,11 +382,18 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
 		}
 
-		// 待機時間が過ぎたら直進ステートへ
+		// 待機時間が過ぎたら次ステートへ
 		if (alertStateTimer_ >= waitDuration_) {
 			alertStateTimer_ = 0.0f; // タイマーリセット
 			waitDuration_ = 0.0f; // 待機時間リセット
-			alertSubState_ = AlertSubState::MoveForward;
+			
+			// ランダムで直進ステートor回転ステートへ
+			bool goForward = RandomGenerator::GetInstance()->RandomValueBool(kMoveForwardProbability);
+			if (goForward) {
+				alertSubState_ = AlertSubState::MoveForward;
+			} else {
+				alertSubState_ = AlertSubState::Rotate;
+			}
 		}
 
 		break;
@@ -377,6 +426,7 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 			alertStateTimer_ = 0.0f; // タイマーリセット
 			waitDuration_ = 0.0f; // 待機時間リセット
 			alertSubState_ = AlertSubState::Rotate;
+	
 		}
 
 		break;
@@ -387,7 +437,6 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 
 	}
 }
-
 
 // ---------------------------------------------------------
 // 移動ステート更新処理
