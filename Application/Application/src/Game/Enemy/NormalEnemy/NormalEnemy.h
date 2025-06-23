@@ -168,12 +168,23 @@ private:
 	//// リロード時タイマー
 	//float reloadTimer_ = 0.0f;
 	// リロードにかかる時間
-	const float kReloadTime = 1.0f;
+	const float kReloadTime = 1.5f;
 	// 次の発射までの待ち時間
 	float nextShotInterval_ = 0.0f;
+	const float kMinShotInterval = 0.3f;
+	const float kMaxShotInterval = 0.4f;
+
 	// 弾の拡散角
 	float bulletSpreadAngle_ = 0.1f;
+	// その回で撃つ予定の弾数（ランダム）
+	int32_t bulletsToShot_ = 0;
+	const int32_t kMinShotThisTime = 2;
+	const int32_t kMaxShotThisTime = 3;
+	// その回で撃った弾数
+	int32_t bulletsShotInThisAttack_ = 0;
 
+
+// デバッグで一時的にpublicへ
 public:
 	// リロード時フラグ
 	bool isReloading_ = false;
