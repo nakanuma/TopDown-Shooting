@@ -3,8 +3,12 @@
 struct Material {
     float32_t4 color;
     int32_t enableLighting;
+    int32_t useEnvironmentMap;
+    float32_t2 padding;
     float32_t4x4 uvTransform;
     float32_t shininess;
+    float32_t environmentStrength;
+    float32_t2 padding2;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -56,6 +60,9 @@ ConstantBuffer<SpotLights> gSpotLight : register(b4);
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
+
+// environment texture
+TextureCube<float32_t4> gEnvironmentTexture : register(t2);
 
 struct PixelShaderOutput {
     float32_t4 color : SV_TARGET0;
@@ -170,18 +177,36 @@ PixelShaderOutput main(VertexShaderOutput input) {
         //float32_t3 specularSpotLight =
         //gSpotLight.color.rgb * gSpotLight.intensity * specularPow_spot * float32_t3(1.0f, 1.0f, 1.0f) * attenuatuinFactor * falloffFactor;
         
+        
+        ///
+        /// EnvironmentMap
+        ///
+        
+        float32_t3 environmentContribution = float3(0.0f, 0.0f, 0.0f);
+        
+        if (gMaterial.useEnvironmentMap != 0)
+        {
+            float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+            float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+            float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+            
+            environmentContribution = environmentColor.rgb * gMaterial.environmentStrength;
+        }
+        
+        
         // ライティングテスト用
         // 拡散反射+鏡面反射
-        output.color.rgb = 
+        output.color.rgb =
         diffuseDirectionalLight + // DirectionalLight
         diffusePointLight + specularPointLight + // PointLight
-        diffuseSpotLight // SpotLight
+        diffuseSpotLight + // SpotLight
+        
+        environmentContribution; // EnvironmentMap
         ;
         
         // 基本的にはこっちを適用
         //output.color.rgb = diffuseDirectionalLight; // DirectionalLightの拡散反射のみ
-        
-        
+       
         // アルファは今まで通り
         output.color.a = gMaterial.color.a * textureColor.a;
     } else {

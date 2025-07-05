@@ -5,6 +5,7 @@
 #include "SRVManager.h"
 #include "SpriteCommon.h"
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <Engine/Model/SkyBoxManager.h>
 
 // C++
 #include <numbers>
@@ -44,6 +45,9 @@ void GamePlayScene::Initialize() {
 	// LightManagerの初期化
 	lightManager = LightManager::GetInstance();
 	lightManager->Initialize();
+
+	// SkyBoxの初期化
+	SkyBoxManager::GetInstance()->Initialize("resources/Images/skybox.dds");
 
 	// レンダーテクスチャ生成
 	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
@@ -130,6 +134,8 @@ void GamePlayScene::Update() {
 	// 障害物の更新
 	obstacleManager_->Update();
 
+	// SkyBox更新
+	SkyBoxManager::GetInstance()->Update();
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
 	CollisionManager::GetInstance()->Update();
 	// タイムマネージャー更新（deltaTime計算）
@@ -164,6 +170,9 @@ void GamePlayScene::Draw() {
 	RTVManager::SetRenderTarget(renderTexture_);
 	RTVManager::ClearRTV(renderTexture_);
 #endif // DEBUG
+
+	// SkyBox描画
+	SkyBoxManager::GetInstance()->Draw();
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
