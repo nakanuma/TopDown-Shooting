@@ -12,6 +12,8 @@ void NormalObstacle::Initialize(const Float3& position, const Float3& scale, Mod
 	objectObstacle_->model_ = model;
 	objectObstacle_->transform_.translate = position;
 	objectObstacle_->transform_.scale = scale;
+	objectObstacle_->materialCB_.data_->useEnvironmentMap = true;
+	objectObstacle_->materialCB_.data_->environmentStrength = 0.5f;
 
 	///
 	///	コライダー生成
