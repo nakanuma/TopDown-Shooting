@@ -19,7 +19,13 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	// 通常敵モデル
 	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/NormalEnemy/normalEnemy.obj", dxBase->GetDevice());
 	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/NormalEnemy/normalEnemy.png", dxBase->GetDevice());
+	
+	// ボスモデル
+	modelBossEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/BossEnemy/bossEnemy.obj", dxBase->GetDevice());
+	modelBossEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/BossEnemy/bossEnemy.png", dxBase->GetDevice());
+
 	// （追加）敵モデル
+
 
 	// 弾モデル
 	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
@@ -38,8 +44,19 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 			enemies_.emplace_back(std::move(enemy));
 		}
 
-		// 新しく追加
+		// 他の種類を追加
+
+		// ボス生成
+		/*if (data.tag == "BOSS_ENEMY") {
+			bossEnemy_ = std::make_unique<BossEnemy>();
+
+		}*/
 	}
+
+	// 一旦手動でボス追加
+	bossEnemy_ = std::make_unique<BossEnemy>();
+	bossEnemy_->Initialize({ 0.0f, 3.0f, 20.0f }, &modelBossEnemy_);
+
 }
 
 // ---------------------------------------------------------
@@ -49,6 +66,10 @@ void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
 		enemy->Update(player_);
+	}
+	// ボス更新
+	if (bossEnemy_) {
+		bossEnemy_->Update(player_);
 	}
 
 	// 敵の削除処理
@@ -68,6 +89,10 @@ void EnemyManager::Draw() {
 	for (auto& enemy : enemies_) {
 		enemy->Draw();
 	}
+	// ボス描画
+	if (bossEnemy_) {
+		bossEnemy_->Draw();
+	}
 
 #ifdef _DEBUG
 	// デバッグ表示
@@ -82,6 +107,10 @@ void EnemyManager::DrawUI() {
 	// 全ての敵のUIを描画
 	for (auto& enemy : enemies_) {
 		enemy->DrawUI();
+	}
+	// ボスのUIを描画
+	if (bossEnemy_) {
+		bossEnemy_->DrawUI();
 	}
 }
 

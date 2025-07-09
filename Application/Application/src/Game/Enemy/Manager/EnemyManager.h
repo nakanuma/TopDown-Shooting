@@ -6,6 +6,7 @@
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
 #include <src/Game/Loader/Loader.h>
+#include <src/Game/Enemy/BossEnemy/BossEnemy.h>
 
 class Player;
 
@@ -56,6 +57,9 @@ private:
 
 	// 通常敵モデル
 	ModelManager::ModelData modelNormalEnemy_;
+	// ボスモデル
+	ModelManager::ModelData modelBossEnemy_;
+
 	// （追加）敵モデル
 
 	// 弾モデル
@@ -67,6 +71,9 @@ private:
 
 	// 敵のコンテナ
 	std::vector<std::unique_ptr<Enemy>> enemies_;
+
+	// ボス（単体で管理）
+	std::unique_ptr<BossEnemy> bossEnemy_;
 
 	// ---------------------------------------------------------
 	// その他

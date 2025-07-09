@@ -81,6 +81,9 @@
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Scene\GamePlayScene.h">
@@ -156,6 +159,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Bullet\EnemyBullet\EnemyBullet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
