@@ -137,10 +137,6 @@ void Player::Draw() {
 #ifdef _DEBUG
 	// デバッグ表示
 	Debug();
-
-	// 調整パラメーター
-	DrawConfigWindow("PlayerConfig");
-
 #endif //  _DEBUG
 }
 

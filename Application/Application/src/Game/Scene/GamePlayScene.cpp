@@ -49,9 +49,6 @@ void GamePlayScene::Initialize() {
 	// SkyBoxの初期化
 	SkyBoxManager::GetInstance()->Initialize("resources/Images/skybox.dds");
 
-	// レンダーテクスチャ生成
-	renderTexture_ = RTVManager::CreateRenderTargetTexture(Window::GetWidth(), Window::GetHeight());
-
 	///
 	///	↓ ゲームシーン用
 	///
@@ -111,6 +108,11 @@ void GamePlayScene::Initialize() {
 
 	auto circleExpandParticle = std::make_unique<CircleParticle_Expand>(modelCircleExpand_);
 	ParticleEffectManager::GetInstance()->Register("circleExpand", std::move(circleExpandParticle));
+
+	// ポストエフェクト管理
+	postEffectManager_ = std::make_unique<PostEffectManager>();
+	postEffectManager_->Initialize();
+	postEffectManager_->SetEffectType(PostEffectType::Vignette);
 }
 
 void GamePlayScene::Finalize() {}
@@ -165,18 +167,18 @@ void GamePlayScene::Draw() {
 	// ライトの定数バッファを設定
 	lightManager->TransferContantBuffer();
 
-#ifdef _DEBUG
+	///
+	///	↓ ここから3Dオブジェクトの描画コマンド
+	///
+
 	// レンダーターゲットをレンダーテクスチャにセット
-	RTVManager::SetRenderTarget(renderTexture_);
-	RTVManager::ClearRTV(renderTexture_);
-#endif // DEBUG
+	postEffectManager_->BeginRenderToTexture();
 
 	// SkyBox描画
 	SkyBoxManager::GetInstance()->Draw();
 
-	///
-	///	↓ ここから3Dオブジェクトの描画コマンド
-	///
+	ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
+	ImGuiUtil::ImageWindow("outline", postEffectManager_->GetOutlineGH());
 
 	// フィールド描画
 	field_->Draw();
@@ -187,8 +189,14 @@ void GamePlayScene::Draw() {
 	// 障害物の描画
 	obstacleManager_->Draw();
 
+	// ポストエフェクト適用
+	postEffectManager_->ApplyOutline();
+
 	// パーティクル描画
 	ParticleEffectManager::GetInstance()->Draw();
+
+	// アウトライン描画
+	postEffectManager_->DrawOutline();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -217,22 +225,11 @@ void GamePlayScene::Draw() {
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", {0.0f, 5.0f, 0.0f}, 1);
-	}
-
-	if (ImGui::Button("Shake")) {
-		CameraShake::GetInstance()->StartShake(1.0f, 0.2f);
-	}
-
 	ImGui::End();
 
 	// コリジョンマネージャーのデバッグ表示
 	CollisionManager::GetInstance()->Debug();
 
-	// レンダーテクスチャをImGuiWindowに描画
-	ImGuiUtil::ImageWindow("Scene", renderTexture_);
-	RTVManager::SetRTtoBB();
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());

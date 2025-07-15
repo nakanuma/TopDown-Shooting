@@ -14,6 +14,7 @@
 #include "TextureManager.h"
 #include <Engine/Collider/CollisionManager.h>
 #include <Engine/Util/TimeManager.h>
+#include <Engine/Texture/PostEffectManager.h>
 
 // Application
 #include <src/Game/Camera/FollowCamera.h>
@@ -53,9 +54,6 @@ private:
 	Input* input = nullptr;
 	LightManager* lightManager = nullptr;
 
-	// レンダーテクスチャ
-	uint32_t renderTexture_;
-
 	///
 	/// ↓ ゲームシーン用
 	///
@@ -85,4 +83,7 @@ private:
 	ModelManager::ModelData modelSparkShrink_;
 	ModelManager::ModelData modelSparkStar_;
 	ModelManager::ModelData modelCircleExpand_;
+
+	// ポストエフェクト
+	std::unique_ptr<PostEffectManager> postEffectManager_;
 };

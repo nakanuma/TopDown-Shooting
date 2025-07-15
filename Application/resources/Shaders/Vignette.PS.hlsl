@@ -40,6 +40,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     vignette = saturate(pow(vignette, 0.8f));
     // ŒW”‚Æ‚µ‚ÄæZ
     output.color.rgb *= vignette;
+    output.color.a = 1.0f;
     
     return output;
 }
