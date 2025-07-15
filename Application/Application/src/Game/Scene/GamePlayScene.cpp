@@ -178,7 +178,9 @@ void GamePlayScene::Draw() {
 	SkyBoxManager::GetInstance()->Draw();
 
 	ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
-	ImGuiUtil::ImageWindow("outline", postEffectManager_->GetOutlineGH());
+
+	ImGuiUtil::ImageWindow("extract", postEffectManager_->bloomExtractGH_);
+	ImGuiUtil::ImageWindow("blur", postEffectManager_->bloomBlurGH_);
 
 	// フィールド描画
 	field_->Draw();
@@ -189,14 +191,14 @@ void GamePlayScene::Draw() {
 	// 障害物の描画
 	obstacleManager_->Draw();
 
-	// ポストエフェクト適用
-	postEffectManager_->ApplyOutline();
-
 	// パーティクル描画
-	ParticleEffectManager::GetInstance()->Draw();
+	/*ParticleEffectManager::GetInstance()->Draw();*/
 
-	// アウトライン描画
-	postEffectManager_->DrawOutline();
+	// ポストエフェクト適用
+	postEffectManager_->ApplyBloom();
+
+	// 適用後描画
+	postEffectManager_->DrawBloom();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド

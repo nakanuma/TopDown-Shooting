@@ -15,10 +15,9 @@ void Field::Initialize() {
 
 	objectFloor_ = std::make_unique<Object3D>();
 	objectFloor_->model_ = &modelFloor_;
-	objectFloor_->transform_.translate.y = -6.0f; // outline適用中
 	objectFloor_->transform_.rotate = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
 	objectFloor_->transform_.scale = {500.0f, 500.0f, 1.0f};
-	objectFloor_->materialCB_.data_->color = {0.5f, 0.5f, 0.5f, 1.0f};
+	objectFloor_->materialCB_.data_->color = {0.25f, 0.25f, 0.25f, 1.0f};
 }
 
 void Field::Update() { objectFloor_->UpdateMatrix(); }
