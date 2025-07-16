@@ -1,3 +1,5 @@
+D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\ImmobileEnemy.obj
+D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Enemy\BossEnemy\BossEnemy.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\BossEnemy.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Bullet\EnemyBullet\EnemyBullet.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\EnemyBullet.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Particles\Circle\CircleParticle_Expand.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\CircleParticle_Expand.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Particles\Spark\SparkParticle_Star.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\SparkParticle_Star.obj
@@ -18,5 +20,5 @@ D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Field\Field.cpp;D
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Player\Player.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\Player.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Scene\GamePlayScene.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\GamePlayScene.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Scene\TitleScene.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\TitleScene.obj
-D:\k023g0121\TopDown-Shooting\Application\Application\TestScene\TestScene.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\TestScene.obj
+D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Scene\TestScene.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\TestScene.obj
 D:\k023g0121\TopDown-Shooting\Application\Application\src\Game\Utility\Utility.cpp;D:\k023g0121\TopDown-Shooting\Application\Application\x64\Release\Utility.obj
