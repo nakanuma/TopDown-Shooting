@@ -57,10 +57,11 @@ private:
 
 	// 通常敵モデル
 	ModelManager::ModelData modelNormalEnemy_;
-	// ボスモデル
-	ModelManager::ModelData modelBossEnemy_;
+	// 固定敵モデル
+	ModelManager::ModelData modelImmobileEnemy_;
 
-	// （追加）敵モデル
+	// ボスモデル
+	/*ModelManager::ModelData modelBossEnemy_;*/
 
 	// 弾モデル
 	ModelManager::ModelData modelEnemyBullet_;
@@ -73,7 +74,7 @@ private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	// ボス（単体で管理）
-	std::unique_ptr<BossEnemy> bossEnemy_;
+	/*std::unique_ptr<BossEnemy> bossEnemy_;*/
 
 	// ---------------------------------------------------------
 	// その他

@@ -89,6 +89,17 @@ void PlayerBullet::OnCollision(Collider* other) {
 		isDead_ = true;
 	}
 
+	// vs ImmobileEnemy
+	if (other->GetTag() == "ImmobileEnemy") {
+		// ヒットエフェクト発生
+		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
+		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
+		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
+
+		// 死亡させる
+		isDead_ = true;
+	}
+
 	// vs BossEnemy
 	if (other->GetTag() == "BossEnemy") {
 		// ヒットエフェクト発生

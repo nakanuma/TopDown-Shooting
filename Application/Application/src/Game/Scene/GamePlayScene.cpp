@@ -177,10 +177,10 @@ void GamePlayScene::Draw() {
 	// SkyBox描画
 	SkyBoxManager::GetInstance()->Draw();
 
-	ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
+	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
 
 	ImGuiUtil::ImageWindow("extract", postEffectManager_->bloomExtractGH_);
-	ImGuiUtil::ImageWindow("blur", postEffectManager_->bloomBlurGH_);
+	ImGuiUtil::ImageWindow("blur", postEffectManager_->bloomBlurGH_);*/
 
 	// フィールド描画
 	field_->Draw();

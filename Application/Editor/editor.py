@@ -1,6 +1,21 @@
 import bpy
 import json
-import os
+import math
+
+# ブレンダーに登録するアドオン情報
+bl_info = {
+    "name": "レベルエディタ",
+    "author": "Nakanuma",
+    "version": (1, 0),
+    "blender": (4, 4, 0),
+    "location": "",
+    "description": "レベルエディタ",
+    "warning": "",
+    "support": "TESTING",
+    "wiki_url": "",
+    "tracker_url": "",
+    "category": "Object"
+}
 
 # タグと対応する情報を定義
 TAG_INFO = {
@@ -11,6 +26,10 @@ TAG_INFO = {
     "NORMAL_ENEMY": {
         "name": "Noraml_Enemy",
         "color": (1.0, 0.5, 0.0, 1.0), # オレンジ色
+    },
+    "IMMOBILE_ENEMY": {
+        "name": "Immobile_Enemy",
+        "color": (0.4, 0.27, 0.6, 1.0), # 青紫色
     },
     "NORMAL_OBSTACLE": {
         "name": "Normal_Obstacle",
@@ -78,6 +97,10 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
         elif self.tag == "NORMAL_ENEMY":
             location = (0, 0, 2)
             z_scale = 2.0
+        # IMMOBILE_ENEMYタグの場合はZ=2に調整
+        elif self.tag == "IMMOBILE_ENEMY":
+            location = (0, 0, 2)
+            z_scale = 2.0
 
         # キューブ生成
         bpy.ops.mesh.primitive_cube_add(size=2, location=location)
@@ -119,7 +142,7 @@ class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
                 data = {
                     "tag": obj["object_tag"],
                     "location": list(obj.location),
-                    "rotation": list(obj.rotation_euler),
+                    "rotation": [math.degrees(angle) for angle in obj.rotation_euler], #degreeに変換
                     "scale": list(obj.scale),
                 }
                 export_data.append(data)
