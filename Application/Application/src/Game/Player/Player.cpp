@@ -138,9 +138,8 @@ void Player::Draw() {
 	// デバッグ表示
 	Debug();
 
-	// 調整パラメーター
-	DrawConfigWindow("PlayerConfig");
-
+	// コンフィグ表示
+	DrawConfigWindow("playerConfig");
 #endif //  _DEBUG
 }
 

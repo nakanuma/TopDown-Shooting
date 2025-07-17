@@ -109,6 +109,13 @@ protected:
 	// HPバー（前景）
 	std::unique_ptr<Sprite> spriteHPForeground_;
 
+	
+	// リロード表示の最大サイズ
+	const Float2 kReloadSize = { 100.0f, 10.0f };
+
+	// リロード表示
+	std::unique_ptr<Sprite> spriteReload_;
+
 	// ---------------------------------------------------------
 	// パラメーター
 	// ---------------------------------------------------------

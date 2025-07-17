@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <Windows.h>
 #include <cstdio>
+#include <numbers>
 
 // Engine
 #include <Camera.h>
@@ -42,6 +43,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
 	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
+	objectEnemy_->transform_.rotate = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = { 1.0f, 0.5f, 0.0f, 1.0f };
 
 	///
@@ -65,14 +67,22 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f }); // 黒
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f });
+	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f }); // 緑
+
+
+	// リロード表示
+	uint32_t textureReload = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteReload_ = std::make_unique<Sprite>();
+	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
+	spriteReload_->SetSize(kReloadSize);
+	spriteReload_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 白
 
 	///
 	///	パラメーター設定
@@ -122,6 +132,9 @@ void NormalEnemy::Update(Player* player) {
 	spriteHPBackground_->Update();
 	// HPバー（前景）更新
 	spriteHPForeground_->Update();
+
+	// リロード表示更新
+	spriteReload_->Update();
 }
 
 // ---------------------------------------------------------
@@ -166,7 +179,7 @@ void NormalEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
 	// 上にずらす分のオフセット
-	float offset = 60.0f;
+	const float kOffsetHPBar = 90.0f;
 
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
@@ -178,7 +191,7 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPBackground_->SetPosition({
 		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-		screenPosition.y - offset               // オフセット分上にずらす
+		screenPosition.y - kOffsetHPBar               // オフセット分上にずらす
 		});
 	spriteHPBackground_->Draw();
 
@@ -193,10 +206,39 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPForeground_->SetPosition({
 		screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-		screenPosition.y - offset               // オフセット分上にずらす
+		screenPosition.y - kOffsetHPBar               // オフセット分上にずらす
 		});
 	spriteHPForeground_->Draw();
+
+
+	///
+	///	リロード表示
+	/// 
+
+	// 上にずらす分のオフセット
+	const float kOffsetReload = 60.0f;
+
+	// リロード時間割合
+	float reloadRatio = reloadTimer_ / kReloadTime;
+
+	// リロード時間に応じてサイズ変更
+	spriteReload_->SetSize({
+		kReloadSize.x - (kReloadSize.x * reloadRatio),
+		kReloadSize.y
+		});
+
+	// スクリーン座標をセット
+	spriteReload_->SetPosition({
+		screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
+		screenPosition.y - kOffsetReload
+		});
+
+	// リロード時のみ描画
+	if (isReloading_) {
+		spriteReload_->Draw();
+	}
 }
+
 
 // ---------------------------------------------------------
 // 衝突時コールバック
@@ -340,11 +382,18 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
 		}
 
-		// 待機時間が過ぎたら直進ステートへ
+		// 待機時間が過ぎたら次ステートへ
 		if (alertStateTimer_ >= waitDuration_) {
 			alertStateTimer_ = 0.0f; // タイマーリセット
 			waitDuration_ = 0.0f; // 待機時間リセット
-			alertSubState_ = AlertSubState::MoveForward;
+			
+			// ランダムで直進ステートor回転ステートへ
+			bool goForward = RandomGenerator::GetInstance()->RandomValueBool(kMoveForwardProbability);
+			if (goForward) {
+				alertSubState_ = AlertSubState::MoveForward;
+			} else {
+				alertSubState_ = AlertSubState::Rotate;
+			}
 		}
 
 		break;
@@ -377,6 +426,7 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 			alertStateTimer_ = 0.0f; // タイマーリセット
 			waitDuration_ = 0.0f; // 待機時間リセット
 			alertSubState_ = AlertSubState::Rotate;
+	
 		}
 
 		break;
@@ -387,7 +437,6 @@ void NormalEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyP
 
 	}
 }
-
 
 // ---------------------------------------------------------
 // 移動ステート更新処理
@@ -457,6 +506,7 @@ void NormalEnemy::UpdateMoveState(const Float3& playerPos, const Float3& enemyPo
 	// 一時的に2秒移動したら攻撃ステートへ
 	if (moveStateTimer_ >= 2.0f) {
 		state_ = EnemyState::Attack;
+		attackStateTimer_ = 0.0f;
 	}
 
 }
@@ -465,6 +515,18 @@ void NormalEnemy::UpdateMoveState(const Float3& playerPos, const Float3& enemyPo
 // 攻撃ステート更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer) {
+	///
+	///	今回発射する予定の弾数をランダムに設定
+	/// 
+
+	if (attackStateTimer_ == 0.0f && bulletsShotInThisAttack_ == 0) {
+		bulletsToShot_ = RandomGenerator::GetInstance()->RandomValue(kMinShotThisTime, kMaxShotThisTime);
+	}
+
+	///
+	///	タイマー加算
+	/// 
+
 	attackStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
 	///
@@ -512,6 +574,10 @@ void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemy
 			bulletRemaining_ = kMaxBullet; // 最大弾数を込める
 			reloadTimer_ = 0.0f; // リロードタイマーリセット
 			isReloading_ = false; // リロード終了
+
+			// 移動ステートへ
+			state_ = EnemyState::Move;
+			moveStateTimer_ = 0.0f;
 		}
 		return;
 	}
@@ -554,9 +620,16 @@ void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemy
 
 	bulletRemaining_--; // 残弾を減らす
 	attackStateTimer_ = 0.0f; // 攻撃ステートタイマーをリセット
-	nextShotInterval_ = RandomGenerator::GetInstance()->RandomValue(0.0f, 0.5f); // 次までの発射間隔をランダムに設定
+	nextShotInterval_ = RandomGenerator::GetInstance()->RandomValue(kMinShotInterval, kMaxShotInterval); // 次までの発射間隔をランダムに設定
 
-	// 一時的に一発撃ったら移動ステートに戻す
-	state_ = EnemyState::Move;
-	moveStateTimer_ = 0.0f;
+	///
+	///	今回撃つ予定の弾数を撃ち終えたら移動ステートへ
+	/// 
+	
+	bulletsShotInThisAttack_++;
+	if (bulletsShotInThisAttack_ >= bulletsToShot_) {
+		state_ = EnemyState::Move;
+		moveStateTimer_ = 0.0f;
+		bulletsShotInThisAttack_ = 0; // 今回撃った弾数カウントをリセット
+	}
 }
