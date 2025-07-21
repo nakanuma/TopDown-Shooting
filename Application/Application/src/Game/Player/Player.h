@@ -40,6 +40,11 @@ public:
 	void DrawUI();
 
 	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void Debug();
+
+	/// <summary>
 	/// 衝突時コールバック
 	/// </summary>
 	void OnCollision(Collider* other) override;
@@ -83,11 +88,6 @@ private:
 	// ---------------------------------------------------------
 	// 内部処理
 	// ---------------------------------------------------------
-
-	/// <summary>
-	/// デバッグ表示
-	/// </summary>
-	void Debug();
 
 	/// <summary>
 	/// カーソル方向へ向くよう回転させる

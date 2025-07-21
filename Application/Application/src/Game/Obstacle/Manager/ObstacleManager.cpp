@@ -57,11 +57,6 @@ void ObstacleManager::Draw() {
 	for (auto& obstacle : obstacles_) {
 		obstacle->Draw();
 	}
-
-#ifdef _DEBUG
-	// デバッグ表示
-	Debug();
-#endif //  _DEBUG
 }
 
 // ---------------------------------------------------------

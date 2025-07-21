@@ -171,10 +171,9 @@ void GamePlayScene::Draw() {
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
 #ifdef _DEBUG
-	ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
+	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
 	ImGuiUtil::ImageWindow("outlineRT", postEffectManager_->outlineRT_);
-	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);
-	ImGuiUtil::ImageWindow("particle", postEffectManager_->particleRT_);
+	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);*/
 #endif
 	// 通常の描画
 	postEffectManager_->BeginRenderToTexture();
@@ -189,15 +188,10 @@ void GamePlayScene::Draw() {
 	player_->Draw();
 	enemyManager_->Draw();
 
-	// パーティクル描画パス
-	postEffectManager_->BeginRenderToParticleTexture();
-	ParticleEffectManager::GetInstance()->Draw();
-
 	// アウトライン生成 + 描画
 	postEffectManager_->ApplyOutline();
+	ParticleEffectManager::GetInstance()->Draw();
 	postEffectManager_->DrawOutline();
-	postEffectManager_->DrawParticleTexture();
-
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -219,6 +213,9 @@ void GamePlayScene::Draw() {
 	/// ↑ ここまでスプライトの描画コマンド
 	///
 
+	///
+	///	デバッグ表示
+	/// 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
@@ -228,8 +225,10 @@ void GamePlayScene::Draw() {
 
 	ImGui::End();
 
-	// コリジョンマネージャーのデバッグ表示
 	CollisionManager::GetInstance()->Debug();
+	player_->Debug();
+	obstacleManager_->Debug();
+	enemyManager_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

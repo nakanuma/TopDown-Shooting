@@ -106,11 +106,6 @@ void EnemyManager::Draw() {
 	if (bossEnemy_) {
 		bossEnemy_->Draw();
 	}
-
-#ifdef _DEBUG
-	// デバッグ表示
-	Debug();
-#endif // _DEBUG
 }
 
 // ---------------------------------------------------------

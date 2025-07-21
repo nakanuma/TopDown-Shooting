@@ -133,14 +133,6 @@ void Player::Draw() {
 
 	// プレイヤーオブジェクト描画
 	objectPlayer_->Draw();
-
-#ifdef _DEBUG
-	// デバッグ表示
-	Debug();
-
-	// コンフィグ表示
-	DrawConfigWindow("playerConfig");
-#endif //  _DEBUG
 }
 
 // ---------------------------------------------------------
@@ -229,6 +221,10 @@ void Player::Debug() {
 	/*  */
 
 	ImGui::End();
+
+	
+	// コンフィグウインドウ
+	DrawConfigWindow("playerConfig");
 #endif //  _DEBUG
 }
 
