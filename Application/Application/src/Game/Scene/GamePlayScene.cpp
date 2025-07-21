@@ -170,36 +170,34 @@ void GamePlayScene::Draw() {
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
-
-	// レンダーターゲットをレンダーテクスチャにセット
-	postEffectManager_->BeginRenderToTexture();
-
-	// SkyBox描画
-	SkyBoxManager::GetInstance()->Draw();
-
 #ifdef _DEBUG
-	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());*/
-
-	ImGuiUtil::ImageWindow("extract", postEffectManager_->bloomExtractGH_);
-	ImGuiUtil::ImageWindow("blur", postEffectManager_->bloomBlurGH_);
+	ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
+	ImGuiUtil::ImageWindow("outlineRT", postEffectManager_->outlineRT_);
+	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);
+	ImGuiUtil::ImageWindow("particle", postEffectManager_->particleRT_);
 #endif
-
-	// フィールド描画
+	// 通常の描画
+	postEffectManager_->BeginRenderToTexture();
+	SkyBoxManager::GetInstance()->Draw();
 	field_->Draw();
-	// プレイヤー描画
 	player_->Draw();
-	// 敵の描画
 	enemyManager_->Draw();
-	// 障害物の描画
 	obstacleManager_->Draw();
 
-	// パーティクル描画
-	/*ParticleEffectManager::GetInstance()->Draw();*/
+	// アウトライン適用パス
+	postEffectManager_->BeginRenderToOutlineTexture();
+	player_->Draw();
+	enemyManager_->Draw();
 
-	// ポストエフェクト適用
-	postEffectManager_->ApplyBloom();
-	// 適用後描画
-	postEffectManager_->DrawBloom();
+	// パーティクル描画パス
+	postEffectManager_->BeginRenderToParticleTexture();
+	ParticleEffectManager::GetInstance()->Draw();
+
+	// アウトライン生成 + 描画
+	postEffectManager_->ApplyOutline();
+	postEffectManager_->DrawOutline();
+	postEffectManager_->DrawParticleTexture();
+
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
