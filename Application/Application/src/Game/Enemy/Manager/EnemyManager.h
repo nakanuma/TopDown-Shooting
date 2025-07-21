@@ -45,6 +45,11 @@ public:
 	/// </summary>
 	void SetPlayer(Player* player) { player_ = player; }
 
+	/// <summary>
+	/// 再生成処理
+	/// </summary>
+	void Reload(const std::vector<Loader::TransformData> datas);
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理

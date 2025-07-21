@@ -53,6 +53,7 @@ class OBJECT_OT_import_tagged_objects(bpy.types.Operator):
             obj.name = TAG_INFO[tag]["name"]
             obj.rotation_euler = [math.radians(deg) for deg in rotation]
             obj.scale = scale
+            obj["object_tag"] = tag
 
             # マテリアルの再適用
             mat = create_material(tag)

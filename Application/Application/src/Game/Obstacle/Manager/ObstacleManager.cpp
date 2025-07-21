@@ -26,17 +26,7 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	///	各障害物の生成
 	///
 
-	for (const auto& data : datas) {
-		// 通常障害物
-		if (data.tag == "NORMAL_OBSTACLE") {
-			auto obstacle = std::make_unique<NormalObstacle>();
-			obstacle->Initialize(data.translate, data.scale, &modelNormalObstacle_);
-
-			obstacles_.emplace_back(std::move(obstacle));
-		}
-
-		// 新しく追加
-	}
+	Reload(datas);
 }
 
 // ---------------------------------------------------------
@@ -105,4 +95,32 @@ void ObstacleManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+// ---------------------------------------------------------
+// 再生成処理
+// ---------------------------------------------------------
+void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas)
+{
+	// 破棄を行ってからリストをクリア
+	for (auto& obstacle : obstacles_) {
+		obstacle->OnDestroy();
+	}
+	obstacles_.clear();
+
+	///
+	///	各障害物の再生成
+	///
+
+	for (const auto& data : datas) {
+		// 通常障害物
+		if (data.tag == "NORMAL_OBSTACLE") {
+			auto obstacle = std::make_unique<NormalObstacle>();
+			obstacle->Initialize(data.translate, data.scale, &modelNormalObstacle_);
+
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+
+		// 新しく追加
+	}
 }

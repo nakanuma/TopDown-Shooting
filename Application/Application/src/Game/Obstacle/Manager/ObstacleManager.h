@@ -32,6 +32,11 @@ public:
 	/// </summary>
 	void Debug();
 
+	/// <summary>
+	/// 再生成処理
+	/// </summary>
+	void Reload(const std::vector<Loader::TransformData> datas);
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理

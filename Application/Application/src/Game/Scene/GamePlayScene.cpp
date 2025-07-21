@@ -148,6 +148,21 @@ void GamePlayScene::Update() {
 #ifdef _DEBUG
 	// デバッグカメラ更新
 	DebugCameraUpdate(input);
+
+	loader_->Update();
+	// ステージデータファイルに変更があれば再生成
+	if (loader_->HasFileChanged()) {
+		// ステージデータ再読み込み
+		loader_->LoadFromFile("resources/Stages/data.json");
+
+		// 各ステージデータ要素の再生成
+		enemyManager_->Reload(loader_->GetAllDatas());
+		obstacleManager_->Reload(loader_->GetAllDatas());
+
+		// リセットしたことを知らせる
+		loader_->ResetFileChangedFlag();
+	}
+
 #endif
 }
 
