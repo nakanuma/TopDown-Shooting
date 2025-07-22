@@ -40,29 +40,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	///	各敵の生成
 	///
 
-	for (const auto& data : datas) {
-		// 通常敵
-		if (data.tag == "NORMAL_ENEMY") {
-			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &modelNormalEnemy_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// 固定敵
-		if (data.tag == "IMMOBILE_ENEMY") {
-			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &modelImmobileEnemy_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// ボス生成
-		/*if (data.tag == "BOSS_ENEMY") {
-			bossEnemy_ = std::make_unique<BossEnemy>();
-
-		}*/
-	}
+	Reload(datas);
 
 	// 一旦手動でボス追加
 	bossEnemy_ = std::make_unique<BossEnemy>();
@@ -106,11 +84,6 @@ void EnemyManager::Draw() {
 	if (bossEnemy_) {
 		bossEnemy_->Draw();
 	}
-
-#ifdef _DEBUG
-	// デバッグ表示
-	Debug();
-#endif // _DEBUG
 }
 
 // ---------------------------------------------------------
@@ -214,4 +187,40 @@ void EnemyManager::Debug() {
 	ImGui::End();
 
 #endif // _DEBUG
+}
+
+// ---------------------------------------------------------
+// 再生成処理
+// ---------------------------------------------------------
+void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
+{
+	// 破棄を行ってからリストをクリア
+	for (auto& enemy : enemies_) {
+		enemy->OnDestroy();
+	}
+	enemies_.clear();
+
+	for (const auto& data : datas) {
+		// 通常敵
+		if (data.tag == "NORMAL_ENEMY") {
+			auto enemy = std::make_unique<NormalEnemy>();
+			enemy->Initialize(data.translate, &modelNormalEnemy_);
+			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// 固定敵
+		if (data.tag == "IMMOBILE_ENEMY") {
+			auto enemy = std::make_unique<ImmobileEnemy>();
+			enemy->Initialize(data.translate, &modelImmobileEnemy_);
+			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// ボス生成
+		/*if (data.tag == "BOSS_ENEMY") {
+			bossEnemy_ = std::make_unique<BossEnemy>();
+
+		}*/
+	}
 }

@@ -38,11 +38,6 @@ public:
 	void Update(Player* player) override;
 
 	/// <summary>
-	/// 弾の更新処理
-	/// </summary>
-	void UpdateBullets() override;
-
-	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw() override;

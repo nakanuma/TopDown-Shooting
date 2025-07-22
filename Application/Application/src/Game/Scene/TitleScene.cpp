@@ -1,17 +1,21 @@
 #include "TitleScene.h"
-#include "DirectXBase.h"
-#include "ImguiWrapper.h"
-#include "SRVManager.h"
-#include "SceneManager.h"
-#include "SpriteCommon.h"
-// #include "GamePlayScene.h"
+
+// C++
+#include <numbers>
+
+// Engine
+#include <ImguiWrapper.h>
 
 void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 0.0f, -10.0f}, Float3{0.0f, 0.0f, 0.0f}, 0.45f);
+	camera = std::make_unique<Camera>(Float3{0.0f, 50.0f, -55.0f}, Float3{std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
+
+	// デバッグカメラの生成と初期化
+	debugCamera = std::make_unique<DebugCamera>();
+	debugCamera->Initialize();
 
 	// SpriteCommonの生成と初期化
 	spriteCommon = std::make_unique<SpriteCommon>();
@@ -27,51 +31,18 @@ void TitleScene::Initialize() {
 	// Inputの初期化
 	input = Input::GetInstance();
 
-	///
-	///	↓ ゲームシーン用
-	///
-
-	// Texture読み込み
-	uint32_t titleGH = TextureManager::Load("resources/Images/title.png", dxBase->GetDevice());
-
-	// スプライトの生成と初期化
-	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(spriteCommon.get(), titleGH);
-	sprite_->SetSize({500.0f, 500.0f});
-
-	// モデル読み込み
-	model_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
-
-	// 3Dオブジェクトの生成とモデル指定
-	object_ = std::make_unique<Object3D>();
-	object_->model_ = &model_;
-	object_->transform_.rotate = {0.0f, 3.14f, 0.0f};
+	// LightManagerの初期化
+	lightManager = LightManager::GetInstance();
+	lightManager->Initialize();
 }
 
 void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
-	// スプライトの更新
-	sprite_->Update();
-
-	// 3Dオブジェクトの更新
-	object_->UpdateMatrix();
-	object_->transform_.rotate.y += 0.001f;
-
-	///
-	///	シーン切り替え
-	///
-
-	// ENTERキーを押したら
-	if (input->TriggerKey(DIK_RETURN)) {
-		//// ゲームプレイシーン（次シーンを生成）
-		// BaseScene* scene = new GamePlayScene();
-		//// シーン切り替え依頼
-		// SceneManager::GetInstance()->SetNextScene(scene);
-
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	}
+#ifdef _DEBUG
+	// デバッグカメラ更新
+	DebugCameraUpdate(input);
+#endif
 }
 
 void TitleScene::Draw() {
@@ -87,13 +58,13 @@ void TitleScene::Draw() {
 	ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
 	Camera::TransferConstantBuffer();
+	// ライトの定数バッファを設定
+	lightManager->TransferContantBuffer();
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
-
-	object_->Draw();
-
+	
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
 	///
@@ -105,19 +76,40 @@ void TitleScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
-	// スプライトの描画
-	sprite_->Draw();
-
 	///
 	/// ↑ ここまでスプライトの描画コマンド
 	///
 
-	ImGui::Begin("window");
+	///
+	///	デバッグ表示
+	///
+#ifdef _DEBUG
+	ImGui::Begin("TitleSceneInfo");
 
-	ImGui::Text("Trigger ENTER key to GamePlayScene");
+	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
+	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
 	ImGui::End();
 
+
+
+	ImGui::Begin("Edit");
+	ImGui::ShowStyleEditor();
+	ImGui::End();
+
+
+
+	ImGui::Begin("Config");
+	if (ImGui::Button("Save")) {
+		ImGuiUtil::SaveImGuiStyleToJson("resources/Configs/ImGui/imguiConfig.json");
+	}
+	if (ImGui::Button("Load")) {
+		ImGuiUtil::LoadImGuiStyleFromJson("resources/Configs/ImGui/imguiConfig.json");
+	}
+
+	ImGui::End();
+
+#endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
 	// 描画後処理
@@ -125,3 +117,29 @@ void TitleScene::Draw() {
 	// フレーム終了処理
 	dxBase->EndFrame();
 }
+
+#ifdef _DEBUG
+void TitleScene::DebugCameraUpdate(Input* input) {
+	// 前回のカメラモード状態を保持
+	static bool prevUseDebugCamera = false;
+
+	// デバッグカメラが有効になった瞬間に通常カメラのTransformを保存
+	if (useDebugCamera && !prevUseDebugCamera) {
+		savedCameraTransform = camera->transform;
+	}
+
+	// デバッグカメラが有効の場合
+	if (useDebugCamera) {
+		// デバッグカメラの更新
+		debugCamera->Update(input);
+		// 通常カメラにデバッグカメラのTransformを適用
+		camera->transform = debugCamera->transform_;
+	} else if (!useDebugCamera && prevUseDebugCamera) {
+		// 通常カメラのTransformを再現
+		camera->transform = savedCameraTransform;
+	}
+
+	// 現在のカメラモードを保存して次のフレームで使う
+	prevUseDebugCamera = useDebugCamera;
+}
+#endif // _DEBUG

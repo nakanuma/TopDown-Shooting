@@ -28,11 +28,6 @@ public:
 	virtual void Update(Player* player) = 0;
 
 	/// <summary>
-	/// 弾の更新処理
-	/// </summary>
-	virtual void UpdateBullets() = 0;
-
-	/// <summary>
 	/// 描画処理
 	/// </summary>
 	virtual void Draw() = 0;
@@ -90,12 +85,6 @@ protected:
 
 	// コライダーのサイズ
 	Float3 colliderSize_;
-
-	// ---------------------------------------------------------
-	// 弾
-	// ---------------------------------------------------------
-
-	std::vector<std::unique_ptr<Bullet>> bullets_;
 
 	// ---------------------------------------------------------
 	// スプライト関連

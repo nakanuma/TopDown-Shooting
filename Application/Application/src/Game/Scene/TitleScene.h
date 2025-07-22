@@ -1,15 +1,22 @@
 #pragma once
+
+// Engine
 #include "BaseScene.h"
 #include "Camera.h"
+#include "DebugCamera.h"
 #include "Input.h"
+#include "LightManager.h"
 #include "ModelManager.h"
 #include "Object3D.h"
 #include "SoundManager.h"
 #include "Sprite.h"
 #include "SpriteCommon.h"
 #include "TextureManager.h"
+#include <Engine/Collider/CollisionManager.h>
+#include <Engine/Util/TimeManager.h>
+#include <Engine/Texture/PostEffectManager.h>
 
-// ゲームプレイシーン
+// タイトルシーン
 class TitleScene : public BaseScene {
 public:
 	// 初期化
@@ -25,20 +32,23 @@ public:
 	void Draw() override;
 
 private:
+#ifdef _DEBUG
+	bool useDebugCamera = false;    // デバッグカメラが有効か
+	Transform savedCameraTransform; // 通常カメラのTransformを保持
+
+	void DebugCameraUpdate(Input* input);
+#endif
+
+private:
 	std::unique_ptr<Camera> camera = nullptr;
+	std::unique_ptr<DebugCamera> debugCamera = nullptr;
 	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;
 	std::unique_ptr<SoundManager> soundManager = nullptr;
 	Input* input = nullptr;
+	LightManager* lightManager = nullptr;
 
 	///
-	/// ↓ ゲームシーン用
 	///
-
-	// モデルデータ
-	ModelManager::ModelData model_;
-	// 3Dオブジェクト
-	std::unique_ptr<Object3D> object_;
-
-	// スプライト
-	std::unique_ptr<Sprite> sprite_;
+	///
+	
 };

@@ -40,6 +40,11 @@ public:
 	/// </summary>
 	Float3& GetScale() const { return objectObstacle_->transform_.scale; }
 
+	/// <summary>
+	/// 破棄される際に呼ぶ関数
+	/// </summary>
+	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
+
 protected:
 	// ---------------------------------------------------------
 	// オブジェクト関連

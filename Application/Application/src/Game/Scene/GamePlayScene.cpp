@@ -135,6 +135,8 @@ void GamePlayScene::Update() {
 	enemyManager_->Update();
 	// 障害物の更新
 	obstacleManager_->Update();
+	// 弾の更新
+	BulletManager::GetInstance()->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -148,6 +150,21 @@ void GamePlayScene::Update() {
 #ifdef _DEBUG
 	// デバッグカメラ更新
 	DebugCameraUpdate(input);
+
+	loader_->Update();
+	// ステージデータファイルに変更があれば再生成
+	if (loader_->HasFileChanged()) {
+		// ステージデータ再読み込み
+		loader_->LoadFromFile("resources/Stages/data.json");
+
+		// 各ステージデータ要素の再生成
+		enemyManager_->Reload(loader_->GetAllDatas());
+		obstacleManager_->Reload(loader_->GetAllDatas());
+
+		// リセットしたことを知らせる
+		loader_->ResetFileChangedFlag();
+	}
+
 #endif
 }
 
@@ -170,36 +187,29 @@ void GamePlayScene::Draw() {
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
-
-	// レンダーターゲットをレンダーテクスチャにセット
-	postEffectManager_->BeginRenderToTexture();
-
-	// SkyBox描画
-	SkyBoxManager::GetInstance()->Draw();
-
 #ifdef _DEBUG
-	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());*/
-
-	ImGuiUtil::ImageWindow("extract", postEffectManager_->bloomExtractGH_);
-	ImGuiUtil::ImageWindow("blur", postEffectManager_->bloomBlurGH_);
+	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
+	ImGuiUtil::ImageWindow("outlineRT", postEffectManager_->outlineRT_);
+	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);*/
 #endif
-
-	// フィールド描画
+	// 通常の描画
+	postEffectManager_->BeginRenderToTexture();
+	SkyBoxManager::GetInstance()->Draw();
 	field_->Draw();
-	// プレイヤー描画
 	player_->Draw();
-	// 敵の描画
 	enemyManager_->Draw();
-	// 障害物の描画
 	obstacleManager_->Draw();
+	BulletManager::GetInstance()->Draw();
 
-	// パーティクル描画
-	/*ParticleEffectManager::GetInstance()->Draw();*/
+	// アウトライン適用パス
+	postEffectManager_->BeginRenderToOutlineTexture();
+	player_->Draw();
+	enemyManager_->Draw();
 
-	// ポストエフェクト適用
-	postEffectManager_->ApplyBloom();
-	// 適用後描画
-	postEffectManager_->DrawBloom();
+	// アウトライン生成 + 描画
+	postEffectManager_->ApplyOutline();
+	ParticleEffectManager::GetInstance()->Draw();
+	postEffectManager_->DrawOutline();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -221,8 +231,12 @@ void GamePlayScene::Draw() {
 	/// ↑ ここまでスプライトの描画コマンド
 	///
 
+	///
+	///	デバッグ表示
+	/// 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
@@ -230,8 +244,11 @@ void GamePlayScene::Draw() {
 
 	ImGui::End();
 
-	// コリジョンマネージャーのデバッグ表示
+	/**/
 	CollisionManager::GetInstance()->Debug();
+	player_->Debug();
+	obstacleManager_->Debug();
+	enemyManager_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

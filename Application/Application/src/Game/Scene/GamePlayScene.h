@@ -23,6 +23,7 @@
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 #include <src/Game/Player/Player.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
 
 class GamePlayScene : public BaseScene {
 public:

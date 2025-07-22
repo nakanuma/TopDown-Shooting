@@ -40,6 +40,11 @@ public:
 	void DrawUI();
 
 	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void Debug();
+
+	/// <summary>
 	/// 衝突時コールバック
 	/// </summary>
 	void OnCollision(Collider* other) override;
@@ -85,11 +90,6 @@ private:
 	// ---------------------------------------------------------
 
 	/// <summary>
-	/// デバッグ表示
-	/// </summary>
-	void Debug();
-
-	/// <summary>
 	/// カーソル方向へ向くよう回転させる
 	/// </summary>
 	void FaceCursor();
@@ -108,11 +108,6 @@ private:
 	/// 弾のリロード処理
 	/// </summary>
 	void HandleReloading();
-
-	/// <summary>
-	/// 弾の更新処理
-	/// </summary>
-	void UpdateBullets();
 
 	/// <summary>
 	/// コライダー更新処理
@@ -193,9 +188,6 @@ private:
 	// ---------------------------------------------------------
 	// 弾関連
 	// ---------------------------------------------------------
-
-	// 弾リスト
-	std::vector<std::unique_ptr<Bullet>> bullets_;
 
 	// 最大弾数
 	const int32_t kMaxAmmo = 30;

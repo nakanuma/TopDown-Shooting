@@ -36,19 +36,24 @@ public:
 	void DrawUI();
 
 	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void Debug();
+
+	/// <summary>
 	/// プレイヤーのポインタをセット
 	/// </summary>
 	void SetPlayer(Player* player) { player_ = player; }
+
+	/// <summary>
+	/// 再生成処理
+	/// </summary>
+	void Reload(const std::vector<Loader::TransformData> datas);
 
 private:
 	// ---------------------------------------------------------
 	// 内部処理
 	// ---------------------------------------------------------
-
-	/// <summary>
-	/// デバッグ表示
-	/// </summary>
-	void Debug();
 
 private:
 	// ---------------------------------------------------------
