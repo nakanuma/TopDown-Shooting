@@ -233,6 +233,7 @@ void GamePlayScene::Draw() {
 	/// 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
@@ -240,6 +241,7 @@ void GamePlayScene::Draw() {
 
 	ImGui::End();
 
+	/**/
 	CollisionManager::GetInstance()->Debug();
 	player_->Debug();
 	obstacleManager_->Debug();
