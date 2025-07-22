@@ -27,6 +27,11 @@ public:
 	void DrawUI() override;
 
 	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void Debug();
+
+	/// <summary>
 	/// 衝突時コールバック
 	/// </summary>
 	void OnCollision(Collider* other) override;

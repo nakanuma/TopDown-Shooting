@@ -39,8 +39,7 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	damage_ = 5;
 
 	// 速さ
-	/*speed_ = 1.8f;*/
-	speed_ = 0.8f;
+	speed_ = 1.8f;
 
 	// 速度
 	velocity_ = direciton * speed_;
