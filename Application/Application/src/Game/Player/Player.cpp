@@ -10,6 +10,7 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -80,6 +81,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
 	RegisterParam("maxReloadTime", &maxReloadTime_, 0.0f, 10.0f, 0.01f);
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
+	InitConfig(); // 初回読み込み
 }
 
 // ---------------------------------------------------------
@@ -98,8 +100,6 @@ void Player::Update() {
 	HandleShooting();
 	// 弾のリロード処理
 	HandleReloading();
-	// 弾の更新処理
-	UpdateBullets();
 
 	///
 	///	コライダー更新処理
@@ -125,12 +125,6 @@ void Player::Update() {
 // 描画処理
 // ---------------------------------------------------------
 void Player::Draw() {
-
-	// 全ての弾を描画
-	for (const auto& bullet : bullets_) {
-		bullet->Draw();
-	}
-
 	// プレイヤーオブジェクト描画
 	objectPlayer_->Draw();
 }
@@ -350,8 +344,7 @@ void Player::HandleShooting() {
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
-
-		bullets_.push_back(std::move(newBullet));
+		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 		// 残弾を減らす
 		currentAmmo_--;
@@ -384,24 +377,6 @@ void Player::HandleReloading() {
 			reloadTimer_ = 0.0f; // タイマー初期化
 		}
 	}
-}
-
-// ---------------------------------------------------------
-// 弾の更新処理
-// ---------------------------------------------------------
-void Player::UpdateBullets() {
-	// 全ての弾を更新
-	for (auto& bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// 弾の削除処理
-	for (auto& bullet : bullets_) {
-		if (bullet->IsDead()) {
-			bullet->OnDestroy();
-		}
-	}
-	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), [](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), bullets_.end());
 }
 
 // ---------------------------------------------------------

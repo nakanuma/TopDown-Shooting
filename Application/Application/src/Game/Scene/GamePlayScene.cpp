@@ -135,6 +135,8 @@ void GamePlayScene::Update() {
 	enemyManager_->Update();
 	// 障害物の更新
 	obstacleManager_->Update();
+	// 弾の更新
+	BulletManager::GetInstance()->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -197,6 +199,7 @@ void GamePlayScene::Draw() {
 	player_->Draw();
 	enemyManager_->Draw();
 	obstacleManager_->Draw();
+	BulletManager::GetInstance()->Draw();
 
 	// アウトライン適用パス
 	postEffectManager_->BeginRenderToOutlineTexture();

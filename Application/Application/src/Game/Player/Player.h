@@ -110,11 +110,6 @@ private:
 	void HandleReloading();
 
 	/// <summary>
-	/// 弾の更新処理
-	/// </summary>
-	void UpdateBullets();
-
-	/// <summary>
 	/// コライダー更新処理
 	/// </summary>
 	void UpdateCollider();
@@ -193,9 +188,6 @@ private:
 	// ---------------------------------------------------------
 	// 弾関連
 	// ---------------------------------------------------------
-
-	// 弾リスト
-	std::vector<std::unique_ptr<Bullet>> bullets_;
 
 	// 最大弾数
 	const int32_t kMaxAmmo = 30;

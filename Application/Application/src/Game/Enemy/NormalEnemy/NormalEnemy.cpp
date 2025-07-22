@@ -18,6 +18,7 @@
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -113,12 +114,6 @@ void NormalEnemy::Update(Player* player) {
 	UpdateState(player);
 
 	///
-	///	弾の更新処理
-	///
-
-	UpdateBullets();
-
-	///
 	/// オブジェクト更新処理
 	///
 
@@ -138,38 +133,11 @@ void NormalEnemy::Update(Player* player) {
 }
 
 // ---------------------------------------------------------
-// 弾の更新処理
-// ---------------------------------------------------------
-void NormalEnemy::UpdateBullets()
-{
-	// 全ての弾を更新
-	for (auto& bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// 弾の削除処理
-	for (auto& bullet : bullets_) {
-		if (bullet->IsDead()) {
-			bullet->OnDestroy();
-		}
-	}
-
-	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
-		[](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }),
-		bullets_.end());
-}
-
-// ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
 void NormalEnemy::Draw() {
 	// オブジェクト描画
 	objectEnemy_->Draw();
-
-	// 全ての弾を描画
-	for (const auto& bullet : bullets_) {
-		bullet->Draw();
-	}
 }
 
 // ---------------------------------------------------------
@@ -616,7 +584,7 @@ void NormalEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemy
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
-	bullets_.push_back(std::move(newBullet));
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	bulletRemaining_--; // 残弾を減らす
 	attackStateTimer_ = 0.0f; // 攻撃ステートタイマーをリセット
