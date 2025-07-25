@@ -1,4 +1,4 @@
-#include "Grayscale.hlsli"
+#include "Object3D.hlsli"
 
 struct Material
 {

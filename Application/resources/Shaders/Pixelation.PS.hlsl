@@ -26,20 +26,21 @@ struct PixelShaderOutput
     float32_t4 color : SV_TARGET0;
 };
 
+static const float2 screenSize = float2(1280.0f, 720.0f);
+static const float blockSize = 8.0f;
+
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
+    float2 uv = input.texcoord;
+   
+    // ブロック単位にUVをスナップ
+    float2 pixelUV = floor(uv * screenSize / blockSize) * blockSize / screenSize;
     
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    // スナップされたUVでサンプリング（ブロック内で同じ色にする）
+    float4 color = gTexture.Sample(gSampler, pixelUV);
     
-    // 周囲を0に、中心になるほど明るくなるように計算で調整
-    float32_t2 correct = input.texcoord * (1.0f - input.texcoord.yx);
-    // correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleで調整。この例では16倍して1にしている
-    float vignette = correct.x * correct.y * 16.0f;
-    // とりあえず0.8乗でそれっぽく
-    vignette = saturate(pow(vignette, 0.8f));
-    // 係数として乗算
-    output.color.rgb *= vignette;
+    output.color = color;
     
     return output;
 }

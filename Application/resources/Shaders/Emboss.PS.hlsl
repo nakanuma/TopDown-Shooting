@@ -26,20 +26,22 @@ struct PixelShaderOutput
     float32_t4 color : SV_TARGET0;
 };
 
+static const float32_t2 texelSize = float32_t2(1.0f / 1280.0f, 1.0f / 720.0f);
+
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    // 隣接ピクセルを取得
+    float32_t3 col1 = gTexture.Sample(gSampler, input.texcoord + texelSize * float32_t2(-1.0f, -1.0f)).rgb;
+    float32_t3 col2 = gTexture.Sample(gSampler, input.texcoord + texelSize * float32_t2(1.0f, 1.0f)).rgb;
     
-    // 周囲を0に、中心になるほど明るくなるように計算で調整
-    float32_t2 correct = input.texcoord * (1.0f - input.texcoord.yx);
-    // correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleで調整。この例では16倍して1にしている
-    float vignette = correct.x * correct.y * 16.0f;
-    // とりあえず0.8乗でそれっぽく
-    vignette = saturate(pow(vignette, 0.8f));
-    // 係数として乗算
-    output.color.rgb *= vignette;
+    // 差分をとってエンボス効果
+    float32_t3 emboss = col1 - col2 + 0.5f;
+    
+    float gray = (emboss.r + emboss.g + emboss.b) / 3.0f;
+    
+    output.color = float32_t4(gray, gray, gray, 1.0f);
     
     return output;
 }

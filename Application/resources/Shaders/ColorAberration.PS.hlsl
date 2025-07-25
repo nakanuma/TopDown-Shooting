@@ -30,16 +30,20 @@ PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    // 色ズレ量（倍率）
+    float amount = 0.002f;
     
-    // 周囲を0に、中心になるほど明るくなるように計算で調整
-    float32_t2 correct = input.texcoord * (1.0f - input.texcoord.yx);
-    // correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleで調整。この例では16倍して1にしている
-    float vignette = correct.x * correct.y * 16.0f;
-    // とりあえず0.8乗でそれっぽく
-    vignette = saturate(pow(vignette, 0.8f));
-    // 係数として乗算
-    output.color.rgb *= vignette;
+    float32_t2 offsetR = float32_t2(amount, amount);
+    float32_t2 offsetG = float32_t2(-amount, -amount);
+    float32_t2 offsetB = float32_t2(0.0f, 0.0f);
     
+    // 各チャンネルごとに異なる方向へずらす
+    float32_t3 color;
+    color.r = gTexture.Sample(gSampler, input.texcoord + offsetR).r;
+    color.g = gTexture.Sample(gSampler, input.texcoord + offsetG).g;
+    color.b = gTexture.Sample(gSampler, input.texcoord + offsetB).b;
+    
+    output.color = float32_t4(color, 1.0f);
+
     return output;
 }

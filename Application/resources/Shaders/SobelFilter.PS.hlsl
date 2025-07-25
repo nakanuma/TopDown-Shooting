@@ -199,14 +199,14 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     output.color = saturate(max(abs(outputX), abs(outputY)));
     
-    if (output.color.r <= 0.01)
+    if (output.color.r <= 0.02)
     {
         discard;
     }
     
     output.color.g = output.color.r;
     output.color.b = output.color.r;
-    output.color *= gMaterial.color;
     output.color.a = 1.0f;
+    output.color *= gMaterial.color;
     return output;
 }
