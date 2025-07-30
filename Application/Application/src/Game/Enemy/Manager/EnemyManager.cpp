@@ -150,33 +150,11 @@ void EnemyManager::Debug() {
 
 			/* NormalEnemy */
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
-				// 現在ステートの表示
-				const char* stateName = "Empty";
-				switch (normalEnemy->GetState()) {
-				case EnemyState::Alert:
-					stateName = "Alert";
-					break;
-				case EnemyState::Move:
-					stateName = "Move";
-					break;
-				case EnemyState::Attack:
-					stateName = "Attack";
-					break;
-				}
-				ImGui::Text("State : %s", stateName);
 
-				// リロード中？
-				if (normalEnemy->isReloading_) {
-					ImGui::Text("isReloading : true");
-				} else {
-					ImGui::Text("isReloading : false");
-				}
+			}
 
-				// リロード時間
-				ImGui::Text("reloadTimer : %.2f", normalEnemy->reloadTimer_);
-
-				// 残弾数
-				ImGui::Text("remainingBullets : %d", normalEnemy->bulletRemaining_);
+			/* ImmobileEnemy */
+			if (ImmobileEnemy* immobileEnemy = dynamic_cast<ImmobileEnemy*>(enemy)) {
 
 			}
 
