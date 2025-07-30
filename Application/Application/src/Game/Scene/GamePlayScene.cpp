@@ -183,6 +183,8 @@ void GamePlayScene::Draw() {
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager->TransferContantBuffer();
+	// ポストエフェクト用の定数バッファを設定
+	postEffectManager_->TransfarConstantBuffer();
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド

@@ -3,6 +3,9 @@
 // C++
 #include <numbers>
 
+// Application
+#include <src/Game/Player/Player.h>
+
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
@@ -32,7 +35,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
+	collider_ = std::make_unique<OBBCollider>();
 	collider_->SetTag("BossEnemy");
 	collider_->SetOwner(this);
 	colliderSize_ = { 5.0f, 3.0f, 5.0f };
@@ -56,6 +59,17 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 // ---------------------------------------------------------
 void BossEnemy::Update(Player* player)
 {
+	///
+	///	プレイヤー方向へ向く（デバッグで一時的に）
+	///
+
+	//// プレイヤーへの方向ベクトル
+	//Float3 toPlayer = player->GetTranslate() - objectEnemy_->transform_.translate;
+	//// 方向ベクトルからY軸回転角度を計算
+	//float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	//// Y軸に回転を適用
+	//objectEnemy_->transform_.rotate.y = targetAngle;
+
 	///
 	/// コライダー更新処理
 	///
@@ -82,7 +96,17 @@ void BossEnemy::Draw()
 // UI描画処理
 // ---------------------------------------------------------
 void BossEnemy::DrawUI()
-{
+{}
+
+// ---------------------------------------------------------
+// デバッグ表示
+// ---------------------------------------------------------
+void BossEnemy::Debug() {
+	ImGui::Begin("BossEnemy");
+	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
+	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale.x, 0.01f);
+	ImGui::End();
 }
 
 // ---------------------------------------------------------
@@ -113,12 +137,26 @@ void BossEnemy::OnCollision(Collider* other)
 // ---------------------------------------------------------
 void BossEnemy::UpdateCollider()
 {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+	//if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+	//	Float3 center = objectEnemy_->transform_.translate;
+	//	Float3 size = colliderSize_;
+
+	//	// min
+	//	aabb->min_ = center - size;
+	//	aabb->max_ = center + size;
+	//}
+
+	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
 
-		// min
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
+		obb->center_ = center;
+		obb->size_ = colliderSize_;
+
+		// 回転軸の更新
+		Matrix rotMat = Matrix::Rotation(objectEnemy_->transform_.rotate);
+		obb->xAxis_ = Float3::Normalize(Float3(rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0]));
+		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));
+		obb->zAxis_ = Float3::Normalize(Float3(rotMat.r[0][2], rotMat.r[1][2], rotMat.r[2][2]));
 	}
 }

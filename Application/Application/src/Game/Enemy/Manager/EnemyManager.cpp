@@ -44,7 +44,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 	// 一旦手動でボス追加
 	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Initialize({ 0.0f, 3.0f, 40.0f }, &modelBossEnemy_);
+	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_);
 
 }
 
@@ -185,6 +185,9 @@ void EnemyManager::Debug() {
 	}
 
 	ImGui::End();
+
+	// ボス
+	bossEnemy_->Debug();
 
 #endif // _DEBUG
 }

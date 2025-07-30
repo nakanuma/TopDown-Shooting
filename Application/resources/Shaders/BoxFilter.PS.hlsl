@@ -1,4 +1,4 @@
-#include "BoxFilter.hlsli"
+#include "Object3D.hlsli"
 
 struct Material
 {

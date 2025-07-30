@@ -30,19 +30,26 @@ PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    // テクスチャから色取得
-    float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord);
+    float2 uv = input.texcoord;
+    float2 center = float2(0.5f, 0.5f);
+    float2 offset = uv - center;
     
-    // 輝度を計算
-    float luminance = dot(textureColor.rgb, float32_t3(0.299, 0.587, 0.114)); // RGB->輝度への変換
+    // 歪ませる強さ（正数ならBarrel, 負数ならPincushion）
+    float distortionAmount = 0.5f;
     
-    // 閾値より暗ければ破棄する
-    if (luminance < 0.4f)
-    {
-        discard;
+    // 距離に応じた歪み
+    float r2 = dot(offset, offset);
+    float2 distortedUV = center + offset * (1.0f + distortionAmount * r2);
+    
+    // 範囲外なら黒に（optional）
+    if (distortedUV.x < 0.0f || distortedUV.x > 1.0f || distortedUV.y < 0.0f || distortedUV.y > 1.0f)
+    {   
+        output.color = float4(0.0f, 0.0f, 0.0f, 1.0f);
     }
-    
-    output.color = textureColor;
+    else
+    {
+        output.color = gTexture.Sample(gSampler, distortedUV);
+    }
     
     return output;
 }

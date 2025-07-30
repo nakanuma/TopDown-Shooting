@@ -30,16 +30,19 @@ PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    float32_t4 color = gTexture.Sample(gSampler, input.texcoord);
+    float32_t3 original = color.rgb;
     
-    // 周囲を0に、中心になるほど明るくなるように計算で調整
-    float32_t2 correct = input.texcoord * (1.0f - input.texcoord.yx);
-    // correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleで調整。この例では16倍して1にしている
-    float vignette = correct.x * correct.y * 16.0f;
-    // とりあえず0.8乗でそれっぽく
-    vignette = saturate(pow(vignette, 0.8f));
-    // 係数として乗算
-    output.color.rgb *= vignette;
+    // セピア変換行列を使用
+    float32_t3 sepia;
+    sepia.r = dot(original, float32_t3(0.393, 0.796, 0.189));
+    sepia.g = dot(original, float32_t3(0.349, 0.686, 0.168));
+    sepia.b = dot(original, float32_t3(0.272, 0.534, 0.131));
+    
+    // オーバーフロー対策にクランプ
+    float32_t3 finalColor = saturate(sepia);
+    
+    output.color = float32_t4(finalColor, 1.0f);
     
     return output;
 }
