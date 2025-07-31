@@ -92,7 +92,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void NormalEnemy::Update(Player* player) {
+void NormalEnemy::Update() {
 	///
 	/// コライダー更新処理
 	///

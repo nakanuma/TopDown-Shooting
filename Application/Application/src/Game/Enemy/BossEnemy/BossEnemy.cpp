@@ -57,7 +57,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void BossEnemy::Update(Player* player)
+void BossEnemy::Update()
 {
 	///
 	///	プレイヤー方向へ向く（デバッグで一時的に）

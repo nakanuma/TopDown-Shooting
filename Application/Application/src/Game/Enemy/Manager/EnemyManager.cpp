@@ -54,11 +54,11 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
-		enemy->Update(player_);
+		enemy->Update();
 	}
 	// ボス更新
 	if (bossEnemy_) {
-		bossEnemy_->Update(player_);
+		bossEnemy_->Update();
 	}
 
 	// 敵の削除処理
@@ -173,8 +173,7 @@ void EnemyManager::Debug() {
 // ---------------------------------------------------------
 // 再生成処理
 // ---------------------------------------------------------
-void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
-{
+void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 	// 破棄を行ってからリストをクリア
 	for (auto& enemy : enemies_) {
 		enemy->OnDestroy();
@@ -187,6 +186,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
 			auto enemy = std::make_unique<NormalEnemy>();
 			enemy->Initialize(data.translate, &modelNormalEnemy_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemy->SetTargetPlayer(player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
@@ -195,6 +195,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
 			auto enemy = std::make_unique<ImmobileEnemy>();
 			enemy->Initialize(data.translate, &modelImmobileEnemy_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemy->SetTargetPlayer(player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 

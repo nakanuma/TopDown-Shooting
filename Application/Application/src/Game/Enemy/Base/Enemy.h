@@ -25,7 +25,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	virtual void Update(Player* player) = 0;
+	virtual void Update() = 0;
 
 	/// <summary>
 	/// 描画処理
@@ -61,6 +61,11 @@ public:
 	/// 残りHPの取得
 	/// </summary>
 	int32_t GetHP() const { return currentHP_; }
+
+	/// <summary>
+	/// 対象のプレイヤーをセット
+	/// </summary>
+	void SetTargetPlayer(Player* player) { targetPlayer_ = player; }
 
 protected:
 	// ---------------------------------------------------------
@@ -98,6 +103,13 @@ protected:
 	// HPバー（前景）
 	std::unique_ptr<Sprite> spriteHPForeground_;
 
+
+	// リロード表示の最大サイズ
+	const Float2 kReloadSize = {100.0f, 10.0f};
+
+	// リロード表示
+	std::unique_ptr<Sprite> spriteReload_;
+
 	// ---------------------------------------------------------
 	// パラメーター
 	// ---------------------------------------------------------
@@ -109,4 +121,11 @@ protected:
 	int32_t maxHP_;
 	// 現在HP
 	int32_t currentHP_;
+
+	// ---------------------------------------------------------
+	// その他
+	// ---------------------------------------------------------
+
+	// 対象のプレイヤー
+	Player* targetPlayer_ = nullptr;
 };

@@ -14,7 +14,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update(Player* player) override;
+	void Update() override;
 
 	/// <summary>
 	/// 描画処理
