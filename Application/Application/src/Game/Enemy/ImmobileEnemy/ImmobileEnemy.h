@@ -65,6 +65,11 @@ private:
 	void SearchMotion();
 
 	/// <summary>
+	/// プレイヤーの方向を向く
+	/// </summary>
+	void FaceToPlayer();
+
+	/// <summary>
 	/// 弾発射処理
 	/// </summary>
 	void Shoot();
@@ -85,7 +90,7 @@ private:
 	/// 
 	
 	// プレイヤー索敵距離
-	float searchRange_ = 15.0f;
+	float searchRange_ = 20.0f;
 	// プレイヤーを発見したかどうか
 	bool isPlayerVisible_ = false;
 

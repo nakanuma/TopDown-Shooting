@@ -321,6 +321,17 @@ void ImmobileEnemy::SearchMotion() {
 }
 
 // ---------------------------------------------------------
+// プレイヤーの方向を向く
+// ---------------------------------------------------------
+void ImmobileEnemy::FaceToPlayer() { 
+	// プレイヤーへの方向ベクトルからY軸回転角度を計算
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate; 
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸に回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
+}
+
+// ---------------------------------------------------------
 // 弾発射処理
 // ---------------------------------------------------------
 void ImmobileEnemy::Shoot() {
@@ -368,6 +379,12 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///	攻撃シーケンス関連
 	///
 
+	// プレイヤーの方向を向く
+	auto faceToPlayer = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) { 
+		enemy->FaceToPlayer();
+		return BehaviorStatus::Success;
+	});
+
 	// リロード必要チェック
 	auto needToReload = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		if (enemy->bulletRemaining_ <= 0 && !enemy->isReloading_) {
@@ -405,6 +422,7 @@ void ImmobileEnemy::BuildBehaviorTree() {
 
 	// attackSequence構築
 	auto attackSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	attackSequence->AddChild(std::move(faceToPlayer)); // プレイヤーの方向を向く
 	attackSequence->AddChild(std::move(needToReload)); // リロード必要チェック
 	attackSequence->AddChild(std::move(doReload)); // リロード
 	attackSequence->AddChild(std::move(canShoot)); // 射撃可能チェック
