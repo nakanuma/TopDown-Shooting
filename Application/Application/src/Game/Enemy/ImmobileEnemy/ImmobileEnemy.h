@@ -16,7 +16,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(const Float3& position, ModelManager::ModelData* model) override;
+	void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) override;
 
 	/// <summary>
 	/// 更新処理
@@ -142,5 +142,7 @@ private:
 
 private:
 	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_;
+
+public:
 	void BuildBehaviorTree();
 };

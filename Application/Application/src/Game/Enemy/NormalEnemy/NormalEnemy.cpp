@@ -26,7 +26,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* model) {
+void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
 	///

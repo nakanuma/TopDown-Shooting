@@ -6,12 +6,16 @@
 // Application
 #include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
+#include <src/Game/Player/Player.h>
 
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
+void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Player* player) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
+
+	// プレイヤーのポインタを受け取る
+	player_ = player;
 
 	///
 	///	各モデル読み込み
@@ -44,7 +48,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 	// 一旦手動でボス追加
 	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_);
+	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_, player_);
 
 }
 
@@ -58,7 +62,7 @@ void EnemyManager::Update() {
 	}
 	// ボス更新
 	if (bossEnemy_) {
-		bossEnemy_->Update();
+		/*bossEnemy_->Update();*/
 	}
 
 	// 敵の削除処理
@@ -82,7 +86,7 @@ void EnemyManager::Draw() {
 	}
 	// ボス描画
 	if (bossEnemy_) {
-		bossEnemy_->Draw();
+		/*bossEnemy_->Draw();*/
 	}
 }
 
@@ -184,18 +188,16 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 		// 通常敵
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &modelNormalEnemy_);
+			enemy->Initialize(data.translate, &modelNormalEnemy_, player_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemy->SetTargetPlayer(player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
 		// 固定敵
 		if (data.tag == "IMMOBILE_ENEMY") {
 			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &modelImmobileEnemy_);
+			enemy->Initialize(data.translate, &modelImmobileEnemy_, player_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemy->SetTargetPlayer(player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 

@@ -20,7 +20,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize(const Float3& position, ModelManager::ModelData* model) = 0;
+	virtual void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) = 0;
 
 	/// <summary>
 	/// 更新処理
@@ -61,11 +61,6 @@ public:
 	/// 残りHPの取得
 	/// </summary>
 	int32_t GetHP() const { return currentHP_; }
-
-	/// <summary>
-	/// 対象のプレイヤーをセット
-	/// </summary>
-	void SetTargetPlayer(Player* player) { targetPlayer_ = player; }
 
 protected:
 	// ---------------------------------------------------------

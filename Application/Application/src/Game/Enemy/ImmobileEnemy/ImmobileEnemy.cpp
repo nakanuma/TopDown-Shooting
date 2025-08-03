@@ -16,7 +16,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model) {
+void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
 	///
@@ -88,6 +88,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	///	ビヘイビアツリー構築
 	///
 
+	targetPlayer_ = player;
 	BuildBehaviorTree();
 }
 

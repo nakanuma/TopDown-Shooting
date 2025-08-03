@@ -201,6 +201,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)engine\2D;$(SolutionDir)engine\3D;$(SolutionDir)engine\Input;$(SolutionDir)externals\assimp\include;$(SolutionDir)engine\Particle;$(SolutionDir)engine\Sound;$(SolutionDir)engine\Game;$(SolutionDir)engine\Scene;$(SolutionDir)application\Scene;$(SolutionDir)application\GlobalVariables;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>
