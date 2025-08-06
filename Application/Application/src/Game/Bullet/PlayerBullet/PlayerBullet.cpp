@@ -20,6 +20,11 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	objectBullet_->transform_.translate = position;
 	objectBullet_->transform_.scale = {radius_, radius_, radius_};
 
+	Float3 dir = Float3::Normalize(direciton);
+	float yaw = std::atan2(dir.x, dir.z);
+	float pitch = -std::asin(dir.y);
+	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+
 	///
 	///	コライダー生成
 	///

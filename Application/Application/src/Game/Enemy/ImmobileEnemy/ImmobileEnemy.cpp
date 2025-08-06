@@ -8,15 +8,15 @@
 #include <Engine/Util/TimeManager.h>
 
 // Application
-#include <src/Game/Utility/Utility.h>
-#include <src/Game/Player/Player.h>
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/Player/Player.h>
+#include <src/Game/Utility/Utility.h>
 
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model) {
+void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
 	///
@@ -35,7 +35,6 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	objectEnemy_->transform_.translate = position;
 	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
 	objectEnemy_->transform_.rotate = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->color = {0.5f, 0.37f, 0.7f, 1.0f};
 
 	///
 	///	コライダー生成
@@ -72,7 +71,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	spriteReload_ = std::make_unique<Sprite>();
 	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
 	spriteReload_->SetSize(kReloadSize);
-	spriteReload_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 白
+	spriteReload_->SetColor({1.0f, 1.0f, 1.0f, 1.0f}); // 白
 
 	///
 	///	パラメーター設定
@@ -83,29 +82,38 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	// HPの設定
 	currentHP_ = 8;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定
+
+	///
+	///	ビヘイビアツリー構築
+	///
+
+	targetPlayer_ = player;
+	BuildBehaviorTree();
 }
 
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void ImmobileEnemy::Update(Player* player) { 
+void ImmobileEnemy::Update() {
 	///
 	///	コライダー更新処理
-	/// 
-	
-	UpdateCollider(); 
-
-	///
-	///	ステート管理
 	///
 
-	UpdateState(player);
+	UpdateCollider();
 
 	///
 	///	オブジェクト更新処理
-	/// 
+	///
 
 	objectEnemy_->UpdateMatrix();
+
+	///
+	///	ビヘイビアツリーを評価
+	///
+
+	if (behaviorTree_) {
+		behaviorTree_->Tick(this, TimeManager::GetInstance()->GetDeltaTime());
+	}
 
 	///
 	///	スプライト更新処理
@@ -168,7 +176,7 @@ void ImmobileEnemy::DrawUI() {
 
 	///
 	///	リロード表示
-	/// 
+	///
 
 	// 上にずらす分のオフセット
 	const float kOffsetReload = 60.0f;
@@ -177,16 +185,12 @@ void ImmobileEnemy::DrawUI() {
 	float reloadRatio = reloadTimer_ / kReloadTime;
 
 	// リロード時間に応じてサイズ変更
-	spriteReload_->SetSize({
-		kReloadSize.x - (kReloadSize.x * reloadRatio),
-		kReloadSize.y
-		});
+	spriteReload_->SetSize({kReloadSize.x - (kReloadSize.x * reloadRatio), kReloadSize.y});
 
 	// スクリーン座標をセット
-	spriteReload_->SetPosition({
-		screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
-		screenPosition.y - kOffsetReload
-		});
+	spriteReload_->SetPosition(
+	    {screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
+	     screenPosition.y - kOffsetReload});
 
 	// リロード時のみ描画
 	if (isReloading_) {
@@ -200,8 +204,8 @@ void ImmobileEnemy::DrawUI() {
 void ImmobileEnemy::OnCollision(Collider* other) {
 	///
 	///	vs PlayerBullet
-	/// 
-	
+	///
+
 	if (other->GetTag() == "PlayerBullet") {
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
@@ -232,313 +236,107 @@ void ImmobileEnemy::UpdateCollider() {
 }
 
 // ---------------------------------------------------------
-// ステート管理
+// プレイヤーとの距離・遮蔽チェック
 // ---------------------------------------------------------
-void ImmobileEnemy::UpdateState(Player* player)
-{
-	Float3 playerPos = player->GetTranslate();                     // プレイヤー位置
-	Float3 enemyPos = this->objectEnemy_->transform_.translate;    // 敵位置
-	float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
+bool ImmobileEnemy::IsPlayerInSight() {
+	if (!targetPlayer_)
+		return false;
 
-	switch (state_) {
-		// 警戒ステート更新処理
-	case ImmobileEnemyState::Alert:
-		UpdateAlertState(playerPos, enemyPos, distanceToPlayer);
-		break;
+	///
+	///	プレイヤーとの距離チェック
+	///
 
-		// 移動ステート更新処理
-	case ImmobileEnemyState::Move:
-		UpdateMoveState(playerPos, enemyPos, distanceToPlayer);
-		break;
+	const Float3 playerPos = targetPlayer_->GetTranslate();
+	const Float3 enemyPos = this->objectEnemy_->transform_.translate;
+	const Float3 direction = Float3::Normalize(playerPos - enemyPos);
+	const float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
 
-		// 攻撃ステート更新処理
-	case ImmobileEnemyState::Attack:
-		UpdateAttackState(playerPos, enemyPos, distanceToPlayer);
-		break;
-
-	default:
-		break;
+	// プレイヤーが索敵範囲外の場合にはfalse
+	if (distanceToPlayer > searchRange_) {
+		isPlayerVisible_ = false;
+		return false;
 	}
+
+	///
+	///	RayCastによる障害物チェック
+	///
+
+	RayCastHit hit{};
+	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, direction, distanceToPlayer, &hit);
+	// 障害物が間にある場合
+	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
+		isPlayerVisible_ = false;
+		return false;
+	}
+
+	// プレイヤーまで遮蔽なしで見えている
+	isPlayerVisible_ = true;
+	return true;
 }
 
 // ---------------------------------------------------------
-// 警戒ステート更新処理
+// 索敵モーション : 回転->待機->回転->待機・・・
 // ---------------------------------------------------------
-void ImmobileEnemy::UpdateAlertState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer)
-{
-	///
-	///	プレイヤーを発見したら移動ステートへ
-	/// 
+void ImmobileEnemy::SearchMotion() {
+	searchStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
-	// プレイヤー方向へのレイキャスト
-	RayCastHit hit{};
-	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
-
-	bool isInDetectionRange = distanceToPlayer < detectionRange_; // プレイヤーが索敵範囲内かどうか
-	bool hasLineOfSight = rayCastHit && hit.hitCollider->GetTag() != "NormalObstacle"; // プレイヤーとの間に障害物がない場合（視線が通っている場合）
-
-	if (isInDetectionRange && hasLineOfSight) {
-		state_ = ImmobileEnemyState::Move;
-	}
-
-	///
-	///	警戒モーション処理（待機 -> 回転 -> 待機 -> 移動 -> 待機 -> 回転...）
-	/// 
-
-	alertStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-
-	switch (alertSubState_) {
-	case ImmobileAlertSubState::Rotate: {
-		if (alertRotateDuration_ == 0.0f) {
-			alertRotateDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime); // ランダムな回転時間を設定
+	switch (searchState_) {
+	case SearchState::Rotate: {
+		// 回転時間・方向をランダムに設定
+		if (searchRotateDuration_ == 0.0f) {
+			searchRotateDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime);
 			isRotatingRight_ = RandomGenerator::GetInstance()->RandomValueBool();
 		}
 
-		// 回転方向への回転適用
+		// 設定された方向への回転
 		float rotateSpeed = (isRotatingRight_ ? 1.0f : -1.0f) * rotationSpeed_;
 		objectEnemy_->transform_.rotate.y += rotateSpeed;
 
-		// 回転時間を過ぎたら回転後ステートへ
-		if (alertStateTimer_ >= alertRotateDuration_) {
-			alertStateTimer_ = 0.0f; // タイマーリセット
-			alertRotateDuration_ = 0.0f; // 回転時間リセット
-			alertSubState_ = ImmobileAlertSubState::WaitAfterRotate;
+		// 回転時間完了で待機状態へ移行
+		if (searchStateTimer_ >= searchRotateDuration_) {
+			searchStateTimer_ = 0.0f;
+			searchRotateDuration_ = 0.0f;
+			searchState_ = SearchState::Wait;
 		}
 
 		break;
 	}
-	case ImmobileAlertSubState::WaitAfterRotate: {
+	case SearchState::Wait: {
+		// 待機時間をランダムに設定
 		if (waitDuration_ == 0.0f) {
-			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
+			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime);
 		}
 
-		// 待機時間が過ぎたら次ステートへ
-		if (alertStateTimer_ >= waitDuration_) {
-			alertStateTimer_ = 0.0f; // タイマーリセット
-			waitDuration_ = 0.0f; // 待機時間リセット
+		// 待機時間完了で回転状態へ移行
+		if (searchStateTimer_ >= waitDuration_) {
+			searchStateTimer_ = 0.0f;
+			waitDuration_ = 0.0f;
 
-			// ランダムで直進ステートor回転ステートへ
-			bool goForward = RandomGenerator::GetInstance()->RandomValueBool(kMoveForwardProbability);
-			if (goForward) {
-				alertSubState_ = ImmobileAlertSubState::MoveForward;
-			} else {
-				alertSubState_ = ImmobileAlertSubState::Rotate;
-			}
+			searchState_ = SearchState::Rotate;
 		}
 
 		break;
 	}
-	case ImmobileAlertSubState::MoveForward: {
-		if (moveForwardDuration_ == 0.0f) {
-			moveForwardDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinMoveTime, kMaxMoveTime); // 直進時間をランダムに設定
-		}
-
-		// 向いている方向へ直進
-		Float3 forward = { std::sinf(objectEnemy_->transform_.rotate.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate.y) };
-		objectEnemy_->transform_.translate += forward * (moveSpeed_ * 0.5f); // ゆっくりめに移動
-
-		// 直進時間を過ぎたら直進後ステートへ
-		if (alertStateTimer_ >= moveForwardDuration_) {
-			alertStateTimer_ = 0.0f; // タイマーリセット
-			moveForwardDuration_ = 0.0f; // 直進時間リセット
-			alertSubState_ = ImmobileAlertSubState::WaitAfterMove;
-		}
-
-		break;
-	}
-	case ImmobileAlertSubState::WaitAfterMove: {
-		if (waitDuration_ == 0.0f) {
-			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime); // 待機時間をランダムに設定
-		}
-
-		// 待機時間が過ぎたら回転ステートへ
-		if (alertStateTimer_ >= waitDuration_) {
-			alertStateTimer_ = 0.0f; // タイマーリセット
-			waitDuration_ = 0.0f; // 待機時間リセット
-			alertSubState_ = ImmobileAlertSubState::Rotate;
-
-		}
-
-		break;
-	}
-	default:
-
-		break;
-
 	}
 }
 
 // ---------------------------------------------------------
-// 移動ステート更新処理
+// プレイヤーの方向を向く
 // ---------------------------------------------------------
-void ImmobileEnemy::UpdateMoveState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer)
-{
-	moveStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-
-	///
-	/// プレイヤーとの視線チェック（障害物判定）
-	/// 
-
-	// プレイヤー方向へのレイキャスト
-	RayCastHit hit{};
-	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
-
-	// 障害物に遮られている時間を計測
-	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
-		obstacleLostTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		// 上限に達したら警戒ステートへ
-		if (obstacleLostTimer_ >= kLostTime) {
-			state_ = ImmobileEnemyState::Alert;
-			moveStateTimer_ = 0.0f;
-			obstacleLostTimer_ = 0.0f;
-			return;
-		}
-		// 遮られていなければタイマーリセット
-	} else {
-		obstacleLostTimer_ = 0.0f;
-	}
-
-	///
-	///	プレイヤー方向へ向く
-	/// 
-
-	// プレイヤーへの方向ベクトル
-	Float3 toPlayer = playerPos - enemyPos;
-	// 方向ベクトルからY軸回転角度を計算
+void ImmobileEnemy::FaceToPlayer() { 
+	// プレイヤーへの方向ベクトルからY軸回転角度を計算
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate; 
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸に回転を適用
 	objectEnemy_->transform_.rotate.y = targetAngle;
-
-	///
-	/// プレイヤーとの距離に応じた動き
-	///
-
-	Float3 moveDir;
-	// 適正戦闘範囲外なら接近
-	if (distanceToPlayer > kOptimalCombatRange) {
-		moveDir = Float3::Normalize(toPlayer);
-	}
-	// 適正戦闘範囲内なら離脱
-	else if (distanceToPlayer < kOptimalCombatRange * 0.7f) {
-		moveDir = Float3::Normalize(toPlayer * -1.0f);
-	}
-	// それ以外は斜め移動
-	else {
-		moveDir = Float3::Normalize({ -toPlayer.z, 0.0f, toPlayer.x });
-	}
-
-	// 移動を適用
-	objectEnemy_->transform_.translate += moveDir * moveSpeed_;
-
-	///
-	///	攻撃ステートへ
-	/// 
-
-	// 一時的に2秒移動したら攻撃ステートへ
-	if (moveStateTimer_ >= 2.0f) {
-		state_ = ImmobileEnemyState::Attack;
-		attackStateTimer_ = 0.0f;
-	}
-
 }
 
 // ---------------------------------------------------------
-// 攻撃ステート更新処理
+// 弾発射処理
 // ---------------------------------------------------------
-void ImmobileEnemy::UpdateAttackState(const Float3& playerPos, const Float3& enemyPos, float distanceToPlayer)
-{
-	///
-	///	今回発射する予定の弾数をランダムに設定
-	/// 
-
-	if (attackStateTimer_ == 0.0f && bulletsShotInThisAttack_ == 0) {
-		bulletsToShot_ = RandomGenerator::GetInstance()->RandomValue(kMinShotThisTime, kMaxShotThisTime);
-	}
-
-	///
-	///	タイマー加算
-	/// 
-
-	attackStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-
-	///
-	/// プレイヤーとの視線チェック（障害物判定）
-	/// 
-
-	// プレイヤー方向へのレイキャスト
-	RayCastHit hit{};
-	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, Float3::Normalize(playerPos - enemyPos), distanceToPlayer, &hit);
-
-	// 障害物に遮られている時間を計測
-	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
-		obstacleLostTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		// 上限に達したら警戒ステートへ
-		if (obstacleLostTimer_ >= kLostTime) {
-			state_ = ImmobileEnemyState::Alert;
-			moveStateTimer_ = 0.0f;
-			obstacleLostTimer_ = 0.0f;
-			return;
-		}
-		// 遮られていなければタイマーリセット
-	} else {
-		obstacleLostTimer_ = 0.0f;
-	}
-
-	///
-	///	プレイヤー方向へ向く
-	/// 
-
-	// プレイヤーへの方向ベクトル
-	Float3 toPlayer = playerPos - enemyPos;
-	// 方向ベクトルからY軸回転角度を計算
-	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
-	// Y軸に回転を適用
-	objectEnemy_->transform_.rotate.y = targetAngle;
-
-	///
-	///	リロード処理
-	/// 
-
-	if (isReloading_) {
-		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		// リロード時間に達したらリロード完了
-		if (reloadTimer_ >= kReloadTime) {
-			bulletRemaining_ = kMaxBullet; // 最大弾数を込める
-			reloadTimer_ = 0.0f; // リロードタイマーリセット
-			isReloading_ = false; // リロード終了
-
-			// 移動ステートへ
-			state_ = ImmobileEnemyState::Move;
-			moveStateTimer_ = 0.0f;
-		}
-		return;
-	}
-
-	///
-	///	発射間隔の調整
-	/// 
-
-	if (attackStateTimer_ < nextShotInterval_) {
-		return;
-	}
-
-	///
-	///	弾数制限処理
-	/// 
-
-	// 残弾が0になったらリロード開始
-	if (bulletRemaining_ <= 0) {
-		isReloading_ = true;
-		reloadTimer_ = 0.0f;
-		return;
-	}
-
-	///
-	///	弾生成処理
-	/// 
-
+void ImmobileEnemy::Shoot() {
 	// 発射方向
-	Float3 direction = playerPos - enemyPos;
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	// 拡散をランダムに設定
 	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
 	direction.x += randSpread;
@@ -547,21 +345,102 @@ void ImmobileEnemy::UpdateAttackState(const Float3& playerPos, const Float3& ene
 
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(enemyPos, direction, modelEnemyBullet_);
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelEnemyBullet_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
-	bulletRemaining_--; // 残弾を減らす
-	attackStateTimer_ = 0.0f; // 攻撃ステートタイマーをリセット
-	nextShotInterval_ = RandomGenerator::GetInstance()->RandomValue(kMinShotInterval, kMaxShotInterval); // 次までの発射間隔をランダムに設定
+	// 残弾を減らす
+	bulletRemaining_--;
+	// 次の発射までの待ち時間をリセット
+	nextShotInterval_ = 0.0f;
+}
+
+void ImmobileEnemy::BuildBehaviorTree() {
+	///
+	///	索敵シーケンス関連
+	///
+
+	// 索敵モーション
+	auto searchMotion = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float dt) -> BehaviorStatus {
+		enemy->SearchMotion();
+		return BehaviorStatus::Success; // 常に成功
+	});
+
+	// 距離・遮蔽チェック
+	auto canSeePlayer = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { 
+		return enemy->IsPlayerInSight(); 
+	});
+
+	// searchSequence構築
+	auto searchSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	searchSequence->AddChild(std::move(searchMotion)); // 索敵モーション
+	searchSequence->AddChild(std::move(canSeePlayer)); // 距離・遮蔽チェック
 
 	///
-	///	今回撃つ予定の弾数を撃ち終えたら移動ステートへ
-	/// 
+	///	攻撃シーケンス関連
+	///
 
-	bulletsShotInThisAttack_++;
-	if (bulletsShotInThisAttack_ >= bulletsToShot_) {
-		state_ = ImmobileEnemyState::Move;
-		moveStateTimer_ = 0.0f;
-		bulletsShotInThisAttack_ = 0; // 今回撃った弾数カウントをリセット
-	}
+	// プレイヤーの方向を向く
+	auto faceToPlayer = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) { 
+		enemy->FaceToPlayer();
+		return BehaviorStatus::Success;
+	});
+
+	// リロード必要チェック
+	auto needToReload = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+		if (enemy->bulletRemaining_ <= 0 && !enemy->isReloading_) {
+			enemy->isReloading_ = true;
+			enemy->reloadTimer_ = 0.0f;
+		}
+		return BehaviorStatus::Success;
+	});
+
+	// リロード処理
+	auto doReload = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+		if (enemy->isReloading_) {
+			enemy->reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+			if (enemy->reloadTimer_ >= enemy->kReloadTime) {
+				enemy->isReloading_ = false;
+				enemy->bulletRemaining_ = enemy->kMaxBullet;
+				enemy->reloadTimer_ = 0.0f;
+			}
+			return BehaviorStatus::Running;
+		}
+		return BehaviorStatus::Success;
+	});
+
+	// 射撃可能チェック
+	auto canShoot = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { 
+		enemy->nextShotInterval_ += TimeManager::GetInstance()->GetDeltaTime();
+		return enemy->nextShotInterval_ >= enemy->kShotInterval && !enemy->isReloading_;
+	});
+
+	// 射撃
+	auto shoot = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) { 
+		enemy->Shoot();	
+		return BehaviorStatus::Success;
+	});
+
+	// attackSequence構築
+	auto attackSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	attackSequence->AddChild(std::move(faceToPlayer)); // プレイヤーの方向を向く
+	attackSequence->AddChild(std::move(needToReload)); // リロード必要チェック
+	attackSequence->AddChild(std::move(doReload)); // リロード
+	attackSequence->AddChild(std::move(canShoot)); // 射撃可能チェック
+	attackSequence->AddChild(std::move(shoot)); // 射撃
+
+	///
+	///	ルートシーケンス
+	///
+
+	// rootSequence構築
+	auto rootSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	rootSequence->AddChild(std::move(searchSequence)); // 索敵シーケンス
+	rootSequence->AddChild(std::move(attackSequence)); // 攻撃シーケンス
+
+	///
+	///	behaviorTree
+	///
+
+	// ツリー構築
+	behaviorTree_ = std::make_unique<BehaviorTree<ImmobileEnemy>>(std::move(rootSequence));
 }

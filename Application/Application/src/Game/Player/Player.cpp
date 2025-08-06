@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Player.h"
 
 // C++
@@ -44,10 +45,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_ = std::make_unique<Object3D>();
 	objectPlayer_->model_ = &modelPlayer_;
 	objectPlayer_->transform_.translate = data.translate;
-	objectPlayer_->materialCB_.data_->color = {0.0f, 0.5f, 1.0f, 1.0f};
 
 	// 弾モデル読み込み
-	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
 	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
@@ -72,14 +72,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
-	currentAmmo_ = kMaxAmmo; // マガジンには最大弾数をセット
 
 	///
 	///	調整パラメーター登録
 	///
 
 	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
-	RegisterParam("maxReloadTime", &maxReloadTime_, 0.0f, 10.0f, 0.01f);
+	RegisterParam("fireCooldown", &fireCooldown_, 0.0f, 5.0f, 0.01f);
+
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 	InitConfig(); // 初回読み込み
 }
@@ -96,10 +96,8 @@ void Player::Update() {
 	FaceCursor();
 	// 移動処理
 	HandleMove();
-	// 弾の発射処理
-	HandleShooting();
-	// 弾のリロード処理
-	HandleReloading();
+	// 射撃 & オーバーヒート処理
+	HandleOverHeat();
 
 	///
 	///	コライダー更新処理
@@ -206,17 +204,17 @@ void Player::Debug() {
 
 	ImGui::DragInt("HP", &currentHP_);
 
-	ImGui::Text("Ammo : %d", currentAmmo_);
-
-	ImGui::Text("reloadTimer : %.2f", reloadTimer_);
-
 	ImGui::Text("dashCooldown : %.2f", dashCooldownTimer_);
+
+	// オーバーヒート
+	ImGui::Text("overheatTime : %.2f", overheatTime_);
+	ImGui::Checkbox("isOverheated", &isOverheated_);
 
 	/*  */
 
 	ImGui::End();
 
-	
+
 	// コンフィグウインドウ
 	DrawConfigWindow("playerConfig");
 #endif //  _DEBUG
@@ -240,7 +238,7 @@ void Player::FaceCursor() {
 // 移動処理
 // ---------------------------------------------------------
 void Player::HandleMove() {
-	velocity_ = {0.0f, 0.0f, 0.0f};
+	velocity_ = { 0.0f, 0.0f, 0.0f };
 
 	if (input_->PushKey(DIK_W))
 		velocity_.z += 1.0f;
@@ -300,22 +298,11 @@ void Player::HandleMove() {
 // ---------------------------------------------------------
 void Player::HandleShooting() {
 	///
-	///	弾が撃てない場合には早期リターン
-	///
-
-	// リロード中は撃てないように
-	if (isReloading_)
-		return;
-	// 弾数が0なら撃てないように
-	if (currentAmmo_ <= 0)
-		return;
-
-	///
 	///	左クリックで弾の生成
 	///
 
 	// 左クリックで弾を生成
-	if (input_->IsTriggerMouse(0)) {
+	if (input_->IsPressMouse(0)) {
 		// カーソル位置の取得
 		Float3 cursorPos = Utility::CalclateCursorPosition();
 		// プレイヤー位置の取得
@@ -345,36 +332,44 @@ void Player::HandleShooting() {
 		auto newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
-
-		// 残弾を減らす
-		currentAmmo_--;
-
-		// シェイク
-		CameraShake::GetInstance()->StartShake(0.2f, 0.1f);
 	}
 }
 
 // ---------------------------------------------------------
-// 弾のリロード処理
+// オーバーヒートの管理処理
 // ---------------------------------------------------------
-void Player::HandleReloading() {
-	///
-	///	リロード中更新処理
-	///
-	if (isReloading_) {
-		// 必要リロード時間まで加算
-		reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-		if (reloadTimer_ >= maxReloadTime_) {
-			currentAmmo_ = kMaxAmmo; // マガジンに最大弾数をセット
-			isReloading_ = false;    // リロード状態解除
+void Player::HandleOverHeat()
+{
+	// 左クリック取得
+	isFiring_ = Input::GetInstance()->IsPressMouse(0);
+
+	// 発射タイマーを進める
+	fireTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+
+	// オーバーヒートしていない場合の処理
+	if (!isOverheated_ && isFiring_) {
+		// オーバーヒート処理
+		overheatTime_ += overheatGainPerSecond_ * TimeManager::GetInstance()->GetDeltaTime();
+		if (overheatTime_ >= kOverheatLimit) {
+			overheatTime_ = kOverheatLimit;
+			isOverheated_ = true;
 		}
-		///
-		///	Rキー押下でリロード開始
-		///
+
+		// 射撃処理
+		if (fireTimer_ >= fireCooldown_) {
+			HandleShooting();
+			fireTimer_ = 0.0f;
+		}
+
+		// オーバーヒート中の処理
 	} else {
-		if (input_->TriggerKey(DIK_R)) {
-			isReloading_ = true; // リロード中にする
-			reloadTimer_ = 0.0f; // タイマー初期化
+		// 冷却処理（撃っていない間 or オーバーヒート中）
+		overheatTime_ -= overheatRecoverySpeed_ * TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ = std::max(overheatTime_, 0.0f);
+
+		// 冷却時間完了でオーバーヒート解除
+		if (isOverheated_ && overheatTime_ <= 0.0f) {
+			isOverheated_ = false;
 		}
 	}
 }

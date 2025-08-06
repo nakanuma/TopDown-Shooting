@@ -18,7 +18,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(const std::vector<Loader::TransformData> datas);
+	void Initialize(const std::vector<Loader::TransformData> datas, Player* player);
 
 	/// <summary>
 	/// 更新処理
@@ -39,11 +39,6 @@ public:
 	/// デバッグ表示
 	/// </summary>
 	void Debug();
-
-	/// <summary>
-	/// プレイヤーのポインタをセット
-	/// </summary>
-	void SetPlayer(Player* player) { player_ = player; }
 
 	/// <summary>
 	/// 再生成処理

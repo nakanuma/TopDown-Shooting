@@ -20,12 +20,12 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize(const Float3& position, ModelManager::ModelData* model) = 0;
+	virtual void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) = 0;
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	virtual void Update(Player* player) = 0;
+	virtual void Update() = 0;
 
 	/// <summary>
 	/// 描画処理
@@ -98,9 +98,9 @@ protected:
 	// HPバー（前景）
 	std::unique_ptr<Sprite> spriteHPForeground_;
 
-	
+
 	// リロード表示の最大サイズ
-	const Float2 kReloadSize = { 100.0f, 10.0f };
+	const Float2 kReloadSize = {100.0f, 10.0f};
 
 	// リロード表示
 	std::unique_ptr<Sprite> spriteReload_;
@@ -116,4 +116,11 @@ protected:
 	int32_t maxHP_;
 	// 現在HP
 	int32_t currentHP_;
+
+	// ---------------------------------------------------------
+	// その他
+	// ---------------------------------------------------------
+
+	// 対象のプレイヤー
+	Player* targetPlayer_ = nullptr;
 };

@@ -6,12 +6,16 @@
 // Application
 #include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
+#include <src/Game/Player/Player.h>
 
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
+void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Player* player) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
+
+	// プレイヤーのポインタを受け取る
+	player_ = player;
 
 	///
 	///	各モデル読み込み
@@ -33,7 +37,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 
 	// 弾モデル
-	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
 	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
@@ -44,7 +48,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 
 	// 一旦手動でボス追加
 	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_);
+	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_, player_);
 
 }
 
@@ -54,11 +58,11 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas) {
 void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
-		enemy->Update(player_);
+		enemy->Update();
 	}
 	// ボス更新
 	if (bossEnemy_) {
-		bossEnemy_->Update(player_);
+		/*bossEnemy_->Update();*/
 	}
 
 	// 敵の削除処理
@@ -82,7 +86,7 @@ void EnemyManager::Draw() {
 	}
 	// ボス描画
 	if (bossEnemy_) {
-		bossEnemy_->Draw();
+		/*bossEnemy_->Draw();*/
 	}
 }
 
@@ -111,7 +115,7 @@ void EnemyManager::Debug() {
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_);
+		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_, player_);
 
 		enemies_.emplace_back(std::move(enemy));
 	}
@@ -150,33 +154,11 @@ void EnemyManager::Debug() {
 
 			/* NormalEnemy */
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
-				// 現在ステートの表示
-				const char* stateName = "Empty";
-				switch (normalEnemy->GetState()) {
-				case EnemyState::Alert:
-					stateName = "Alert";
-					break;
-				case EnemyState::Move:
-					stateName = "Move";
-					break;
-				case EnemyState::Attack:
-					stateName = "Attack";
-					break;
-				}
-				ImGui::Text("State : %s", stateName);
 
-				// リロード中？
-				if (normalEnemy->isReloading_) {
-					ImGui::Text("isReloading : true");
-				} else {
-					ImGui::Text("isReloading : false");
-				}
+			}
 
-				// リロード時間
-				ImGui::Text("reloadTimer : %.2f", normalEnemy->reloadTimer_);
-
-				// 残弾数
-				ImGui::Text("remainingBullets : %d", normalEnemy->bulletRemaining_);
+			/* ImmobileEnemy */
+			if (ImmobileEnemy* immobileEnemy = dynamic_cast<ImmobileEnemy*>(enemy)) {
 
 			}
 
@@ -195,8 +177,7 @@ void EnemyManager::Debug() {
 // ---------------------------------------------------------
 // 再生成処理
 // ---------------------------------------------------------
-void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
-{
+void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 	// 破棄を行ってからリストをクリア
 	for (auto& enemy : enemies_) {
 		enemy->OnDestroy();
@@ -207,7 +188,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
 		// 通常敵
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &modelNormalEnemy_);
+			enemy->Initialize(data.translate, &modelNormalEnemy_, player_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
 			enemies_.emplace_back(std::move(enemy));
 		}
@@ -215,7 +196,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas)
 		// 固定敵
 		if (data.tag == "IMMOBILE_ENEMY") {
 			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &modelImmobileEnemy_);
+			enemy->Initialize(data.translate, &modelImmobileEnemy_, player_);
 			enemy->SetBulletModel(&modelEnemyBullet_);
 			enemies_.emplace_back(std::move(enemy));
 		}

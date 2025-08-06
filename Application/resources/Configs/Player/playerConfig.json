@@ -1,4 +1,4 @@
 {
-    "maxReloadTime": 1.0,
+    "fireCooldown": 0.18000000715255737,
     "speed": 0.25
 }

@@ -32,9 +32,9 @@ void PlayerUIManager::Initialize() {
 	hpBar_ = std::make_unique<HPBar>();
 	hpBar_->Initialize(dxBase, spriteCommon_.get());
 
-	// 残弾表示
-	remainingBullets_ = std::make_unique<RemainingBullets>();
-	remainingBullets_->Initialize(dxBase, spriteCommon_.get());
+	// オーバーヒートゲージ
+	overheatGauge_ = std::make_unique<OverheatGauge>();
+	overheatGauge_->Initialize(dxBase, spriteCommon_.get());
 }
 
 // ---------------------------------------------------------
@@ -47,8 +47,8 @@ void PlayerUIManager::Update(const Player* player) {
 	// HPバー
 	hpBar_->Update(player);
 
-	// 残弾表示
-	remainingBullets_->Update(player);
+	// オーバーヒートゲージ
+	overheatGauge_->Update(player);
 }
 
 // ---------------------------------------------------------
@@ -61,6 +61,6 @@ void PlayerUIManager::Draw() {
 	// HPバー
 	hpBar_->Draw();
 
-	// 残弾表示
-	remainingBullets_->Draw();
+	// オーバーヒートゲージ
+	overheatGauge_->Draw();
 }

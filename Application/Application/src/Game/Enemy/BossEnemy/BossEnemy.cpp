@@ -9,7 +9,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* model)
+void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player)
 {
 	///
 	///	基盤機能生成
@@ -57,7 +57,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void BossEnemy::Update(Player* player)
+void BossEnemy::Update()
 {
 	///
 	///	プレイヤー方向へ向く（デバッグで一時的に）

@@ -9,12 +9,12 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(const Float3& position, ModelManager::ModelData* model) override;
+	void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) override;
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update(Player* player) override;
+	void Update() override;
 
 	/// <summary>
 	/// 描画処理
