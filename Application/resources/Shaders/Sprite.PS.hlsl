@@ -4,8 +4,12 @@ struct Material
 {
     float32_t4 color;
     int32_t enableLighting;
+    float shininess;
+    float ratio;
+    float padding;
     float32_t4x4 uvTransform;
-    float32_t shininess;
+    int32_t useCircleMask;
+    float32_t3 padding2;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -31,13 +35,51 @@ struct PixelShaderOutput
     float32_t4 color : SV_TARGET0;
 };
 
+static const float pi = 3.14159265f;
+
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     float4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-    float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
-    float32_t3 toEye = normalize(gCamera.worldPosition - input.worldPosition); // Cameraへの方向を算出
-    float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal)); // 入射光の反射ベクトル
+    float32_t2 uv = transformedUV.xy;
+    
+    if (gMaterial.useCircleMask != 0)
+    {
+        // テクスチャ中心からの相対位置
+        float32_t2 delta = uv - float32_t2(0.5f, 0.5f);
+    
+        // 距離で円形マスク
+        float radius = length(delta);
+        if (radius > 0.5f)
+        {
+            discard;
+        }
+    
+        // 角度計算
+        float angle = atan2(delta.y, delta.x);
+        if (angle < 0)
+        {
+            angle += 2.0f * pi;
+        }
+        
+        // 上方向から
+        angle -= (1.5f * pi);
+        if (angle < 0)
+        {
+            angle += 2.0f * pi;
+        }
+    
+        // 描画角度上限
+        float visibleAngle = gMaterial.ratio * 2.0f * pi;
+    
+        // 描画範囲外なら破棄
+        if (angle > visibleAngle)
+        {
+            discard;
+        }
+    }
+    
+    float32_t4 textureColor = gTexture.Sample(gSampler, uv);
     
     // textureのa値が0.5以下のときにPixelを棄却
     if (textureColor.a <= 0.5)
@@ -49,49 +91,13 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         discard;
     }
-    // output.coloのa値が0のときにPixelを棄却
+    // output.colorのa値が0のときにPixelを棄却
     if (output.color.a == 0.0)
     {
         discard;
     }
     
-    if (gMaterial.enableLighting != 0)
-    { // Lightingする場合  
-        ///
-        /// DirectionalLight
-        ///
-        
-        // 拡散反射
-        float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
-        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f); // half lambert
-        
-        float32_t3 diffuseDirectionalLight =
-        gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-        
-        // 鏡面反射
-        float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);
-        float NdotH = dot(normalize(input.normal), halfVector);
-        float specularPow = pow(saturate(NdotH), gMaterial.shininess); // 反射強度
-        
-        float32_t3 specularDirectionalLight =
-        gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
-        
-        
-        
-        // ライティングテスト用
-        // 拡散反射+鏡面反射
-        //output.color.rgb = diffuseDirectionalLight + specularDirectionalLight;
-        
-        // 基本的にはこっちを適用
-        output.color.rgb = diffuseDirectionalLight;
-        
-        
-        // アルファは今まで通り
-        output.color.a = gMaterial.color.a * textureColor.a;
-    }
-    else
-    {
-        output.color = gMaterial.color * textureColor;
-    }
+    output.color = gMaterial.color * textureColor;
+    
     return output;
 }

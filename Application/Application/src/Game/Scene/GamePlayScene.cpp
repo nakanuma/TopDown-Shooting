@@ -247,15 +247,6 @@ void GamePlayScene::Draw() {
 
 	ImGui::End();
 
-	ImGui::Begin("DirectionalLight");
-
-	ImGui::DragFloat("intensity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
-	ImGui::DragFloat3("direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
-	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
-	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
-
-	ImGui::End();
-
 	/**/
 	CollisionManager::GetInstance()->Debug();
 	player_->Debug();

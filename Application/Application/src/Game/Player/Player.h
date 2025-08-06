@@ -65,24 +65,9 @@ public:
 	int32_t GetMaxHP() const { return kMaxHP; }
 
 	/// <summary>
-	/// リロード中かの取得
+	/// オーバーヒート率の取得（円ゲージのUIに使用）
 	/// </summary>
-	bool IsReloading() const { return isReloading_; }
-
-	/// <summary>
-	/// リロードタイマーの取得
-	/// </summary>
-	float GetReloadTimer() const { return reloadTimer_; }
-
-	/// <summary>
-	/// 最大リロード時間の取得
-	/// </summary>
-	float GetMaxReloadTime() const { return maxReloadTime_; }
-
-	/// <summary>
-	/// 残弾数の取得
-	/// </summary>
-	int32_t GetCurrentAmmo() const { return currentAmmo_; }
+	float GetOverheatRatio() const { return overheatTime_ / kOverheatLimit; }
 
 private:
 	// ---------------------------------------------------------
@@ -105,9 +90,9 @@ private:
 	void HandleShooting();
 
 	/// <summary>
-	/// 弾のリロード処理
+	/// オーバーヒートの管理処理
 	/// </summary>
-	void HandleReloading();
+	void HandleOverHeat();
 
 	/// <summary>
 	/// コライダー更新処理
@@ -186,19 +171,26 @@ private:
 	float kDashSpeedMultiplier = 3.0f;
 
 	// ---------------------------------------------------------
-	// 弾関連
+	// オーバーヒート・弾関連
 	// ---------------------------------------------------------
 
-	// 最大弾数
-	const int32_t kMaxAmmo = 30;
-	// 現在の弾数
-	int32_t currentAmmo_;
-	// リロード中フラグ
-	bool isReloading_ = false;
-	// リロードにかかる時間
-	float maxReloadTime_ = 1.0f;
-	// リロード時間計測タイマー
-	float reloadTimer_ = 0.0f;
+	// 現在のオーバーヒート時間
+	float overheatTime_ = 0.0f;
+	// オーバーヒートまでの限界時間
+	const float kOverheatLimit = 3.0f;
+	// 1秒あたりどれだけゲージが増えるか（撃っている間）
+	float overheatGainPerSecond_ = 1.0f;
+	// 回復速度（秒あたりに減る量）
+	float overheatRecoverySpeed_ = 1.6f;
+	// オーバーヒート中かどうか
+	bool isOverheated_ = false;
+	// 射撃中かどうか
+	bool isFiring_ = false;
+
+	// 長押し中の連射間隔
+	float fireCooldown_ = 0.15f;
+	// タイマー
+	float fireTimer_ = 0.0f;
 
 	// ブレ幅の最大角度（ラジアン）
 	const float kMaxRandomAngle = 0.02f;

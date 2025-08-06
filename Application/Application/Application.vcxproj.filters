@@ -63,9 +63,6 @@
     <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Shrink.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -88,6 +85,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -149,9 +149,6 @@
     <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\RemainingBullets\RemainingBullets.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Shrink.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,8 +6,8 @@
 
 // Application
 #include <src/Game/Player/UI/HPBar/HPBar.h>
-#include <src/Game/Player/UI/RemainingBullets/RemainingBullets.h>
 #include <src/Game/Player/UI/Reticle/Reticle.h>
+#include <src/Game/Player/UI/OverheatGauge/OverheatGauge.h>
 
 class Player;
 
@@ -47,6 +47,7 @@ private:
 	std::unique_ptr<Reticle> reticle_;
 	// HPバー
 	std::unique_ptr<HPBar> hpBar_;
-	// 残弾表示
-	std::unique_ptr<RemainingBullets> remainingBullets_;
+
+	// オーバーヒートゲージ
+	std::unique_ptr<OverheatGauge> overheatGauge_;
 };
