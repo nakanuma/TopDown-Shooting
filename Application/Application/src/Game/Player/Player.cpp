@@ -44,10 +44,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_ = std::make_unique<Object3D>();
 	objectPlayer_->model_ = &modelPlayer_;
 	objectPlayer_->transform_.translate = data.translate;
-	objectPlayer_->materialCB_.data_->color = {0.0f, 0.5f, 1.0f, 1.0f};
 
 	// 弾モデル読み込み
-	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
 	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///

@@ -110,10 +110,14 @@ PixelShaderOutput main(VertexShaderOutput input) {
         
         // ŠgŽU”½ŽË
         float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
-        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f); // half lambert
+        /*float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);*/ // half lambert
+        float lambert = max(NdotL, 0.0f);
+        
+        float baseLight = 0.7f;
+        float lightStrength = lerp(baseLight, 1.0f, lambert);
         
         float32_t3 diffuseDirectionalLight =
-        gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+        gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * lightStrength * gDirectionalLight.intensity;
         
         // ‹¾–Ê”½ŽË
         //float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);

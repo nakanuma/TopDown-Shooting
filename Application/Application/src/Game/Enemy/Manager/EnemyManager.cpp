@@ -37,7 +37,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 
 
 	// 弾モデル
-	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
 	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
@@ -115,7 +115,7 @@ void EnemyManager::Debug() {
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
 		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_);
+		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_, player_);
 
 		enemies_.emplace_back(std::move(enemy));
 	}

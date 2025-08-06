@@ -45,7 +45,6 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->transform_.translate = position;
 	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
 	objectEnemy_->transform_.rotate = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->color = { 1.0f, 0.5f, 0.0f, 1.0f };
 
 	///
 	///	コライダー生成

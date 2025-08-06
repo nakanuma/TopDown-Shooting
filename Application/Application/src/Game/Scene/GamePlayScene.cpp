@@ -194,23 +194,25 @@ void GamePlayScene::Draw() {
 	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);*/
 #endif
 	// 通常の描画
-	postEffectManager_->BeginRenderToTexture();
+	/*postEffectManager_->BeginRenderToTexture();*/
 	SkyBoxManager::GetInstance()->Draw();
+
 	field_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
 	obstacleManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 
-	// アウトライン適用パス
-	postEffectManager_->BeginRenderToOutlineTexture();
-	player_->Draw();
-	enemyManager_->Draw();
-
-	// アウトライン生成 + 描画
-	postEffectManager_->ApplyOutline();
 	ParticleEffectManager::GetInstance()->Draw();
-	postEffectManager_->DrawOutline();
+
+	//// アウトライン適用パス
+	//postEffectManager_->BeginRenderToOutlineTexture();
+	//player_->Draw();
+	//enemyManager_->Draw();
+
+	//// アウトライン生成 + 描画
+	//postEffectManager_->ApplyOutline();
+	//postEffectManager_->DrawOutline();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -242,6 +244,15 @@ void GamePlayScene::Draw() {
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
+
+	ImGui::End();
+
+	ImGui::Begin("DirectionalLight");
+
+	ImGui::DragFloat("intensity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
+	ImGui::DragFloat3("direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
+	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
+	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
 
 	ImGui::End();
 

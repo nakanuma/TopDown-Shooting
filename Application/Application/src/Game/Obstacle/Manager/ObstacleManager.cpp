@@ -17,7 +17,7 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	///
 
 	// 通常障害物
-	modelNormalObstacle_ = ModelManager::LoadModelFile("resources/Models", "cube.obj", dxBase->GetDevice());
+	modelNormalObstacle_ = ModelManager::LoadModelFile("resources/Models", "Object/Obstacle/testObstacle.obj", dxBase->GetDevice());
 	modelNormalObstacle_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	// 新しく追加
