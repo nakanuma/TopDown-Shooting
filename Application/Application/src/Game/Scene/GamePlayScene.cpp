@@ -13,9 +13,7 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 
-#include <src/Game/Particles/Circle/CircleParticle_Expand.h>
-#include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
-#include <src/Game/Particles/Spark/SparkParticle_Star.h>
+#include <src/Game/Particles/BackscatterParticle.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -85,28 +83,10 @@ void GamePlayScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
-
-	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
-	uint32_t textureStar = TextureManager::Load("resources/Images/Effect/star.png", dxBase->GetDevice());
-	uint32_t textureCircle = TextureManager::Load("resources/Images/Effect/circle.png", dxBase->GetDevice());
-
-	modelSparkShrink_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelSparkShrink_.material.textureHandle = textureGlow;
-
-	auto sparkShrinkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
-	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkShrinkParticle));
-
-	modelSparkStar_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelSparkStar_.material.textureHandle = textureStar;
-
-	auto sparkStarParticle = std::make_unique<SparkParticle_Star>(modelSparkStar_);
-	ParticleEffectManager::GetInstance()->Register("sparkStar", std::move(sparkStarParticle));
-
-	modelCircleExpand_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelCircleExpand_.material.textureHandle = textureCircle;
-
-	auto circleExpandParticle = std::make_unique<CircleParticle_Expand>(modelCircleExpand_);
-	ParticleEffectManager::GetInstance()->Register("circleExpand", std::move(circleExpandParticle));
+	modelBackscatter_ = ModelManager::LoadModelFile("resources/Models/", "smoothCube.obj", dxBase->GetDevice());
+	modelBackscatter_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	auto backScatterParticle = std::make_unique<BackscatterParticle>(modelBackscatter_);
+	ParticleEffectManager::GetInstance()->Register("backscatter", std::move(backScatterParticle));
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
@@ -247,7 +227,7 @@ void GamePlayScene::Draw() {
 
 	ImGui::End();
 
-	/**/
+	/*Debug*/
 	CollisionManager::GetInstance()->Debug();
 	player_->Debug();
 	obstacleManager_->Debug();

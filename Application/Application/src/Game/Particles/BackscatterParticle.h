@@ -8,35 +8,36 @@
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct CircleParticleExpandData {
+struct BackscatterParticleData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
 	float lifeTime;
 	float currentTime;
 
-	// その他固有パラメーター追加
 	Float3 initScale;
 };
 
 /// <summary>
-/// 円パーティクル（拡大）
+/// 後ろ方向に飛散するパーティクル。障害物や敵に弾が当たったときに発生
 /// </summary>
-class CircleParticle_Expand : public BaseParticleEffect<CircleParticleExpandData> {
+class BackscatterParticle : public BaseParticleEffect<BackscatterParticleData>
+{
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	CircleParticle_Expand(ModelManager::ModelData& model);
+	BackscatterParticle(ModelManager::ModelData& model);
 
-private:
+protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	CircleParticleExpandData CreateParticle(const Float3& pos) override;
+	BackscatterParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理
 	/// </summary>
-	void UpdateParticle(CircleParticleExpandData& p, float dt) override;
+	void UpdateParticle(BackscatterParticleData& p, float dt) override;
 };
+
