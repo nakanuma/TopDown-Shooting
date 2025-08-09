@@ -14,6 +14,7 @@
 #include <src/Game/Camera/CameraShake.h>
 
 #include <src/Game/Particles/BackscatterParticle.h>
+#include <src/Game/Particles/MissileSmokeParticle.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -83,10 +84,16 @@ void GamePlayScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
-	modelBackscatter_ = ModelManager::LoadModelFile("resources/Models/", "smoothCube.obj", dxBase->GetDevice());
-	modelBackscatter_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-	auto backScatterParticle = std::make_unique<BackscatterParticle>(modelBackscatter_);
+	modelSmoothCube_ = ModelManager::LoadModelFile("resources/Models/", "smoothCube.obj", dxBase->GetDevice());
+	modelSmoothCube_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+
+	// 後ろへ飛散するパーティクル
+	auto backScatterParticle = std::make_unique<BackscatterParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("backscatter", std::move(backScatterParticle));
+	// ミサイルの煙パーティクル
+	auto missileSmokeParticle = std::make_unique<MissileSmokeParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("missileSmoke", std::move(missileSmokeParticle));
+
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();

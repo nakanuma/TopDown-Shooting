@@ -19,7 +19,8 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = { radius_, radius_, radius_ };
+	objectBullet_->transform_.scale = { 0.5f, 0.5f, 0.5f };
+	objectBullet_->materialCB_.data_->color = { 0.5f, 0.5f, 0.5f, 1.0f };
 
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
@@ -30,7 +31,7 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<SphereCollider>();
+	collider_ = std::make_unique<OBBCollider>();
 	collider_->SetTag("HomingMissile");
 	collider_->SetOwner(this);
 
@@ -42,7 +43,7 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	///
 
 	// 攻撃力
-	damage_ = 5;
+	damage_ = 20;
 
 	// 速さ
 	speed_ = 0.3f;
@@ -85,6 +86,10 @@ void HomingMissile::Update()
 	float pitch = -std::asin(newDir.y);
 	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
 
+	// パーティクル発生（後方から出るよう調整）
+	float offsetDistance = -3.0f;
+	Float3 offset = newDir * offsetDistance;
+	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate + offset, 1);
 
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
@@ -131,10 +136,17 @@ void HomingMissile::OnCollision(Collider* other)
 // ---------------------------------------------------------
 void HomingMissile::UpdateCollider()
 {
-	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
-		// 中心
-		sphere->center_ = objectBullet_->transform_.translate;
-		// 半径
-		sphere->radius_ = radius_;
+	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
+		Float3 center = objectBullet_->transform_.translate;
+		Float3 size = colliderSize_;
+
+		obb->center_ = center;
+		obb->size_ = colliderSize_;
+
+		// 回転軸の更新
+		Matrix rotMat = Matrix::Rotation(objectBullet_->transform_.rotate);
+		obb->xAxis_ = Float3::Normalize(Float3(rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0]));
+		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));
+		obb->zAxis_ = Float3::Normalize(Float3(rotMat.r[0][2], rotMat.r[1][2], rotMat.r[2][2]));
 	}
 }

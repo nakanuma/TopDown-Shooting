@@ -85,7 +85,8 @@ private:
 	ModelManager::ModelData modelSparkStar_;
 	ModelManager::ModelData modelCircleExpand_;
 
-	ModelManager::ModelData modelBackscatter_;
+	// パーティクル用
+	ModelManager::ModelData modelSmoothCube_;
 
 	// ポストエフェクト
 	std::unique_ptr<PostEffectManager> postEffectManager_;

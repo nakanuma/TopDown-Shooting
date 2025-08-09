@@ -1,13 +1,14 @@
-#include "BackscatterParticle.h"
+#include "MissileSmokeParticle.h"
 
 // Engine
 #include <Engine/Util/RandomGenerator.h>
+#include <Engine/Math/MyMath.h>
 #include <Engine/Math/Easing.h>
 
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-BackscatterParticle::BackscatterParticle(ModelManager::ModelData& model)
+MissileSmokeParticle::MissileSmokeParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -23,30 +24,18 @@ BackscatterParticle::BackscatterParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+MissileSmokeParticleData MissileSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity)
 {
-	BackscatterParticleData p;
+	MissileSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
-	p.transform.translate = pos;
-	
-	p.transform.scale = { 0.12f, 0.12f, 0.8f };
-
-	// veliocity
-	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;
-	float diff = 0.9f;
-	Float3 randDir = rand->RandomValue({ -diff, 0.0f, -diff }, { diff, 0.0f, diff });
-	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(16.0f, 24.0f);
-
-	// rotate（進行方向を向くように）
-	Float3 dir = Float3::Normalize(p.velocity);
-	float yaw = std::atan2(dir.x, dir.z);
-	float pitch = -std::asin(dir.y);
-	p.transform.rotate = { -pitch, -yaw, 0.0f };
-
-
+	Float3 offset = rand->RandomValue({ -0.4f, -0.4f, -0.4f }, { 0.4f, 0.4f, 0.4f });
+	p.transform.translate = pos + offset;
+	p.transform.rotate = rand->RandomValue({ 0.0f, 0.0f, 0.0f }, { PIf * 2.0f, PIf * 2.0f, PIf * 2.0f });
+	p.transform.scale = { 0.2f, 0.2f, 0.2f };
+	p.velocity = rand->RandomValue({ -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f });
 	p.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	p.lifeTime = rand->RandomValue(0.3f, 0.5f);
+	p.lifeTime = 0.8f;
 	p.currentTime = 0.0f;
 
 	p.initScale = p.transform.scale;
@@ -57,31 +46,32 @@ BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, c
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void BackscatterParticle::UpdateParticle(BackscatterParticleData& p, float dt)
+void MissileSmokeParticle::UpdateParticle(MissileSmokeParticleData& p, float dt)
 {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 移動
-	float moveFactor = Easing::EaseOutQuart(1.0f - t);
-	p.transform.translate += (p.velocity * moveFactor * dt);
-
-	// 縮小
-	float easeT = Easing::EaseInQuart(t);
-	p.transform.scale.z = p.initScale.z * (1.0f - easeT);
+	p.transform.translate += (p.velocity * dt);
 
 	// 色
 	Float4 color;
-	if (t < 0.5f) {
-		// 前半 : 白->橙
-		float localT = t / 0.5f; // 0~1に正規化
+	if (t < 1.0f / 3.0f) {
+		// 白->橙
+		float localT = t / (1.0f / 3.0f); // 0~1に正規化
 		color.x = Easing::Lerp(1.0f, 1.0f, localT);
 		color.y = Easing::Lerp(1.0f, 0.5f, localT);
 		color.z = Easing::Lerp(1.0f, 0.0f, localT);
-	} else {
-		// 後半 : 橙->赤
-		float localT = (t - 0.5f) / 0.5f; // 0~1に正規化
+	} else if (t < 2.0f / 3.0f) {
+		// 橙->赤
+		float localT = (t - 1.0f / 3.0f) / (1.0f / 3.0f); // 0~1に正規化
 		color.x = Easing::Lerp(1.0f, 1.0f, localT);
 		color.y = Easing::Lerp(0.5f, 0.0f, localT);
+		color.z = Easing::Lerp(0.0f, 0.0f, localT);
+	} else {
+		// 赤->黒
+		float localT = (t - 2.0f / 3.0f) / (1.0f / 3.0f); // 0~1に正規化
+		color.x = Easing::Lerp(1.0f, 0.0f, localT);
+		color.y = Easing::Lerp(0.0f, 0.0f, localT);
 		color.z = Easing::Lerp(0.0f, 0.0f, localT);
 	}
 	color.w = 1.0f;

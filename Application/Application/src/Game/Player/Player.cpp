@@ -157,6 +157,19 @@ void Player::OnCollision(Collider* other) {
 	}
 
 	///
+	///	vs HomingMissile
+	///
+
+	if (other->GetTag() == "HomingMissile") {
+		// HomingMissileのDamageを取得
+		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
+		int32_t damage = bullet->GetDamage();
+
+		// HPを減らす
+		currentHP_ -= damage;
+	}
+
+	///
 	/// vs NormalObstacle
 	///
 	if (other->GetTag() == "NormalObstacle") {
