@@ -5,6 +5,8 @@
 
 // Application
 #include <src/Game/Player/Player.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/Bullet/HomingMissile/HomingMissile.h>
 
 // ---------------------------------------------------------
 // 初期化処理
@@ -52,6 +54,8 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	// HPの設定
 	currentHP_ = 100;
 	maxHP_ = currentHP_;
+
+	targetPlayer_ = player;
 }
 
 // ---------------------------------------------------------
@@ -63,12 +67,12 @@ void BossEnemy::Update()
 	///	プレイヤー方向へ向く（デバッグで一時的に）
 	///
 
-	//// プレイヤーへの方向ベクトル
-	//Float3 toPlayer = player->GetTranslate() - objectEnemy_->transform_.translate;
-	//// 方向ベクトルからY軸回転角度を計算
-	//float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
-	//// Y軸に回転を適用
-	//objectEnemy_->transform_.rotate.y = targetAngle;
+	// プレイヤーへの方向ベクトル
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	// 方向ベクトルからY軸回転角度を計算
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸に回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
 
 	///
 	/// コライダー更新処理
@@ -103,6 +107,11 @@ void BossEnemy::DrawUI()
 // ---------------------------------------------------------
 void BossEnemy::Debug() {
 	ImGui::Begin("BossEnemy");
+
+	if (ImGui::Button("FireHomingMissile")) {
+		FireHomingMissile();
+	}
+
 	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
 	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate.x, 0.01f);
 	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale.x, 0.01f);
@@ -137,15 +146,6 @@ void BossEnemy::OnCollision(Collider* other)
 // ---------------------------------------------------------
 void BossEnemy::UpdateCollider()
 {
-	//if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-	//	Float3 center = objectEnemy_->transform_.translate;
-	//	Float3 size = colliderSize_;
-
-	//	// min
-	//	aabb->min_ = center - size;
-	//	aabb->max_ = center + size;
-	//}
-
 	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
@@ -159,4 +159,20 @@ void BossEnemy::UpdateCollider()
 		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));
 		obb->zAxis_ = Float3::Normalize(Float3(rotMat.r[0][2], rotMat.r[1][2], rotMat.r[2][2]));
 	}
+}
+
+// ---------------------------------------------------------
+// 追尾ミサイルの発射
+// ---------------------------------------------------------
+void BossEnemy::FireHomingMissile()
+{
+	// 発射方向
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	direction = Float3::Normalize(direction);
+
+	// 弾の生成
+	auto newBullet = std::make_unique<HomingMissile>();
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelMissile_);
+	newBullet->SetPlayer(targetPlayer_);
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 }

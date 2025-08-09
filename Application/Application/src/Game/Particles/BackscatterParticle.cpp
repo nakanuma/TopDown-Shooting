@@ -30,7 +30,7 @@ BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, c
 
 	p.transform.translate = pos;
 	
-	p.transform.scale = { 0.12f, 0.12f, 0.6f };
+	p.transform.scale = { 0.12f, 0.12f, 0.8f };
 
 	// veliocity
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;
@@ -62,7 +62,8 @@ void BackscatterParticle::UpdateParticle(BackscatterParticleData& p, float dt)
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 移動
-	p.transform.translate += (p.velocity * dt);
+	float moveFactor = Easing::EaseOutQuart(1.0f - t);
+	p.transform.translate += (p.velocity * moveFactor * dt);
 
 	// 縮小
 	float easeT = Easing::EaseInQuart(t);

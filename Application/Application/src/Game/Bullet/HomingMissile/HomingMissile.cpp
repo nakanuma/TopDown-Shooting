@@ -1,21 +1,21 @@
-#include "PlayerBullet.h"
+#include "HomingMissile.h"
 
 // Engine
 #include <Collider/CollisionManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
-#include <Engine/Util/RandomGenerator.h>
 
-// Externals
-#include <ImguiWrapper.h>
+// Application
+#include <src/Game/Player/Player.h>
 
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
+void HomingMissile::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model)
+{
 	///
 	///	オブジェクト生成
-	///
-
+	/// 
+	
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
@@ -31,7 +31,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 
 	collider_ = std::make_unique<SphereCollider>();
-	collider_->SetTag("PlayerBullet");
+	collider_->SetTag("HomingMissile");
 	collider_->SetOwner(this);
 
 	// コライダーを登録
@@ -42,10 +42,10 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 
 	// 攻撃力
-	damage_ = 1;
+	damage_ = 5;
 
 	// 速さ
-	speed_ = 1.8f;
+	speed_ = 0.3f;
 
 	// 速度
 	velocity_ = direciton * speed_;
@@ -54,14 +54,45 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void PlayerBullet::Update() {
-	// 移動処理
+void HomingMissile::Update()
+{
+	///
+	///	移動処理
+	/// 
+
+	// プレイヤー方向
+	Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate;
+	toTarget = Float3::Normalize(toTarget);
+	
+	// 現在の移動方向ベクトル
+	Float3 currentDir = Float3::Normalize(velocity_);
+
+	// 方向の補間
+	Float3 newDir = Float3::Lerp(currentDir, toTarget, kTurnSpeed);
+	newDir = Float3::Normalize(newDir);
+
+	// 補間した方向で速度更新
+	velocity_ = newDir * speed_;
+
+	// 移動
 	objectBullet_->transform_.translate += velocity_;
+
+	///
+	///	弾の向きを進行方向へ向ける
+	/// 
+	
+	float yaw = std::atan2(newDir.x, newDir.z);
+	float pitch = -std::asin(newDir.y);
+	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+
 
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
 	if (elapsedTime_ > kMaxLifeTime) {
+		// 死亡させる
 		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
 	}
 
 	// コライダー更新処理
@@ -73,7 +104,8 @@ void PlayerBullet::Update() {
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void PlayerBullet::Draw() {
+void HomingMissile::Draw()
+{
 	// オブジェクト描画
 	objectBullet_->Draw();
 }
@@ -81,51 +113,24 @@ void PlayerBullet::Draw() {
 // ---------------------------------------------------------
 // 衝突時コールバック
 // ---------------------------------------------------------
-void PlayerBullet::OnCollision(Collider* other) {
+void HomingMissile::OnCollision(Collider* other)
+{
 	Float3 bulletPos = this->objectBullet_->transform_.translate;
-	auto rand = RandomGenerator::GetInstance();
 
-	// vs NormalEnemy
-	if (other->GetTag() == "NormalEnemy") {
-		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
-
+	// vs Player
+	if (other->GetTag() == "Player") {
 		// 死亡させる
 		isDead_ = true;
-	}
-
-	// vs ImmobileEnemy
-	if (other->GetTag() == "ImmobileEnemy") {
-		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
-
-		// 死亡させる
-		isDead_ = true;
-	}
-
-	// vs BossEnemy
-	if (other->GetTag() == "BossEnemy") {
-		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
-
-		// 死亡させる
-		isDead_ = true;
-	}
-
-	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
-		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter",bulletPos, rand->RandomValue(3, 4), velocity_);
-
-		// 死亡させる
-		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
 	}
 }
 
 // ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
-void PlayerBullet::UpdateCollider() {
+void HomingMissile::UpdateCollider()
+{
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
 		// 中心
 		sphere->center_ = objectBullet_->transform_.translate;

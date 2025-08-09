@@ -40,16 +40,15 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
 	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
+	// ミサイルモデル
+	modelMissile_ = ModelManager::LoadModelFile("resources/Models", "Bullet/Missile/missile.obj", dxBase->GetDevice());
+	modelMissile_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+
 	///
 	///	各敵の生成
 	///
 
 	Reload(datas);
-
-	// 一旦手動でボス追加
-	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Initialize({ 0.0f, 3.0f, -40.0f }, &modelBossEnemy_, player_);
-
 }
 
 // ---------------------------------------------------------
@@ -59,10 +58,6 @@ void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
 		enemy->Update();
-	}
-	// ボス更新
-	if (bossEnemy_) {
-		/*bossEnemy_->Update();*/
 	}
 
 	// 敵の削除処理
@@ -84,10 +79,6 @@ void EnemyManager::Draw() {
 	for (auto& enemy : enemies_) {
 		enemy->Draw();
 	}
-	// ボス描画
-	if (bossEnemy_) {
-		/*bossEnemy_->Draw();*/
-	}
 }
 
 // ---------------------------------------------------------
@@ -97,10 +88,6 @@ void EnemyManager::DrawUI() {
 	// 全ての敵のUIを描画
 	for (auto& enemy : enemies_) {
 		enemy->DrawUI();
-	}
-	// ボスのUIを描画
-	if (bossEnemy_) {
-		bossEnemy_->DrawUI();
 	}
 }
 
@@ -114,8 +101,8 @@ void EnemyManager::Debug() {
 
 	// スポーンボタン（デバッグ用）
 	if (ImGui::Button("spawn")) {
-		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize({0.0f, 1.0f, 0.0f}, &modelNormalEnemy_, player_);
+		auto enemy = std::make_unique<BossEnemy>();
+		enemy->Initialize({0.0f, 3.0f, 0.0f}, &modelBossEnemy_, player_);
 
 		enemies_.emplace_back(std::move(enemy));
 	}
@@ -128,6 +115,11 @@ void EnemyManager::Debug() {
 		Enemy* enemy = enemies_[i].get();
 		if (!enemy)
 			continue;
+
+		/* BossEnemy（一旦ここでデバッグ表示） */
+		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
+			bossEnemy->Debug();
+		}
 
 		std::string label = "Enemy[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {
@@ -168,9 +160,6 @@ void EnemyManager::Debug() {
 
 	ImGui::End();
 
-	// ボス
-	bossEnemy_->Debug();
-
 #endif // _DEBUG
 }
 
@@ -207,4 +196,10 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 
 		}*/
 	}
+
+	// 一旦ここでボス生成
+	auto enemy = std::make_unique<BossEnemy>();
+	enemy->Initialize({ 0.0f, 3.0f, 0.0f }, &modelBossEnemy_, player_);
+	enemy->SetMissileModel(&modelMissile_);
+	enemies_.emplace_back(std::move(enemy));
 }

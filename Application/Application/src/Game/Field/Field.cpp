@@ -24,10 +24,6 @@ void Field::Update() { objectFloor_->UpdateMatrix(); }
 
 void Field::Draw() {
 	objectFloor_->Draw();
-
-#ifdef _DEBUG
-	Debug();
-#endif // _DEBUG
 }
 
 void Field::Debug() {

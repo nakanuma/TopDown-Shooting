@@ -5,6 +5,8 @@
 #include <Collider/CollisionManager.h>
 #include <Engine/3D/Object3D.h>
 
+class Player;
+
 /// <summary>
 /// 弾の基底クラス
 /// </summary>
