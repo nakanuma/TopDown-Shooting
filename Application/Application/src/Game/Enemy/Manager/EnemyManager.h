@@ -71,6 +71,8 @@ private:
 	ModelManager::ModelData modelEnemyBullet_;
 	// ミサイルモデル
 	ModelManager::ModelData modelMissile_;
+	// 地面警告モデル
+	ModelManager::ModelData modelGroundWarning_;
 
 	// ---------------------------------------------------------
 	// 敵

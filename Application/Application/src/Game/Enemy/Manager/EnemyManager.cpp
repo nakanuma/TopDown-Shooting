@@ -44,6 +44,10 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	modelMissile_ = ModelManager::LoadModelFile("resources/Models", "Bullet/Missile/missile.obj", dxBase->GetDevice());
 	modelMissile_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
+	// 地面警告モデル
+	modelGroundWarning_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
+	modelGroundWarning_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+
 	///
 	///	各敵の生成
 	///
@@ -201,5 +205,6 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 	auto enemy = std::make_unique<BossEnemy>();
 	enemy->Initialize({ 0.0f, 3.0f, 0.0f }, &modelBossEnemy_, player_);
 	enemy->SetMissileModel(&modelMissile_);
+	enemy->SetGroundWarningModel(&modelGroundWarning_);
 	enemies_.emplace_back(std::move(enemy));
 }

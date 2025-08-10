@@ -80,14 +80,6 @@ private:
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
-	/* パーティクル用モデル（あとで適切な位置に整理） */
-	ModelManager::ModelData modelSparkShrink_;
-	ModelManager::ModelData modelSparkStar_;
-	ModelManager::ModelData modelCircleExpand_;
-
-	// パーティクル用
-	ModelManager::ModelData modelSmoothCube_;
-
 	// ポストエフェクト
 	std::unique_ptr<PostEffectManager> postEffectManager_;
 };

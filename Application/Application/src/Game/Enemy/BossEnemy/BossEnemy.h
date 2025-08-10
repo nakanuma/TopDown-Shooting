@@ -41,6 +41,11 @@ public:
 	/// </summary>
 	void SetMissileModel(ModelManager::ModelData* model) { modelMissile_ = model; }
 
+	/// <summary>
+	/// 地面警告モデルのセット
+	/// </summary>
+	void SetGroundWarningModel(ModelManager::ModelData* model) { modelGroundWarning_ = model; }
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -56,6 +61,11 @@ private:
 	/// </summary>
 	void FireHomingMissile();
 
+	/// <summary>
+	/// 地面警告攻撃
+	/// </summary>
+	void GroundWarningAttack();
+
 private:
 	// ---------------------------------------------------------
 	// モデル
@@ -63,5 +73,8 @@ private:
 
 	// ミサイルモデル
 	ModelManager::ModelData* modelMissile_;
+	
+	// 球
+	ModelManager::ModelData* modelGroundWarning_;
 };
 

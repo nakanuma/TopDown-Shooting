@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp" />
+    <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp" />
+    <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
     <ClCompile Include="src\Game\Particles\MissileSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp" />
     <ClCompile Include="src\Game\Particles\BackscatterParticle.cpp" />
@@ -44,8 +47,13 @@
     <ClCompile Include="src\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="src\Game\Scene\TestScene.cpp" />
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
+    <ClCompile Include="src\Game\Particles\GroundWarning\WarningSmokeParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\GroundWarning\WarningScatterParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h" />
+    <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h" />
+    <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
     <ClInclude Include="src\Game\Particles\MissileSmokeParticle.h" />
     <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h" />
     <ClInclude Include="src\Game\Particles\BackscatterParticle.h" />
@@ -74,6 +82,8 @@
     <ClInclude Include="src\Game\Scene\TitleScene.h" />
     <ClInclude Include="src\Game\Scene\TestScene.h" />
     <ClInclude Include="src\Game\Utility\Utility.h" />
+    <ClInclude Include="src\Game\Particles\GroundWarning\WarningSmokeParticle.h" />
+    <ClInclude Include="src\Game\Particles\GroundWarning\WarningScatterParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

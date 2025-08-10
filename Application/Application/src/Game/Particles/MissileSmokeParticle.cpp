@@ -53,6 +53,13 @@ void MissileSmokeParticle::UpdateParticle(MissileSmokeParticleData& p, float dt)
 	// 移動
 	p.transform.translate += (p.velocity * dt);
 
+	// 縮小
+	if (t > 0.8f) { // 4/5に到達したら
+		float localT = (t - 0.8f) / 0.2f; // 0~1に正規化
+		float easeT = Easing::EaseInQuad(localT);
+		p.transform.scale = p.initScale * (1.0f - easeT);
+	}
+
 	// 色
 	Float4 color;
 	if (t < 1.0f / 3.0f) {

@@ -3,10 +3,14 @@
 // C++
 #include <numbers>
 
+// Engine
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
+
 // Application
 #include <src/Game/Player/Player.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Bullet/HomingMissile/HomingMissile.h>
+#include <src/Game/Bullet/GroundWarning/GroundWarning.h>
 
 // ---------------------------------------------------------
 // 初期化処理
@@ -111,6 +115,9 @@ void BossEnemy::Debug() {
 	if (ImGui::Button("FireHomingMissile")) {
 		FireHomingMissile();
 	}
+	if (ImGui::Button("GroundWarningAttack")) {
+		GroundWarningAttack();
+	}
 
 	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
 	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate.x, 0.01f);
@@ -175,4 +182,20 @@ void BossEnemy::FireHomingMissile()
 	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelMissile_);
 	newBullet->SetPlayer(targetPlayer_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+}
+
+// ---------------------------------------------------------
+// 地面警告攻撃
+// ---------------------------------------------------------
+void BossEnemy::GroundWarningAttack()
+{
+	Float3 playerPos = targetPlayer_->GetTranslate();
+
+	// 弾の生成
+	auto newBullet = std::make_unique<GroundWarning>();
+	newBullet->Initialize({playerPos.x, 0.0f, playerPos.z}, {0.0f, 0.0f, 0.0f}, modelGroundWarning_);
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+
+	// 赤い円エフェクト発生
+	ParticleEffectManager::GetInstance()->Emit("redCircle", { playerPos.x, 0.1f, playerPos.z }, 1);
 }
