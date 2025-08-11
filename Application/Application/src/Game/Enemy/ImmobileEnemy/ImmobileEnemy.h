@@ -143,6 +143,8 @@ private:
 private:
 	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_;
 
-public:
+	/// <summary>
+	/// ビヘイビアツリーの構築
+	/// </summary>
 	void BuildBehaviorTree();
 };

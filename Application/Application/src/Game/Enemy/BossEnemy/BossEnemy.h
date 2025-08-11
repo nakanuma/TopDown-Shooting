@@ -1,5 +1,8 @@
 #pragma once
 
+// Engine
+#include <Engine/BehaviourTree/BehaviorTree.h>
+
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
 
@@ -57,6 +60,16 @@ private:
 	void UpdateCollider();
 
 	/// <summary>
+	/// プレイヤーの方を向く
+	/// </summary>
+	void FacePlayer();
+
+	/// <summary>
+	/// プレイヤーに向かって移動
+	/// </summary>
+	void MoveTowardPlayer();
+
+	/// <summary>
 	/// 追尾ミサイルの発射
 	/// </summary>
 	void FireHomingMissile();
@@ -84,5 +97,18 @@ private:
 	const Float2 kHPBarPosition = { 640.0f, 25.0f };
 	const Float2 kHPBarSizeBoss = { 640.0f, 50.0f };
 
+	// プレイヤーへ向かって移動する際の速度
+	float moveSpeed_ = 3.0f;
+
+	// ---------------------------------------------------------
+	// 行動
+	// ---------------------------------------------------------
+
+	std::unique_ptr<BehaviorTree<BossEnemy>> behaviorTree_;
+
+	/// <summary>
+	/// ビヘイビアツリーの構築
+	/// </summary>
+	void BuildBehaviorTree();
 };
 

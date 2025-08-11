@@ -5,6 +5,8 @@
 
 // Engine
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <Engine/Util/TimeManager.h>
+#include <Engine/Util/RandomGenerator.h>
 
 // Application
 #include <src/Game/Player/Player.h>
@@ -80,6 +82,12 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	maxHP_ = currentHP_;
 
 	targetPlayer_ = player;
+
+	///
+	///	ビヘイビアツリー構築
+	///
+
+	BuildBehaviorTree();
 }
 
 // ---------------------------------------------------------
@@ -88,15 +96,12 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 void BossEnemy::Update()
 {
 	///
-	///	プレイヤー方向へ向く（デバッグで一時的に）
+	///	ビヘイビアツリーを評価
 	///
 
-	// プレイヤーへの方向ベクトル
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
-	// 方向ベクトルからY軸回転角度を計算
-	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
-	// Y軸に回転を適用
-	objectEnemy_->transform_.rotate.y = targetAngle;
+	if (behaviorTree_) {
+		behaviorTree_->Tick(this, TimeManager::GetInstance()->GetDeltaTime());
+	}
 
 	///
 	/// コライダー更新処理
@@ -217,6 +222,32 @@ void BossEnemy::UpdateCollider()
 }
 
 // ---------------------------------------------------------
+// プレイヤーの方を向く
+// ---------------------------------------------------------
+void BossEnemy::FacePlayer()
+{
+	// プレイヤーへの方向ベクトル
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	// 方向ベクトルからY軸回転角度を計算
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸に回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
+}
+
+// ---------------------------------------------------------
+// プレイヤーに向かって移動
+// ---------------------------------------------------------
+void BossEnemy::MoveTowardPlayer()
+{
+	// プレイヤーへの方向ベクトル
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	toPlayer.y = 0.0f;
+	toPlayer = Float3::Normalize(toPlayer);
+
+	objectEnemy_->transform_.translate += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
+}
+
+// ---------------------------------------------------------
 // 追尾ミサイルの発射
 // ---------------------------------------------------------
 void BossEnemy::FireHomingMissile()
@@ -246,4 +277,57 @@ void BossEnemy::GroundWarningAttack()
 
 	// 赤い円エフェクト発生
 	ParticleEffectManager::GetInstance()->Emit("redCircle", { playerPos.x, 0.1f, playerPos.z }, 1);
+}
+
+// ---------------------------------------------------------
+// ビヘイビアツリーの構築
+// ---------------------------------------------------------
+void BossEnemy::BuildBehaviorTree()
+{
+	///
+	///	移動系（並列の一方）
+	/// 
+	
+	auto facePlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		enemy->FacePlayer();
+		return BehaviorStatus::Running;
+		});
+
+	auto moveTowardPlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		enemy->MoveTowardPlayer();
+		return BehaviorStatus::Running;
+		});
+
+	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>();
+	moveParallel->AddChild(std::move(facePlayer));
+	moveParallel->AddChild(std::move(moveTowardPlayer));
+
+	///
+	///	攻撃系（並列のもう一方）
+	/// 
+	
+	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.0f, 3.0f); // 次の攻撃まで0~3秒待機
+
+	auto randAttack = std::make_unique <ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		if (rand() % 2 == 0) {
+			enemy->FireHomingMissile();
+		} else {
+			enemy->GroundWarningAttack();
+		}
+		return BehaviorStatus::Success;
+		});
+
+	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>();
+	attackSequence->AddChild(std::move(wait));
+	attackSequence->AddChild(std::move(randAttack));
+
+	///
+	///	ルートノード
+	/// 
+
+	auto root = std::make_unique<ParallelNode<BossEnemy>>();
+	root->AddChild(std::move(moveParallel));
+	root->AddChild(std::move(attackSequence));
+
+	behaviorTree_ = std::make_unique<BehaviorTree<BossEnemy>>(std::move(root));
 }
