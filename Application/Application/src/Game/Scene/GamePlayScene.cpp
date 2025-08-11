@@ -201,10 +201,10 @@ void GamePlayScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
-	// プレイヤーUI描画
-	player_->DrawUI();
 	// 敵UI描画
 	enemyManager_->DrawUI();
+	// プレイヤーUI描画
+	player_->DrawUI();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

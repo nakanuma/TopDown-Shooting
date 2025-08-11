@@ -71,6 +71,7 @@ void HomingMissile::Update()
 	// 方向の補間
 	Float3 newDir = Float3::Lerp(currentDir, toTarget, kTurnSpeed);
 	newDir = Float3::Normalize(newDir);
+	newDir.y = 0.0f;
 
 	// 補間した方向で速度更新
 	velocity_ = newDir * speed_;
@@ -94,6 +95,11 @@ void HomingMissile::Update()
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
 	if (elapsedTime_ > kMaxLifeTime) {
+		// 煙パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);
+		// 飛散パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25);
+
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄
@@ -124,6 +130,24 @@ void HomingMissile::OnCollision(Collider* other)
 
 	// vs Player
 	if (other->GetTag() == "Player") {
+		// 煙パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate, 15);
+		// 飛散パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate, 25);
+
+		// 死亡させる
+		isDead_ = true;
+		// コライダー破棄
+		OnDestroy();
+	}
+
+	// vs NormalObstacle
+	if (other->GetTag() == "NormalObstacle") {
+		// 煙パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate, 15);
+		// 飛散パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate, 25);
+
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄

@@ -5,10 +5,10 @@
 
 // Application
 #include <src/Game/Particles/BackscatterParticle.h>
-#include <src/Game/Particles/MissileSmokeParticle.h>
+#include <src/Game/Particles/HomingMissile/MissileSmokeParticle.h>
 #include <src/Game/Particles/GroundWarning/RedCircleParticle.h>
-#include <src/Game/Particles/GroundWarning/WarningSmokeParticle.h>
-#include <src/Game/Particles/GroundWarning/WarningScatterParticle.h>
+#include <src/Game/Particles/ExplodeSmokeParticle.h>
+#include <src/Game/Particles/ExplodeScatterParticle.h>
 
 // ---------------------------------------------------------
 // インスタンス取得
@@ -43,9 +43,9 @@ void ParticleEffectRoader::LoadAndRegisterAll()
 	auto groundWarningParticle = std::make_unique<RedCircleParticle>(modelPlane_);
 	ParticleEffectManager::GetInstance()->Register("redCircle", std::move(groundWarningParticle));
 	// 地面警告攻撃の煙パーティクル
-	auto warningSmokeParticle = std::make_unique<WarningSmokeParticle>(modelSmoothCube_);
-	ParticleEffectManager::GetInstance()->Register("warningSmoke", std::move(warningSmokeParticle));
+	auto explodeSmokeParticle = std::make_unique<ExplodeSmokeParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("explodeSmoke", std::move(explodeSmokeParticle));
 	// 地面警告攻撃の飛散パーティクル
-	auto warningScatterParticle = std::make_unique<WarningScatterParticle>(modelSmoothCube_);
-	ParticleEffectManager::GetInstance()->Register("warningScatter", std::move(warningScatterParticle));
+	auto explodeScatterParticle = std::make_unique<ExplodeScatterParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("explodeScatter", std::move(explodeScatterParticle));
 }

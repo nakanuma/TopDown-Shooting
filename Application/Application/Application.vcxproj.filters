@@ -87,7 +87,7 @@
     <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\MissileSmokeParticle.cpp">
+    <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp">
@@ -99,10 +99,10 @@
     <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\GroundWarning\WarningSmokeParticle.cpp">
+    <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\GroundWarning\WarningScatterParticle.cpp">
+    <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,7 +188,7 @@
     <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\MissileSmokeParticle.h">
+    <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h">
@@ -200,10 +200,10 @@
     <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\GroundWarning\WarningSmokeParticle.h">
+    <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\GroundWarning\WarningScatterParticle.h">
+    <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

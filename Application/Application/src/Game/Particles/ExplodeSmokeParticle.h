@@ -8,7 +8,7 @@
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct WarningScatterParticleData {
+struct ExplodeSmokeParticleData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
@@ -16,29 +16,30 @@ struct WarningScatterParticleData {
 	float currentTime;
 
 	Float3 initScale;
+	float ascendSpeed;
 	Float3 rotationSpeed;
 };
 
 /// <summary>
-/// ボスの地面警告攻撃の爆発後飛散パーティクル
+/// 爆発後煙パーティクル
 /// </summary>
-class WarningScatterParticle : public BaseParticleEffect<WarningScatterParticleData>
+class ExplodeSmokeParticle : public BaseParticleEffect<ExplodeSmokeParticleData>
 {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	WarningScatterParticle(ModelManager::ModelData& model);
+	ExplodeSmokeParticle(ModelManager::ModelData& model);
 
 protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	WarningScatterParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
+	ExplodeSmokeParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理
 	/// </summary>
-	void UpdateParticle(WarningScatterParticleData& p, float dt) override;
+	void UpdateParticle(ExplodeSmokeParticleData& p, float dt) override;
 };
 

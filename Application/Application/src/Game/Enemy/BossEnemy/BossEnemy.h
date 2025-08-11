@@ -76,5 +76,13 @@ private:
 	
 	// 球
 	ModelManager::ModelData* modelGroundWarning_;
+
+	// ---------------------------------------------------------
+	// パラメーター
+	// ---------------------------------------------------------
+
+	const Float2 kHPBarPosition = { 640.0f, 25.0f };
+	const Float2 kHPBarSizeBoss = { 640.0f, 50.0f };
+
 };
 

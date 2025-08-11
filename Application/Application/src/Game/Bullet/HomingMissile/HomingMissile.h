@@ -56,7 +56,7 @@ private:
 	// 経過時間
 	float elapsedTime_ = 0.0f;
 	// 生存時間
-	const float kMaxLifeTime = 10.0f; // 10秒で消える
+	const float kMaxLifeTime = 5.0f; // 5秒で消える
 
 	// 旋回速度
 	const float kTurnSpeed = 0.06f;

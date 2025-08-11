@@ -51,6 +51,7 @@ void GroundWarning::Update()
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
 	if (elapsedTime_ > kMaxLifeTime) {
+
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄
@@ -63,9 +64,9 @@ void GroundWarning::Update()
 
 		Float3 offset = { 0.0f, 1.5f, 0.0f };
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("warningSmoke", objectBullet_->transform_.translate + offset, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("warningScatter", objectBullet_->transform_.translate + offset, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25);
 	}
 	// コライダー更新
 	if (colliderEnabled_) {

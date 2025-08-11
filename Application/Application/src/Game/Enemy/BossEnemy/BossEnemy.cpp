@@ -50,6 +50,26 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	///
+	///	スプライト生成
+	///
+
+	// HPバー（後景）
+	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteHPBackground_ = std::make_unique<Sprite>();
+	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
+	spriteHPBackground_->SetSize(kHPBarSizeBoss);
+	spriteHPBackground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
+	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f }); // 黒
+
+	// HPバー（前景）
+	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteHPForeground_ = std::make_unique<Sprite>();
+	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
+	spriteHPForeground_->SetSize(kHPBarSizeBoss);
+	spriteHPForeground_->SetPosition({ kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y }); // 中心になるよう設定
+	spriteHPForeground_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f }); // 赤
+
+	///
 	///	パラメーター設定
 	///
 
@@ -89,6 +109,15 @@ void BossEnemy::Update()
 	///
 
 	objectEnemy_->UpdateMatrix();
+
+	///
+	///	スプライト更新処理
+	///
+
+	// HPバー（後景）更新
+	spriteHPBackground_->Update();
+	// HPバー（前景）更新
+	spriteHPForeground_->Update();
 }
 
 // ---------------------------------------------------------
@@ -104,7 +133,26 @@ void BossEnemy::Draw()
 // UI描画処理
 // ---------------------------------------------------------
 void BossEnemy::DrawUI()
-{}
+{
+	// HP割合
+	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
+
+	///
+	/// HPバー（後景）描画
+	///
+
+	spriteHPBackground_->Draw();
+
+	///
+	/// HPバー（前景）描画
+	///
+
+	// 現在HPに応じてサイズ変更
+	Float2 hpBarForegroundSize = { kHPBarSizeBoss.x * hpRatio, kHPBarSizeBoss.y };
+	spriteHPForeground_->SetSize(hpBarForegroundSize);
+
+	spriteHPForeground_->Draw();
+}
 
 // ---------------------------------------------------------
 // デバッグ表示

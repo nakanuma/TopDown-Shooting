@@ -7,6 +7,7 @@
 // Engine
 #include <Camera.h>
 #include <Engine/Util/TimeManager.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -98,6 +99,8 @@ void Player::Update() {
 	HandleMove();
 	// 射撃 & オーバーヒート処理
 	HandleOverHeat();
+	// HPが0未満にならないよう制限
+	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
 
 	///
 	///	コライダー更新処理
@@ -115,7 +118,7 @@ void Player::Update() {
 	///
 	///	UI更新処理
 	///
-
+	
 	ui_->Update(this);
 }
 
@@ -130,7 +133,9 @@ void Player::Draw() {
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void Player::DrawUI() { ui_->Draw(); }
+void Player::DrawUI() { 
+	ui_->Draw(); 
+}
 
 // ---------------------------------------------------------
 // 衝突時コールバック

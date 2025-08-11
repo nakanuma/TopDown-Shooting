@@ -1,4 +1,4 @@
-#include "WarningScatterParticle.h"
+#include "ExplodeScatterParticle.h"
 
 // Engine
 #include <Engine/Util/RandomGenerator.h>
@@ -7,7 +7,7 @@
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-WarningScatterParticle::WarningScatterParticle(ModelManager::ModelData& model)
+ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -23,9 +23,9 @@ WarningScatterParticle::WarningScatterParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-WarningScatterParticleData WarningScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity)
 {
-	WarningScatterParticleData p;
+	ExplodeScatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
 	p.transform.translate = pos;
@@ -45,7 +45,7 @@ WarningScatterParticleData WarningScatterParticle::CreateParticle(const Float3& 
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void WarningScatterParticle::UpdateParticle(WarningScatterParticleData& p, float dt)
+void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float dt)
 {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 

@@ -1,4 +1,4 @@
-#include "WarningSmokeParticle.h"
+#include "ExplodeSmokeParticle.h"
 
 // Engine
 #include <Engine/Util/RandomGenerator.h>
@@ -7,7 +7,7 @@
 // ---------------------------------------------------------
 // コンストラクタ
 // ---------------------------------------------------------
-WarningSmokeParticle::WarningSmokeParticle(ModelManager::ModelData& model)
+ExplodeSmokeParticle::ExplodeSmokeParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -23,9 +23,9 @@ WarningSmokeParticle::WarningSmokeParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-WarningSmokeParticleData WarningSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity)
 {
-	WarningSmokeParticleData p;
+	ExplodeSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
 	Float3 offset = rand->RandomValue({ 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
@@ -47,7 +47,7 @@ WarningSmokeParticleData WarningSmokeParticle::CreateParticle(const Float3& pos,
 // ---------------------------------------------------------
 // パーティクル固有の更新処理
 // ---------------------------------------------------------
-void WarningSmokeParticle::UpdateParticle(WarningSmokeParticleData& p, float dt)
+void ExplodeSmokeParticle::UpdateParticle(ExplodeSmokeParticleData& p, float dt)
 {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 	auto rand = RandomGenerator::GetInstance();
