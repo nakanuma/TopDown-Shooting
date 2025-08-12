@@ -13,6 +13,7 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/ParticleEffectRoader.h>
+#include <src/Game/Transition/FadeTransition.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -88,6 +89,10 @@ void GamePlayScene::Initialize() {
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
 	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+
+	// フェード
+	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
 }
 
 void GamePlayScene::Finalize() {}
@@ -112,6 +117,8 @@ void GamePlayScene::Update() {
 	obstacleManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
+	// フェード更新
+	FadeTransition::GetInstance()->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -203,6 +210,8 @@ void GamePlayScene::Draw() {
 	enemyManager_->DrawUI();
 	// プレイヤーUI描画
 	player_->DrawUI();
+	// フェード描画
+	FadeTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

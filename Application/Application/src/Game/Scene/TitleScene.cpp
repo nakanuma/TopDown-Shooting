@@ -8,6 +8,9 @@
 #include <SceneManager.h>
 #include <Engine/Util/TimeManager.h>
 
+// Application
+#include <src/Game/Transition/FadeTransition.h>
+
 void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
@@ -65,11 +68,24 @@ void TitleScene::Initialize() {
 	objectDiorama_ = std::make_unique<Object3D>();
 	objectDiorama_->model_ = &modelDiorama_;
 	objectDiorama_->materialCB_.data_->color = { 0.25f, 0.25f, 0.25f, 1.0f };
+
+	///
+	///	フェード
+	/// 
+	
+	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->StartFadeIn(1.0f);
 }
 
 void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
+	if (input->IsTriggerMouse(0)) {
+		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() {
+			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		}, 0.2f);
+	}
+
 	// オブジェクト更新
 	objectDiorama_->UpdateMatrix();
 	// 回転
@@ -84,6 +100,9 @@ void TitleScene::Update() {
 	// スプライト更新
 	spriteTitle_->Update();
 	spriteStartButton_->Update();
+
+	// フェード更新
+	FadeTransition::GetInstance()->Update();
 
 #ifdef _DEBUG
 	// デバッグカメラ更新
@@ -126,6 +145,9 @@ void TitleScene::Draw() {
 
 	spriteTitle_->Draw();
 	spriteStartButton_->Draw();
+
+	// フェード描画
+	FadeTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

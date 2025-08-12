@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Transition\FadeTransition.cpp" />
     <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp" />
     <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp" />
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Transition\FadeTransition.h" />
     <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h" />
     <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h" />
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
