@@ -306,7 +306,7 @@ void BossEnemy::BuildBehaviorTree()
 	///	攻撃系（並列のもう一方）
 	/// 
 	
-	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.0f, 3.0f); // 次の攻撃まで0~3秒待機
+	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.1f, 2.5f); // 次の攻撃まで0.1 ~ 2.5秒待機
 
 	auto randAttack = std::make_unique <ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
 		if (rand() % 2 == 0) {

@@ -117,8 +117,6 @@ void GamePlayScene::Update() {
 	SkyBoxManager::GetInstance()->Update();
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
 	CollisionManager::GetInstance()->Update();
-	// タイムマネージャー更新（deltaTime計算）
-	TimeManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
