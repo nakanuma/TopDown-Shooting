@@ -75,6 +75,8 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///	パラメーター設定
 	///
 
+	isActive_ = false;
+
 	isDead_ = false;
 
 	// HPの設定
@@ -88,6 +90,9 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///
 
 	BuildBehaviorTree();
+
+	btEditor_ = std::make_unique<BehaviorTreeEditor<BossEnemy>>();
+	btEditor_->SetBehaviorTree(behaviorTree_.get());
 }
 
 // ---------------------------------------------------------
@@ -95,6 +100,14 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 // ---------------------------------------------------------
 void BossEnemy::Update()
 {
+	///
+	/// オブジェクト更新処理
+	///
+
+	objectEnemy_->UpdateMatrix();
+
+	if (!isActive_) return;
+
 	///
 	///	ビヘイビアツリーを評価
 	///
@@ -108,12 +121,6 @@ void BossEnemy::Update()
 	///
 
 	UpdateCollider();
-
-	///
-	/// オブジェクト更新処理
-	///
-
-	objectEnemy_->UpdateMatrix();
 
 	///
 	///	スプライト更新処理
@@ -164,6 +171,12 @@ void BossEnemy::DrawUI()
 // ---------------------------------------------------------
 void BossEnemy::Debug() {
 	ImGui::Begin("BossEnemy");
+	
+	if (ImGui::Button("Active")) {
+		isActive_ = true;
+	}
+
+	ImGui::Separator();
 
 	if (ImGui::Button("FireHomingMissile")) {
 		FireHomingMissile();
@@ -175,6 +188,20 @@ void BossEnemy::Debug() {
 	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
 	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate.x, 0.01f);
 	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale.x, 0.01f);
+
+	ImGui::End();
+
+	ImGui::Begin("BehaviorTree_BossEnemy");
+	// BTエディター描画
+	btEditor_->Draw();
+
+	if (ImGui::Button("SAVE")) {
+		btEditor_->Save("bossEnemy.json");
+	}
+	if (ImGui::Button("LOAD")) {
+		btEditor_->Load("bossEnemy.json");
+	}
+
 	ImGui::End();
 }
 
@@ -291,14 +318,18 @@ void BossEnemy::BuildBehaviorTree()
 	auto facePlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
 		enemy->FacePlayer();
 		return BehaviorStatus::Running;
-		});
+		}, 
+		"facePlayer"
+	);
 
 	auto moveTowardPlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
 		enemy->MoveTowardPlayer();
 		return BehaviorStatus::Running;
-		});
+		},
+		"moveTowardPlayer"
+	);
 
-	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>();
+	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>("moveParallel");
 	moveParallel->AddChild(std::move(facePlayer));
 	moveParallel->AddChild(std::move(moveTowardPlayer));
 
@@ -306,7 +337,7 @@ void BossEnemy::BuildBehaviorTree()
 	///	攻撃系（並列のもう一方）
 	/// 
 	
-	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.1f, 2.5f); // 次の攻撃まで0.1 ~ 2.5秒待機
+	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.1f, 2.5f, "0.1f ~ 2.5f"); // 次の攻撃まで待機
 
 	auto randAttack = std::make_unique <ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
 		if (rand() % 2 == 0) {
@@ -315,9 +346,11 @@ void BossEnemy::BuildBehaviorTree()
 			enemy->GroundWarningAttack();
 		}
 		return BehaviorStatus::Success;
-		});
+		},
+		"randAttack"
+	);
 
-	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>();
+	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>("attackSequence");
 	attackSequence->AddChild(std::move(wait));
 	attackSequence->AddChild(std::move(randAttack));
 
@@ -325,7 +358,7 @@ void BossEnemy::BuildBehaviorTree()
 	///	ルートノード
 	/// 
 
-	auto root = std::make_unique<ParallelNode<BossEnemy>>();
+	auto root = std::make_unique<ParallelNode<BossEnemy>>("root");
 	root->AddChild(std::move(moveParallel));
 	root->AddChild(std::move(attackSequence));
 

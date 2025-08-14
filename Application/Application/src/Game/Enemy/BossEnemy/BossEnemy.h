@@ -2,6 +2,7 @@
 
 // Engine
 #include <Engine/BehaviourTree/BehaviorTree.h>
+#include <Engine/BehaviourTree/BehaviorTreeEditor.h>
 
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
@@ -105,6 +106,7 @@ private:
 	// ---------------------------------------------------------
 
 	std::unique_ptr<BehaviorTree<BossEnemy>> behaviorTree_;
+	std::unique_ptr<BehaviorTreeEditor<BossEnemy>> btEditor_;
 
 	/// <summary>
 	/// ビヘイビアツリーの構築

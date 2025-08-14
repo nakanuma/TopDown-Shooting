@@ -10,6 +10,9 @@
 // C++
 #include <numbers>
 
+// Engine
+#include <Engine/Scene/SceneManager.h>
+
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/ParticleEffectRoader.h>
@@ -50,6 +53,9 @@ void GamePlayScene::Initialize() {
 	///
 	///	↓ ゲームシーン用
 	///
+
+	// 最初にコライダーのクリア
+	CollisionManager::GetInstance()->Clear();
 
 	/* ステージデータ */
 
@@ -231,6 +237,10 @@ void GamePlayScene::Draw() {
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
+
+	if (ImGui::Button("TITLE")) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
 
 	ImGui::End();
 
