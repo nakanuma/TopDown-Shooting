@@ -86,6 +86,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	currentHP_ = 10;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
 
+	targetPlayer_ = player;
 }
 
 // ---------------------------------------------------------
@@ -103,6 +104,21 @@ void NormalEnemy::Update() {
 	///
 
 	objectEnemy_->UpdateMatrix();
+
+	///
+	///	プレイヤー追跡
+	/// 
+
+	// 現在位置から最も近いウェイポイントを取得
+	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+	// プレイヤー位置に最も近いウェイポイントを取得
+	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
+
+	if (start && goal) {
+		// ウェイポイント列の取得をしてそれに沿って移動
+		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
+		MoveAlongPath(path);
+	}
 
 	///
 	///	スプライト更新処理
@@ -218,4 +234,33 @@ void NormalEnemy::UpdateCollider() {
 	}
 }
 
+// ---------------------------------------------------------
+// 経路探索で得たウェイポイント列に沿って移動
+// ---------------------------------------------------------
+void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path)
+{
+	// 経路に移動先がなければ終了
+	if (path.size() < 2) return;
+
+	// [0]は敵の位置なので[1]が次に向かう目標ウェイポイントになる
+	Waypoint* nextWP = path[1];
+	// 目標ウェイポイントへのベクトル計算
+	Float3 dir = Float3::Normalize(nextWP->GetPosition() - objectEnemy_->transform_.translate);
+	dir.y = 0.0f;
+	dir = Float3::Normalize(dir);
+
+	// 移動
+	objectEnemy_->transform_.translate += dir * speed_ * TimeManager::GetInstance()->GetDeltaTime();
+
+
+	// 向き補間
+	Float3 lookDir = dir;
+
+	float turnSpeed = 5.0f;
+	float currentYaw = objectEnemy_->transform_.rotate.y;
+	float targetYaw = std::atan2(lookDir.x, lookDir.z);
+	float newYaw = currentYaw + (targetYaw - currentYaw) * turnSpeed * TimeManager::GetInstance()->GetDeltaTime();
+
+	objectEnemy_->transform_.rotate.y = newYaw;
+}
 

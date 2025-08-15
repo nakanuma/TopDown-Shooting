@@ -101,9 +101,11 @@ void GamePlayScene::Initialize() {
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
 	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
 
-	// ウェイポイント
+	// ウェイポイント初期化
+	obstacleManager_->Update(); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
+	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
+
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
-	/*WaypointManager::GetInstance()->ComputeNeighbors();*/
 }
 
 void GamePlayScene::Finalize() {}

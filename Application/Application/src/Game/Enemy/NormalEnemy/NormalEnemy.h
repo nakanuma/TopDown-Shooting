@@ -2,6 +2,7 @@
 
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 /// <summary>
 /// 通常敵
@@ -48,6 +49,11 @@ private:
 	/// </summary>
 	void UpdateCollider();
 
+	/// <summary>
+	/// 経路探索で得たウェイポイント列に沿って移動
+	/// </summary>
+	void MoveAlongPath(const std::vector<Waypoint*>& path);
+
 private:
 	// ---------------------------------------------------------
 	// モデル
@@ -58,5 +64,6 @@ private:
 	// ---------------------------------------------------------
 	// パラメーター
 	// ---------------------------------------------------------
-
+	
+	float speed_ = 10.0f;
 };
