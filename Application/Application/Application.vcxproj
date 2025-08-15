@@ -50,6 +50,8 @@
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
     <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp" />
+    <ClCompile Include="src\Game\Waypoint\Waypoint.cpp" />
+    <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Transition\FadeTransition.h" />
@@ -86,6 +88,8 @@
     <ClInclude Include="src\Game\Utility\Utility.h" />
     <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h" />
     <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h" />
+    <ClInclude Include="src\Game\Waypoint\Waypoint.h" />
+    <ClInclude Include="src\Game\Waypoint\WaypointManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

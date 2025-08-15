@@ -195,16 +195,12 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 		}
 
 		// ボス生成
-		/*if (data.tag == "BOSS_ENEMY") {
-			bossEnemy_ = std::make_unique<BossEnemy>();
-
-		}*/
+		if (data.tag == "BOSS_ENEMY") {
+			auto enemy = std::make_unique<BossEnemy>();
+			enemy->Initialize(data.translate, &modelBossEnemy_, player_);
+			enemy->SetMissileModel(&modelMissile_);
+			enemy->SetGroundWarningModel(&modelGroundWarning_);
+			enemies_.emplace_back(std::move(enemy));
+		}
 	}
-
-	// 一旦ここでボス生成
-	auto enemy = std::make_unique<BossEnemy>();
-	enemy->Initialize({ 0.0f, 3.0f, 0.0f }, &modelBossEnemy_, player_);
-	enemy->SetMissileModel(&modelMissile_);
-	enemy->SetGroundWarningModel(&modelGroundWarning_);
-	enemies_.emplace_back(std::move(enemy));
 }

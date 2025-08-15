@@ -17,6 +17,7 @@
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/ParticleEffectRoader.h>
 #include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -99,6 +100,10 @@ void GamePlayScene::Initialize() {
 	// フェード
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
 	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
+
+	// ウェイポイント
+	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
+	/*WaypointManager::GetInstance()->ComputeNeighbors();*/
 }
 
 void GamePlayScene::Finalize() {}
@@ -125,6 +130,8 @@ void GamePlayScene::Update() {
 	BulletManager::GetInstance()->Update();
 	// フェード更新
 	FadeTransition::GetInstance()->Update();
+	// ウェイポイントの更新
+	WaypointManager::GetInstance()->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -189,6 +196,7 @@ void GamePlayScene::Draw() {
 	enemyManager_->Draw();
 	obstacleManager_->Draw();
 	BulletManager::GetInstance()->Draw();
+	WaypointManager::GetInstance()->Draw();
 
 	ParticleEffectManager::GetInstance()->Draw();
 
@@ -249,6 +257,7 @@ void GamePlayScene::Draw() {
 	player_->Debug();
 	obstacleManager_->Debug();
 	enemyManager_->Debug();
+	WaypointManager::GetInstance()->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

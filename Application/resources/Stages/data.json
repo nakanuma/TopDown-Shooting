@@ -3,7 +3,7 @@
         "tag": "PLAYER",
         "location": [
             0.0,
-            -20.0,
+            0.0,
             2.0
         ],
         "rotation": [
@@ -20,9 +20,63 @@
     {
         "tag": "NORMAL_OBSTACLE",
         "location": [
+            -17.0,
+            29.0,
+            3.0
+        ],
+        "rotation": [
             0.0,
             0.0,
-            -47.996543884277344
+            0.0
+        ],
+        "scale": [
+            1.0,
+            50.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            0.0,
+            -20.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            16.0,
+            1.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            17.0,
+            4.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            25.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            -11.0,
+            -8.0,
+            1.0
         ],
         "rotation": [
             0.0,
@@ -38,9 +92,9 @@
     {
         "tag": "NORMAL_OBSTACLE",
         "location": [
-            -20.855365753173828,
-            -1.9890117645263672,
-            3.0
+            -11.0,
+            -14.0,
+            1.0
         ],
         "rotation": [
             0.0,
@@ -49,15 +103,303 @@
         ],
         "scale": [
             1.0,
-            5.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            -4.0,
+            -14.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            -4.0,
+            -8.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            4.0,
+            -14.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            4.0,
+            -8.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            11.0,
+            -14.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            11.0,
+            -8.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            -4.0,
+            17.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            6.0,
             3.0
         ]
     },
     {
         "tag": "NORMAL_OBSTACLE",
         "location": [
-            21.778722763061523,
-            3.3146286010742188,
+            -4.0,
+            47.0,
+            5.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            5.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            8.0,
+            47.0,
+            5.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            5.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            -5.0,
+            58.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            6.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            8.0,
+            58.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            6.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            2.0,
+            67.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            8.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            29.0,
+            80.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            47.0,
+            1.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            50.0,
+            25.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            10.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            50.0,
+            42.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            10.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            48.0,
+            10.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            30.0,
+            1.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            17.0,
+            4.0,
             3.0
         ],
         "rotation": [
@@ -67,8 +409,260 @@
         ],
         "scale": [
             1.0,
-            5.0,
+            25.0,
             3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            77.0,
+            45.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            36.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            73.0,
+            29.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            3.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            73.0,
+            37.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            73.0,
+            21.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            2.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            28.0,
+            33.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            5.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            29.0,
+            56.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            6.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            52.0,
+            65.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            8.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            65.0,
+            66.0,
+            5.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            5.0
+        ]
+    },
+    {
+        "tag": "NORMAL_OBSTACLE",
+        "location": [
+            30.0,
+            70.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "NORMAL_ENEMY",
+        "location": [
+            8.0,
+            33.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "WAYPOINT",
+        "location": [
+            -10.190113067626953,
+            6.578011989593506,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "WAYPOINT",
+        "location": [
+            2.2840943336486816,
+            6.796900749206543,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "WAYPOINT",
+        "location": [
+            2.2840943336486816,
+            27.4870548248291,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "WAYPOINT",
+        "location": [
+            -10.232847213745117,
+            27.4870548248291,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
         ]
     }
 ]

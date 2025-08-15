@@ -48,7 +48,12 @@ class OBJECT_OT_import_tagged_objects(bpy.types.Operator):
                 continue
 
             # 各項目を適用してキューブを生成
-            bpy.ops.mesh.primitive_cube_add(size=2, location=location)
+            if tag == "WAYPOINT":
+                bpy.ops.mesh.primitive_uv_sphere_add(radius=0.5, location=location)
+            else:
+                # キューブを生成
+                bpy.ops.mesh.primitive_cube_add(size=2, location=location)
+                
             obj = context.active_object
             obj.name = TAG_INFO[tag]["name"]
             obj.rotation_euler = [math.radians(deg) for deg in rotation]
