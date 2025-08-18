@@ -13,6 +13,7 @@
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Bullet/HomingMissile/HomingMissile.h>
 #include <src/Game/Bullet/GroundWarning/GroundWarning.h>
+#include <src/Game/System/ResultStats.h>
 
 // ---------------------------------------------------------
 // 初期化処理
@@ -220,10 +221,13 @@ void BossEnemy::OnCollision(Collider* other)
 
 		// HPを減らす
 		currentHP_ -= damage;
+		ResultStats::GetInstance()->AddHit(); // 弾が命中したことを記録
+		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
 		// HPが0になったら死亡させる
 		if (currentHP_ <= 0) {
 			isDead_ = true;
+			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
 	}
 }

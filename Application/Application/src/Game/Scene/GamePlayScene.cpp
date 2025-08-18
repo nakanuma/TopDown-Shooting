@@ -18,6 +18,7 @@
 #include <src/Game/Utility/ParticleEffectRoader.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Waypoint/WaypointManager.h>
+#include <src/Game/System/ResultStats.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -111,6 +112,8 @@ void GamePlayScene::Initialize() {
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
+	ResultStats::GetInstance()->AddTime(); // クリアタイム（経過時間）の記録
+
 	/*ShowCursor(FALSE);*/
 
 	// 追従カメラの更新
@@ -251,6 +254,9 @@ void GamePlayScene::Draw() {
 	if (ImGui::Button("TITLE")) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
+	if (ImGui::Button("RESULT")) {
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	}
 
 	ImGui::End();
 
@@ -260,6 +266,7 @@ void GamePlayScene::Draw() {
 	obstacleManager_->Debug();
 	enemyManager_->Debug();
 	WaypointManager::GetInstance()->Debug();
+	ResultStats::GetInstance()->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

@@ -13,6 +13,7 @@
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/Utility.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/System/ResultStats.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -363,6 +364,7 @@ void Player::HandleShooting() {
 		auto newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 	}
 }
 
