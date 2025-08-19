@@ -83,6 +83,10 @@ void GamePlayScene::Initialize() {
 	obstacleManager_ = std::make_unique<ObstacleManager>();
 	obstacleManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
 
+	// テレポーターの管理クラス生成
+	teleporterManager_ = std::make_unique<TeleporterManager>();
+	teleporterManager_->Initialize(loader_->GetAllDatas());
+
 	/* その他 */
 
 	// 追従カメラ生成
@@ -105,7 +109,6 @@ void GamePlayScene::Initialize() {
 	// ウェイポイント初期化
 	obstacleManager_->Update(); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
 	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
-
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 }
 
@@ -131,6 +134,8 @@ void GamePlayScene::Update() {
 	enemyManager_->Update();
 	// 障害物の更新
 	obstacleManager_->Update();
+	// テレポーターの更新
+	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
 	// フェード更新
@@ -200,6 +205,7 @@ void GamePlayScene::Draw() {
 	player_->Draw();
 	enemyManager_->Draw();
 	obstacleManager_->Draw();
+	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 	WaypointManager::GetInstance()->Draw();
 
@@ -264,6 +270,7 @@ void GamePlayScene::Draw() {
 	CollisionManager::GetInstance()->Debug();
 	player_->Debug();
 	obstacleManager_->Debug();
+	teleporterManager_->Debug();
 	enemyManager_->Debug();
 	WaypointManager::GetInstance()->Debug();
 	ResultStats::GetInstance()->Debug();

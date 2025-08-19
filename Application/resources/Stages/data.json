@@ -111,7 +111,7 @@
         "tag": "NORMAL_ENEMY",
         "location": [
             24.0,
-            24.0,
+            28.0,
             2.0
         ],
         "rotation": [
@@ -358,5 +358,81 @@
             1.0,
             2.0
         ]
+    },
+    {
+        "tag": "TELEPORTER",
+        "location": [
+            24.0,
+            20.0,
+            0.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            0.5
+        ],
+        "pair_id": "A"
+    },
+    {
+        "tag": "TELEPORTER",
+        "location": [
+            8.0,
+            72.0,
+            0.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            0.5
+        ],
+        "pair_id": "A"
+    },
+    {
+        "tag": "TELEPORTER",
+        "location": [
+            48.0,
+            8.0,
+            0.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            0.5
+        ],
+        "pair_id": "B"
+    },
+    {
+        "tag": "TELEPORTER",
+        "location": [
+            64.0,
+            56.0,
+            0.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            3.0,
+            0.5
+        ],
+        "pair_id": "B"
     }
 ]

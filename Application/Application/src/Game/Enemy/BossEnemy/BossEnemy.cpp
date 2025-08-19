@@ -51,6 +51,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
+	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成

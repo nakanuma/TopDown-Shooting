@@ -35,6 +35,8 @@ void Loader::LoadFromFile(const std::string& filepath) {
 		data.rotate = Float3(DegToRad(rot[0]), DegToRad(rot[1]), DegToRad(rot[2]));
 		data.scale = Float3(scl[0], scl[2], scl[1]); // YとZ入れ替え
 
+		data.pairID = item.value("pair_id", "");
+
 		datas_.push_back(data);
 	}
 }

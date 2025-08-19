@@ -55,6 +55,11 @@ public:
 	Float3& GetTranslate() const { return objectPlayer_->transform_.translate; }
 
 	/// <summary>
+	/// 位置の設定
+	/// </summary>
+	void SetTranslate(Float3 translate) const { objectPlayer_->transform_.translate = translate; }
+
+	/// <summary>
 	/// 現在HPの取得
 	/// </summary>
 	int32_t GetCurrentHP() const { return currentHP_; }

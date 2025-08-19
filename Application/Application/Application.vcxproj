@@ -55,6 +55,8 @@
     <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp" />
     <ClCompile Include="src\Game\Waypoint\Waypoint.cpp" />
     <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
+    <ClCompile Include="src\Game\Teleporter\Teleporter.cpp" />
+    <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Utility\NumberSprite.h" />
@@ -96,6 +98,8 @@
     <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h" />
     <ClInclude Include="src\Game\Waypoint\Waypoint.h" />
     <ClInclude Include="src\Game\Waypoint\WaypointManager.h" />
+    <ClInclude Include="src\Game\Teleporter\Teleporter.h" />
+    <ClInclude Include="src\Game\Teleporter\TeleporterManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

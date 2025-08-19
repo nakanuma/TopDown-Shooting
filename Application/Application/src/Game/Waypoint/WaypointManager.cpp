@@ -78,9 +78,9 @@ void WaypointManager::Update()
 /// </summary>
 void WaypointManager::Draw()
 {
-	/*for (auto& wp : waypoints_) {
+	for (auto& wp : waypoints_) {
 		wp->Draw();
-	}*/
+	}
 }
 
 // ---------------------------------------------------------

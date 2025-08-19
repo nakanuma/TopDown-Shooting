@@ -57,6 +57,22 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
                 else:
                     obj.data.materials.append(mat)
             return {'FINISHED'}
+        # TELEPORTERタグの場合は専用プロパティを持ったキューブを生成
+        elif self.tag == "TELEPORTER":
+            location = (0, 0, 0.5)
+            bpy.ops.mesh.primitive_cube_add(size=2, location=location)
+            obj = context.active_object
+            obj.name = f"{info['name']}"
+            obj["object_tag"] = self.tag # カスタムプロパティとして保存
+            obj["pair_id"] = "EMPTY"
+            obj.scale = (3.0, 3.0, 0.5) # スケール調整
+            mat = create_material(self.tag)
+            if mat:
+                if obj.data.materials:
+                    obj.data.materials[0] = mat
+                else:
+                    obj.data.materials.append(mat)
+            return {'FINISHED'}
 
         # キューブ生成
         bpy.ops.mesh.primitive_cube_add(size=2, location=location)

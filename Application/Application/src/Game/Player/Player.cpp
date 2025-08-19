@@ -61,6 +61,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	collider_->SetOwner(this);
 
 	CollisionManager::GetInstance()->Register(collider_.get());
+	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	UI
