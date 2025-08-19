@@ -81,7 +81,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 8;
+	currentHP_ = 80;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定
 
 	///

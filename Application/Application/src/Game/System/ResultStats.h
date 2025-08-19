@@ -29,6 +29,12 @@ public:
 	void AddDefeated() { defeated_++; }
 	void AddTime() { clearTime_ += TimeManager::GetInstance()->GetDeltaTime(); }
 
+	// 取得用
+	uint32_t GetTotalDamage() const { return totalDamage_; }
+	uint32_t GetDefeated() const { return defeated_; }
+	float GetHitRate() const; // 命中率
+	float GetClearTime() const { return clearTime_; }
+
 	/// <summary>
 	/// デバッグ表示
 	/// </summary>

@@ -42,7 +42,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 
 	// 攻撃力
-	damage_ = 1;
+	damage_ = 10;
 
 	// 速さ
 	speed_ = 1.8f;

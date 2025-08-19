@@ -23,6 +23,18 @@ void ResultStats::Clear() {
 }
 
 // ---------------------------------------------------------
+// 命中率を取得
+// ---------------------------------------------------------
+float ResultStats::GetHitRate() const
+{
+	if (totalShots_ == 0) {
+		return 0.0f;
+	}
+
+	return static_cast<float>(hitShots_) / static_cast<float>(totalShots_) * 100.0f;
+}
+
+// ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
 void ResultStats::Debug() {
@@ -33,6 +45,8 @@ void ResultStats::Debug() {
 	ImGui::Text("totalDamage : %d", totalDamage_);
 	ImGui::Text("defeated : %d", defeated_);
 	ImGui::Text("clearTime : %.2f", clearTime_);
+
+	ImGui::Text("hitRate : %.2f", GetHitRate());
 
 	ImGui::End();
 }

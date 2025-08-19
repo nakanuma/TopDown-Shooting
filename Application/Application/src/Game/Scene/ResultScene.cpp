@@ -52,6 +52,27 @@ void ResultScene::Initialize() {
 	spriteTitleButton_->SetPosition({ 640.0f, 620.0f });
 	spriteTitleButton_->SetAnchorPoint({ 0.5f, 0.5f });
 
+	// 戦績
+	uint32_t textureRecord = TextureManager::Load("resources/Images/UI/record.png", dxBase->GetDevice());
+	spriteRecord_ = std::make_unique<Sprite>();
+	spriteRecord_->Initialize(spriteCommon.get(), textureRecord);
+	spriteRecord_->SetPosition({ 640.0f, 260.0f });
+	spriteRecord_->SetAnchorPoint({ 0.5f, 0.5f });
+
+
+	// 合計ダメージ 
+	spriteTotalDamage_ = std::make_unique<NumberSprite>();
+	spriteTotalDamage_->Initialize(ResultStats::GetInstance()->GetTotalDamage());
+	// キル数
+	spriteDefeated_ = std::make_unique<NumberSprite>();
+	spriteDefeated_->Initialize(ResultStats::GetInstance()->GetDefeated());
+	// 命中率
+	spriteHitRate_ = std::make_unique<NumberSprite>();
+	spriteHitRate_->Initialize(ResultStats::GetInstance()->GetHitRate(), 2);
+	// クリアタイム
+	spriteClearTime_ = std::make_unique<NumberSprite>();
+	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), 2);
+
 	///
 	///	オブジェクト
 	/// 
@@ -67,18 +88,24 @@ void ResultScene::Initialize() {
 void ResultScene::Finalize() {}
 
 void ResultScene::Update() {
-	/*if (input->IsTriggerMouse(0)) {
+	if (input->IsTriggerMouse(0)) {
 		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() {
 			SceneManager::GetInstance()->ChangeScene("TITLE");
 			}, 0.2f);
-		ResultStats::GetInstance()->Clear();
-	}*/
+		ResultStats::GetInstance()->Clear(); // 戦績をクリア
+	}
 
 	// フェード更新
 	FadeTransition::GetInstance()->Update();
 
 	// スプライト更新
 	spriteTitleButton_->Update();
+	spriteRecord_->Update();
+
+	spriteTotalDamage_->Update({640.0f, 130.0f});
+	spriteDefeated_->Update({ 640.0f, 260.0f });
+	spriteHitRate_->Update({ 650.0f, 390.0f });
+	spriteClearTime_->Update({ 650.0f, 520.0f });
 
 #ifdef _DEBUG
 	// デバッグカメラ更新
@@ -118,6 +145,12 @@ void ResultScene::Draw() {
 	///
 	
 	spriteTitleButton_->Draw();
+	spriteRecord_->Draw();
+
+	spriteTotalDamage_->Draw();
+	spriteDefeated_->Draw();
+	spriteHitRate_->Draw();
+	spriteClearTime_->Draw();
 
 	// フェード描画
 	FadeTransition::GetInstance()->Draw();

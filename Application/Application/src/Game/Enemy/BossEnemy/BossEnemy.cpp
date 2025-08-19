@@ -81,7 +81,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 100;
+	currentHP_ = 1000;
 	maxHP_ = currentHP_;
 
 	targetPlayer_ = player;

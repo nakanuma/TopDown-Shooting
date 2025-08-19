@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Utility\NumberSprite.cpp" />
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
     <ClCompile Include="src\Game\Scene\ResultScene.cpp" />
     <ClCompile Include="src\Game\Transition\FadeTransition.cpp" />
@@ -56,6 +57,7 @@
     <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Utility\NumberSprite.h" />
     <ClInclude Include="src\Game\System\ResultStats.h" />
     <ClInclude Include="src\Game\Scene\ResultScene.h" />
     <ClInclude Include="src\Game\Transition\FadeTransition.h" />

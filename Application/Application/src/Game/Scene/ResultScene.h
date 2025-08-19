@@ -16,6 +16,9 @@
 #include <Engine/Util/TimeManager.h>
 #include <Engine/Texture/PostEffectManager.h>
 
+// Application
+#include <src/Game/Utility/NumberSprite.h>
+
 // リザルトシーン
 class ResultScene : public BaseScene {
 public:
@@ -51,5 +54,13 @@ private:
 	///	スプライト
 	/// 
 	
+	// 通常スプライト
 	std::unique_ptr<Sprite> spriteTitleButton_;
+	std::unique_ptr<Sprite> spriteRecord_;
+
+	// 数字表示用スプライト
+	std::unique_ptr<NumberSprite> spriteTotalDamage_;
+	std::unique_ptr<NumberSprite> spriteDefeated_;
+	std::unique_ptr<NumberSprite> spriteHitRate_;
+	std::unique_ptr<NumberSprite> spriteClearTime_;
 };
