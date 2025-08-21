@@ -13,7 +13,7 @@
 /// </summary>
 struct NodeRecord {
 	Waypoint* wp; // このノードのウェイポイント
-	Waypoint* cameFrom; // このノードに到達する直前のノード
+	Waypoint* cameFrom; // このノードに到達する直前のノード（親）
 	float costSoFar; // スタートからこのノードまでにかかったコスト（g値）
 	float estimatedTotal; // このノードを通った場合の推定総コスト（f値 = g値 + h値）
 

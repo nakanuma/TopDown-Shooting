@@ -7,6 +7,7 @@
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Util/TimeManager.h>
 #include <Engine/Util/RandomGenerator.h>
+#include <Engine/Scene/SceneManager.h>
 
 // Application
 #include <src/Game/Player/Player.h>
@@ -177,6 +178,9 @@ void BossEnemy::Debug() {
 	if (ImGui::Button("Active")) {
 		isActive_ = true;
 	}
+	if (ImGui::Button("Dying")) {
+		currentHP_ = 10;
+	}
 
 	ImGui::Separator();
 
@@ -216,6 +220,11 @@ void BossEnemy::OnCollision(Collider* other)
 	/// vs PlayerBullet
 	///
 	if (other->GetTag() == "PlayerBullet") {
+		// プレイヤーに攻撃されたら有効化（todo : 登場演出を入れる予定なので仮。あとで削除）
+		if (!isActive_) {
+			isActive_ = true;
+		}
+
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -229,6 +238,9 @@ void BossEnemy::OnCollision(Collider* other)
 		if (currentHP_ <= 0) {
 			isDead_ = true;
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
+
+			// 死亡したらリザルトへ以降（todo : 死亡演出から遷移予定なので仮。あとで削除）
+			SceneManager::GetInstance()->ChangeScene("RESULT");
 		}
 	}
 }

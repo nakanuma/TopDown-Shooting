@@ -80,7 +80,7 @@ void TitleScene::Initialize() {
 void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
-	if (input->IsTriggerMouse(0)) {
+	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
 		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() {
 			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 		}, 0.2f);

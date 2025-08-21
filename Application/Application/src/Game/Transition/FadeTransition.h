@@ -50,6 +50,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// フェードが終わったか確認
+	/// </summary>
+	bool IsFinished() const { return state_ == State::None; }
+
 private:
 	State state_ = State::None;
 	float alpha_ = 0.0f;

@@ -6,6 +6,7 @@
 #include "SpriteCommon.h"
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Model/SkyBoxManager.h>
+#include <Engine/3D/LineDrawer.h>
 
 // C++
 #include <numbers>
@@ -219,6 +220,9 @@ void GamePlayScene::Draw() {
 	//// アウトライン生成 + 描画
 	//postEffectManager_->ApplyOutline();
 	//postEffectManager_->DrawOutline();
+
+	// Lineの描画
+	LineDrawer::GetInstance()->Render();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
