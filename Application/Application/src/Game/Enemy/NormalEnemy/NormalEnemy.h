@@ -1,5 +1,10 @@
 #pragma once
 
+// Engine
+#include <Engine/BehaviourTree/BehaviorTree.h>
+#include <Engine/BehaviourTree/BehaviorTreeEditor.h>
+#include <Engine/Util/ParameterSystem.h>
+
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
 #include <src/Game/Waypoint/WaypointManager.h>
@@ -7,7 +12,7 @@
 /// <summary>
 /// 通常敵
 /// </summary>
-class NormalEnemy : public Enemy, public ICollisionCallback {
+class NormalEnemy : public Enemy, public ICollisionCallback, public IConfigurable {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -39,6 +44,11 @@ public:
 	/// </summary>
 	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
 
+	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void Debug();
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理
@@ -54,6 +64,16 @@ private:
 	/// </summary>
 	void MoveAlongPath(const std::vector<Waypoint*>& path);
 
+	/// <summary>
+	/// プレイヤーの視界チェック
+	/// </summary>
+	bool IsPlayerInSight();
+
+	/// <summary>
+	/// 索敵中の視界をデバッグ用に可視化（扇形）
+	/// </summary>
+	void DrawDebugSight();
+
 private:
 	// ---------------------------------------------------------
 	// モデル
@@ -65,5 +85,23 @@ private:
 	// パラメーター
 	// ---------------------------------------------------------
 	
+	// 移動速度
 	float speed_ = 10.0f;
+
+	// 索敵半径
+	float searchRadius_ = 10.0f;
+	// 索敵視野角
+	float searchFovDeg_ = 60.0f;
+
+	// ---------------------------------------------------------
+	// BehaviorTree
+	// ---------------------------------------------------------
+
+	std::unique_ptr<BehaviorTree<NormalEnemy>> behaviorTree_;
+	std::unique_ptr<BehaviorTreeEditor<NormalEnemy>> btEditor_;
+
+	/// <summary>
+	/// ビヘイビアツリーの構築
+	/// </summary>
+	void BuildBehaviorTree();
 };

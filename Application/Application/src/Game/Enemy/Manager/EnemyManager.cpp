@@ -124,6 +124,9 @@ void EnemyManager::Debug() {
 		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
 			bossEnemy->Debug();
 		}
+		else if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
+			normalEnemy->Debug();
+		}
 
 		std::string label = "Enemy[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {

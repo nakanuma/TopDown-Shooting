@@ -221,7 +221,7 @@ void GamePlayScene::Draw() {
 	//postEffectManager_->ApplyOutline();
 	//postEffectManager_->DrawOutline();
 
-	// Lineの描画
+	// Lineの描画コマンドを発行
 	LineDrawer::GetInstance()->Render();
 
 	///
@@ -254,6 +254,10 @@ void GamePlayScene::Draw() {
 
 	if (ImGui::Button("Emit")) {
 		ParticleEffectManager::GetInstance()->Emit("warningScatter", { 0.0f, 2.0f, -20.0f }, 20);
+	}
+
+	if (ImGui::Button("bulletClear")) {
+		BulletManager::GetInstance()->Clear();
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

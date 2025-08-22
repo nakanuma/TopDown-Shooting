@@ -31,6 +31,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// リストのクリア
+	/// </summary>
+	void Clear();
+
 private:
 	// 弾リスト
 	std::vector<std::unique_ptr<Bullet>> bullets_;

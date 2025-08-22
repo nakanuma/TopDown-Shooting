@@ -11,6 +11,7 @@
 // Application
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
 
 void ResultScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -93,6 +94,7 @@ void ResultScene::Update() {
 			SceneManager::GetInstance()->ChangeScene("TITLE");
 			}, 0.2f);
 		ResultStats::GetInstance()->Clear(); // 戦績をクリア
+		BulletManager::GetInstance()->Clear(); // 弾リストをクリア
 	}
 
 	// フェード更新

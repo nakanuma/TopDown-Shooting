@@ -12,6 +12,7 @@
 #include <DirectXBase.h>
 #include <Engine/Util/RandomGenerator.h>
 #include <Engine/Util/TimeManager.h>
+#include <Engine/3D/LineDrawer.h>
 
 // Application
 #include <src/Game/Bullet/Base/Bullet.h>
@@ -89,6 +90,26 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
 
 	targetPlayer_ = player;
+
+	///
+	///	調整パラメーター登録
+	///
+
+	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
+	RegisterParam("searchRadius", &searchRadius_, 0.0f, 100.0f, 0.01f);
+	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 180.0f, 1.00f);
+
+	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
+	InitConfig(); // 初回読み込み
+
+	///
+	///	ビヘイビアツリー構築
+	///
+
+	BuildBehaviorTree();
+
+	btEditor_ = std::make_unique<BehaviorTreeEditor<NormalEnemy>>();
+	btEditor_->SetBehaviorTree(behaviorTree_.get());
 }
 
 // ---------------------------------------------------------
@@ -108,18 +129,11 @@ void NormalEnemy::Update() {
 	objectEnemy_->UpdateMatrix();
 
 	///
-	///	プレイヤー追跡
-	/// 
+	///	ビヘイビアツリーを評価
+	///
 
-	// 現在位置から最も近いウェイポイントを取得
-	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
-	// プレイヤー位置に最も近いウェイポイントを取得
-	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
-
-	if (start && goal) {
-		// ウェイポイント列の取得をしてそれに沿って移動
-		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
-		MoveAlongPath(path);
+	if (behaviorTree_) {
+		behaviorTree_->Tick(this, TimeManager::GetInstance()->GetDeltaTime());
 	}
 
 	///
@@ -226,6 +240,30 @@ void NormalEnemy::OnCollision(Collider* other) {
 }
 
 // ---------------------------------------------------------
+// デバッグ表示
+// ---------------------------------------------------------
+void NormalEnemy::Debug()
+{
+	ImGui::Begin("BehaviorTree_NormalEnemy");
+
+	btEditor_->Draw();
+	if (ImGui::Button("SAVE")) {
+		btEditor_->Save("normalEnemy.json");
+	}
+	if (ImGui::Button("LOAD")) {
+		btEditor_->Load("normalEnemy.json");
+	}
+
+	ImGui::End();
+
+	// 索敵中の視界を可視化
+	DrawDebugSight();
+
+	// 調整パラメーター
+	DrawConfigWindow("NormalEnemyConfig");
+}
+
+// ---------------------------------------------------------
 // コライダー更新処理
 // ---------------------------------------------------------
 void NormalEnemy::UpdateCollider() {
@@ -269,3 +307,118 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path)
 	objectEnemy_->transform_.rotate.y = newYaw;
 }
 
+// ---------------------------------------------------------
+// プレイヤーの視界チェック
+// ---------------------------------------------------------
+bool NormalEnemy::IsPlayerInSight()
+{ 
+	if (!targetPlayer_) return false;
+
+	Float3 enemyPos = this->objectEnemy_->transform_.translate;
+	Float3 playerPos = targetPlayer_->GetTranslate();
+	Float3 toPlayer = playerPos - enemyPos;
+
+	// 距離チェック
+	float distance = Float3::Length(toPlayer);
+	// Playerが範囲外ならfalse
+	if (distance > searchRadius_) {
+		return false;
+	}
+
+	toPlayer = Float3::Normalize(toPlayer);
+
+	// 前方向ベクトル（Y軸回転のみで考慮）
+	Float3 forward = {
+		std::sinf(objectEnemy_->transform_.rotate.y),
+		0.0f,
+		std::cosf(objectEnemy_->transform_.rotate.y)
+	};
+
+	forward = Float3::Normalize(forward);
+
+	// 内積から角度を求める
+	float dot = Float3::Dot(forward, toPlayer);
+
+	// ラジアンに変換
+	float angleRad = std::acosf(dot);
+	float angleDeg = angleRad * 180.0f / PIf;
+
+	// 扇形角度チェック
+	return angleDeg <= (searchFovDeg_ * 0.5f);
+}
+
+void NormalEnemy::DrawDebugSight()
+{
+	// 分割数
+	const uint32_t segments = 16;
+
+	// 視界にプレイヤーがいれば赤色に
+	Float4 color;
+	if (IsPlayerInSight()) {
+		color = { 1.0f, 0.0f, 0.0f, 1.0f };
+	} else {
+		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+	
+	Float3 center = objectEnemy_->transform_.translate;
+
+	// 前方向ベクトル（Y軸回転のみで考慮）
+	Float3 forward = {
+		std::sinf(objectEnemy_->transform_.rotate.y),
+		0.0f,
+		std::cosf(objectEnemy_->transform_.rotate.y)
+	};
+	forward = Float3::Normalize(forward);
+
+	// 左端の方向ベクトル
+	float halfFovRad = (searchFovDeg_ * 0.5f) * PIf / 180.0f;
+	float baseAngle = std::atan2f(forward.z, forward.x);
+
+	float startAngle = baseAngle - halfFovRad;
+	float endAngle = baseAngle + halfFovRad;
+
+	// 扇形を分割して線を描画
+	Float3 firstPoint = {
+		center.x + std::cosf(startAngle) * searchRadius_,
+		center.y,
+		center.z + std::sinf(startAngle) * searchRadius_
+	};
+
+	Float3 prevPoint = firstPoint;
+
+	for (uint32_t i = 1; i <= segments; i++) {
+		float t = static_cast<float>(i) / segments;
+		float angle = startAngle + (endAngle - startAngle) * t;
+
+		Float3 nextPoint = {
+			center.x + std::cosf(angle) * searchRadius_,
+			center.y,
+			center.z + std::sinf(angle) * searchRadius_
+		};
+
+		// 円弧の線分
+		LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
+
+		prevPoint = nextPoint;
+	}
+
+	// 扇の骨組み（中心から弧の両端）
+	Float3 lastPoint = prevPoint;
+	LineDrawer::GetInstance()->RegisterLine(center, firstPoint, color);
+	LineDrawer::GetInstance()->RegisterLine(center, lastPoint, color);
+}
+
+// ---------------------------------------------------------
+// ビヘイビアツリーの構築
+// ---------------------------------------------------------
+void NormalEnemy::BuildBehaviorTree()
+{
+
+
+	///
+	///	ルートノード
+	/// 
+	
+	auto root = std::make_unique<SequenceNode<NormalEnemy>>("root");
+	behaviorTree_ = std::make_unique<BehaviorTree<NormalEnemy>>(std::move(root));
+}
