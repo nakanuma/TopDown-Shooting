@@ -263,6 +263,11 @@ void Player::FaceCursor() {
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
 
+	// 回転方向の分割
+	/*const int32_t division = 32;
+	float step = (PIf * 2.0f) / division;
+	angle = std::round(angle / step) * step;*/
+
 	// Y軸に回転を適用
 	objectPlayer_->transform_.rotate.y = angle;
 }

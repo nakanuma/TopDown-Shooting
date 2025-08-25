@@ -60,9 +60,11 @@ private:
 	void UpdateCollider();
 
 	/// <summary>
-	/// 経路探索で得たウェイポイント列に沿って移動
+	/// 経路探索で得たウェイポイント列に沿って移動（移動デバッグ用）
 	/// </summary>
-	void MoveAlongPath(const std::vector<Waypoint*>& path);
+	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
+
+	/* 索敵時 */
 
 	/// <summary>
 	/// プレイヤーの視界チェック
@@ -73,6 +75,16 @@ private:
 	/// 索敵中の視界をデバッグ用に可視化（扇形）
 	/// </summary>
 	void DrawDebugSight();
+
+	/// <summary>
+	/// 一定範囲内をランダムに移動
+	/// </summary>
+	BehaviorStatus RandomPatrol();
+
+	/// <summary>
+	/// ランダムに回転
+	/// </summary>
+	BehaviorStatus RandomRotate();
 
 private:
 	// ---------------------------------------------------------
@@ -88,10 +100,20 @@ private:
 	// 移動速度
 	float speed_ = 10.0f;
 
-	// 索敵半径
-	float searchRadius_ = 10.0f;
-	// 索敵視野角
-	float searchFovDeg_ = 60.0f;
+	/* 索敵時に使用 */
+
+	float searchRadius_ = 10.0f; // 索敵半径
+	float searchFovDeg_ = 60.0f; // 索敵視野角
+
+	Float3 spawnPosition_; // 初期スポーン地点
+	float patrolRange_ = 12.0f; // スポーン地点からの最大移動範囲
+	float minPatrolRange_ = 5.0f; // 現在地から最低限移動する範囲
+	Waypoint* currentTargetWP_ = nullptr; // 現在の移動目標
+	float patrolMoveSpeed_ = 5.0f; // 索敵時スピード
+
+	float rotateTimer_ = 0.0f; // 回転用タイマー
+	float rotateDirection_ = 0.0f; // 回転方向
+	float targetAngle_ = 0.0f; // 目標角度
 
 	// ---------------------------------------------------------
 	// BehaviorTree

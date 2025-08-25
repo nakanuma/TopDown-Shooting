@@ -78,9 +78,11 @@ void WaypointManager::Update()
 /// </summary>
 void WaypointManager::Draw()
 {
+#ifdef _DEBUG
 	for (auto& wp : waypoints_) {
 		wp->Draw();
 	}
+#endif
 }
 
 // ---------------------------------------------------------

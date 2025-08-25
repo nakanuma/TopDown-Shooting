@@ -91,13 +91,14 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 
 	targetPlayer_ = player;
 
+	spawnPosition_ = position; // スポーン地点を記録
+
 	///
 	///	調整パラメーター登録
 	///
 
-	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
 	RegisterParam("searchRadius", &searchRadius_, 0.0f, 100.0f, 0.01f);
-	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 180.0f, 1.00f);
+	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 360.0f, 1.00f);
 
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 	InitConfig(); // 初回読み込み
@@ -127,6 +128,19 @@ void NormalEnemy::Update() {
 	///
 
 	objectEnemy_->UpdateMatrix();
+
+
+
+	//// 現在位置から最も近いウェイポイントを取得
+	//Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+	//// プレイヤー位置に最も近いウェイポイントを取得
+	//Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
+
+	//if (start && goal) {
+	//	// ウェイポイント列の取得をしてそれに沿って移動
+	//	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
+	//	MoveAlongPath(path);
+	//}
 
 	///
 	///	ビヘイビアツリーを評価
@@ -261,6 +275,10 @@ void NormalEnemy::Debug()
 
 	// 調整パラメーター
 	DrawConfigWindow("NormalEnemyConfig");
+
+	ImGui::Begin("NormalEnemy");
+
+	ImGui::End();
 }
 
 // ---------------------------------------------------------
@@ -280,20 +298,24 @@ void NormalEnemy::UpdateCollider() {
 // ---------------------------------------------------------
 // 経路探索で得たウェイポイント列に沿って移動
 // ---------------------------------------------------------
-void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path)
+void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 {
 	// 経路に移動先がなければ終了
 	if (path.size() < 2) return;
 
 	// [0]は敵の位置なので[1]が次に向かう目標ウェイポイントになる
 	Waypoint* nextWP = path[1];
-	// 目標ウェイポイントへのベクトル計算
-	Float3 dir = Float3::Normalize(nextWP->GetPosition() - objectEnemy_->transform_.translate);
+	// 2個先の位置を補間した座標を目標にする
+	Float3 targetPos = nextWP->GetPosition();
+	if (path.size() > 2) {
+		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * 0.5f;
+	}
+	Float3 dir = Float3::Normalize(targetPos - objectEnemy_->transform_.translate);
 	dir.y = 0.0f;
 	dir = Float3::Normalize(dir);
 
 	// 移動
-	objectEnemy_->transform_.translate += dir * speed_ * TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.translate += dir * speed * TimeManager::GetInstance()->GetDeltaTime();
 
 
 	// 向き補間
@@ -302,7 +324,13 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path)
 	float turnSpeed = 5.0f;
 	float currentYaw = objectEnemy_->transform_.rotate.y;
 	float targetYaw = std::atan2(lookDir.x, lookDir.z);
-	float newYaw = currentYaw + (targetYaw - currentYaw) * turnSpeed * TimeManager::GetInstance()->GetDeltaTime();
+
+	// -π ~ πに正規化
+	float deltaYaw = targetYaw - currentYaw;
+	while (deltaYaw > PIf) deltaYaw -= 2.0f * PIf;
+	while (deltaYaw < -PIf) deltaYaw += 2.0f * PIf;
+
+	float newYaw = currentYaw + deltaYaw * turnSpeed * TimeManager::GetInstance()->GetDeltaTime();
 
 	objectEnemy_->transform_.rotate.y = newYaw;
 }
@@ -409,16 +437,135 @@ void NormalEnemy::DrawDebugSight()
 }
 
 // ---------------------------------------------------------
+// 一定範囲内をランダムに移動
+// ---------------------------------------------------------
+BehaviorStatus NormalEnemy::RandomPatrol()
+{
+	BehaviorStatus status = BehaviorStatus::Running;
+
+	///
+	///	移動先のウェイポイントを取得
+	/// 
+
+	if (!currentTargetWP_) {
+		// 移動先ウェイポイント候補
+		std::vector<Waypoint*> candidates;
+		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
+			float distFromSpawn = Float3::Length(wp->GetPosition() - spawnPosition_); // スポーン地点からウェイポイントまでの距離
+			float distFromCurrent = Float3::Length(wp->GetPosition() - objectEnemy_->transform_.translate); // 現在地点からウェイポイントまでの距離
+
+			// スポーン地点から一定範囲内にあるかつ、現在位置から一定距離離れたウェイポイントのみを収集
+			if (distFromSpawn <= patrolRange_ && distFromCurrent >= minPatrolRange_) {
+				candidates.push_back(wp.get());
+			}
+		}
+
+		// 候補からランダムに1つ選択
+		uint32_t randIndex = RandomGenerator::GetInstance()->RandomValue(0, candidates.size() - 1);
+		currentTargetWP_ = candidates[randIndex];
+
+		status = BehaviorStatus::Running;
+
+		///
+		/// ターゲットのウェイポイントまで移動
+		/// 
+	} else {
+		// 経路探索
+		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, currentTargetWP_);
+		if (!path.empty()) {
+			// 移動
+			MoveAlongPath(path, patrolMoveSpeed_);
+
+			// 目標に到達したらターゲットをクリア
+			Float3 targetPos = currentTargetWP_->GetPosition();
+			if (Float3::Length(targetPos - objectEnemy_->transform_.translate) < 3.0f) {
+				currentTargetWP_ = nullptr;
+
+				status = BehaviorStatus::Success; // 成功
+			}
+		}
+	}
+
+	return status;
+}
+
+// ---------------------------------------------------------
+// ランダムに回転
+// ---------------------------------------------------------
+BehaviorStatus NormalEnemy::RandomRotate()
+{
+	if (rotateTimer_ <= 0.0f) {
+		// 回転方向をランダムに決める
+		rotateDirection_ = RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
+
+		// 回転時間をランダムに決める
+		rotateTimer_ = RandomGenerator::GetInstance()->RandomValue(1.0f, 2.0f);
+	}
+
+	// 回転処理
+	objectEnemy_->transform_.rotate.y += rotateDirection_ * TimeManager::GetInstance()->GetDeltaTime();
+
+	// タイマー減少
+	rotateTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+
+	// 時間が残っていれば実行中
+	if (rotateTimer_ > 0.0f) {
+		return BehaviorStatus::Running;
+	}
+
+	// 終了したら成功
+	rotateTimer_ = 0.0f;
+	return BehaviorStatus::Success;
+}
+
+// ---------------------------------------------------------
 // ビヘイビアツリーの構築
 // ---------------------------------------------------------
 void NormalEnemy::BuildBehaviorTree()
 {
+	///
+	///	索敵シーケンス
+	/// 
 
+	// 待機1
+	auto wait1 = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+
+	// ランダム移動
+	auto randomPatrol = std::make_unique<ActionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy, float dt) {
+			return this->RandomPatrol();
+		},
+		"randomPatrol"
+	);
+
+	// 待機2
+	auto wait2 = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+
+	// ランダム回転
+	auto randomRotate = std::make_unique<ActionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy, float dt) {
+			return this->RandomRotate();
+		},
+		"randomRotate"
+	);
+
+	// searchSequence構築
+	auto searchSequence = std::make_unique<SequenceNode<NormalEnemy>>("searchSequence");
+	searchSequence->AddChild(std::move(wait1));
+	searchSequence->AddChild(std::move(randomPatrol));
+	searchSequence->AddChild(std::move(wait2));
+	searchSequence->AddChild(std::move(randomRotate));
 
 	///
-	///	ルートノード
+	///	ルートノード構築
 	/// 
 	
 	auto root = std::make_unique<SequenceNode<NormalEnemy>>("root");
+	root->AddChild(std::move(searchSequence));
+
+	///
+	///	BehaviorTree構築
+	/// 
 	behaviorTree_ = std::make_unique<BehaviorTree<NormalEnemy>>(std::move(root));
 }

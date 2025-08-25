@@ -1,5 +1,4 @@
 {
     "searchFovDeg": 60.0,
-    "searchRadius": 10.0,
-    "speed": 0.25
+    "searchRadius": 10.0
 }
