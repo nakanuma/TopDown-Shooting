@@ -1,4 +1,4 @@
 {
-    "searchFovDeg": 60.0,
-    "searchRadius": 10.0
+    "fireCooldown": 0.15000000596046448,
+    "speed": 0.25
 }

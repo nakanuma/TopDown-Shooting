@@ -55,6 +55,7 @@ private:
 	/// 
 	
 	// 通常スプライト
+	std::unique_ptr<Sprite> spriteBackGround_;
 	std::unique_ptr<Sprite> spriteTitleButton_;
 	std::unique_ptr<Sprite> spriteRecord_;
 

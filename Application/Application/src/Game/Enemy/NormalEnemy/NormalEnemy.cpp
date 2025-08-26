@@ -79,6 +79,13 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPForeground_->SetSize(kHPBarSize);
 	spriteHPForeground_->SetColor({ 0.0f, 1.0f, 0.5f, 1.0f }); // 緑
 
+	// リロード表示
+	uint32_t textureReload = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteReload_ = std::make_unique<Sprite>();
+	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
+	spriteReload_->SetSize(kReloadSize);
+	spriteReload_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
 	///
 	///	パラメーター設定
 	///
@@ -93,6 +100,8 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 
 	spawnPosition_ = position; // スポーン地点を記録
 
+	currentAmmo_ = kMagazineSize; // 初期マガジン設定
+
 	///
 	///	調整パラメーター登録
 	///
@@ -100,7 +109,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	RegisterParam("searchRadius", &searchRadius_, 0.0f, 100.0f, 0.01f);
 	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 360.0f, 1.00f);
 
-	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
+	SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
 	InitConfig(); // 初回読み込み
 
 	///
@@ -158,6 +167,8 @@ void NormalEnemy::Update() {
 	spriteHPBackground_->Update();
 	// HPバー（前景）更新
 	spriteHPForeground_->Update();
+	// リロード表示
+	spriteReload_->Update();
 }
 
 // ---------------------------------------------------------
@@ -205,6 +216,28 @@ void NormalEnemy::DrawUI() {
 		screenPosition.y - kOffsetHPBar               // オフセット分上にずらす
 		});
 	spriteHPForeground_->Draw();
+
+	///
+	///	リロード表示
+	/// 
+
+	// 上にずらすオフセット
+	const float kOffsetReload = 60.0f;
+	// リロード進捗率
+	float reloadProgress = 1.0f - (reloadTimer_ / kReloadTime);
+	// リロード時間に応じてサイズ変更
+	spriteReload_->SetSize({ kReloadSize.x * reloadProgress, kReloadSize.y });
+	// スクリーン座標をセット
+	spriteReload_->SetPosition(
+		{ screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
+		screenPosition.y - kOffsetReload }
+	);
+
+	// リロード時のみ描画
+	if (isReloading_ && reloadTimer_ < kReloadTime) {
+		spriteReload_->Draw();
+	}
+
 }
 
 
@@ -216,6 +249,11 @@ void NormalEnemy::OnCollision(Collider* other) {
 	/// vs PlayerBullet
 	///
 	if (other->GetTag() == "PlayerBullet") {
+		// デバッグでプレイヤー発見状態にする
+		if (!isPlayerDetected_) {
+			isPlayerDetected_ = true;
+		}
+
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -346,12 +384,19 @@ bool NormalEnemy::IsPlayerInSight()
 	Float3 playerPos = targetPlayer_->GetTranslate();
 	Float3 toPlayer = playerPos - enemyPos;
 
-	// 距離チェック
+	///
+	///	距離チェック
+	/// 
+
 	float distance = Float3::Length(toPlayer);
 	// Playerが範囲外ならfalse
 	if (distance > searchRadius_) {
 		return false;
 	}
+	
+	///
+	///	FOVチェック
+	/// 
 
 	toPlayer = Float3::Normalize(toPlayer);
 
@@ -372,7 +417,24 @@ bool NormalEnemy::IsPlayerInSight()
 	float angleDeg = angleRad * 180.0f / PIf;
 
 	// 扇形角度チェック
-	return angleDeg <= (searchFovDeg_ * 0.5f);
+	if (angleDeg > (searchFovDeg_ * 0.5f)) {
+		return false;
+	}
+
+	///
+	///	RayCastによる障害物チェック
+	/// 
+	
+	RayCastHit hit{};
+	bool rayCast = CollisionManager::GetInstance()->RayCast(enemyPos, toPlayer, distance, &hit);
+
+	if (rayCast && hit.hitCollider->GetTag() == "NormalObstacle") {
+		return false;
+	}
+
+	// プレイヤー発見状態にする
+	isPlayerDetected_ = true;
+	return true;
 }
 
 void NormalEnemy::DrawDebugSight()
@@ -520,6 +582,107 @@ BehaviorStatus NormalEnemy::RandomRotate()
 }
 
 // ---------------------------------------------------------
+// プレイヤーの方向を向く
+// ---------------------------------------------------------
+BehaviorStatus NormalEnemy::FacePlayer()
+{
+	// プレイヤーへの方向ベクトルからY軸回転角度の計算
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
+	// Y軸回転を適用
+	objectEnemy_->transform_.rotate.y = targetAngle;
+
+	return BehaviorStatus::Success;
+}
+
+// ---------------------------------------------------------
+// 弾発射処理
+// ---------------------------------------------------------
+BehaviorStatus NormalEnemy::Shoot()
+{
+	float dt = TimeManager::GetInstance()->GetDeltaTime();
+
+	// memo : リロード開始/終了時に移動先の経路探索を挟む
+
+	// リロード中処理
+	if (isReloading_) {
+		reloadTimer_ -= dt;
+		// リロード終了時に弾を込める
+		if (reloadTimer_ <= 0.0f) {
+			isReloading_ = false;
+			currentAmmo_ = kMagazineSize;
+		}
+		return BehaviorStatus::Running;
+	}
+
+	// バースト間のインターバル（次のバースト撃ちまで待機）
+	if (fireCooldown_ > 0.0f) {
+		fireCooldown_ -= dt;
+		return BehaviorStatus::Running;
+	}
+
+	// バースト内のインターバル（バースト射撃中）
+	if (burstCooldown_ > 0.0f) {
+		burstCooldown_ -= dt;
+		return BehaviorStatus::Running;
+	}
+
+	// 弾切れならリロード開始
+	if (currentAmmo_ <= 0) {
+		isReloading_ = true;
+		reloadTimer_ = kReloadTime; // リロード時間セット
+
+		return BehaviorStatus::Running;
+	}
+
+	// 弾の発射処理
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	// 拡散角をランダムに設定
+	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
+	direction.x += randSpread;
+	direction.z += randSpread;
+	direction = Float3::Normalize(direction);
+	// 弾の生成
+	auto newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelEnemyBullet_);
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+
+	// カウント更新
+	currentAmmo_--;
+	burstCount_++;
+
+	// バースト射撃中管理
+	if (burstCount_ < kBurstSize) {
+		// バースト内クールタイムをセット
+		burstCooldown_ = kBurstInterval;
+
+	// バースト射撃終了
+	} else {
+		burstCount_ = 0;
+		fireCooldown_ = kFireInterval; // バースト間クールタイムをセット
+	}
+
+	return BehaviorStatus::Success;
+}
+
+// ---------------------------------------------------------
+// プレイヤーへの移動（プレイヤー発見時かつ、視界が遮られている場合）
+// ---------------------------------------------------------
+BehaviorStatus NormalEnemy::MoveToPlayer()
+{
+	// 経路探索でプレイヤーに移動
+	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
+
+	if (!start || !goal) return BehaviorStatus::Failure;
+
+	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
+	MoveAlongPath(path, speed_);
+
+	return BehaviorStatus::Running;
+}
+
+// ---------------------------------------------------------
 // ビヘイビアツリーの構築
 // ---------------------------------------------------------
 void NormalEnemy::BuildBehaviorTree()
@@ -528,40 +691,99 @@ void NormalEnemy::BuildBehaviorTree()
 	///	索敵シーケンス
 	/// 
 
-	// 待機1
-	auto wait1 = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+	// 移動前待機
+	auto waitBeforePatrol = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
 
 	// ランダム移動
 	auto randomPatrol = std::make_unique<ActionNode<NormalEnemy>>(
-		[this](NormalEnemy* enemy, float dt) {
-			return this->RandomPatrol();
-		},
+		[this](NormalEnemy* enemy, float dt) { return this->RandomPatrol(); },
 		"randomPatrol"
 	);
 
-	// 待機2
-	auto wait2 = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+	// 回転前待機
+	auto waitBeforeRotate = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
 
 	// ランダム回転
 	auto randomRotate = std::make_unique<ActionNode<NormalEnemy>>(
-		[this](NormalEnemy* enemy, float dt) {
-			return this->RandomRotate();
-		},
+		[this](NormalEnemy* enemy, float dt) { return this->RandomRotate(); },
 		"randomRotate"
 	);
 
 	// searchSequence構築
 	auto searchSequence = std::make_unique<SequenceNode<NormalEnemy>>("searchSequence");
-	searchSequence->AddChild(std::move(wait1));
+	searchSequence->AddChild(std::move(waitBeforePatrol));
 	searchSequence->AddChild(std::move(randomPatrol));
-	searchSequence->AddChild(std::move(wait2));
+	searchSequence->AddChild(std::move(waitBeforeRotate));
 	searchSequence->AddChild(std::move(randomRotate));
+
+	///
+	///	攻撃シーケンス
+	/// 
+
+	// 視界チェック
+	auto isPlayerInSight = std::make_unique<ConditionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy) { return this->IsPlayerInSight(); },
+		"isPlayerInSight"
+	);
+
+	// プレイヤー方向を向く
+	auto facePlayer = std::make_unique<ActionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy, float dt) { return this->FacePlayer(); },
+		"facePlayer"
+	);
+
+	// 射撃を行う
+	auto shoot = std::make_unique<ActionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy, float dt) { return this->Shoot(); },
+		"shoot"
+	);
+
+	// attackParallel構築
+	auto attackParallel = std::make_unique<ParallelNode<NormalEnemy>>("attackParallel");
+	attackParallel->AddChild(std::move(facePlayer));
+	attackParallel->AddChild(std::move(shoot));
+
+	// attackSequence構築
+	auto attackSequence = std::make_unique<SequenceNode<NormalEnemy>>("attackSequence");
+	attackSequence->AddChild(std::move(isPlayerInSight));
+	attackSequence->AddChild(std::move(attackParallel));
+
+	///
+	/// 移動シーケンス
+	///
+
+	// 視界チェック
+	auto isDetected = std::make_unique<ConditionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy) { return this->isPlayerDetected_; },
+		"isPlayerDetected"
+	);
+	
+	// 発見済みなら移動
+	auto moveToPlayer = std::make_unique<ActionNode<NormalEnemy>>(
+		[this](NormalEnemy* enemy, float dt) { return this->MoveToPlayer(); },
+		"moveToPlayer"
+	);
+
+	// moveSequence構築
+	auto moveSequence = std::make_unique<SequenceNode<NormalEnemy>>("moveSequence");
+	moveSequence->AddChild(std::move(isDetected));
+	moveSequence->AddChild(std::move(moveToPlayer));
+
+	///
+	///	攻撃セレクタ
+	/// 
+
+	// attackSelector構築
+	auto attackSelector = std::make_unique<SelectorNode<NormalEnemy>>("attackSelector");
+	attackSelector->AddChild(std::move(attackSequence));
+	attackSelector->AddChild(std::move(moveSequence));
 
 	///
 	///	ルートノード構築
 	/// 
 	
-	auto root = std::make_unique<SequenceNode<NormalEnemy>>("root");
+	auto root = std::make_unique<SelectorNode<NormalEnemy>>("root");
+	root->AddChild(std::move(attackSelector));
 	root->AddChild(std::move(searchSequence));
 
 	///

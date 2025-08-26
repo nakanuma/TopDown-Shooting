@@ -86,6 +86,23 @@ private:
 	/// </summary>
 	BehaviorStatus RandomRotate();
 
+	/* 攻撃時 */
+
+	/// <summary>
+	/// プレイヤーの方向を向く
+	/// </summary>
+	BehaviorStatus FacePlayer();
+
+	/// <summary>
+	/// 弾発射処理
+	/// </summary>
+	BehaviorStatus Shoot();
+
+	/// <summary>
+	/// プレイヤーへの移動（プレイヤー発見時かつ、視界が遮られている場合）
+	/// </summary>
+	BehaviorStatus MoveToPlayer();
+
 private:
 	// ---------------------------------------------------------
 	// モデル
@@ -99,11 +116,13 @@ private:
 	
 	// 移動速度
 	float speed_ = 10.0f;
+	// プレイヤー発見フラグ
+	bool isPlayerDetected_ = false;
 
 	/* 索敵時に使用 */
 
-	float searchRadius_ = 10.0f; // 索敵半径
-	float searchFovDeg_ = 60.0f; // 索敵視野角
+	float searchRadius_ = 20.0f; // 索敵半径
+	float searchFovDeg_ = 80.0f; // 索敵視野角
 
 	Float3 spawnPosition_; // 初期スポーン地点
 	float patrolRange_ = 12.0f; // スポーン地点からの最大移動範囲
@@ -113,7 +132,22 @@ private:
 
 	float rotateTimer_ = 0.0f; // 回転用タイマー
 	float rotateDirection_ = 0.0f; // 回転方向
-	float targetAngle_ = 0.0f; // 目標角度
+
+	/* 攻撃時に使用 */
+
+	float bulletSpreadAngle_ = 0.1f; // 弾の拡散角
+	const uint32_t kMagazineSize = 12; // マガジン最大サイズ
+	uint32_t currentAmmo_ = 0; // 現在の弾数
+	uint32_t burstCount_ = 0; // 現在のバースト内で撃った弾数
+	const uint32_t kBurstSize = 3; // 1回のバースト発射数
+	const float kBurstInterval = 0.2f; // バースト内の発射間隔
+	float burstCooldown_ = 0.0f; // バースト内のクールタイム
+	const float kFireInterval = 0.6f; // バースト間の待機時間
+	float fireCooldown_ = 0.0f; // バースト間のクールタイム
+
+	const float kReloadTime = 2.0f; // リロードにかかる時間
+	float reloadTimer_ = 0.0f; // リロード中タイマー
+	bool isReloading_ = false; // リロードしているかフラグ
 
 	// ---------------------------------------------------------
 	// BehaviorTree

@@ -46,6 +46,13 @@ void ResultScene::Initialize() {
 	///	スプライト生成
 	/// 
 	
+	// 背景
+	uint32_t textureBackGround = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	spriteBackGround_ = std::make_unique<Sprite>();
+	spriteBackGround_->Initialize(spriteCommon.get(), textureBackGround);
+	spriteBackGround_->SetColor({ 0.5f, 0.5f, 0.5f, 1.0f });
+	spriteBackGround_->SetSize({ 1280.0f, 720.0f });
+
 	// タイトルボタン
 	uint32_t textureTitleButton = TextureManager::Load("resources/Images/UI/titleButton.png", dxBase->GetDevice());
 	spriteTitleButton_ = std::make_unique<Sprite>();
@@ -101,6 +108,7 @@ void ResultScene::Update() {
 	FadeTransition::GetInstance()->Update();
 
 	// スプライト更新
+	spriteBackGround_->Update();
 	spriteTitleButton_->Update();
 	spriteRecord_->Update();
 
@@ -146,6 +154,7 @@ void ResultScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 	
+	spriteBackGround_->Draw();
 	spriteTitleButton_->Draw();
 	spriteRecord_->Draw();
 

@@ -78,7 +78,7 @@ private:
 	std::vector<std::unique_ptr<Waypoint>> waypoints_;
 	float maxDistance_ = 4.0f; // 隣接ノードの最大距離
 	
-	const float waypointRadius_ = 0.5f; // ウェイポイントの生成時衝突判定に使用する半径
+	const float waypointRadius_ = 0.25f; // ウェイポイントの生成時衝突判定に使用する半径
 
 	// デバッグ用球モデル
 	ModelManager::ModelData modelSphere_;
