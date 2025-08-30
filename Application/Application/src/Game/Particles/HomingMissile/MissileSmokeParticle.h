@@ -8,32 +8,36 @@
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct SparkParticleStarData {
+struct MissileSmokeParticleData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
 	float lifeTime;
 	float currentTime;
+
+	Float3 initScale;
 };
 
 /// <summary>
-/// 火花パーティクル（星型）
+/// ボスの追尾ミサイルの尾から出る煙パーティクル
 /// </summary>
-class SparkParticle_Star : public BaseParticleEffect<SparkParticleStarData> {
+class MissileSmokeParticle : public BaseParticleEffect<MissileSmokeParticleData>
+{
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SparkParticle_Star(ModelManager::ModelData& model);
+	MissileSmokeParticle(ModelManager::ModelData& model);
 
 protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	SparkParticleStarData CreateParticle(const Float3& pos) override;
+	MissileSmokeParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理
 	/// </summary>
-	void UpdateParticle(SparkParticleStarData& p, float dt) override;
+	void UpdateParticle(MissileSmokeParticleData& p, float dt) override;
 };
+

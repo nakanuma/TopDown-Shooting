@@ -8,35 +8,37 @@
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct SparkParticleShrinkData {
+struct ExplodeScatterParticleData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
 	float lifeTime;
 	float currentTime;
 
-	// その他固有パラメーター
 	Float3 initScale;
+	Float3 rotationSpeed;
 };
 
 /// <summary>
-/// 火花パーティクル（縮小）
+/// ボスの地面警告攻撃の爆発後飛散パーティクル
 /// </summary>
-class SparkParticle_Shrink : public BaseParticleEffect<SparkParticleShrinkData> {
+class ExplodeScatterParticle : public BaseParticleEffect<ExplodeScatterParticleData>
+{
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SparkParticle_Shrink(ModelManager::ModelData& model);
+	ExplodeScatterParticle(ModelManager::ModelData& model);
 
 protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	SparkParticleShrinkData CreateParticle(const Float3& pos) override;
+	ExplodeScatterParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理
 	/// </summary>
-	void UpdateParticle(SparkParticleShrinkData& p, float dt) override;
+	void UpdateParticle(ExplodeScatterParticleData& p, float dt) override;
 };
+

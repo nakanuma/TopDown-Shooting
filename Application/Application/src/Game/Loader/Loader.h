@@ -17,6 +17,7 @@ public:
 		Float3 translate;
 		Float3 rotate;
 		Float3 scale;
+		std::string pairID; // テレポーターで使用
 	};
 
 public:

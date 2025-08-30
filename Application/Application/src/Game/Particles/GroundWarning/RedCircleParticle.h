@@ -8,35 +8,36 @@
 /// <summary>
 /// パーティクルデータ
 /// </summary>
-struct CircleParticleExpandData {
+struct RedCircleParticleData {
 	Transform transform;
 	Float3 velocity;
 	Float4 color;
 	float lifeTime;
 	float currentTime;
 
-	// その他固有パラメーター追加
-	Float3 initScale;
+	Float3 targetScale;
 };
 
 /// <summary>
-/// 円パーティクル（拡大）
+/// ボスの警告攻撃の赤い円
 /// </summary>
-class CircleParticle_Expand : public BaseParticleEffect<CircleParticleExpandData> {
+class RedCircleParticle : public BaseParticleEffect<RedCircleParticleData>
+{
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	CircleParticle_Expand(ModelManager::ModelData& model);
+	RedCircleParticle(ModelManager::ModelData& model);
 
-private:
+protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	CircleParticleExpandData CreateParticle(const Float3& pos) override;
+	RedCircleParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理
 	/// </summary>
-	void UpdateParticle(CircleParticleExpandData& p, float dt) override;
+	void UpdateParticle(RedCircleParticleData& p, float dt) override;
 };
+

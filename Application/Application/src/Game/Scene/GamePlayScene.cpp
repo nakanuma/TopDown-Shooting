@@ -6,16 +6,20 @@
 #include "SpriteCommon.h"
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Model/SkyBoxManager.h>
+#include <Engine/3D/LineDrawer.h>
 
 // C++
 #include <numbers>
 
+// Engine
+#include <Engine/Scene/SceneManager.h>
+
 // Application
 #include <src/Game/Camera/CameraShake.h>
-
-#include <src/Game/Particles/Circle/CircleParticle_Expand.h>
-#include <src/Game/Particles/Spark/SparkParticle_Shrink.h>
-#include <src/Game/Particles/Spark/SparkParticle_Star.h>
+#include <src/Game/Utility/ParticleEffectRoader.h>
+#include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Waypoint/WaypointManager.h>
+#include <src/Game/System/ResultStats.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -53,6 +57,9 @@ void GamePlayScene::Initialize() {
 	///	↓ ゲームシーン用
 	///
 
+	// 最初にコライダーのクリア
+	CollisionManager::GetInstance()->Clear();
+
 	/* ステージデータ */
 
 	// ローダー生成
@@ -77,6 +84,10 @@ void GamePlayScene::Initialize() {
 	obstacleManager_ = std::make_unique<ObstacleManager>();
 	obstacleManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
 
+	// テレポーターの管理クラス生成
+	teleporterManager_ = std::make_unique<TeleporterManager>();
+	teleporterManager_->Initialize(loader_->GetAllDatas());
+
 	/* その他 */
 
 	// 追従カメラ生成
@@ -84,39 +95,29 @@ void GamePlayScene::Initialize() {
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
-	/* パーティクルモデル生成 + パーティクル登録（あとで適切な位置へ整理） */
-
-	uint32_t textureGlow = TextureManager::Load("resources/Images/Effect/glow.png", dxBase->GetDevice());
-	uint32_t textureStar = TextureManager::Load("resources/Images/Effect/star.png", dxBase->GetDevice());
-	uint32_t textureCircle = TextureManager::Load("resources/Images/Effect/circle.png", dxBase->GetDevice());
-
-	modelSparkShrink_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelSparkShrink_.material.textureHandle = textureGlow;
-
-	auto sparkShrinkParticle = std::make_unique<SparkParticle_Shrink>(modelSparkShrink_);
-	ParticleEffectManager::GetInstance()->Register("sparkShrink", std::move(sparkShrinkParticle));
-
-	modelSparkStar_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelSparkStar_.material.textureHandle = textureStar;
-
-	auto sparkStarParticle = std::make_unique<SparkParticle_Star>(modelSparkStar_);
-	ParticleEffectManager::GetInstance()->Register("sparkStar", std::move(sparkStarParticle));
-
-	modelCircleExpand_ = ModelManager::LoadModelFile("resources/Models/", "plane.obj", dxBase->GetDevice());
-	modelCircleExpand_.material.textureHandle = textureCircle;
-
-	auto circleExpandParticle = std::make_unique<CircleParticle_Expand>(modelCircleExpand_);
-	ParticleEffectManager::GetInstance()->Register("circleExpand", std::move(circleExpandParticle));
+	// パーティクル生成
+	ParticleEffectRoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
 	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+
+	// フェード
+	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
+
+	// ウェイポイント初期化
+	obstacleManager_->Update(); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
+	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
+	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 }
 
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
+	ResultStats::GetInstance()->AddTime(); // クリアタイム（経過時間）の記録
+
 	/*ShowCursor(FALSE);*/
 
 	// 追従カメラの更新
@@ -134,15 +135,19 @@ void GamePlayScene::Update() {
 	enemyManager_->Update();
 	// 障害物の更新
 	obstacleManager_->Update();
+	// テレポーターの更新
+	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
+	// フェード更新
+	FadeTransition::GetInstance()->Update();
+	// ウェイポイントの更新
+	WaypointManager::GetInstance()->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
 	CollisionManager::GetInstance()->Update();
-	// タイムマネージャー更新（deltaTime計算）
-	TimeManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
@@ -201,7 +206,9 @@ void GamePlayScene::Draw() {
 	player_->Draw();
 	enemyManager_->Draw();
 	obstacleManager_->Draw();
+	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
+	WaypointManager::GetInstance()->Draw();
 
 	ParticleEffectManager::GetInstance()->Draw();
 
@@ -214,6 +221,9 @@ void GamePlayScene::Draw() {
 	//postEffectManager_->ApplyOutline();
 	//postEffectManager_->DrawOutline();
 
+	// Lineの描画コマンドを発行
+	LineDrawer::GetInstance()->Render();
+
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
 	///
@@ -225,10 +235,12 @@ void GamePlayScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
-	// プレイヤーUI描画
-	player_->DrawUI();
 	// 敵UI描画
 	enemyManager_->DrawUI();
+	// プレイヤーUI描画
+	player_->DrawUI();
+	// フェード描画
+	FadeTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
@@ -240,18 +252,36 @@ void GamePlayScene::Draw() {
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
 
+	if (ImGui::Button("Emit")) {
+		ParticleEffectManager::GetInstance()->Emit("warningScatter", { 0.0f, 2.0f, -20.0f }, 20);
+	}
+
+	if (ImGui::Button("bulletClear")) {
+		BulletManager::GetInstance()->Clear();
+	}
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
+	if (ImGui::Button("TITLE")) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+	if (ImGui::Button("RESULT")) {
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	}
+
 	ImGui::End();
 
-	/**/
+	/*Debug*/
 	CollisionManager::GetInstance()->Debug();
 	player_->Debug();
 	obstacleManager_->Debug();
+	teleporterManager_->Debug();
 	enemyManager_->Debug();
+	WaypointManager::GetInstance()->Debug();
+	ResultStats::GetInstance()->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

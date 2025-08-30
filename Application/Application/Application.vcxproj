@@ -19,15 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Utility\NumberSprite.cpp" />
+    <ClCompile Include="src\Game\System\ResultStats.cpp" />
+    <ClCompile Include="src\Game\Scene\ResultScene.cpp" />
+    <ClCompile Include="src\Game\Transition\FadeTransition.cpp" />
+    <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp" />
+    <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp" />
+    <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
+    <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp" />
+    <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp" />
+    <ClCompile Include="src\Game\Particles\BackscatterParticle.cpp" />
     <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp" />
     <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp" />
     <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp" />
     <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp" />
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp" />
-    <ClCompile Include="src\Game\Particles\Circle\CircleParticle_Expand.cpp" />
-    <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Star.cpp" />
     <ClCompile Include="src\Game\Camera\CameraShake.cpp" />
-    <ClCompile Include="src\Game\Particles\Spark\SparkParticle_Shrink.cpp" />
     <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp" />
     <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp" />
     <ClCompile Include="src\Game\Player\UI\PlayerUIManager.cpp" />
@@ -44,17 +51,30 @@
     <ClCompile Include="src\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="src\Game\Scene\TestScene.cpp" />
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
+    <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp" />
+    <ClCompile Include="src\Game\Waypoint\Waypoint.cpp" />
+    <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
+    <ClCompile Include="src\Game\Teleporter\Teleporter.cpp" />
+    <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Utility\NumberSprite.h" />
+    <ClInclude Include="src\Game\System\ResultStats.h" />
+    <ClInclude Include="src\Game\Scene\ResultScene.h" />
+    <ClInclude Include="src\Game\Transition\FadeTransition.h" />
+    <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h" />
+    <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h" />
+    <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
+    <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h" />
+    <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h" />
+    <ClInclude Include="src\Game\Particles\BackscatterParticle.h" />
     <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h" />
     <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h" />
     <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h" />
     <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h" />
     <ClInclude Include="src\Game\Bullet\EnemyBullet\EnemyBullet.h" />
-    <ClInclude Include="src\Game\Particles\Circle\CircleParticle_Expand.h" />
-    <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Star.h" />
     <ClInclude Include="src\Game\Camera\CameraShake.h" />
-    <ClInclude Include="src\Game\Particles\Spark\SparkParticle_Shrink.h" />
     <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h" />
     <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h" />
     <ClInclude Include="src\Game\Player\UI\PlayerUIManager.h" />
@@ -74,6 +94,12 @@
     <ClInclude Include="src\Game\Scene\TitleScene.h" />
     <ClInclude Include="src\Game\Scene\TestScene.h" />
     <ClInclude Include="src\Game\Utility\Utility.h" />
+    <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h" />
+    <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h" />
+    <ClInclude Include="src\Game\Waypoint\Waypoint.h" />
+    <ClInclude Include="src\Game\Waypoint\WaypointManager.h" />
+    <ClInclude Include="src\Game\Teleporter\Teleporter.h" />
+    <ClInclude Include="src\Game\Teleporter\TeleporterManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

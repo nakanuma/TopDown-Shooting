@@ -7,11 +7,13 @@
 // Engine
 #include <Camera.h>
 #include <Engine/Util/TimeManager.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/Utility.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/System/ResultStats.h>
 
 // externals
 #include <ImguiWrapper.h>
@@ -59,6 +61,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	collider_->SetOwner(this);
 
 	CollisionManager::GetInstance()->Register(collider_.get());
+	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	UI
@@ -98,6 +101,8 @@ void Player::Update() {
 	HandleMove();
 	// 射撃 & オーバーヒート処理
 	HandleOverHeat();
+	// HPが0未満にならないよう制限
+	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
 
 	///
 	///	コライダー更新処理
@@ -115,7 +120,7 @@ void Player::Update() {
 	///
 	///	UI更新処理
 	///
-
+	
 	ui_->Update(this);
 }
 
@@ -130,7 +135,9 @@ void Player::Draw() {
 // ---------------------------------------------------------
 // UI描画処理
 // ---------------------------------------------------------
-void Player::DrawUI() { ui_->Draw(); }
+void Player::DrawUI() { 
+	ui_->Draw(); 
+}
 
 // ---------------------------------------------------------
 // 衝突時コールバック
@@ -149,6 +156,32 @@ void Player::OnCollision(Collider* other) {
 
 	if (other->GetTag() == "EnemyBullet") {
 		// EnemyBulletのDamageを取得
+		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
+		int32_t damage = bullet->GetDamage();
+
+		// HPを減らす
+		currentHP_ -= damage;
+	}
+
+	///
+	///	vs HomingMissile
+	///
+
+	if (other->GetTag() == "HomingMissile") {
+		// HomingMissileのDamageを取得
+		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
+		int32_t damage = bullet->GetDamage();
+
+		// HPを減らす
+		currentHP_ -= damage;
+	}
+
+	///
+	///	vs GroundWarning
+	///
+
+	if (other->GetTag() == "GroundWarning") {
+		// HomingMissileのDamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
 
@@ -229,6 +262,11 @@ void Player::FaceCursor() {
 
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
+
+	// 回転方向の分割
+	/*const int32_t division = 32;
+	float step = (PIf * 2.0f) / division;
+	angle = std::round(angle / step) * step;*/
 
 	// Y軸に回転を適用
 	objectPlayer_->transform_.rotate.y = angle;
@@ -332,6 +370,7 @@ void Player::HandleShooting() {
 		auto newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 	}
 }
 

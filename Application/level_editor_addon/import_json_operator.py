@@ -48,12 +48,23 @@ class OBJECT_OT_import_tagged_objects(bpy.types.Operator):
                 continue
 
             # 各項目を適用してキューブを生成
-            bpy.ops.mesh.primitive_cube_add(size=2, location=location)
+            if tag == "WAYPOINT": # Waypointタグの場合はSphereを生成
+                bpy.ops.mesh.primitive_uv_sphere_add(radius=0.5, location=location)
+            else:
+                # キューブを生成
+                bpy.ops.mesh.primitive_cube_add(size=2, location=location)
+                
             obj = context.active_object
             obj.name = TAG_INFO[tag]["name"]
             obj.rotation_euler = [math.radians(deg) for deg in rotation]
             obj.scale = scale
             obj["object_tag"] = tag
+
+            # テレポーター用のプロパティがあれば設定
+            if tag == "TELEPORTER":
+                pair_id = item.get("pair_id")
+                if pair_id:
+                    obj["pair_id"] = pair_id
 
             # マテリアルの再適用
             mat = create_material(tag)

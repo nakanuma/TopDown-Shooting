@@ -3,6 +3,7 @@
 // Engine
 #include <Collider/CollisionManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <Engine/Util/RandomGenerator.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -18,7 +19,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = {radius_, radius_, radius_};
+	objectBullet_->transform_.scale = { radius_, radius_, radius_ };
 
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
@@ -41,7 +42,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///
 
 	// 攻撃力
-	damage_ = 1;
+	damage_ = 10;
 
 	// 速さ
 	speed_ = 1.8f;
@@ -82,13 +83,12 @@ void PlayerBullet::Draw() {
 // ---------------------------------------------------------
 void PlayerBullet::OnCollision(Collider* other) {
 	Float3 bulletPos = this->objectBullet_->transform_.translate;
+	auto rand = RandomGenerator::GetInstance();
 
 	// vs NormalEnemy
 	if (other->GetTag() == "NormalEnemy") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
+		// ヒットエフェクト
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -96,10 +96,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 
 	// vs ImmobileEnemy
 	if (other->GetTag() == "ImmobileEnemy") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
+		// ヒットエフェクト
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -107,10 +105,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 
 	// vs BossEnemy
 	if (other->GetTag() == "BossEnemy") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
+		// ヒットエフェクト
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -118,23 +114,11 @@ void PlayerBullet::OnCollision(Collider* other) {
 
 	// vs NormalObstacle
 	if (other->GetTag() == "NormalObstacle") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
+		// ヒットエフェクト
+		ParticleEffectManager::GetInstance()->Emit("backscatter",bulletPos, rand->RandomValue(3, 4), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
-
-		// AABBCollider* aabb = dynamic_cast<AABBCollider*>(other);
-		// if (aabb) {
-		//	// 法線を取得
-		//	Float3 normal = aabb->GetContactNormalFromSphere(objectBullet_->transform_.translate);
-
-		//	// 速度ベクトルを法線で反射させる
-		//	float dot = Float3::Dot(velocity_, normal);
-		//	velocity_ = velocity_ - 2.0f * dot * normal;
-		//}
 	}
 }
 

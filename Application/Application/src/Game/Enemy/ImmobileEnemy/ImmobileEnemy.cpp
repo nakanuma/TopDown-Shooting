@@ -12,6 +12,7 @@
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/System/ResultStats.h>
 
 // ---------------------------------------------------------
 // 初期化処理
@@ -47,6 +48,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
+	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
@@ -80,7 +82,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 8;
+	currentHP_ = 80;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定
 
 	///
@@ -213,10 +215,13 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 
 		// HPを減らす
 		currentHP_ -= damage;
+		ResultStats::GetInstance()->AddHit(); // 弾が命中したことを記録
+		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
 		// HPが0になった敵を死亡させる
 		if (currentHP_ <= 0) {
 			isDead_ = true;
+			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
 	}
 }
@@ -354,6 +359,9 @@ void ImmobileEnemy::Shoot() {
 	nextShotInterval_ = 0.0f;
 }
 
+// ---------------------------------------------------------
+// ビヘイビアツリーの構築
+// ---------------------------------------------------------
 void ImmobileEnemy::BuildBehaviorTree() {
 	///
 	///	索敵シーケンス関連

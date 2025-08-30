@@ -24,6 +24,7 @@
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/Teleporter/TeleporterManager.h>
 
 class GamePlayScene : public BaseScene {
 public:
@@ -74,16 +75,13 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_;
 	// 障害物の管理クラス
 	std::unique_ptr<ObstacleManager> obstacleManager_;
+	// テレポーターの管理クラス
+	std::unique_ptr<TeleporterManager> teleporterManager_;
 
 	/* その他 */
 
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
-
-	/* パーティクル用モデル（あとで適切な位置に整理） */
-	ModelManager::ModelData modelSparkShrink_;
-	ModelManager::ModelData modelSparkStar_;
-	ModelManager::ModelData modelCircleExpand_;
 
 	// ポストエフェクト
 	std::unique_ptr<PostEffectManager> postEffectManager_;

@@ -88,11 +88,6 @@ void EnemyBullet::OnCollision(Collider* other) {
 
 	// vs Player
 	if (other->GetTag() == "Player") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
-
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄
@@ -101,11 +96,6 @@ void EnemyBullet::OnCollision(Collider* other) {
 
 	// vs NormalObstacle
 	if (other->GetTag() == "NormalObstacle") {
-		// ヒットエフェクト発生
-		ParticleEffectManager::GetInstance()->Emit("sparkShrink", bulletPos, 15); // 火花パーティクル（縮小）15個生成
-		ParticleEffectManager::GetInstance()->Emit("sparkStar", bulletPos, 15);   // 火花パーティクル（星型）15個生成
-		ParticleEffectManager::GetInstance()->Emit("circleExpand", bulletPos, 1); // 円パーティクル（拡大）1個生成
-
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄

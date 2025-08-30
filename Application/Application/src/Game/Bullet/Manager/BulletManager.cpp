@@ -43,3 +43,15 @@ void BulletManager::Draw() {
 		bullet->Draw();
 	}
 }
+
+// ---------------------------------------------------------
+// リストのクリア
+// ---------------------------------------------------------
+void BulletManager::Clear()
+{
+	for (auto& bullet : bullets_) {
+		bullet->Dead();
+		bullet->OnDestroy();
+	}
+	bullets_.clear();
+}

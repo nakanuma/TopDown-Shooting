@@ -32,6 +32,11 @@ class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
                     "rotation": [math.degrees(angle) for angle in obj.rotation_euler], #degreeに変換
                     "scale": list(obj.scale),
                 }
+
+                # テレポーター用
+                if "pair_id" in obj:
+                    data["pair_id"] = obj.get("pair_id")
+
                 export_data.append(data)
         
         # 選択されたファイルパスにJSONデータとして保存

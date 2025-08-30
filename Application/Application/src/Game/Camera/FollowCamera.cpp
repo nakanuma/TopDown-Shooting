@@ -25,7 +25,7 @@ void FollowCamera::Update() {
 	Float3 cursorOffset = cursorPos - *targetTranslate_;
 
 	// カメラ補正の強さ（小さくしてカメラが少しだけ動くように）
-	float influence = 0.25f;
+	float influence = 0.2f;
 	cursorOffset *= influence;
 
 	// 最終的なターゲット位置にカーソル補正を加える

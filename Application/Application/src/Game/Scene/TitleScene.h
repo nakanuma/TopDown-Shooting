@@ -48,7 +48,17 @@ private:
 	LightManager* lightManager = nullptr;
 
 	///
-	///
+	/// スプライト
 	///
 	
+	std::unique_ptr<Sprite> spriteTitle_;
+	std::unique_ptr<Sprite> spriteStartButton_;
+
+	///
+	///	オブジェクト
+	/// 
+
+	ModelManager::ModelData modelDiorama_;
+	std::unique_ptr<Object3D> objectDiorama_;
+
 };

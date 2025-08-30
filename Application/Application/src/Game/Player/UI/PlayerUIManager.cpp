@@ -55,11 +55,11 @@ void PlayerUIManager::Update(const Player* player) {
 // 描画処理
 // ---------------------------------------------------------
 void PlayerUIManager::Draw() {
-	// レティクル
-	reticle_->Draw();
-
 	// HPバー
 	hpBar_->Draw();
+
+	// レティクル
+	reticle_->Draw();
 
 	// オーバーヒートゲージ
 	overheatGauge_->Draw();
