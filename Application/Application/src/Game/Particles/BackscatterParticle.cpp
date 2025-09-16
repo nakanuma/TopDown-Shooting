@@ -23,7 +23,7 @@ BackscatterParticle::BackscatterParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
 {
 	BackscatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();

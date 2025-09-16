@@ -23,7 +23,7 @@ RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
 {
 	RedCircleParticleData p;
 

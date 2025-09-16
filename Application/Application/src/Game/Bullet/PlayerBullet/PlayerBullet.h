@@ -1,5 +1,8 @@
 #pragma once
 
+// C++
+#include <deque>
+
 // Application
 #include <src/Game/Bullet/Base/Bullet.h>
 
@@ -39,6 +42,11 @@ private:
 	/// </summary>
 	void UpdateCollider();
 
+	/// <summary>
+	/// 弾道の描画
+	/// </summary>
+	void DrawTrail();
+
 private:
 	// ---------------------------------------------------------
 	// パラメーター
@@ -51,4 +59,8 @@ private:
 	float elapsedTime_ = 0.0f;
 	// 生存時間
 	const float kMaxLifeTime = 1.0f; // 1秒で消える
+
+	// 弾道用
+	std::deque<Float3> trailPoints_; // 過去位置履歴
+	size_t kMaxTrailPoints = 5; // 残す履歴数
 };
