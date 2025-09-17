@@ -8,6 +8,7 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
+#include <Animation/AnimatedModelInstance.h>
 
 // Application
 #include <src/Game/Bullet/PlayerBullet/PlayerBullet.h>
@@ -52,12 +53,12 @@ public:
 	/// <summary>
 	/// 位置の取得
 	/// </summary>
-	Float3& GetTranslate() const { return objectPlayer_->transform_.translate; }
+	Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
 
 	/// <summary>
 	/// 位置の設定
 	/// </summary>
-	void SetTranslate(Float3 translate) const { objectPlayer_->transform_.translate = translate; }
+	void SetTranslate(Float3 translate) const { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
 	/// 現在HPの取得
@@ -119,10 +120,10 @@ private:
 	// オブジェクト関連
 	// ---------------------------------------------------------
 
-	// プレイヤーモデル
-	ModelManager::ModelData modelPlayer_;
 	// プレイヤーオブジェクト
-	std::unique_ptr<Object3D> objectPlayer_;
+	std::unique_ptr<AnimatedModelInstance> objectPlayer_;
+	// アニメーションデータ
+	AnimatedModelInstance::AnimatedModelData walkData_;
 
 	// プレイヤー弾モデル
 	ModelManager::ModelData modelBullet_;
@@ -150,6 +151,8 @@ private:
 	Float3 velocity_ = {0.0f, 0.0f, 0.0f};
 	// 速さ
 	float speed_ = 0.25f;
+	// 移動中か
+	bool isMoving_ = false;
 
 	// 最大HP
 	const int32_t kMaxHP = 100;

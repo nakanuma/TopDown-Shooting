@@ -36,17 +36,24 @@ void Player::Initialize(const Loader::TransformData& data) {
 	spriteCommon_->Initialize(DirectXBase::GetInstance());
 
 	///
+	///	アニメーションデータ読み込み
+	/// 
+
+	// 前移動
+	walkData_.modelData = ModelManager::LoadModelFile("resources/Models/Character/Player", "walk.gltf", dxBase->GetDevice());
+	walkData_.modelData.material.textureHandle = TextureManager::Load("resources/Images/Character/Player/player.png", dxBase->GetDevice());
+	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models/Character/Player", "walk.gltf");
+	walkData_.skeleton.CreateSkeleton(walkData_.modelData.rootNode);
+
+	///
 	///	オブジェクト関連
 	///
 
-	// プレイヤーモデル読み込み
-	modelPlayer_ = ModelManager::LoadModelFile("resources/Models", "Character/Player/player.obj", dxBase->GetDevice());
-	modelPlayer_.material.textureHandle = TextureManager::Load("resources/Images/Character/Player/player.png", dxBase->GetDevice());
-
 	// プレイヤーオブジェクト生成
-	objectPlayer_ = std::make_unique<Object3D>();
-	objectPlayer_->model_ = &modelPlayer_;
-	objectPlayer_->transform_.translate = data.translate;
+	objectPlayer_ = std::make_unique<AnimatedModelInstance>();
+	objectPlayer_->Initialize(walkData_);
+	objectPlayer_->GetTranslate() = data.translate;
+	objectPlayer_->SetPlayBackSpeed(1.5f);
 
 	// 弾モデル読み込み
 	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
@@ -115,7 +122,7 @@ void Player::Update() {
 	///
 
 	// プレイヤーオブジェクト更新
-	objectPlayer_->UpdateMatrix();
+	objectPlayer_->Update(TimeManager::GetInstance()->GetDeltaTime(), isMoving_);
 
 	///
 	///	UI更新処理
@@ -201,7 +208,7 @@ void Player::OnCollision(Collider* other) {
 			// 押し戻しベクトル取得
 			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 			// プレイヤー位置を補正
-			objectPlayer_->transform_.translate += pushVec;
+			objectPlayer_->GetTranslate() += pushVec;
 
 			// コライダーも更新しておく
 			myAABB->min_ += pushVec;
@@ -220,11 +227,11 @@ void Player::Debug() {
 	/* Translate */
 	ImGui::Text("Translate");
 
-	ImGui::DragFloat3("translate", &objectPlayer_->transform_.translate.x, 0.01f);
+	ImGui::DragFloat3("translate", &objectPlayer_->GetTranslate().x, 0.01f);
 
-	ImGui::DragFloat3("rotate", &objectPlayer_->transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("rotate", &objectPlayer_->GetRotate().x, 0.01f);
 
-	ImGui::DragFloat3("scale", &objectPlayer_->transform_.scale.x, 0.01f);
+	ImGui::DragFloat3("scale", &objectPlayer_->GetScale().x, 0.01f);
 
 	/* Parameter */
 	ImGui::Text("Parameter");
@@ -243,6 +250,8 @@ void Player::Debug() {
 	ImGui::Text("overheatTime : %.2f", overheatTime_);
 	ImGui::Checkbox("isOverheated", &isOverheated_);
 
+	ImGui::Checkbox("isMoving", &isMoving_);
+
 	/*  */
 
 	ImGui::End();
@@ -258,7 +267,7 @@ void Player::Debug() {
 // ---------------------------------------------------------
 void Player::FaceCursor() {
 	// プレイヤーからカーソルへの方向ベクトル
-	Float3 direction = Utility::CalclateCursorPosition() - objectPlayer_->transform_.translate;
+	Float3 direction = Utility::CalclateCursorPosition() - objectPlayer_->GetTranslate();
 
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
@@ -269,7 +278,7 @@ void Player::FaceCursor() {
 	angle = std::round(angle / step) * step;*/
 
 	// Y軸に回転を適用
-	objectPlayer_->transform_.rotate.y = angle;
+	objectPlayer_->GetRotate().y = angle;
 }
 
 // ---------------------------------------------------------
@@ -288,10 +297,10 @@ void Player::HandleMove() {
 		velocity_.x += 1.0f;
 
 	// 移動しているか
-	bool isMoving = (velocity_.x != 0.0f || velocity_.z != 0.0f);
+	isMoving_ = (velocity_.x != 0.0f || velocity_.z != 0.0f);
 
 	// 正規化
-	if (isMoving) {
+	if (isMoving_) {
 		velocity_ = Float3::Normalize(velocity_);
 	}
 
@@ -328,7 +337,7 @@ void Player::HandleMove() {
 	velocity_ = velocity_ * currentSpeed;
 
 	// プレイヤー位置更新
-	objectPlayer_->transform_.translate += velocity_;
+	objectPlayer_->GetTranslate() += velocity_;
 }
 
 // ---------------------------------------------------------
@@ -344,7 +353,7 @@ void Player::HandleShooting() {
 		// カーソル位置の取得
 		Float3 cursorPos = Utility::CalclateCursorPosition();
 		// プレイヤー位置の取得
-		Float3 playerPos = objectPlayer_->transform_.translate;
+		Float3 playerPos = objectPlayer_->GetTranslate();
 
 		// 発射方向
 		Float3 direction = cursorPos - playerPos;
@@ -368,7 +377,7 @@ void Player::HandleShooting() {
 
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->transform_.translate, direction, &modelBullet_);
+		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &modelBullet_);
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 	}
@@ -418,7 +427,7 @@ void Player::HandleOverHeat()
 // ---------------------------------------------------------
 void Player::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		Float3 center = objectPlayer_->transform_.translate;
+		Float3 center = objectPlayer_->GetTranslate();
 		Float3 size = kColliderSize;
 
 		// min
