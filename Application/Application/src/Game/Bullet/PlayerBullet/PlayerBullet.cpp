@@ -130,8 +130,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 		isDead_ = true;
 	}
 
-	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
+	// vs Obstacle
+	if (other->GetTag() == "Obstacle") {
 		// ヒットエフェクト
 		ParticleEffectManager::GetInstance()->Emit("backscatter",bulletPos, rand->RandomValue(3, 4), velocity_);
 

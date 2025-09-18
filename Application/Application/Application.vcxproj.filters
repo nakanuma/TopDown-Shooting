@@ -129,6 +129,9 @@
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Scene\GamePlayScene.h">

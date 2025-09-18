@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp" />
     <ClCompile Include="src\Game\Utility\NumberSprite.cpp" />
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
     <ClCompile Include="src\Game\Scene\ResultScene.cpp" />

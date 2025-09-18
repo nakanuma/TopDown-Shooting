@@ -47,10 +47,14 @@ private:
 	// モデル
 	// ---------------------------------------------------------
 
-	// 通常敵
+	// 通常
 	ModelManager::ModelData modelNormalObstacle_;
-
-	// 追加
+	// コンテナ
+	ModelManager::ModelData modelContainer_;
+	// フェンス
+	ModelManager::ModelData modelFence_;
+	// 壁
+	ModelManager::ModelData modelWall_;
 
 	// ---------------------------------------------------------
 	// 敵

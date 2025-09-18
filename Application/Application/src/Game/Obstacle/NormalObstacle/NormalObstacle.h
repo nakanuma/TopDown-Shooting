@@ -11,7 +11,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) override;
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
 
 	/// <summary>
 	/// 更新処理

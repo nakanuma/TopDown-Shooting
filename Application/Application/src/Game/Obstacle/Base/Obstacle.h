@@ -13,7 +13,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) = 0;
+	virtual void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) = 0;
 
 	/// <summary>
 	/// 更新処理
@@ -50,7 +50,7 @@ protected:
 	// オブジェクト関連
 	// ---------------------------------------------------------
 
-	// 敵オブジェクト
+	// オブジェクト
 	std::unique_ptr<Object3D> objectObstacle_;
 
 	// ---------------------------------------------------------
@@ -59,4 +59,34 @@ protected:
 
 	// コライダー
 	std::unique_ptr<Collider> collider_;
+};
+
+/// <summary>
+/// コンテナ
+/// </summary>
+class Container : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// フェンス
+/// </summary>
+class Fence : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// 壁
+/// </summary>
+class Wall : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
 };

@@ -3,7 +3,7 @@
 // ---------------------------------------------------------
 // 初期化処理
 // ---------------------------------------------------------
-void NormalObstacle::Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) {
+void NormalObstacle::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) {
 	///
 	/// オブジェクト生成
 	///
@@ -20,7 +20,7 @@ void NormalObstacle::Initialize(const Float3& position, const Float3& scale, Mod
 	///
 
 	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("NormalObstacle");
+	collider_->SetTag("Obstacle");
 	collider_->SetOwner(this);
 
 	// コライダーを登録
