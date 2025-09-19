@@ -53,7 +53,7 @@ private:
 	// ---------------------------------------------------------
 
 	// 半径
-	float radius_ = 0.5f;
+	float radius_ = 0.2f;
 
 	// 経過時間
 	float elapsedTime_ = 0.0f;
@@ -62,5 +62,5 @@ private:
 
 	// 弾道用
 	std::deque<Float3> trailPoints_; // 過去位置履歴
-	size_t kMaxTrailPoints = 5; // 残す履歴数
+	size_t kMaxTrailPoints = 6; // 残す履歴数
 };

@@ -134,3 +134,183 @@ void Wall::Draw()
 {
 	objectObstacle_->Draw();
 }
+
+// ---------------------------------------------------------
+// レンガのパレット積み
+// ---------------------------------------------------------
+void BrickPallet::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model)
+{
+	///
+	///	オブジェクト生成
+	/// 
+
+	objectObstacle_ = std::make_unique<Object3D>();
+	objectObstacle_->model_ = model;
+	objectObstacle_->transform_.translate = position;
+	objectObstacle_->transform_.rotate = rotate;
+
+	///
+	///	コライダー生成
+	///
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("Obstacle");
+	collider_->SetOwner(this);
+
+	// コライダーを登録
+	CollisionManager::GetInstance()->Register(collider_.get());
+
+	// コライダー設定
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		Float3 center = objectObstacle_->transform_.translate;
+		Float3 size = scale;
+
+		aabb->min_ = center - size;
+		aabb->max_ = center + size;
+	}
+}
+
+void BrickPallet::Update()
+{
+	objectObstacle_->UpdateMatrix();
+}
+
+void BrickPallet::Draw()
+{
+	objectObstacle_->Draw();
+}
+
+// ---------------------------------------------------------
+// コンクリートバリア
+// ---------------------------------------------------------
+void ConcreteBarrier::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model)
+{
+	///
+	///	オブジェクト生成
+	/// 
+
+	objectObstacle_ = std::make_unique<Object3D>();
+	objectObstacle_->model_ = model;
+	objectObstacle_->transform_.translate = position;
+	objectObstacle_->transform_.rotate = rotate;
+
+	///
+	///	コライダー生成
+	///
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("Obstacle");
+	collider_->SetOwner(this);
+
+	// コライダーを登録
+	CollisionManager::GetInstance()->Register(collider_.get());
+
+	// コライダー設定
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		Float3 center = objectObstacle_->transform_.translate;
+		Float3 size = scale;
+
+		aabb->min_ = center - size;
+		aabb->max_ = center + size;
+	}
+}
+
+void ConcreteBarrier::Update()
+{
+	objectObstacle_->UpdateMatrix();
+}
+
+void ConcreteBarrier::Draw()
+{
+	objectObstacle_->Draw();
+}
+
+// ---------------------------------------------------------
+// ドラム缶
+// ---------------------------------------------------------
+void DrumCan::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model)
+{
+	///
+	///	オブジェクト生成
+	/// 
+
+	objectObstacle_ = std::make_unique<Object3D>();
+	objectObstacle_->model_ = model;
+	objectObstacle_->transform_.translate = position;
+	objectObstacle_->transform_.rotate = rotate;
+
+	///
+	///	コライダー生成
+	///
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("Obstacle");
+	collider_->SetOwner(this);
+
+	// コライダーを登録
+	CollisionManager::GetInstance()->Register(collider_.get());
+
+	// コライダー設定
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		Float3 center = objectObstacle_->transform_.translate;
+		Float3 size = scale;
+
+		aabb->min_ = center - size;
+		aabb->max_ = center + size;
+	}
+}
+
+void DrumCan::Update()
+{
+	objectObstacle_->UpdateMatrix();
+}
+
+void DrumCan::Draw()
+{
+	objectObstacle_->Draw();
+}
+
+// ---------------------------------------------------------
+// 貯水タンク
+// ---------------------------------------------------------
+void WaterTank::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model)
+{
+	///
+	///	オブジェクト生成
+	/// 
+
+	objectObstacle_ = std::make_unique<Object3D>();
+	objectObstacle_->model_ = model;
+	objectObstacle_->transform_.translate = position;
+	objectObstacle_->transform_.rotate = rotate;
+
+	///
+	///	コライダー生成
+	///
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("Obstacle");
+	collider_->SetOwner(this);
+
+	// コライダーを登録
+	CollisionManager::GetInstance()->Register(collider_.get());
+
+	// コライダー設定
+	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		Float3 center = objectObstacle_->transform_.translate;
+		Float3 size = scale;
+
+		aabb->min_ = center - size;
+		aabb->max_ = center + size;
+	}
+}
+
+void WaterTank::Update()
+{
+	objectObstacle_->UpdateMatrix();
+}
+
+void WaterTank::Draw()
+{
+	objectObstacle_->Draw();
+}

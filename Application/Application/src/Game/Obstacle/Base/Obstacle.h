@@ -90,3 +90,43 @@ public:
 	void Update() override;
 	void Draw() override;
 };
+
+/// <summary>
+/// レンガのパレット積み
+/// </summary>
+class BrickPallet : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// コンクリートバリア
+/// </summary>
+class ConcreteBarrier : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// ドラム缶
+/// </summary>
+class DrumCan : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// 貯水タンク
+/// </summary>
+class WaterTank : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};

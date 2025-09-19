@@ -28,6 +28,18 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	// 壁
 	modelWall_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/Wall/wall.obj", dxBase->GetDevice());
 	modelWall_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/wall.png", dxBase->GetDevice());
+	// レンガのパレット積み
+	modelBrickPallet_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/BrickPallet/brickPallet.obj", dxBase->GetDevice());
+	modelBrickPallet_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/brickPallet.png", dxBase->GetDevice());
+	// コンクリートバリア
+	modelConcreteBarrier_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/ConcreteBarrier/concreteBarrier.obj", dxBase->GetDevice());
+	modelConcreteBarrier_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/concreteBarrier.png", dxBase->GetDevice());
+	// ドラム缶
+	modelDrumCan_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/DrumCan/drumCan.obj", dxBase->GetDevice());
+	modelDrumCan_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/drumCan.png", dxBase->GetDevice());
+	// 貯水タンク
+	modelWaterTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/WaterTank/waterTank.obj", dxBase->GetDevice());
+	modelWaterTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/waterTank.png", dxBase->GetDevice());
 
 	///
 	///	各障害物の生成
@@ -135,6 +147,30 @@ void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas)
 		if (data.tag == "WALL") {
 			auto obstacle = std::make_unique<Wall>();
 			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelWall_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// レンガのパレット積み
+		if (data.tag == "BRICKPALLET") {
+			auto obstacle = std::make_unique<BrickPallet>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelBrickPallet_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// コンクリートバリア
+		if (data.tag == "CONCRETEBARRIER") {
+			auto obstacle = std::make_unique<ConcreteBarrier>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelConcreteBarrier_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// ドラム缶
+		if (data.tag == "DRUMCAN") {
+			auto obstacle = std::make_unique<DrumCan>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelDrumCan_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// 貯水タンク
+		if (data.tag == "WATERTANK") {
+			auto obstacle = std::make_unique<WaterTank>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelWaterTank_);
 			obstacles_.emplace_back(std::move(obstacle));
 		}
 	}

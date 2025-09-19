@@ -49,12 +49,21 @@ private:
 
 	// 通常
 	ModelManager::ModelData modelNormalObstacle_;
+
 	// コンテナ
 	ModelManager::ModelData modelContainer_;
 	// フェンス
 	ModelManager::ModelData modelFence_;
 	// 壁
 	ModelManager::ModelData modelWall_;
+	// レンガのパレット積み
+	ModelManager::ModelData modelBrickPallet_;
+	// コンクリートバリア
+	ModelManager::ModelData modelConcreteBarrier_;
+	// ドラム缶
+	ModelManager::ModelData modelDrumCan_;
+	// 貯水タンク
+	ModelManager::ModelData modelWaterTank_;
 
 	// ---------------------------------------------------------
 	// 敵

@@ -20,42 +20,6 @@
     {
         "tag": "NORMAL_OBSTACLE",
         "location": [
-            20.0,
-            4.0,
-            3.0
-        ],
-        "rotation": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "scale": [
-            6.0,
-            3.0,
-            3.0
-        ]
-    },
-    {
-        "tag": "NORMAL_OBSTACLE",
-        "location": [
-            44.0,
-            4.0,
-            3.0
-        ],
-        "rotation": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "scale": [
-            6.0,
-            3.0,
-            3.0
-        ]
-    },
-    {
-        "tag": "NORMAL_OBSTACLE",
-        "location": [
             4.0,
             56.0,
             3.0
@@ -360,24 +324,6 @@
         ]
     },
     {
-        "tag": "NORMAL_OBSTACLE",
-        "location": [
-            12.0,
-            16.0,
-            4.0
-        ],
-        "rotation": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "scale": [
-            3.0,
-            3.0,
-            4.0
-        ]
-    },
-    {
         "tag": "FENCE",
         "location": [
             56.0,
@@ -501,6 +447,366 @@
             6.0,
             0.5,
             2.5
+        ]
+    },
+    {
+        "tag": "BRICKPALLET",
+        "location": [
+            56.0,
+            16.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.5,
+            2.5,
+            2.0
+        ]
+    },
+    {
+        "tag": "BRICKPALLET",
+        "location": [
+            16.0,
+            20.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.5,
+            2.5,
+            2.0
+        ]
+    },
+    {
+        "tag": "BRICKPALLET",
+        "location": [
+            36.0,
+            32.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.5,
+            2.5,
+            2.0
+        ]
+    },
+    {
+        "tag": "CONCRETEBARRIER",
+        "location": [
+            24.0,
+            20.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "CONCRETEBARRIER",
+        "location": [
+            40.0,
+            20.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "CONCRETEBARRIER",
+        "location": [
+            44.0,
+            20.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "CONCRETEBARRIER",
+        "location": [
+            48.0,
+            8.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "CONTAINER",
+        "location": [
+            0.0,
+            -12.0,
+            3.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            3.0,
+            7.0,
+            3.0
+        ]
+    },
+    {
+        "tag": "FENCE",
+        "location": [
+            12.0,
+            -12.0,
+            2.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            6.0,
+            0.5,
+            2.5
+        ]
+    },
+    {
+        "tag": "BRICKPALLET",
+        "location": [
+            40.0,
+            -12.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.5,
+            2.5,
+            2.0
+        ]
+    },
+    {
+        "tag": "WALL",
+        "location": [
+            28.0,
+            -12.0,
+            2.5
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            6.0,
+            0.5,
+            2.5
+        ]
+    },
+    {
+        "tag": "CONCRETEBARRIER",
+        "location": [
+            48.0,
+            -12.0,
+            1.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            2.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "tag": "DRUMCAN",
+        "location": [
+            28.0,
+            32.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "DRUMCAN",
+        "location": [
+            16.0,
+            32.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "DRUMCAN",
+        "location": [
+            32.0,
+            40.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "DRUMCAN",
+        "location": [
+            56.0,
+            -12.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "WATERTANK",
+        "location": [
+            60.0,
+            -12.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "WATERTANK",
+        "location": [
+            8.0,
+            36.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "WATERTANK",
+        "location": [
+            8.0,
+            44.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
+        ]
+    },
+    {
+        "tag": "WATERTANK",
+        "location": [
+            44.0,
+            28.0,
+            2.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            2.0
         ]
     }
 ]
