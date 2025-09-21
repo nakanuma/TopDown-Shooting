@@ -64,6 +64,14 @@ private:
 	ModelManager::ModelData modelDrumCan_;
 	// 貯水タンク
 	ModelManager::ModelData modelWaterTank_;
+	// 鉄骨の束
+	ModelManager::ModelData modelSteelBundle_;
+	// 縦型タンク
+	ModelManager::ModelData modelVerticalTank_;
+	// ISOタンク
+	ModelManager::ModelData modelISOTank_;
+	// IBCコンテナ
+	ModelManager::ModelData modelIBCContainer_;
 
 	// ---------------------------------------------------------
 	// 敵

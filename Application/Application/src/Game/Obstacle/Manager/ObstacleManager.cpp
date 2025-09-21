@@ -40,6 +40,18 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	// 貯水タンク
 	modelWaterTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/WaterTank/waterTank.obj", dxBase->GetDevice());
 	modelWaterTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/waterTank.png", dxBase->GetDevice());
+	// 鉄骨の束
+	modelSteelBundle_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/SteelBundle/steelBundle.obj", dxBase->GetDevice());
+	modelSteelBundle_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/steelBundle.png", dxBase->GetDevice());
+	// 縦型タンク
+	modelVerticalTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/VerticalTank/verticalTank.obj", dxBase->GetDevice());
+	modelVerticalTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/verticalTank.png", dxBase->GetDevice());
+	// ISOタンク
+	modelISOTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/ISOTank/ISOTank.obj", dxBase->GetDevice());
+	modelISOTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/ISOTank.png", dxBase->GetDevice());
+	// IBCコンテナ
+	modelIBCContainer_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/IBCContainer/IBCContainer.obj", dxBase->GetDevice());
+	modelIBCContainer_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/IBCContainer.png", dxBase->GetDevice());
 
 	///
 	///	各障害物の生成
@@ -171,6 +183,30 @@ void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas)
 		if (data.tag == "WATERTANK") {
 			auto obstacle = std::make_unique<WaterTank>();
 			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelWaterTank_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// 鉄骨の束
+		if (data.tag == "STEELBUNDLE") {
+			auto obstacle = std::make_unique<SteelBundle>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelSteelBundle_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// 縦型タンク
+		if (data.tag == "VERTICALTANK") {
+			auto obstacle = std::make_unique<VerticalTank>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelVerticalTank_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// ISOタンク
+		if (data.tag == "ISOTANK") {
+			auto obstacle = std::make_unique<VerticalTank>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelISOTank_);
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+		// IBCコンテナ
+		if (data.tag == "IBCCONTAINER") {
+			auto obstacle = std::make_unique<IBCContainer>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, &modelIBCContainer_);
 			obstacles_.emplace_back(std::move(obstacle));
 		}
 	}

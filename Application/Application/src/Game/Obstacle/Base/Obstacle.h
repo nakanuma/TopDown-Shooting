@@ -130,3 +130,43 @@ public:
 	void Update() override;
 	void Draw() override;
 };
+
+/// <summary>
+/// 鉄骨の束
+/// </summary>
+class SteelBundle : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// 縦型タンク
+/// </summary>
+class VerticalTank : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// ISOタンク
+/// </summary>
+class ISOTank : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
+
+/// <summary>
+/// IBCコンテナ
+/// </summary>
+class IBCContainer : public Obstacle, public ICollisionCallback {
+public:
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, ModelManager::ModelData* model) override;
+	void Update() override;
+	void Draw() override;
+};
