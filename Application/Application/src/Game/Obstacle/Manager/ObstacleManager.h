@@ -47,9 +47,6 @@ private:
 	// モデル
 	// ---------------------------------------------------------
 
-	// 通常
-	ModelManager::ModelData modelNormalObstacle_;
-
 	// コンテナ
 	ModelManager::ModelData modelContainer_;
 	// フェンス
@@ -74,9 +71,12 @@ private:
 	ModelManager::ModelData modelIBCContainer_;
 
 	// ---------------------------------------------------------
-	// 敵
+	// リスト
 	// ---------------------------------------------------------
 
-	// 敵のコンテナ
+	// 障害物のリスト
 	std::vector<std::unique_ptr<Obstacle>> obstacles_;
+
+	// タグごとのモデルをマップで保持
+	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};
 };

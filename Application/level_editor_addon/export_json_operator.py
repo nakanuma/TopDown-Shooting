@@ -33,6 +33,9 @@ class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
                     "scale": list(obj.scale),
                 }
 
+                if "colliderSize" in obj:
+                    data["colliderSize"] = list(obj["colliderSize"])
+
                 # テレポーター用
                 if "pair_id" in obj:
                     data["pair_id"] = obj.get("pair_id")
