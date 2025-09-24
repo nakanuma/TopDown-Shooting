@@ -158,7 +158,7 @@ void PlayerBullet::UpdateCollider() {
 void PlayerBullet::DrawTrail()
 {
 	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.2f };
+	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 	
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {
 		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い

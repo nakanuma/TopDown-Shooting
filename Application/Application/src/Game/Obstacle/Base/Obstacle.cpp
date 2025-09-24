@@ -12,6 +12,17 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	object_->model_ = model;
 	object_->transform_.translate = position;
 
+	Float3 size = colliderSize;
+
+	// 横向き配置かどうかを判定
+	if (std::abs(rotate.z - DegToRad(-90.0f)) < 0.01f) { // Blender上で横向き（-90度）になっているか確認
+		// オブジェクトを横向きにする
+		object_->transform_.rotate.y -= DegToRad(90.0f);
+
+		// コライダーのxとzを入れ替え
+		std::swap(size.x, size.z);
+	}
+
 	///
 	///	コライダー生成
 	///
@@ -23,10 +34,9 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
 
-	// コライダー設定
+	// コライダー更新
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = object_->transform_.translate;
-		Float3 size = colliderSize;
 
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;

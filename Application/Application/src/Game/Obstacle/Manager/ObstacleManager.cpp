@@ -72,20 +72,35 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 // ---------------------------------------------------------
 // 更新処理
 // ---------------------------------------------------------
-void ObstacleManager::Update() {
+void ObstacleManager::Update(const Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		obstacle->Update();
+		Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Float3::LengthSq(diff);
+
+		// プレイヤーから一定距離内のみ更新
+		if (distSq <= kActiveDistance * kActiveDistance) {
+			obstacle->Update();
+			obstacle->SetActiveCollider(true);
+		} else {
+			obstacle->SetActiveCollider(false);
+		}
 	}
 }
 
 // ---------------------------------------------------------
 // 描画処理
 // ---------------------------------------------------------
-void ObstacleManager::Draw() {
+void ObstacleManager::Draw(const Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		obstacle->Draw();
+		Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Float3::LengthSq(diff);
+
+		// プレイヤーから一定距離内のみ描画
+		if (distSq <= kActiveDistance * kActiveDistance) {
+			obstacle->Draw();
+		}
 	}
 }
 

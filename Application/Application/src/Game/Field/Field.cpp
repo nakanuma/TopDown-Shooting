@@ -17,7 +17,7 @@ void Field::Initialize() {
 	objectFloor_->model_ = &modelFloor_;
 	objectFloor_->transform_.rotate = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
 	objectFloor_->transform_.scale = {500.0f, 500.0f, 1.0f};
-	objectFloor_->materialCB_.data_->color = {0.157f, 0.294f, 0.368f, 1.0f};
+	objectFloor_->materialCB_.data_->color = {0.157f, 0.204f, 0.308f, 1.0f};
 }
 
 void Field::Update() { objectFloor_->UpdateMatrix(); }

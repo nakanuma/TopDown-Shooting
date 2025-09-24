@@ -108,7 +108,7 @@ void GamePlayScene::Initialize() {
 	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
 
 	// ウェイポイント初期化
-	obstacleManager_->Update(); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
+	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
 	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 }
@@ -134,7 +134,7 @@ void GamePlayScene::Update() {
 	// 敵の更新
 	enemyManager_->Update();
 	// 障害物の更新
-	obstacleManager_->Update();
+	obstacleManager_->Update(player_->GetTranslate());
 	// テレポーターの更新
 	teleporterManager_->Update();
 	// 弾の更新
@@ -205,7 +205,7 @@ void GamePlayScene::Draw() {
 	field_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
-	obstacleManager_->Draw();
+	obstacleManager_->Draw(player_->GetTranslate());
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 	WaypointManager::GetInstance()->Draw();

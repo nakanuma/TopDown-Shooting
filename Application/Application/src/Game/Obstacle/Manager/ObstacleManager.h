@@ -20,12 +20,12 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const Float3& playerPos);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw();
+	void Draw(const Float3& playerPos);
 
 	/// <summary>
 	/// デバッグ表示
@@ -79,4 +79,10 @@ private:
 
 	// タグごとのモデルをマップで保持
 	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};
+
+	// ---------------------------------------------------------
+	// その他
+	// ---------------------------------------------------------
+
+	const float kActiveDistance = 40.0f;
 };

@@ -62,5 +62,5 @@ private:
 
 	// 弾道用
 	std::deque<Float3> trailPoints_; // 過去位置履歴
-	size_t kMaxTrailPoints = 6; // 残す履歴数
+	size_t kMaxTrailPoints = 8; // 残す履歴数
 };

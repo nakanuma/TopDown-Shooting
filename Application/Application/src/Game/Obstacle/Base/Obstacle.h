@@ -45,6 +45,11 @@ public:
 	/// </summary>
 	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
+	/// <summary>
+	/// コライダーの有効化状態設定
+	/// </summary>
+	void SetActiveCollider(bool active) { if (collider_) { collider_->SetActive(active); }; }
+
 protected:
 	// ---------------------------------------------------------
 	// オブジェクト関連

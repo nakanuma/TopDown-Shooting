@@ -31,7 +31,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 	// 左下と右上を指定
 	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};
-	Float3 topRight = { 80.0f, 2.0f, 80.0f };
+	Float3 topRight = { 70.0f, 2.0f, 120.0f };
 	// 分割数（隣接ノードの距離に合わせる）
 	float spacing = maxDistance_;
 
