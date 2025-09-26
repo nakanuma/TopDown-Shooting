@@ -48,6 +48,7 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 // ---------------------------------------------------------
 void Obstacle::Update() {
 	object_->UpdateMatrix();
+	object_->UpdateShadowMatrix();
 }
 
 // ---------------------------------------------------------
@@ -55,4 +56,11 @@ void Obstacle::Update() {
 // ---------------------------------------------------------
 void Obstacle::Draw() {
 	object_->Draw();
+}
+
+// ---------------------------------------------------------
+// シャドウマップ用描画処理
+// ---------------------------------------------------------
+void Obstacle::DrawShadow() {
+	object_->DrawShadow();
 }

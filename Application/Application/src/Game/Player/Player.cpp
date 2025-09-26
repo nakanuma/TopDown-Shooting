@@ -107,7 +107,7 @@ void Player::Update() {
 	// 移動処理
 	HandleMove();
 	// 射撃 & オーバーヒート処理
-	HandleOverHeat();
+	/*HandleOverHeat();*/
 	// HPが0未満にならないよう制限
 	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
 
@@ -123,6 +123,7 @@ void Player::Update() {
 
 	// プレイヤーオブジェクト更新
 	objectPlayer_->Update(TimeManager::GetInstance()->GetDeltaTime(), isMoving_);
+	objectPlayer_->object_->UpdateShadowMatrix();
 
 	///
 	///	UI更新処理
@@ -137,6 +138,13 @@ void Player::Update() {
 void Player::Draw() {
 	// プレイヤーオブジェクト描画
 	objectPlayer_->Draw();
+}
+
+// ---------------------------------------------------------
+// シャドウマップ描画処理
+// ---------------------------------------------------------
+void Player::DrawShadow() {
+	objectPlayer_->object_->DrawShadow();
 }
 
 // ---------------------------------------------------------

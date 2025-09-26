@@ -7,6 +7,8 @@
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Model/SkyBoxManager.h>
 #include <Engine/3D/LineDrawer.h>
+#include <Engine/DirectX/ShadowMapManager.h>
+#include <Engine/3D/LightCamera.h>
 
 // C++
 #include <numbers>
@@ -111,6 +113,11 @@ void GamePlayScene::Initialize() {
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
 	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
+
+	// シャドウマップ生成
+	ShadowMapManager::GetInstance()->InitializeShadowPSO();
+	shadowHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
+
 }
 
 void GamePlayScene::Finalize() {}
@@ -121,11 +128,11 @@ void GamePlayScene::Update() {
 	/*ShowCursor(FALSE);*/
 
 	// 追従カメラの更新
-	followCamera_->Update();
-	// カメラシェイクの更新
-	CameraShake::GetInstance()->Update();
-	// 追従カメラ + カメラシェイクを現在カメラに適用
-	camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+	//followCamera_->Update();
+	//// カメラシェイクの更新
+	//CameraShake::GetInstance()->Update();
+	//// 追従カメラ + カメラシェイクを現在カメラに適用
+	//camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 
 	// フィールド更新
 	field_->Update();
@@ -202,13 +209,77 @@ void GamePlayScene::Draw() {
 	/*postEffectManager_->BeginRenderToTexture();*/
 	SkyBoxManager::GetInstance()->Draw();
 
+
+	///
+	///	シャドウマップ描画
+	/// 
+	
+	// シャドウマップ用PSOをセット
+	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowPSO());
+
+	// Viewport / Scissor の設定
+	D3D12_VIEWPORT vp{};
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	vp.Width = static_cast<float>(Window::GetWidth());
+	vp.Height = static_cast<float>(Window::GetHeight());
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	dxBase->GetCommandList()->RSSetViewports(1, &vp);
+
+	D3D12_RECT sc{};
+	sc.left = 0;
+	sc.top = 0;
+	sc.right = static_cast<LONG>(Window::GetWidth());
+	sc.bottom = static_cast<LONG>(Window::GetHeight());
+	dxBase->GetCommandList()->RSSetScissorRects(1, &sc);
+
+	// シャドウマップ書き込み前に書き込み状態に遷移
+	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowHandle_, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+
+	// ライトカメラの更新
+	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
+	LightCamera::GetInstance()->UpdateViewProjection({ {-30.0f, 0.0f, -30.0f}, {30.0f, 20.0f, 30.0f} }); // 行列の更新
+	// シャドウマップDSVをセット
+	ShadowMapManager::GetInstance()->SetShadowDSV(shadowHandle_);
+	// シャドウマップをクリア
+	ShadowMapManager::GetInstance()->ClearShadowMap(shadowHandle_);
+
+	//// シャドウマップ描画対象オブジェクト描画
+
+	player_->DrawShadow();
+	obstacleManager_->DrawShadow();
+
+
+	////
+	
+	// 描画後、SRVとして使えるように遷移
+	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	// ShadowMapをバインド
+	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowHandle_);
+	// LightCameraの定数バッファを送信（PixelShader内で使用）
+	LightCamera::GetInstance()->TransferConstantBuffer();
+
+	///
+	///	通常描画
+	/// 
+
+	// バックバッファ用PSOに切り替え
+	dxBase->GetCommandList()->SetPipelineState(dxBase->GetPipelineState());
+	// バックバッファDSVに切り替え
+	UINT backBufferIndex = dxBase->GetSwapChain()->GetCurrentBackBufferIndex();
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = dxBase->GetRTVHandle(backBufferIndex);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dxBase->GetDSVHeap()->GetCPUHandle(0);
+	dxBase->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+
+	// オブジェクト通常描画
 	field_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
 	obstacleManager_->Draw(player_->GetTranslate());
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
-	WaypointManager::GetInstance()->Draw();
+	/*WaypointManager::GetInstance()->Draw();*/
 
 	ParticleEffectManager::GetInstance()->Draw();
 
@@ -264,6 +335,9 @@ void GamePlayScene::Draw() {
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
+
+	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
+	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
 
 	if (ImGui::Button("TITLE")) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");

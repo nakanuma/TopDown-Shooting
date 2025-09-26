@@ -26,6 +26,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// シャドウマップ用描画処理
+	/// </summary>
+	void DrawShadow();
+
+	/// <summary>
 	/// タグの取得（コライダーに設定してあるタグ）
 	/// </summary>
 	std::string GetTag() const { return collider_->GetTag(); }

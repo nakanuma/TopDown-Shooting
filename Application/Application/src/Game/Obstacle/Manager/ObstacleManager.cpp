@@ -105,6 +105,16 @@ void ObstacleManager::Draw(const Float3& playerPos) {
 }
 
 // ---------------------------------------------------------
+// シャドウマップ用描画処理
+// ---------------------------------------------------------
+void ObstacleManager::DrawShadow()
+{
+	for (auto& obstacle : obstacles_) {
+		obstacle->DrawShadow();
+	}
+}
+
+// ---------------------------------------------------------
 // デバッグ表示
 // ---------------------------------------------------------
 void ObstacleManager::Debug() {

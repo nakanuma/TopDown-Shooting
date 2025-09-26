@@ -28,6 +28,11 @@ public:
 	void Draw(const Float3& playerPos);
 
 	/// <summary>
+	/// シャドウマップ用描画処理
+	/// </summary>
+	void DrawShadow();
+
+	/// <summary>
 	/// デバッグ表示
 	/// </summary>
 	void Debug();

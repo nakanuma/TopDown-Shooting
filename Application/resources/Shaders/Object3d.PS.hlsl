@@ -64,6 +64,34 @@ SamplerState gSampler : register(s0);
 // environment texture
 TextureCube<float32_t4> gEnvironmentTexture : register(t2);
 
+// shadowMap
+Texture2D<float> gShadowMap : register(t3);
+SamplerComparisonState gShadowSampler : register(s1); // 比較サンプラー
+
+struct LightCameraCB
+{
+    float4x4 lightViewProj;
+};
+ConstantBuffer<LightCameraCB> gLightCameraCB : register(b7);
+
+float SampleShadow(float3 worldPos)
+{
+    // ワールド座標->ライト空間座標
+    float4 lightSpacePos = mul(float4(worldPos, 1.0f), gLightCameraCB.lightViewProj);
+    
+    float3 projCoords = lightSpacePos.xyz;
+    // X,Yを0~1に変換
+    projCoords.xy = projCoords.xy * 0.5f + 0.5f;
+    
+    // Zも同様に0~1へ
+    projCoords.z = projCoords.z;
+    
+    // SampleCmpLevelZeroでDepth比較
+    float shadow = gShadowMap.SampleCmpLevelZero(gShadowSampler, projCoords.xy, projCoords.z);
+    
+    return shadow; // 0~1の値
+}
+
 struct PixelShaderOutput {
     float32_t4 color : SV_TARGET0;
 };
@@ -118,6 +146,11 @@ PixelShaderOutput main(VertexShaderOutput input) {
         
         float32_t3 diffuseDirectionalLight =
         gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * lightStrength * gDirectionalLight.intensity;
+        
+        // シャドウ判定を掛ける
+        float shadow = SampleShadow(input.worldPosition);
+        float shadowFactor = lerp(0.5f, 1.0f, shadow); // ここで影の濃さを調整
+        diffuseDirectionalLight *= shadowFactor;
         
         // 鏡面反射
         //float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);
@@ -207,9 +240,6 @@ PixelShaderOutput main(VertexShaderOutput input) {
         
         environmentContribution; // EnvironmentMap
         ;
-        
-        // 基本的にはこっちを適用
-        //output.color.rgb = diffuseDirectionalLight; // DirectionalLightの拡散反射のみ
        
         // アルファは今まで通り
         output.color.a = gMaterial.color.a * textureColor.a;
