@@ -89,5 +89,5 @@ private:
 	// その他
 	// ---------------------------------------------------------
 
-	const float kActiveDistance = 40.0f;
+	const float kActiveDistance = 100.0f;
 };

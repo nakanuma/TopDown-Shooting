@@ -83,8 +83,10 @@ float SampleShadow(float3 worldPos)
     // X,Y‚ð0~1‚É•ÏŠ·
     projCoords.xy = projCoords.xy * 0.5f + 0.5f;
     
+    projCoords.y = 1.0f - projCoords.y;
+    
     // Z‚à“¯—l‚É0~1‚Ö
-    projCoords.z = projCoords.z;
+    projCoords.z = projCoords.z - 0.001f;
     
     // SampleCmpLevelZero‚ÅDepth”äŠr
     float shadow = gShadowMap.SampleCmpLevelZero(gShadowSampler, projCoords.xy, projCoords.z);
