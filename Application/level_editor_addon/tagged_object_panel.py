@@ -15,7 +15,7 @@ class OBJECT_PT_tagged_object_panel(bpy.types.Panel):
         layout = self.layout
         layout.label(text="Add Tagged Objects:")
 
-        # 区分ごとにラベル/セパレーターを挿入
+        # 区分ごとにセパレーターを挿入
         last_group = None
         for tag, display_name in [(key, TAG_INFO[key]["name"]) for key in TAG_INFO]:
             if tag in ["PLAYER", "CONTAINER", "TELEPORTER"]:
