@@ -61,4 +61,9 @@ private:
 	ModelManager::ModelData modelDiorama_;
 	std::unique_ptr<Object3D> objectDiorama_;
 
+	///
+	/// その他
+	///
+
+	int32_t shadowMapHandle_;
 };

@@ -30,7 +30,7 @@ public:
 	/// <summary>
 	/// シャドウマップ用描画処理
 	/// </summary>
-	void DrawShadow();
+	void DrawShadow(const Float3& playerPos);
 
 	/// <summary>
 	/// デバッグ表示
@@ -89,5 +89,5 @@ private:
 	// その他
 	// ---------------------------------------------------------
 
-	const float kActiveDistance = 100.0f;
+	const float kActiveDistance = 50.0f;
 };

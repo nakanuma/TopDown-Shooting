@@ -107,7 +107,7 @@ void Player::Update() {
 	// 移動処理
 	HandleMove();
 	// 射撃 & オーバーヒート処理
-	/*HandleOverHeat();*/
+	HandleOverHeat();
 	// HPが0未満にならないよう制限
 	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
 

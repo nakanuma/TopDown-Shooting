@@ -107,10 +107,16 @@ void ObstacleManager::Draw(const Float3& playerPos) {
 // ---------------------------------------------------------
 // シャドウマップ用描画処理
 // ---------------------------------------------------------
-void ObstacleManager::DrawShadow()
-{
+void ObstacleManager::DrawShadow(const Float3& playerPos) {
+	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		obstacle->DrawShadow();
+		Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Float3::LengthSq(diff);
+
+		// プレイヤーから一定距離内のみ描画
+		if (distSq <= kActiveDistance * kActiveDistance) {
+			obstacle->DrawShadow();
+		}
 	}
 }
 

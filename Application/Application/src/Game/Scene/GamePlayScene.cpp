@@ -115,9 +115,10 @@ void GamePlayScene::Initialize() {
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 
 	// シャドウマップ生成
-	ShadowMapManager::GetInstance()->InitializeShadowPSO();
-	shadowHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
+	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 
+	// 平行光源の初期値設定
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = {0.367f, -0.653f, -0.662f};
 }
 
 void GamePlayScene::Finalize() {}
@@ -128,11 +129,11 @@ void GamePlayScene::Update() {
 	/*ShowCursor(FALSE);*/
 
 	// 追従カメラの更新
-	//followCamera_->Update();
-	//// カメラシェイクの更新
-	//CameraShake::GetInstance()->Update();
-	//// 追従カメラ + カメラシェイクを現在カメラに適用
-	//camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+	followCamera_->Update();
+	// カメラシェイクの更新
+	CameraShake::GetInstance()->Update();
+	// 追従カメラ + カメラシェイクを現在カメラに適用
+	camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 
 	// フィールド更新
 	field_->Update();
@@ -235,28 +236,33 @@ void GamePlayScene::Draw() {
 	dxBase->GetCommandList()->RSSetScissorRects(1, &sc);
 
 	// シャドウマップ書き込み前に書き込み状態に遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowHandle_, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 	// ライトカメラの更新
-	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
-	LightCamera::GetInstance()->UpdateViewProjection({ {-30.0f, 0.0f, -30.0f}, {30.0f, 20.0f, 30.0f} }); // 行列の更新
+	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction); // directionを設定
+	
+	// プレイヤーに追従するBB
+	LightCamera::BoundingBox playerCenterBB;
+	playerCenterBB.SetCenterExtents(player_->GetTranslate(), {30.0f, 10.0f, 30.0f});
+
+	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB); // 行列の更新
 	// シャドウマップDSVをセット
-	ShadowMapManager::GetInstance()->SetShadowDSV(shadowHandle_);
+	ShadowMapManager::GetInstance()->SetShadowDSV(shadowMapHandle_);
 	// シャドウマップをクリア
-	ShadowMapManager::GetInstance()->ClearShadowMap(shadowHandle_);
+	ShadowMapManager::GetInstance()->ClearShadowMap(shadowMapHandle_);
 
 	//// シャドウマップ描画対象オブジェクト描画
 
 	player_->DrawShadow();
-	obstacleManager_->DrawShadow();
+	obstacleManager_->DrawShadow(player_->GetTranslate());
 
 
 	////
 	
 	// 描画後、SRVとして使えるように遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	// ShadowMapをバインド
-	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowHandle_);
+	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowMapHandle_);
 	// LightCameraの定数バッファを送信（PixelShader内で使用）
 	LightCamera::GetInstance()->TransferConstantBuffer();
 

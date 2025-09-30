@@ -86,5 +86,5 @@ private:
 	// ポストエフェクト
 	std::unique_ptr<PostEffectManager> postEffectManager_;
 
-	int32_t shadowHandle_;
+	int32_t shadowMapHandle_;
 };

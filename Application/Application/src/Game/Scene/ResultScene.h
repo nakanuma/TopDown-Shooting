@@ -64,4 +64,10 @@ private:
 	std::unique_ptr<NumberSprite> spriteDefeated_;
 	std::unique_ptr<NumberSprite> spriteHitRate_;
 	std::unique_ptr<NumberSprite> spriteClearTime_;
+
+	///
+	/// その他
+	///
+
+	int32_t shadowMapHandle_;
 };
