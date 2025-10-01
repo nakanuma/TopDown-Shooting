@@ -253,11 +253,19 @@ void GamePlayScene::Draw() {
 
 	//// シャドウマップ描画対象オブジェクト描画
 
-	player_->DrawShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 
 
-	////
+	//----------------------------------//
+
+	// シャドウマップ用PSOをセット
+	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
+
+	//// シャドウマップ描画対象スキニングオブジェクト描画
+
+	player_->DrawShadow();
+
+	//----------------------------------//
 	
 	// 描画後、SRVとして使えるように遷移
 	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

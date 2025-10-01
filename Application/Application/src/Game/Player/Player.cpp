@@ -143,8 +143,8 @@ void Player::Draw() {
 // ---------------------------------------------------------
 // シャドウマップ描画処理
 // ---------------------------------------------------------
-void Player::DrawShadow() {
-	objectPlayer_->object_->DrawShadow();
+void Player::DrawShadow() { 
+	objectPlayer_->DrawShadow(); 
 }
 
 // ---------------------------------------------------------
