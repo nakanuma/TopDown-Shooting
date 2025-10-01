@@ -157,23 +157,24 @@ void PlayerBullet::UpdateCollider() {
 // ---------------------------------------------------------
 void PlayerBullet::DrawTrail()
 {
+	if (trailPoints_.size() < 2) return;
+
 	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 	
-	for (size_t i = 1; i < trailPoints_.size(); ++i) {
-		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
-		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1); // 新しい
+	for (size_t i = 0; i < trailPoints_.size(); ++i) {
+		float t = static_cast<float>(i) / (trailPoints_.size() - 1);
+		Float4 color = Float4::Lerp(tailColor, headColor, t);
 
-		// 線の両端の色を補間
-		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
-		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
+		Float3 dir;
+		if (i == 0) {
+			dir = trailPoints_[1] - trailPoints_[0];
+		} else if (i == trailPoints_.size() - 1) {
+			dir = trailPoints_[i] - trailPoints_[i - 1];
+		} else {
+			dir = trailPoints_[i + 1] - trailPoints_[i - 1];
+		}
 
-		LineDrawer::GetInstance()->RegisterTracer(
-			trailPoints_[i - 1],
-			trailPoints_[i],
-			0.5f,
-			c0,
-			c1
-		);
+		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i], dir, 0.5f, color);
 	}
 }
