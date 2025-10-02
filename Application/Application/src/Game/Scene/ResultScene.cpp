@@ -7,6 +7,8 @@
 #include <ImguiWrapper.h>
 #include <SceneManager.h>
 #include <Engine/Util/TimeManager.h>
+#include <ShadowMapManager.h>
+#include <LightCamera.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
@@ -91,6 +93,13 @@ void ResultScene::Initialize() {
 
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
 	FadeTransition::GetInstance()->StartFadeIn(1.0f);
+
+	///
+	///	その他
+	///
+
+	// シャドウマップ生成
+	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 }
 
 void ResultScene::Finalize() {}
@@ -138,6 +147,13 @@ void ResultScene::Draw() {
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager->TransferContantBuffer();
+	// LightCameraの定数バッファを送信
+	LightCamera::GetInstance()->TransferConstantBuffer();
+
+	// 描画後、SRVとして使えるように遷移
+	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	// ShadowMapをバインド
+	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowMapHandle_);
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド

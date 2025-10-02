@@ -271,9 +271,9 @@ void NormalEnemy::OnCollision(Collider* other) {
 	}
 
 	///
-	/// vs NormalObstacle
+	/// vs Obstacle
 	///
-	if (other->GetTag() == "NormalObstacle") {
+	if (other->GetTag() == "Obstacle") {
 		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
 		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
 
@@ -428,7 +428,7 @@ bool NormalEnemy::IsPlayerInSight()
 	RayCastHit hit{};
 	bool rayCast = CollisionManager::GetInstance()->RayCast(enemyPos, toPlayer, distance, &hit);
 
-	if (rayCast && hit.hitCollider->GetTag() == "NormalObstacle") {
+	if (rayCast && hit.hitCollider->GetTag() == "Obstacle") {
 		return false;
 	}
 

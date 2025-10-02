@@ -141,8 +141,8 @@ void HomingMissile::OnCollision(Collider* other)
 		OnDestroy();
 	}
 
-	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
+	// vs Obstacle
+	if (other->GetTag() == "Obstacle") {
 		// 煙パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate, 15);
 		// 飛散パーティクル発生

@@ -29,12 +29,14 @@ void Loader::LoadFromFile(const std::string& filepath) {
 		auto loc = item.value("location", std::vector<float>{0, 0, 0});
 		auto rot = item.value("rotation", std::vector<float>{0, 0, 0});
 		auto scl = item.value("scale", std::vector<float>{1, 1, 1});
+		auto col = item.value("colliderSize", std::vector<float>{1, 1, 1});
 
 		// Blender -> Engine への座標変換
 		data.translate = Float3(loc[0], loc[2], loc[1]); // YとZ入れ替え
 		data.rotate = Float3(DegToRad(rot[0]), DegToRad(rot[1]), DegToRad(rot[2]));
 		data.scale = Float3(scl[0], scl[2], scl[1]); // YとZ入れ替え
 
+		data.colliderSize = Float3(col[0], col[2], col[1]); // YとZ入れ替え
 		data.pairID = item.value("pair_id", "");
 
 		datas_.push_back(data);

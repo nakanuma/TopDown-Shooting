@@ -4,6 +4,9 @@
 #include <Collider/CollisionManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Util/RandomGenerator.h>
+#include <Engine/3D/LineDrawer.h>
+#include <MyMath.h>
+#include <Easing.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -41,6 +44,9 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	///	パラメーター設定
 	///
 
+	// 前フレーム位置には現在位置と同じ値を入れておく
+	previousPos_ = objectBullet_->transform_.translate;
+
 	// 攻撃力
 	damage_ = 10;
 
@@ -55,8 +61,17 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 // 更新処理
 // ---------------------------------------------------------
 void PlayerBullet::Update() {
+	// 前フレーム位置を保存
+	previousPos_ = objectBullet_->transform_.translate;
+
 	// 移動処理
 	objectBullet_->transform_.translate += velocity_;
+
+	// 履歴に追加
+	trailPoints_.push_back(objectBullet_->transform_.translate);
+	if (trailPoints_.size() > kMaxTrailPoints) {
+		trailPoints_.pop_front();
+	}
 
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
@@ -76,6 +91,9 @@ void PlayerBullet::Update() {
 void PlayerBullet::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
+
+	// 弾道の描画
+	DrawTrail();
 }
 
 // ---------------------------------------------------------
@@ -112,8 +130,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 		isDead_ = true;
 	}
 
-	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
+	// vs Obstacle
+	if (other->GetTag() == "Obstacle") {
 		// ヒットエフェクト
 		ParticleEffectManager::GetInstance()->Emit("backscatter",bulletPos, rand->RandomValue(3, 4), velocity_);
 
@@ -131,5 +149,31 @@ void PlayerBullet::UpdateCollider() {
 		sphere->center_ = objectBullet_->transform_.translate;
 		// 半径
 		sphere->radius_ = radius_;
+	}
+}
+
+// ---------------------------------------------------------
+// 弾道の描画
+// ---------------------------------------------------------
+void PlayerBullet::DrawTrail()
+{
+	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	for (size_t i = 1; i < trailPoints_.size(); ++i) {
+		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
+		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1); // 新しい
+
+		// 線の両端の色を補間
+		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
+		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
+
+		LineDrawer::GetInstance()->RegisterTracer(
+			trailPoints_[i - 1],
+			trailPoints_[i],
+			0.5f,
+			c1,
+			c0
+		);
 	}
 }

@@ -48,9 +48,6 @@
     <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Loader\Loader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -129,6 +126,9 @@
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Scene\GamePlayScene.h">
@@ -171,9 +171,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Loader\Loader.h">

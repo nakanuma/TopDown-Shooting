@@ -94,8 +94,8 @@ void EnemyBullet::OnCollision(Collider* other) {
 		OnDestroy();
 	}
 
-	// vs NormalObstacle
-	if (other->GetTag() == "NormalObstacle") {
+	// vs Obstacle
+	if (other->GetTag() == "Obstacle") {
 		// 死亡させる
 		isDead_ = true;
 		// コライダー破棄

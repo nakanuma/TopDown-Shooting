@@ -23,7 +23,7 @@ ExplodeSmokeParticle::ExplodeSmokeParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
 {
 	ExplodeSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();

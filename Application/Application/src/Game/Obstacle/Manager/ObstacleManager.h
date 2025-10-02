@@ -20,12 +20,17 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const Float3& playerPos);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw();
+	void Draw(const Float3& playerPos);
+
+	/// <summary>
+	/// シャドウマップ用描画処理
+	/// </summary>
+	void DrawShadow(const Float3& playerPos);
 
 	/// <summary>
 	/// デバッグ表示
@@ -47,15 +52,42 @@ private:
 	// モデル
 	// ---------------------------------------------------------
 
-	// 通常敵
-	ModelManager::ModelData modelNormalObstacle_;
-
-	// 追加
+	// コンテナ
+	ModelManager::ModelData modelContainer_;
+	// フェンス
+	ModelManager::ModelData modelFence_;
+	// 壁
+	ModelManager::ModelData modelWall_;
+	// レンガのパレット積み
+	ModelManager::ModelData modelBrickPallet_;
+	// コンクリートバリア
+	ModelManager::ModelData modelConcreteBarrier_;
+	// ドラム缶
+	ModelManager::ModelData modelDrumCan_;
+	// 貯水タンク
+	ModelManager::ModelData modelWaterTank_;
+	// 鉄骨の束
+	ModelManager::ModelData modelSteelBundle_;
+	// 縦型タンク
+	ModelManager::ModelData modelVerticalTank_;
+	// ISOタンク
+	ModelManager::ModelData modelISOTank_;
+	// IBCコンテナ
+	ModelManager::ModelData modelIBCContainer_;
 
 	// ---------------------------------------------------------
-	// 敵
+	// リスト
 	// ---------------------------------------------------------
 
-	// 敵のコンテナ
+	// 障害物のリスト
 	std::vector<std::unique_ptr<Obstacle>> obstacles_;
+
+	// タグごとのモデルをマップで保持
+	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};
+
+	// ---------------------------------------------------------
+	// その他
+	// ---------------------------------------------------------
+
+	const float kActiveDistance = 50.0f;
 };

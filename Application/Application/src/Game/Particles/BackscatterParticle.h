@@ -33,7 +33,7 @@ protected:
 	/// <summary>
 	/// パーティクル固有の生成処理
 	/// </summary>
-	BackscatterParticleData CreateParticle(const Float3& pos, const Float3& velocity) override;
+	BackscatterParticleData CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) override;
 
 	/// <summary>
 	/// パーティクル固有の更新処理

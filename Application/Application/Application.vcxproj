@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp" />
     <ClCompile Include="src\Game\Utility\NumberSprite.cpp" />
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
     <ClCompile Include="src\Game\Scene\ResultScene.cpp" />
@@ -39,7 +40,6 @@
     <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp" />
     <ClCompile Include="src\Game\Player\UI\PlayerUIManager.cpp" />
     <ClCompile Include="src\Game\Loader\Loader.cpp" />
-    <ClCompile Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.cpp" />
     <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp" />
     <ClCompile Include="src\Game\Camera\FollowCamera.cpp" />
     <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp" />
@@ -79,7 +79,6 @@
     <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h" />
     <ClInclude Include="src\Game\Player\UI\PlayerUIManager.h" />
     <ClInclude Include="src\Game\Loader\Loader.h" />
-    <ClInclude Include="src\Game\Obstacle\NormalObstacle\NormalObstacle.h" />
     <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h" />
     <ClInclude Include="src\Game\Obstacle\Base\Obstacle.h" />
     <ClInclude Include="src\Game\Camera\FollowCamera.h" />

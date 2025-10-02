@@ -31,7 +31,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 	// 左下と右上を指定
 	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};
-	Float3 topRight = { 80.0f, 2.0f, 80.0f };
+	Float3 topRight = { 70.0f, 2.0f, 120.0f };
 	// 分割数（隣接ノードの距離に合わせる）
 	float spacing = maxDistance_;
 
@@ -40,7 +40,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 	uint32_t numZ = static_cast<uint32_t>(std::floor((topRight.z - bottomLeft.z) / spacing)) + 1;
 
 	// 生成時の衝突判定を行うコライダータグ
-	std::unordered_set<std::string> checkTags = { "NormalObstacle" };
+	std::unordered_set<std::string> checkTags = { "Obstacle" };
 
 	for (uint32_t x = 0; x < numX; ++x) {
 		for (uint32_t z = 0; z < numZ; ++z) {

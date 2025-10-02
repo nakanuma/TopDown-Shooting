@@ -17,6 +17,8 @@ public:
 		Float3 translate;
 		Float3 rotate;
 		Float3 scale;
+
+		Float3 colliderSize; // 障害物で使用
 		std::string pairID; // テレポーターで使用
 	};
 

@@ -6,24 +6,29 @@
 #include <Engine/3D/Object3D.h>
 
 /// <summary>
-/// 障害物の基底クラス
+/// 障害物の共通クラス
 /// </summary>
-class Obstacle {
+class Obstacle : public ICollisionCallback {
 public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize(const Float3& position, const Float3& scale, ModelManager::ModelData* model) = 0;
+	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, const Float3& colliderSize, ModelManager::ModelData* model);
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	virtual void Update() = 0;
+	void Update();
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw() = 0;
+	void Draw();
+
+	/// <summary>
+	/// シャドウマップ用描画処理
+	/// </summary>
+	void DrawShadow();
 
 	/// <summary>
 	/// タグの取得（コライダーに設定してあるタグ）
@@ -33,25 +38,30 @@ public:
 	/// <summary>
 	/// 現在位置の取得
 	/// </summary>
-	Float3& GetTranslate() const { return objectObstacle_->transform_.translate; }
+	Float3& GetTranslate() const { return object_->transform_.translate; }
 
 	/// <summary>
 	/// スケールの取得
 	/// </summary>
-	Float3& GetScale() const { return objectObstacle_->transform_.scale; }
+	Float3& GetScale() const { return object_->transform_.scale; }
 
 	/// <summary>
 	/// 破棄される際に呼ぶ関数
 	/// </summary>
 	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
+	/// <summary>
+	/// コライダーの有効化状態設定
+	/// </summary>
+	void SetActiveCollider(bool active) { if (collider_) { collider_->SetActive(active); }; }
+
 protected:
 	// ---------------------------------------------------------
 	// オブジェクト関連
 	// ---------------------------------------------------------
 
-	// 敵オブジェクト
-	std::unique_ptr<Object3D> objectObstacle_;
+	// オブジェクト
+	std::unique_ptr<Object3D> object_;
 
 	// ---------------------------------------------------------
 	// コライダー

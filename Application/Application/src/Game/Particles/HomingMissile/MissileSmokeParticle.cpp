@@ -24,7 +24,7 @@ MissileSmokeParticle::MissileSmokeParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-MissileSmokeParticleData MissileSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+MissileSmokeParticleData MissileSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
 {
 	MissileSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();

@@ -23,7 +23,7 @@ ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model)
 // ---------------------------------------------------------
 // パーティクル固有の生成処理
 // ---------------------------------------------------------
-ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity)
+ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
 {
 	ExplodeScatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();

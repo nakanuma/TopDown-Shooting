@@ -15,8 +15,13 @@ class OBJECT_PT_tagged_object_panel(bpy.types.Panel):
         layout = self.layout
         layout.label(text="Add Tagged Objects:")
 
-        for tag, info in TAG_INFO.items():
-            op = layout.operator("object.add_tagged_object", text=f"Add {info['name']}")
+        # 区分ごとにセパレーターを挿入
+        last_group = None
+        for tag, display_name in [(key, TAG_INFO[key]["name"]) for key in TAG_INFO]:
+            if tag in ["PLAYER", "CONTAINER", "TELEPORTER"]:
+                layout.separator()
+
+            op = layout.operator("object.add_tagged_object", text=f"Add {display_name}")
             op.tag = tag
 
         layout.separator()
