@@ -18,7 +18,7 @@
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
-#include <src/Game/Utility/ParticleEffectRoader.h>
+#include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/System/ResultStats.h>
@@ -98,7 +98,7 @@ void GamePlayScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	// パーティクル生成
-	ParticleEffectRoader::GetInstance()->LoadAndRegisterAll();
+	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();

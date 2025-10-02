@@ -24,7 +24,7 @@
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
     <ClCompile Include="src\Game\Scene\ResultScene.cpp" />
     <ClCompile Include="src\Game\Transition\FadeTransition.cpp" />
-    <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp" />
+    <ClCompile Include="src\Game\Utility\ParticleEffectLoader.cpp" />
     <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp" />
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
     <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp" />
@@ -63,7 +63,7 @@
     <ClInclude Include="src\Game\System\ResultStats.h" />
     <ClInclude Include="src\Game\Scene\ResultScene.h" />
     <ClInclude Include="src\Game\Transition\FadeTransition.h" />
-    <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h" />
+    <ClInclude Include="src\Game\Utility\ParticleEffectLoader.h" />
     <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h" />
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
     <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h" />

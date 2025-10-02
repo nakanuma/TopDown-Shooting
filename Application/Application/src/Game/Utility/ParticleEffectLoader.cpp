@@ -1,4 +1,4 @@
-#include "ParticleEffectRoader.h"
+#include "ParticleEffectLoader.h"
 
 // Engine
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
@@ -13,17 +13,15 @@
 // ---------------------------------------------------------
 // インスタンス取得
 // ---------------------------------------------------------
-ParticleEffectRoader* ParticleEffectRoader::GetInstance() 
-{
-	static ParticleEffectRoader instance;
+ParticleEffectLoader* ParticleEffectLoader::GetInstance() {
+	static ParticleEffectLoader instance;
 	return &instance;
 }
 
 // ---------------------------------------------------------
 // パーティクルのモデル読み込み・登録
 // ---------------------------------------------------------
-void ParticleEffectRoader::LoadAndRegisterAll()
-{
+void ParticleEffectLoader::LoadAndRegisterAll() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	/* パーティクルモデル生成 + パーティクル登録 */
