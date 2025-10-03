@@ -42,6 +42,10 @@ void TitleScene::Initialize() {
 	lightManager = LightManager::GetInstance();
 	lightManager->Initialize();
 
+	// ローダー生成
+	loader_ = std::make_unique<Loader>();
+	loader_->LoadFromFile("resources/Stages/title.json");
+
 	///
 	///	スプライト生成
 	/// 
@@ -50,26 +54,33 @@ void TitleScene::Initialize() {
 	uint32_t textureTitle = TextureManager::Load("resources/Images/UI/title.png", dxBase->GetDevice());
 	spriteTitle_ = std::make_unique<Sprite>();
 	spriteTitle_->Initialize(spriteCommon.get(), textureTitle);
-	spriteTitle_->SetPosition({ 640.0f, 100.0f });
+	spriteTitle_->SetPosition({ 640.0f, 140.0f });
 	spriteTitle_->SetAnchorPoint({ 0.5f, 0.5f });
 
-	// スタートボタン
 	uint32_t textureStart = TextureManager::Load("resources/Images/UI/startButton.png", dxBase->GetDevice());
 	spriteStartButton_ = std::make_unique<Sprite>();
 	spriteStartButton_->Initialize(spriteCommon.get(), textureStart);
-	spriteStartButton_->SetPosition({ 640.0f, 620.0f });
+	spriteStartButton_->SetPosition({ 640.0f, 580.0f });
 	spriteStartButton_->SetAnchorPoint({ 0.5f, 0.5f });
 
 	///
 	///	オブジェクト
 	/// 
 	
-	modelDiorama_ = ModelManager::LoadModelFile("resources/Models", "Object/Diorama/diorama.obj", dxBase->GetDevice());
-	modelDiorama_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	// 床生成
+	field_ = std::make_unique<Field>();
+	field_->Initialize();
 
-	objectDiorama_ = std::make_unique<Object3D>();
-	objectDiorama_->model_ = &modelDiorama_;
-	objectDiorama_->materialCB_.data_->color = { 0.25f, 0.25f, 0.25f, 1.0f };
+	// 障害物の管理クラス生成
+	obstacleManager_ = std::make_unique<ObstacleManager>();
+	obstacleManager_->Initialize(loader_->GetAllDatas());
+
+	///
+	///	スプライト
+	/// 
+
+	spriteTitle_->Update();
+	spriteStartButton_->Update();
 
 	///
 	///	フェード
@@ -84,31 +95,55 @@ void TitleScene::Initialize() {
 
 	// シャドウマップ生成
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
+
+	// 平行光源の初期値設定
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
+	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 0.4f;
 }
 
 void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
-	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() {
+	// 中心を向きながらカメラ回転
+	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
+
+	// 左クリック入力でゲームシーンへ移行
+	/*if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
+		FadeTransition::GetInstance()->StartFadeOut(0.5f, []() {
 			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-		}, 0.2f);
-	}
+		}, 0.5f);
+	}*/
 
-	// オブジェクト更新
-	objectDiorama_->UpdateMatrix();
-	// 回転
-	objectDiorama_->transform_.rotate.y += 0.5f * TimeManager::GetInstance()->GetDeltaTime();
-	// 上下振幅
-	static float timer = 0.0f;
-	timer += TimeManager::GetInstance()->GetDeltaTime() * 2.0f;
-	float yoffset = sinf(timer) * 1.0f;
-	objectDiorama_->transform_.translate.y = yoffset;
+	///
+	///	オブジェクト更新
+	/// 
 
+	// 床の更新
+	field_->Update();
+	// 障害物の更新
+	obstacleManager_->Update({ 0.0f, 0.0f, 0.0f });
 
-	// スプライト更新
+	///
+	///	スプライト更新
+	/// 
+
 	spriteTitle_->Update();
+
+	// タイトルの上下移動（あとで整理）
+	static float floatTimer = 0.0f;
+	floatTimer += TimeManager::GetInstance()->GetDeltaTime();
+	float floatAmount = sinf(floatTimer * 1.2f) * 4.0f;
+	Float3 basePos = { 640.0f, 140.0f };
+	spriteTitle_->SetPosition({ basePos.x, basePos.y + floatAmount });
+
+
 	spriteStartButton_->Update();
+
+	// スタートボタンを点滅（あとで整理）
+	static float blinkTimer = 0.0f;
+	blinkTimer += TimeManager::GetInstance()->GetDeltaTime();
+	float alpha = (sinf(blinkTimer * 4.0f) + 1.0f) / 2.0f;
+	spriteStartButton_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 	// フェード更新
 	FadeTransition::GetInstance()->Update();
@@ -137,16 +172,45 @@ void TitleScene::Draw() {
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
 
-	// 描画後、SRVとして使えるように遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	// ShadowMapをバインド
-	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowMapHandle_);
+	///
+	///	シャドウマップ描画
+	/// 
+
+	// ライトカメラの更新
+	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
+
+	// BBを生成してライトカメラの行列更新（あとで整理）
+	LightCamera::BoundingBox sceneBB;
+	sceneBB.SetCenterExtents({0.0f, 0.0f, 0.0f}, {30.0f, 10.0f, 30.0f});
+	LightCamera::GetInstance()->UpdateViewProjection(sceneBB);
+
+	// シャドウマップ描画開始
+	ShadowMapManager::GetInstance()->BeginShadowPass(shadowMapHandle_);
+
+	// 通常オブジェクト描画
+	//----------------------------------//
+
+	obstacleManager_->DrawShadow({0.0f, 0.0f, 0.0f});
+
+	//----------------------------------//
+
+	// アニメーションモデル用PSOをセット
+	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
+
+	// アニメーションモデル描画
+	//----------------------------------//
+
+	//----------------------------------//
+
+	// シャドウマップ描画終了
+	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
 	
-	objectDiorama_->Draw();
+	field_->Draw();
+	obstacleManager_->Draw({0.0f, 0.0f, 0.0f});
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -188,6 +252,13 @@ void TitleScene::Draw() {
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.01f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
 
+	ImGui::Separator();
+
+	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
+	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
+	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
+	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
+
 	ImGui::End();
 
 #endif
@@ -197,6 +268,26 @@ void TitleScene::Draw() {
 	dxBase->PostDraw();
 	// フレーム終了処理
 	dxBase->EndFrame();
+}
+
+void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float height, float speed)
+{
+	static float angle = 0.0f;
+	angle += TimeManager::GetInstance()->GetDeltaTime() * speed;
+
+	// 新しいカメラ位置を円運動で計算
+	Float3 cameraPos = {
+		std::cosf(angle) * radius,
+		height,
+		std::sinf(angle) * radius
+	};
+	camera->transform.translate = cameraPos;
+
+	// ターゲットを向くように回転を計算
+	Float3 forward = Float3::Normalize(target - cameraPos);
+
+	camera->transform.rotate.y = std::atan2f(forward.x, forward.z);
+	camera->transform.rotate.x = std::asinf(-forward.y);
 }
 
 #ifdef _DEBUG
