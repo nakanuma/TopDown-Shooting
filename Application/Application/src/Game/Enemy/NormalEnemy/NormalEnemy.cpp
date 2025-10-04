@@ -137,7 +137,7 @@ void NormalEnemy::Update() {
 	///
 
 	objectEnemy_->UpdateMatrix();
-
+	objectEnemy_->UpdateShadowMatrix();
 
 
 	//// 現在位置から最も近いウェイポイントを取得
@@ -177,6 +177,14 @@ void NormalEnemy::Update() {
 void NormalEnemy::Draw() {
 	// オブジェクト描画
 	objectEnemy_->Draw();
+}
+
+// ---------------------------------------------------------
+// シャドウマップ描画処理
+// ---------------------------------------------------------
+void NormalEnemy::DrawShadow()
+{
+	objectEnemy_->DrawShadow();
 }
 
 // ---------------------------------------------------------

@@ -33,6 +33,11 @@ public:
 	virtual void Draw() = 0;
 
 	/// <summary>
+	/// シャドウマップ用描画処理
+	/// </summary>
+	virtual void DrawShadow() = 0;
+
+	/// <summary>
 	/// UI描画処理
 	/// </summary>
 	virtual void DrawUI() = 0;

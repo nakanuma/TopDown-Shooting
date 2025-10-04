@@ -108,6 +108,7 @@ void BossEnemy::Update()
 	///
 
 	objectEnemy_->UpdateMatrix();
+	objectEnemy_->UpdateShadowMatrix();
 
 	if (!isActive_) return;
 
@@ -142,6 +143,14 @@ void BossEnemy::Draw()
 {
 	// オブジェクト描画処理
 	objectEnemy_->Draw();
+}
+
+// ---------------------------------------------------------
+// シャドウマップ描画処理
+// ---------------------------------------------------------
+void BossEnemy::DrawShadow()
+{
+	objectEnemy_->DrawShadow();
 }
 
 // ---------------------------------------------------------

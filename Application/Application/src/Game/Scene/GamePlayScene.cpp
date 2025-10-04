@@ -229,6 +229,7 @@ void GamePlayScene::Draw() {
 	//----------------------------------//
 
 	obstacleManager_->DrawShadow(player_->GetTranslate());
+	enemyManager_->DrawShadow();
 
 	//----------------------------------//
 
