@@ -114,11 +114,11 @@ void TitleScene::Update() {
 	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	/*if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
+	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
 		FadeTransition::GetInstance()->StartFadeOut(0.5f, []() {
 			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 		}, 0.5f);
-	}*/
+	}
 
 	///
 	///	オブジェクト更新

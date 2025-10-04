@@ -123,6 +123,9 @@ void GamePlayScene::Initialize() {
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = {0.367f, -0.653f, -0.662f};
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
+
+	// パーティクルのクリア
+	ParticleEffectManager::GetInstance()->Clear();
 }
 
 void GamePlayScene::Finalize() {}
