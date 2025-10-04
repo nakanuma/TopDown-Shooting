@@ -4,11 +4,14 @@
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Application
-#include <src/Game/Particles/BackscatterParticle.h>
+#include <src/Game/Particles/Backscatter/BackscatterParticle.h>
 #include <src/Game/Particles/HomingMissile/MissileSmokeParticle.h>
 #include <src/Game/Particles/GroundWarning/RedCircleParticle.h>
-#include <src/Game/Particles/ExplodeSmokeParticle.h>
-#include <src/Game/Particles/ExplodeScatterParticle.h>
+#include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>
+#include <src/Game/Particles/ExplodeScatter/ExplodeScatterParticle.h>
+
+#include <src/Game/Particles/Smoke/SmokeParticle.h>
+#include <src/Game/Particles/Spark/SparkParticle.h>
 
 // ---------------------------------------------------------
 // インスタンス取得
@@ -46,4 +49,11 @@ void ParticleEffectLoader::LoadAndRegisterAll() {
 	// 地面警告攻撃の飛散パーティクル
 	auto explodeScatterParticle = std::make_unique<ExplodeScatterParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("explodeScatter", std::move(explodeScatterParticle));
+
+	// 煙パーティクル
+	auto smokeParticle = std::make_unique<SmokeParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("smoke", std::move(smokeParticle));
+	// 火花パーティクル
+	auto sparkParticle = std::make_unique<SparkParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
 }

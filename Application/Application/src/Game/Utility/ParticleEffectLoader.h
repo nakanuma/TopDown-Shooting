@@ -24,4 +24,3 @@ private:
 	ModelManager::ModelData modelSmoothCube_;
 	ModelManager::ModelData modelPlane_;
 };
-

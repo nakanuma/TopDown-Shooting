@@ -127,6 +127,12 @@
     <Filter Include="src\Game\Waypoint">
       <UniqueIdentifier>{226af041-caf3-4c06-bd32-d0577b2b95b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Game\Particles\Smoke">
+      <UniqueIdentifier>{74858272-451c-4326-a847-e57c1e97056e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\Spark">
+      <UniqueIdentifier>{f410b5c2-5f99-40d4-9c07-a7829f5b1b54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
@@ -180,13 +186,13 @@
     <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp">
       <Filter>src\Game\Particles\MissileSmoke</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\BackscatterParticle.cpp">
+    <ClCompile Include="src\Game\Particles\BackScatter\BackscatterParticle.cpp">
       <Filter>src\Game\Particles\Backscatter</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp">
+    <ClCompile Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.cpp">
       <Filter>src\Game\Particles\ExplodeScatter</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp">
+    <ClCompile Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.cpp">
       <Filter>src\Game\Particles\ExplodeSmoke</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Player\Player.cpp">
@@ -242,6 +248,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\Waypoint\Waypoint.cpp">
       <Filter>src\Game\Waypoint</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\Smoke\SmokeParticle.cpp">
+      <Filter>src\Game\Particles\Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp">
+      <Filter>src\Game\Particles\Spark</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,13 +314,13 @@
     <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h">
       <Filter>src\Game\Particles\MissileSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\BackscatterParticle.h">
+    <ClInclude Include="src\Game\Particles\BackScatter\BackscatterParticle.h">
       <Filter>src\Game\Particles\Backscatter</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h">
+    <ClInclude Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.h">
       <Filter>src\Game\Particles\ExplodeScatter</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h">
+    <ClInclude Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.h">
       <Filter>src\Game\Particles\ExplodeSmoke</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Player\Player.h">
@@ -364,6 +376,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\Waypoint\Waypoint.h">
       <Filter>src\Game\Waypoint</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\Smoke\SmokeParticle.h">
+      <Filter>src\Game\Particles\Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h">
+      <Filter>src\Game\Particles\Spark</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

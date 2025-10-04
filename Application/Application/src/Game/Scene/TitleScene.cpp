@@ -9,9 +9,12 @@
 #include <Engine/Util/TimeManager.h>
 #include <Engine/3D/LightCamera.h>
 #include <ShadowMapManager.h>
+#include <ParticleEffect/ParticleEffectManager.h>
+#include <RandomGenerator.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Utility/ParticleEffectLoader.h>
 
 void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -75,6 +78,9 @@ void TitleScene::Initialize() {
 	obstacleManager_ = std::make_unique<ObstacleManager>();
 	obstacleManager_->Initialize(loader_->GetAllDatas());
 
+	// パーティクル生成
+	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
+
 	///
 	///	スプライト
 	/// 
@@ -123,13 +129,16 @@ void TitleScene::Update() {
 	// 障害物の更新
 	obstacleManager_->Update({ 0.0f, 0.0f, 0.0f });
 
+	// パーティクルエフェクトマネージャー更新
+	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
+
 	///
 	///	スプライト更新
 	/// 
 
 	spriteTitle_->Update();
 
-	// タイトルの上下移動（あとで整理）
+	// タイトルの上下移動
 	static float floatTimer = 0.0f;
 	floatTimer += TimeManager::GetInstance()->GetDeltaTime();
 	float floatAmount = sinf(floatTimer * 1.2f) * 4.0f;
@@ -139,7 +148,7 @@ void TitleScene::Update() {
 
 	spriteStartButton_->Update();
 
-	// スタートボタンを点滅（あとで整理）
+	// スタートボタンを点滅
 	static float blinkTimer = 0.0f;
 	blinkTimer += TimeManager::GetInstance()->GetDeltaTime();
 	float alpha = (sinf(blinkTimer * 4.0f) + 1.0f) / 2.0f;
@@ -147,6 +156,33 @@ void TitleScene::Update() {
 
 	// フェード更新
 	FadeTransition::GetInstance()->Update();
+
+	///
+	///	一旦決め打ちでパーティクル発生
+	/// 
+
+	// タンク煙
+	static int smokeCounter = 0;
+	smokeCounter++;
+	if (smokeCounter % 5 == 0) {
+		ParticleEffectManager::GetInstance()->Emit("smoke", { 12.0f, 4.0f, -12.0f }, 1);
+		ParticleEffectManager::GetInstance()->Emit("smoke", { -14.0f, 4.0f, 12.0f }, 1);
+		ParticleEffectManager::GetInstance()->Emit("smoke", { 34.0f, 4.0f, 8.0f }, 1);
+	}
+
+	// タンク火花
+	static int sparkCounter = 0;
+	static int nextSparkInterval = 0;
+	sparkCounter++;
+	if (sparkCounter >= nextSparkInterval) {
+		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, { 1.0f, 0.0f, 0.0f });
+		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 3.0f, 11.0f }, 5, { -1.0f, 0.0f, 0.0f });
+		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 4.0f, -26.0f }, 5, { -1.0f, 0.0f, 0.0f });
+
+		// 次の間隔をランダムに設定
+		nextSparkInterval = RandomGenerator::GetInstance()->RandomValue(20, 50);
+		sparkCounter = 0;
+	}
 
 #ifdef _DEBUG
 	// デバッグカメラ更新
@@ -212,6 +248,8 @@ void TitleScene::Draw() {
 	field_->Draw();
 	obstacleManager_->Draw({0.0f, 0.0f, 0.0f});
 
+	ParticleEffectManager::GetInstance()->Draw();
+
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
 	///
@@ -258,6 +296,12 @@ void TitleScene::Draw() {
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
 	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
 	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
+
+	ImGui::Separator();
+
+	if (ImGui::Button("Emit")) {
+		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, {1.0f, 0.0f, 0.0f});
+	}
 
 	ImGui::End();
 

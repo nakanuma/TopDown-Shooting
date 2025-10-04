@@ -100,8 +100,8 @@ void GamePlayScene::Initialize() {
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
-	// パーティクル生成
-	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
+	//// パーティクル生成
+	//ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
@@ -300,7 +300,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("warningScatter", { 0.0f, 2.0f, -20.0f }, 20);
+		ParticleEffectManager::GetInstance()->Emit("smoke", { 0.0f, 2.0f, -20.0f }, 20);
 	}
 
 	if (ImGui::Button("bulletClear")) {

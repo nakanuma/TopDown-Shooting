@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\Smoke\SmokeParticle.cpp" />
     <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp" />
     <ClCompile Include="src\Game\Utility\NumberSprite.cpp" />
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
@@ -29,7 +31,7 @@
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
     <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp" />
-    <ClCompile Include="src\Game\Particles\BackscatterParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\BackScatter\BackscatterParticle.cpp" />
     <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp" />
     <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp" />
     <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp" />
@@ -51,14 +53,16 @@
     <ClCompile Include="src\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="src\Game\Scene\TestScene.cpp" />
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
-    <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp" />
-    <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.cpp" />
     <ClCompile Include="src\Game\Waypoint\Waypoint.cpp" />
     <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
     <ClCompile Include="src\Game\Teleporter\Teleporter.cpp" />
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h" />
+    <ClInclude Include="src\Game\Particles\Smoke\SmokeParticle.h" />
     <ClInclude Include="src\Game\Utility\NumberSprite.h" />
     <ClInclude Include="src\Game\System\ResultStats.h" />
     <ClInclude Include="src\Game\Scene\ResultScene.h" />
@@ -68,7 +72,7 @@
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
     <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h" />
     <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h" />
-    <ClInclude Include="src\Game\Particles\BackscatterParticle.h" />
+    <ClInclude Include="src\Game\Particles\BackScatter\BackscatterParticle.h" />
     <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h" />
     <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h" />
     <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h" />
@@ -93,8 +97,8 @@
     <ClInclude Include="src\Game\Scene\TitleScene.h" />
     <ClInclude Include="src\Game\Scene\TestScene.h" />
     <ClInclude Include="src\Game\Utility\Utility.h" />
-    <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h" />
-    <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h" />
+    <ClInclude Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.h" />
+    <ClInclude Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.h" />
     <ClInclude Include="src\Game\Waypoint\Waypoint.h" />
     <ClInclude Include="src\Game\Waypoint\WaypointManager.h" />
     <ClInclude Include="src\Game\Teleporter\Teleporter.h" />
