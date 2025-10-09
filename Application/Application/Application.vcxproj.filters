@@ -13,243 +13,375 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{5dbf9c2a-d70c-4cb8-b78e-3d69ea96c1f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game">
+      <UniqueIdentifier>{87bdcbc1-675e-431b-96ab-648e58712dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet">
+      <UniqueIdentifier>{b327e380-d291-4b19-8565-f75f0c4528de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\Base">
+      <UniqueIdentifier>{be37af44-b187-46b9-a9aa-9d036a251fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\EnemyBullet">
+      <UniqueIdentifier>{b93cb45a-6223-47e9-ab45-7a0534ccf1f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\GroundWarning">
+      <UniqueIdentifier>{f67825d7-5892-4fd4-9931-26ba7894bb80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\HomingMissile">
+      <UniqueIdentifier>{30c3b429-eab3-428a-b37e-d5609777f556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\Manager">
+      <UniqueIdentifier>{e8fb5950-f547-4300-af67-3ae285635c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Bullet\PlayerBullet">
+      <UniqueIdentifier>{8344f3ac-e71d-4e89-bdbd-99ea36f9ec2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Camera">
+      <UniqueIdentifier>{ed5bf234-0191-4e26-89a0-b5b2076a2256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy">
+      <UniqueIdentifier>{7e9a117a-aabb-4ae4-8532-89fcb44b9a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Base">
+      <UniqueIdentifier>{8dc02f46-bf2d-49ca-97ac-3033baf3d7c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\BossEnemy">
+      <UniqueIdentifier>{88043127-6965-4d71-9e82-dd11417f8cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\ImmobileEnemy">
+      <UniqueIdentifier>{587c4f6c-799f-4391-95a0-b72774a3a666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Manager">
+      <UniqueIdentifier>{b691def0-19c8-4766-8227-3d226e88614b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\NormalEnemy">
+      <UniqueIdentifier>{85d28bb7-c9fa-4ab6-b053-da2621e232c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Field">
+      <UniqueIdentifier>{8597fe36-b3b9-432f-b3c5-edc27b44600e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Loader">
+      <UniqueIdentifier>{d503df66-3ab4-41e4-8a26-da93fdfdb067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Obstacle">
+      <UniqueIdentifier>{13539b52-2bf4-4584-8a5b-2409041e4e5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Obstacle\Base">
+      <UniqueIdentifier>{23eb19da-067d-4155-9c29-e5aaa27fe18a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Obstacle\Manager">
+      <UniqueIdentifier>{a140fe8a-70eb-4b08-af04-e1dec7900b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles">
+      <UniqueIdentifier>{572ce0a8-b3a4-4565-81be-6ee99f03eafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\RedCircle">
+      <UniqueIdentifier>{d958cea4-42c4-49a0-b8c8-c04e4245d344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\MissileSmoke">
+      <UniqueIdentifier>{c9d8efba-92a9-49fc-b53d-6983d5df9016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\Backscatter">
+      <UniqueIdentifier>{85a09637-0352-4858-b000-f3d4267468e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\ExplodeScatter">
+      <UniqueIdentifier>{b8ebeaa7-79f4-4673-974f-4090173e0bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\ExplodeSmoke">
+      <UniqueIdentifier>{1950dfdb-289c-4886-bf37-080ac387fc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player">
+      <UniqueIdentifier>{8a2523c6-d3a2-47c7-a540-d5e07a66cdf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player\UI">
+      <UniqueIdentifier>{60e6d262-4494-4db2-a1d6-bb05460ede85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player\UI\HPBar">
+      <UniqueIdentifier>{01e125e9-aebe-4539-9a6e-6e9aeaa5cd25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player\UI\OverheatGauge">
+      <UniqueIdentifier>{7135a673-30a0-4319-96ae-abd588653005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player\UI\Reticle">
+      <UniqueIdentifier>{d9297ae5-35ce-4586-a01c-43e86118594b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Scene">
+      <UniqueIdentifier>{23e341e4-0ae9-4b10-abf0-c5e9305a3580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\System">
+      <UniqueIdentifier>{feb925f5-8838-4d18-84b4-f494c7e8b4f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Teleporter">
+      <UniqueIdentifier>{aa8684cc-c287-4f4c-845f-0853a7041621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Transition">
+      <UniqueIdentifier>{0676d3c4-2d97-45da-9376-0dd50f1fbbb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Utility">
+      <UniqueIdentifier>{f27b6ae8-db25-4b62-be40-4c26da59061a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Waypoint">
+      <UniqueIdentifier>{226af041-caf3-4c06-bd32-d0577b2b95b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\Smoke">
+      <UniqueIdentifier>{74858272-451c-4326-a847-e57c1e97056e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\Spark">
+      <UniqueIdentifier>{f410b5c2-5f99-40d4-9c07-a7829f5b1b54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\Scene\GamePlayScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Scene\TitleScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Scene\TestScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Field\Field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Bullet\PlayerBullet\PlayerBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\Manager\EnemyManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Camera\FollowCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Utility\Utility.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Loader\Loader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\PlayerUIManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Camera\CameraShake.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Particles\BackscatterParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Bullet\EnemyBullet</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Bullet\GroundWarning</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Bullet\HomingMissile\HomingMissile.cpp">
+      <Filter>src\Game\Bullet\HomingMissile</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Utility\ParticleEffectRoader.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp">
+      <Filter>src\Game\Bullet\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ExplodeSmokeParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Bullet\PlayerBullet\PlayerBullet.cpp">
+      <Filter>src\Game\Bullet\PlayerBullet</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ExplodeScatterParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Camera\CameraShake.cpp">
+      <Filter>src\Game\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Transition\FadeTransition.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Camera\FollowCamera.cpp">
+      <Filter>src\Game\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Waypoint\Waypoint.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp">
+      <Filter>src\Game\Enemy\BossEnemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp">
+      <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Scene\ResultScene.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Enemy\Manager\EnemyManager.cpp">
+      <Filter>src\Game\Enemy\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\System\ResultStats.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp">
+      <Filter>src\Game\Enemy\NormalEnemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Utility\NumberSprite.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Field\Field.cpp">
+      <Filter>src\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Teleporter\Teleporter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Loader\Loader.cpp">
+      <Filter>src\Game\Loader</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Obstacle\Base\Obstacle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Obstacle\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp">
+      <Filter>src\Game\Obstacle\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp">
+      <Filter>src\Game\Particles\RedCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp">
+      <Filter>src\Game\Particles\MissileSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\BackScatter\BackscatterParticle.cpp">
+      <Filter>src\Game\Particles\Backscatter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.cpp">
+      <Filter>src\Game\Particles\ExplodeScatter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.cpp">
+      <Filter>src\Game\Particles\ExplodeSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\Player.cpp">
+      <Filter>src\Game\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\UI\PlayerUIManager.cpp">
+      <Filter>src\Game\Player\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp">
+      <Filter>src\Game\Player\UI\OverheatGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\UI\Reticle\Reticle.cpp">
+      <Filter>src\Game\Player\UI\Reticle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp">
+      <Filter>src\Game\Player\UI\HPBar</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Scene\GamePlayScene.cpp">
+      <Filter>src\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Scene\ResultScene.cpp">
+      <Filter>src\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Scene\TestScene.cpp">
+      <Filter>src\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Scene\TitleScene.cpp">
+      <Filter>src\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\System\ResultStats.cpp">
+      <Filter>src\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Teleporter\Teleporter.cpp">
+      <Filter>src\Game\Teleporter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp">
+      <Filter>src\Game\Teleporter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Transition\FadeTransition.cpp">
+      <Filter>src\Game\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Utility\Utility.cpp">
+      <Filter>src\Game\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Utility\NumberSprite.cpp">
+      <Filter>src\Game\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Utility\ParticleEffectLoader.cpp">
+      <Filter>src\Game\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp">
+      <Filter>src\Game\Waypoint</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Waypoint\Waypoint.cpp">
+      <Filter>src\Game\Waypoint</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\Smoke\SmokeParticle.cpp">
+      <Filter>src\Game\Particles\Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp">
+      <Filter>src\Game\Particles\Spark</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\Scene\GamePlayScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Scene\TitleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Scene\TestScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Field\Field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Bullet\PlayerBullet\PlayerBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\Base\Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\Manager\EnemyManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Camera\FollowCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Utility\Utility.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Obstacle\Base\Obstacle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Loader\Loader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\PlayerUIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Camera\CameraShake.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Bullet\Base</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Bullet\EnemyBullet\EnemyBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Particles\BackscatterParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Bullet\EnemyBullet</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Bullet\GroundWarning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Bullet\HomingMissile\HomingMissile.h">
+      <Filter>src\Game\Bullet\HomingMissile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h">
+      <Filter>src\Game\Bullet\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Bullet\PlayerBullet\PlayerBullet.h">
+      <Filter>src\Game\Bullet\PlayerBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Camera\CameraShake.h">
+      <Filter>src\Game\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Camera\FollowCamera.h">
+      <Filter>src\Game\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\Base\Enemy.h">
+      <Filter>src\Game\Enemy\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h">
+      <Filter>src\Game\Enemy\BossEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h">
+      <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\Manager\EnemyManager.h">
+      <Filter>src\Game\Enemy\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h">
+      <Filter>src\Game\Enemy\NormalEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Field\Field.h">
+      <Filter>src\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Loader\Loader.h">
+      <Filter>src\Game\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Obstacle\Base\Obstacle.h">
+      <Filter>src\Game\Obstacle\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h">
+      <Filter>src\Game\Obstacle\Manager</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\RedCircle</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Utility\ParticleEffectRoader.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h">
+      <Filter>src\Game\Particles\MissileSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ExplodeSmokeParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\BackScatter\BackscatterParticle.h">
+      <Filter>src\Game\Particles\Backscatter</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ExplodeScatterParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.h">
+      <Filter>src\Game\Particles\ExplodeScatter</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Transition\FadeTransition.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.h">
+      <Filter>src\Game\Particles\ExplodeSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Waypoint\Waypoint.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Player\Player.h">
+      <Filter>src\Game\Player</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Waypoint\WaypointManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Player\UI\PlayerUIManager.h">
+      <Filter>src\Game\Player\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h">
+      <Filter>src\Game\Player\UI\OverheatGauge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Player\UI\Reticle\Reticle.h">
+      <Filter>src\Game\Player\UI\Reticle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h">
+      <Filter>src\Game\Player\UI\HPBar</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Scene\GamePlayScene.h">
+      <Filter>src\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Scene\ResultScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Scene\TestScene.h">
+      <Filter>src\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Scene\TitleScene.h">
+      <Filter>src\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\System\ResultStats.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Utility\NumberSprite.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\System</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Teleporter\Teleporter.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Teleporter</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Teleporter\TeleporterManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Teleporter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Transition\FadeTransition.h">
+      <Filter>src\Game\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Utility\Utility.h">
+      <Filter>src\Game\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Utility\NumberSprite.h">
+      <Filter>src\Game\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Utility\ParticleEffectLoader.h">
+      <Filter>src\Game\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Waypoint\WaypointManager.h">
+      <Filter>src\Game\Waypoint</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Waypoint\Waypoint.h">
+      <Filter>src\Game\Waypoint</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\Smoke\SmokeParticle.h">
+      <Filter>src\Game\Particles\Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h">
+      <Filter>src\Game\Particles\Spark</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

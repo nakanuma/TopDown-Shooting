@@ -6,13 +6,13 @@
 /// <summary>
 /// パーティクルのモデル管理・登録を行うクラス
 /// </summary>
-class ParticleEffectRoader
+class ParticleEffectLoader
 {
 public:
 	/// <summary>
 	/// インスタンス取得
 	/// </summary>
-	static ParticleEffectRoader* GetInstance();
+	static ParticleEffectLoader* GetInstance();
 
 	/// <summary>
 	/// パーティクルのモデル読み込み・登録
@@ -24,4 +24,3 @@ private:
 	ModelManager::ModelData modelSmoothCube_;
 	ModelManager::ModelData modelPlane_;
 };
-

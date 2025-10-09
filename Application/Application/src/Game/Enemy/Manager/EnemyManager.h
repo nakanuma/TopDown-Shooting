@@ -31,6 +31,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// シャドウマップ描画処理
+	/// </summary>
+	void DrawShadow();
+
+	/// <summary>
 	/// UI描画処理
 	/// </summary>
 	void DrawUI();

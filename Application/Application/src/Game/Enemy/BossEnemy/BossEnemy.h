@@ -26,6 +26,11 @@ public:
 	void Draw() override;
 
 	/// <summary>
+	/// シャドウマップ描画処理
+	/// </summary>
+	void DrawShadow() override;
+
+	/// <summary>
 	/// UI描画処理
 	/// </summary>
 	void DrawUI() override;

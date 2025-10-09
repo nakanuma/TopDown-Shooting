@@ -18,7 +18,7 @@
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
-#include <src/Game/Utility/ParticleEffectRoader.h>
+#include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/System/ResultStats.h>
@@ -90,6 +90,9 @@ void GamePlayScene::Initialize() {
 	teleporterManager_ = std::make_unique<TeleporterManager>();
 	teleporterManager_->Initialize(loader_->GetAllDatas());
 
+	// 弾リストのクリア
+	BulletManager::GetInstance()->Clear();
+
 	/* その他 */
 
 	// 追従カメラ生成
@@ -97,8 +100,8 @@ void GamePlayScene::Initialize() {
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
-	// パーティクル生成
-	ParticleEffectRoader::GetInstance()->LoadAndRegisterAll();
+	//// パーティクル生成
+	//ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
@@ -107,7 +110,7 @@ void GamePlayScene::Initialize() {
 
 	// フェード
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
-	FadeTransition::GetInstance()->StartFadeIn(1.0f, 0.2f);
+	FadeTransition::GetInstance()->StartFadeIn(0.5f, 0.5f);
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -119,6 +122,10 @@ void GamePlayScene::Initialize() {
 
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = {0.367f, -0.653f, -0.662f};
+	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
+
+	// パーティクルのクリア
+	ParticleEffectManager::GetInstance()->Clear();
 }
 
 void GamePlayScene::Finalize() {}
@@ -197,96 +204,57 @@ void GamePlayScene::Draw() {
 	lightManager->TransferContantBuffer();
 	// ポストエフェクト用の定数バッファを設定
 	postEffectManager_->TransfarConstantBuffer();
+	// LightCameraの定数バッファを送信
+	LightCamera::GetInstance()->TransferConstantBuffer();
 
-	///
-	///	↓ ここから3Dオブジェクトの描画コマンド
-	///
-#ifdef _DEBUG
-	/*ImGuiUtil::ImageWindow("rendertexture", postEffectManager_->GetRenderTextureHandle());
-	ImGuiUtil::ImageWindow("outlineRT", postEffectManager_->outlineRT_);
-	ImGuiUtil::ImageWindow("outlineGH", postEffectManager_->outlineGH_);*/
-#endif
-	// 通常の描画
-	/*postEffectManager_->BeginRenderToTexture();*/
+	// スカイボックス描画
 	SkyBoxManager::GetInstance()->Draw();
 
-
 	///
-	///	シャドウマップ描画
+	///	シャドウマップ描画処理
 	/// 
-	
-	// シャドウマップ用PSOをセット
-	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowPSO());
-
-	// Viewport / Scissor の設定
-	D3D12_VIEWPORT vp{};
-	vp.TopLeftX = 0.0f;
-	vp.TopLeftY = 0.0f;
-	vp.Width = static_cast<float>(Window::GetWidth());
-	vp.Height = static_cast<float>(Window::GetHeight());
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	dxBase->GetCommandList()->RSSetViewports(1, &vp);
-
-	D3D12_RECT sc{};
-	sc.left = 0;
-	sc.top = 0;
-	sc.right = static_cast<LONG>(Window::GetWidth());
-	sc.bottom = static_cast<LONG>(Window::GetHeight());
-	dxBase->GetCommandList()->RSSetScissorRects(1, &sc);
-
-	// シャドウマップ書き込み前に書き込み状態に遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 	// ライトカメラの更新
-	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction); // directionを設定
-	
-	// プレイヤーに追従するBB
+	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
+
+	// プレイヤー中心のBBを生成してライトカメラの行列更新（あとで整理）
 	LightCamera::BoundingBox playerCenterBB;
 	playerCenterBB.SetCenterExtents(player_->GetTranslate(), {30.0f, 10.0f, 30.0f});
+	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB);
 
-	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB); // 行列の更新
-	// シャドウマップDSVをセット
-	ShadowMapManager::GetInstance()->SetShadowDSV(shadowMapHandle_);
-	// シャドウマップをクリア
-	ShadowMapManager::GetInstance()->ClearShadowMap(shadowMapHandle_);
+	// シャドウマップ描画開始
+	ShadowMapManager::GetInstance()->BeginShadowPass(shadowMapHandle_);
 
-	//// シャドウマップ描画対象オブジェクト描画
+	// 通常オブジェクト描画
+	//----------------------------------//
 
 	obstacleManager_->DrawShadow(player_->GetTranslate());
-
+	enemyManager_->DrawShadow();
 
 	//----------------------------------//
 
-	// シャドウマップ用PSOをセット
+	// アニメーションモデル用PSOをセット
 	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
 
-	//// シャドウマップ描画対象スキニングオブジェクト描画
+	// アニメーションモデル描画
+	//----------------------------------//
 
 	player_->DrawShadow();
 
 	//----------------------------------//
 	
-	// 描画後、SRVとして使えるように遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	// ShadowMapをバインド
-	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowMapHandle_);
-	// LightCameraの定数バッファを送信（PixelShader内で使用）
-	LightCamera::GetInstance()->TransferConstantBuffer();
+	// シャドウマップ描画終了
+	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
 
 	///
-	///	通常描画
+	///	
 	/// 
 
-	// バックバッファ用PSOに切り替え
-	dxBase->GetCommandList()->SetPipelineState(dxBase->GetPipelineState());
-	// バックバッファDSVに切り替え
-	UINT backBufferIndex = dxBase->GetSwapChain()->GetCurrentBackBufferIndex();
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = dxBase->GetRTVHandle(backBufferIndex);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dxBase->GetDSVHeap()->GetCPUHandle(0);
-	dxBase->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+	///
+	///	通常オブジェクト描画処理
+	/// 
 
-	// オブジェクト通常描画
+	// オブジェクト通常描画処理
 	field_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
@@ -294,20 +262,8 @@ void GamePlayScene::Draw() {
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 	/*WaypointManager::GetInstance()->Draw();*/
-
 	ParticleEffectManager::GetInstance()->Draw();
-
-	//// アウトライン適用パス
-	//postEffectManager_->BeginRenderToOutlineTexture();
-	//player_->Draw();
-	//enemyManager_->Draw();
-
-	//// アウトライン生成 + 描画
-	//postEffectManager_->ApplyOutline();
-	//postEffectManager_->DrawOutline();
-
-	// Lineの描画コマンドを発行
-	LineDrawer::GetInstance()->Render();
+	LineDrawer::GetInstance()->Draw();
 
 	///
 	///	↑ ここまで3Dオブジェクトの描画コマンド
@@ -331,14 +287,24 @@ void GamePlayScene::Draw() {
 	/// ↑ ここまでスプライトの描画コマンド
 	///
 
-	///
-	///	デバッグ表示
-	/// 
+#ifdef _DEBUG
+	// デバッグ表示
+	Debug();
+#endif
+	// ImGuiの内部コマンドを生成する
+	ImguiWrapper::Render(dxBase->GetCommandList());
+	// 描画後処理
+	dxBase->PostDraw();
+	// フレーム終了処理
+	dxBase->EndFrame();
+}
+
+void GamePlayScene::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("warningScatter", { 0.0f, 2.0f, -20.0f }, 20);
+		ParticleEffectManager::GetInstance()->Emit("smoke", { 0.0f, 2.0f, -20.0f }, 20);
 	}
 
 	if (ImGui::Button("bulletClear")) {
@@ -352,6 +318,7 @@ void GamePlayScene::Draw() {
 
 	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
+	ImGui::DragFloat("DirectionalLight : intensity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
 
 	if (ImGui::Button("TITLE")) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");
@@ -370,14 +337,7 @@ void GamePlayScene::Draw() {
 	enemyManager_->Debug();
 	WaypointManager::GetInstance()->Debug();
 	ResultStats::GetInstance()->Debug();
-
 #endif
-	// ImGuiの内部コマンドを生成する
-	ImguiWrapper::Render(dxBase->GetCommandList());
-	// 描画後処理
-	dxBase->PostDraw();
-	// フレーム終了処理
-	dxBase->EndFrame();
 }
 
 #ifdef _DEBUG

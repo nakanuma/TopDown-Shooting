@@ -16,6 +16,11 @@
 #include <Engine/Util/TimeManager.h>
 #include <Engine/Texture/PostEffectManager.h>
 
+// Application
+#include <src/Game/Loader/Loader.h>
+#include <src/Game/Obstacle/Manager/ObstacleManager.h>
+#include <src/Game/Field/Field.h>
+
 // タイトルシーン
 class TitleScene : public BaseScene {
 public:
@@ -30,6 +35,9 @@ public:
 
 	// 描画
 	void Draw() override;
+
+	// 中心を向きながらカメラ回転
+	void UpdateOrbitCamera(const Float3& target, float radius, float height, float speed);
 
 private:
 #ifdef _DEBUG
@@ -47,6 +55,8 @@ private:
 	Input* input = nullptr;
 	LightManager* lightManager = nullptr;
 
+
+
 	///
 	/// スプライト
 	///
@@ -58,12 +68,18 @@ private:
 	///	オブジェクト
 	/// 
 
-	ModelManager::ModelData modelDiorama_;
-	std::unique_ptr<Object3D> objectDiorama_;
+	// 床
+	std::unique_ptr<Field> field_;
+	// 障害物の管理クラス
+	std::unique_ptr<ObstacleManager> obstacleManager_;
 
 	///
 	/// その他
 	///
 
+	// ローダー
+	std::unique_ptr<Loader> loader_;
+
+	// シャドウマップ
 	int32_t shadowMapHandle_;
 };

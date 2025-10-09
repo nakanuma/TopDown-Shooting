@@ -3,6 +3,7 @@
 // Engine
 #include <Collider/CollisionManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <Engine/3D/LineDrawer.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -40,6 +41,9 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	///	パラメーター設定
 	///
 
+	// 前フレーム位置には現在位置と同じ値を入れておく
+	previousPos_ = objectBullet_->transform_.translate;
+
 	// 攻撃力
 	damage_ = 5;
 
@@ -54,8 +58,17 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 // 更新処理
 // ---------------------------------------------------------
 void EnemyBullet::Update() {
+	// 前フレーム位置を保存
+	previousPos_ = objectBullet_->transform_.translate;
+
 	// 移動処理
 	objectBullet_->transform_.translate += velocity_;
+
+	// 履歴に追加
+	trailPoints_.push_back(objectBullet_->transform_.translate);
+	if (trailPoints_.size() > kMaxTrailPoints) {
+		trailPoints_.pop_front();
+	}
 
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
@@ -78,6 +91,9 @@ void EnemyBullet::Update() {
 void EnemyBullet::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
+
+	// 弾道の描画
+	DrawTrail();
 }
 
 // ---------------------------------------------------------
@@ -112,5 +128,27 @@ void EnemyBullet::UpdateCollider() {
 		sphere->center_ = objectBullet_->transform_.translate;
 		// 半径
 		sphere->radius_ = radius_;
+	}
+}
+
+void EnemyBullet::DrawTrail() {
+	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	for (size_t i = 1; i < trailPoints_.size(); ++i) {
+		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
+		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1); // 新しい
+
+		// 線の両端の色を補間
+		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
+		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
+
+		LineDrawer::GetInstance()->RegisterTracer(
+			trailPoints_[i - 1],
+			trailPoints_[i],
+			0.5f,
+			c1,
+			c0
+		);
 	}
 }

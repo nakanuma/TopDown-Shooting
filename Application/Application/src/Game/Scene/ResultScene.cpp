@@ -150,10 +150,7 @@ void ResultScene::Draw() {
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
 
-	// 描画後、SRVとして使えるように遷移
-	ShadowMapManager::GetInstance()->TransitionShadowResource(dxBase->GetCommandList(), shadowMapHandle_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	// ShadowMapをバインド
-	TextureManager::SetDescriptorTable(12, dxBase->GetCommandList(), shadowMapHandle_);
+	
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド

@@ -108,6 +108,7 @@ void ImmobileEnemy::Update() {
 	///
 
 	objectEnemy_->UpdateMatrix();
+	objectEnemy_->UpdateShadowMatrix();
 
 	///
 	///	ビヘイビアツリーを評価
@@ -136,6 +137,14 @@ void ImmobileEnemy::Update() {
 void ImmobileEnemy::Draw() {
 	// オブジェクト描画
 	objectEnemy_->Draw();
+}
+
+// ---------------------------------------------------------
+// シャドウマップ描画処理
+// ---------------------------------------------------------
+void ImmobileEnemy::DrawShadow()
+{
+	objectEnemy_->DrawShadow();
 }
 
 // ---------------------------------------------------------

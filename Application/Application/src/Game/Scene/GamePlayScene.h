@@ -40,6 +40,9 @@ public:
 	// 描画
 	void Draw() override;
 
+	// デバッグ
+	void Debug();
+
 private:
 #ifdef _DEBUG
 	bool useDebugCamera = false;    // デバッグカメラが有効か
@@ -86,5 +89,5 @@ private:
 	// ポストエフェクト
 	std::unique_ptr<PostEffectManager> postEffectManager_;
 
-	int32_t shadowMapHandle_;
+	uint32_t shadowMapHandle_;
 };
