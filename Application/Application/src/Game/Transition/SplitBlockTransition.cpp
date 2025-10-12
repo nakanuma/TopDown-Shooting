@@ -48,10 +48,23 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.delay = RandomGenerator::GetInstance()->RandomValue(0.0f, 0.25f);
 		block.progress = 0.0f;
 
-		// 色を黄色からオレンジのグラデーションになるよう設定
+		// 色をグラデーションになるよう設定
 		float t = static_cast<float>(i) / static_cast<float>(splitCount_ - 1);
-		block.top->SetColor({1.0f, 1.0f - 0.5f * t, 0.0f, 1.0f });
-		block.bottom->SetColor({ 1.0f, 1.0f - 0.5f * t, 0.0f, 1.0f });
+
+		float rStart = 78.0f / 255.0f;
+		float gStart = 103.0f / 255.0f;
+		float bStart = 176.0f / 255.0f;
+
+		float rEnd = 71.0f / 255.0f;
+		float gEnd = 68.0f / 255.0f;
+		float bEnd = 136.0f / 255.0f;
+
+		float r = rStart + (rEnd - rStart) * t;
+		float g = gStart + (gEnd - gStart) * t;
+		float b = bStart + (bEnd - bStart) * t;
+
+		block.top->SetColor({ r, g, b, 1.0f });
+		block.bottom->SetColor({ r, g, b, 1.0f });
 
 		blocks_.emplace_back(std::move(block));
 	}
@@ -147,7 +160,7 @@ void SplitBlockTransition::Draw()
 
 		// 開く（中央から外側へ）
 		if (state_ == State::Open) {
-			easedT = Easing::EaseOutExpo(t);
+			easedT = Easing::EaseInOutExpo(t);
 
 			topY = std::round(-block.top->GetSize().y * easedT);
 			bottomY = std::round(screenHeight - block.bottom->GetSize().y * (1.0f - easedT));

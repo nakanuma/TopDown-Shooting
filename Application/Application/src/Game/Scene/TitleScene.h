@@ -46,6 +46,10 @@ private:
 
 	void DebugCameraUpdate(Input* input);
 #endif
+	/// <summary>
+	/// カーソルがクライアント領域内にあるか確認
+	/// </summary>
+	bool IsInsideClientCursor();
 
 private:
 	std::unique_ptr<Camera> camera = nullptr;
@@ -54,8 +58,6 @@ private:
 	std::unique_ptr<SoundManager> soundManager = nullptr;
 	Input* input = nullptr;
 	LightManager* lightManager = nullptr;
-
-
 
 	///
 	/// スプライト

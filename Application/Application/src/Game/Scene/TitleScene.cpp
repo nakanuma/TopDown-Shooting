@@ -20,7 +20,7 @@ void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
+	camera = std::make_unique<Camera>(Float3{ 0.0f, 30.0f, -50.0f }, Float3{ 0.5f, 0.0f, 0.0f }, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// デバッグカメラの生成と初期化
@@ -69,7 +69,7 @@ void TitleScene::Initialize() {
 	///
 	///	オブジェクト
 	/// 
-	
+
 	// 床生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
@@ -91,7 +91,7 @@ void TitleScene::Initialize() {
 	///
 	///	フェード
 	/// 
-	
+
 	SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());
 
 	///
@@ -110,14 +110,14 @@ void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
 	// 中心を向きながらカメラ回転
-	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
+	UpdateOrbitCamera({ 0.0f, 0.0f, 0.0f }, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished()) {
+	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && IsInsideClientCursor()) {
 		SplitBlockTransition::GetInstance()->StartClose(1.0f, []() {
 			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 			ParticleEffectManager::GetInstance()->Clear();
-		}, 0.5f);
+			}, 0.5f);
 	}
 
 	///
@@ -197,7 +197,7 @@ void TitleScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -217,7 +217,7 @@ void TitleScene::Draw() {
 
 	// BBを生成してライトカメラの行列更新（あとで整理）
 	LightCamera::BoundingBox sceneBB;
-	sceneBB.SetCenterExtents({0.0f, 0.0f, 0.0f}, {30.0f, 10.0f, 30.0f});
+	sceneBB.SetCenterExtents({ 0.0f, 0.0f, 0.0f }, { 30.0f, 10.0f, 30.0f });
 	LightCamera::GetInstance()->UpdateViewProjection(sceneBB);
 
 	// シャドウマップ描画開始
@@ -226,7 +226,7 @@ void TitleScene::Draw() {
 	// 通常オブジェクト描画
 	//----------------------------------//
 
-	obstacleManager_->DrawShadow({0.0f, 0.0f, 0.0f});
+	obstacleManager_->DrawShadow({ 0.0f, 0.0f, 0.0f });
 
 	//----------------------------------//
 
@@ -244,9 +244,9 @@ void TitleScene::Draw() {
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
-	
+
 	field_->Draw();
-	obstacleManager_->Draw({0.0f, 0.0f, 0.0f});
+	obstacleManager_->Draw({ 0.0f, 0.0f, 0.0f });
 
 	ParticleEffectManager::GetInstance()->Draw();
 
@@ -296,13 +296,6 @@ void TitleScene::Draw() {
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
 	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
 	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);*/
-
-	if(ImGui::Button("FadeIn")){
-		SplitBlockTransition::GetInstance()->StartFadeIn(0.5f, 0.5f);
-	}
-	if (ImGui::Button("FadeOut")) {
-		SplitBlockTransition::GetInstance()->StartFadeOut(0.5f, []() {}, 0.5f);
-	}
 
 	ImGui::Separator();
 
@@ -362,3 +355,27 @@ void TitleScene::DebugCameraUpdate(Input* input) {
 	prevUseDebugCamera = useDebugCamera;
 }
 #endif // _DEBUG
+
+bool TitleScene::IsInsideClientCursor()
+{
+	// ウインドウハンドル取得
+	HWND hwnd = Window::GetHandle();
+
+	// マウス位置の取得
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	// クライアント座標に変換
+	ScreenToClient(hwnd, &cursorPos);
+
+	// クライアント領域の取得
+	RECT clientRect;
+	GetClientRect(hwnd, &clientRect);
+
+	// クライアント領域内にあるか判定
+	return 
+	{
+		cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) &&
+		cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top) 
+	};
+}
