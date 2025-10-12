@@ -19,7 +19,7 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
-#include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/System/ResultStats.h>
 
@@ -61,6 +61,9 @@ void GamePlayScene::Initialize() {
 
 	// 最初にコライダーのクリア
 	CollisionManager::GetInstance()->Clear();
+
+	// パーティクルのクリア
+	ParticleEffectManager::GetInstance()->Clear();
 
 	/* ステージデータ */
 
@@ -109,8 +112,8 @@ void GamePlayScene::Initialize() {
 	postEffectManager_->SetEffectType(PostEffectType::Vignette);
 
 	// フェード
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
-	FadeTransition::GetInstance()->StartFadeIn(0.5f, 0.5f);
+	/*SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());*/
+	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -155,7 +158,7 @@ void GamePlayScene::Update() {
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
 	// フェード更新
-	FadeTransition::GetInstance()->Update();
+	SplitBlockTransition::GetInstance()->Update();
 	// ウェイポイントの更新
 	WaypointManager::GetInstance()->Update();
 
@@ -281,7 +284,7 @@ void GamePlayScene::Draw() {
 	// プレイヤーUI描画
 	player_->DrawUI();
 	// フェード描画
-	FadeTransition::GetInstance()->Draw();
+	SplitBlockTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
@@ -330,13 +333,13 @@ void GamePlayScene::Debug() {
 	ImGui::End();
 
 	/*Debug*/
-	CollisionManager::GetInstance()->Debug();
+	/*CollisionManager::GetInstance()->Debug();
 	player_->Debug();
 	obstacleManager_->Debug();
 	teleporterManager_->Debug();
 	enemyManager_->Debug();
 	WaypointManager::GetInstance()->Debug();
-	ResultStats::GetInstance()->Debug();
+	ResultStats::GetInstance()->Debug();*/
 #endif
 }
 

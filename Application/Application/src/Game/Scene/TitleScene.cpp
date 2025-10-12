@@ -13,7 +13,7 @@
 #include <RandomGenerator.h>
 
 // Application
-#include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
 
 void TitleScene::Initialize() {
@@ -92,8 +92,7 @@ void TitleScene::Initialize() {
 	///	フェード
 	/// 
 	
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
-	FadeTransition::GetInstance()->StartFadeIn(1.0f);
+	SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());
 
 	///
 	///	その他
@@ -114,9 +113,10 @@ void TitleScene::Update() {
 	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(0.5f, []() {
+	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished()) {
+		SplitBlockTransition::GetInstance()->StartClose(1.0f, []() {
 			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+			ParticleEffectManager::GetInstance()->Clear();
 		}, 0.5f);
 	}
 
@@ -155,7 +155,7 @@ void TitleScene::Update() {
 	spriteStartButton_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 	// フェード更新
-	FadeTransition::GetInstance()->Update();
+	SplitBlockTransition::GetInstance()->Update();
 
 	///
 	///	一旦決め打ちでパーティクル発生
@@ -265,7 +265,7 @@ void TitleScene::Draw() {
 	spriteStartButton_->Draw();
 
 	// フェード描画
-	FadeTransition::GetInstance()->Draw();
+	SplitBlockTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
@@ -292,16 +292,19 @@ void TitleScene::Draw() {
 
 	ImGui::Separator();
 
-	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
+	/*ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
 	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
-	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
+	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);*/
+
+	if(ImGui::Button("FadeIn")){
+		SplitBlockTransition::GetInstance()->StartFadeIn(0.5f, 0.5f);
+	}
+	if (ImGui::Button("FadeOut")) {
+		SplitBlockTransition::GetInstance()->StartFadeOut(0.5f, []() {}, 0.5f);
+	}
 
 	ImGui::Separator();
-
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, {1.0f, 0.0f, 0.0f});
-	}
 
 	ImGui::End();
 

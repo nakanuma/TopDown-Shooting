@@ -255,6 +255,9 @@
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp">
       <Filter>src\Game\Particles\Spark</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h">
@@ -382,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h">
       <Filter>src\Game\Particles\Spark</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Transition\SplitBlockTransition.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

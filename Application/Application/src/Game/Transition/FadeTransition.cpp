@@ -7,6 +7,7 @@
 // Engine
 #include <TextureManager.h>
 #include <Engine/Util/TimeManager.h>
+#include "SplitBlockTransition.h"
 
 // ---------------------------------------------------------
 // インスタンス取得

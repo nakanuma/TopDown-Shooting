@@ -7,6 +7,7 @@
 // Engine
 #include <SpriteCommon.h>
 #include <Sprite.h>
+#include "SplitBlockTransition.h"
 
 /// <summary>
 /// フェード
