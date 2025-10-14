@@ -4,16 +4,16 @@
 #include <numbers>
 
 // Engine
-#include <ImguiWrapper.h>
-#include <SceneManager.h>
-#include <Engine/Util/TimeManager.h>
 #include <Engine/3D/LightCamera.h>
-#include <ShadowMapManager.h>
+#include <Engine/Util/TimeManager.h>
+#include <ImguiWrapper.h>
 #include <ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
+#include <SceneManager.h>
+#include <ShadowMapManager.h>
 
 // Application
-#include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
 
 void TitleScene::Initialize() {
@@ -51,25 +51,25 @@ void TitleScene::Initialize() {
 
 	///
 	///	スプライト生成
-	/// 
+	///
 
 	// タイトル
 	uint32_t textureTitle = TextureManager::Load("resources/Images/UI/title.png", dxBase->GetDevice());
 	spriteTitle_ = std::make_unique<Sprite>();
 	spriteTitle_->Initialize(spriteCommon.get(), textureTitle);
-	spriteTitle_->SetPosition({ 640.0f, 140.0f });
-	spriteTitle_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteTitle_->SetPosition({640.0f, 140.0f});
+	spriteTitle_->SetAnchorPoint({0.5f, 0.5f});
 
 	uint32_t textureStart = TextureManager::Load("resources/Images/UI/startButton.png", dxBase->GetDevice());
 	spriteStartButton_ = std::make_unique<Sprite>();
 	spriteStartButton_->Initialize(spriteCommon.get(), textureStart);
-	spriteStartButton_->SetPosition({ 640.0f, 580.0f });
-	spriteStartButton_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteStartButton_->SetPosition({640.0f, 580.0f});
+	spriteStartButton_->SetAnchorPoint({0.5f, 0.5f});
 
 	///
 	///	オブジェクト
-	/// 
-	
+	///
+
 	// 床生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();
@@ -83,27 +83,26 @@ void TitleScene::Initialize() {
 
 	///
 	///	スプライト
-	/// 
+	///
 
 	spriteTitle_->Update();
 	spriteStartButton_->Update();
 
 	///
 	///	フェード
-	/// 
-	
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
-	FadeTransition::GetInstance()->StartFadeIn(1.0f);
+	///
+
+	SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());
 
 	///
 	///	その他
-	/// 
+	///
 
 	// シャドウマップ生成
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 
 	// 平行光源の初期値設定
-	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = {0.367f, -0.653f, -0.662f};
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 0.4f;
 }
 
@@ -114,27 +113,31 @@ void TitleScene::Update() {
 	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(0.5f, []() {
-			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-		}, 0.5f);
+	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && IsInsideClientCursor()) {
+		SplitBlockTransition::GetInstance()->StartClose(
+		    1.0f,
+		    []() {
+			    SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+			    ParticleEffectManager::GetInstance()->Clear();
+		    },
+		    0.5f);
 	}
 
 	///
 	///	オブジェクト更新
-	/// 
+	///
 
 	// 床の更新
 	field_->Update();
 	// 障害物の更新
-	obstacleManager_->Update({ 0.0f, 0.0f, 0.0f });
+	obstacleManager_->Update({0.0f, 0.0f, 0.0f});
 
 	// パーティクルエフェクトマネージャー更新
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	///
 	///	スプライト更新
-	/// 
+	///
 
 	spriteTitle_->Update();
 
@@ -142,9 +145,8 @@ void TitleScene::Update() {
 	static float floatTimer = 0.0f;
 	floatTimer += TimeManager::GetInstance()->GetDeltaTime();
 	float floatAmount = sinf(floatTimer * 1.2f) * 4.0f;
-	Float3 basePos = { 640.0f, 140.0f };
-	spriteTitle_->SetPosition({ basePos.x, basePos.y + floatAmount });
-
+	Float3 basePos = {640.0f, 140.0f};
+	spriteTitle_->SetPosition({basePos.x, basePos.y + floatAmount});
 
 	spriteStartButton_->Update();
 
@@ -152,22 +154,22 @@ void TitleScene::Update() {
 	static float blinkTimer = 0.0f;
 	blinkTimer += TimeManager::GetInstance()->GetDeltaTime();
 	float alpha = (sinf(blinkTimer * 4.0f) + 1.0f) / 2.0f;
-	spriteStartButton_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+	spriteStartButton_->SetColor({1.0f, 1.0f, 1.0f, alpha});
 
 	// フェード更新
-	FadeTransition::GetInstance()->Update();
+	SplitBlockTransition::GetInstance()->Update();
 
 	///
 	///	一旦決め打ちでパーティクル発生
-	/// 
+	///
 
 	// タンク煙
 	static int smokeCounter = 0;
 	smokeCounter++;
 	if (smokeCounter % 5 == 0) {
-		ParticleEffectManager::GetInstance()->Emit("smoke", { 12.0f, 4.0f, -12.0f }, 1);
-		ParticleEffectManager::GetInstance()->Emit("smoke", { -14.0f, 4.0f, 12.0f }, 1);
-		ParticleEffectManager::GetInstance()->Emit("smoke", { 34.0f, 4.0f, 8.0f }, 1);
+		ParticleEffectManager::GetInstance()->Emit("smoke", {12.0f, 4.0f, -12.0f}, 1);
+		ParticleEffectManager::GetInstance()->Emit("smoke", {-14.0f, 4.0f, 12.0f}, 1);
+		ParticleEffectManager::GetInstance()->Emit("smoke", {34.0f, 4.0f, 8.0f}, 1);
 	}
 
 	// タンク火花
@@ -175,9 +177,9 @@ void TitleScene::Update() {
 	static int nextSparkInterval = 0;
 	sparkCounter++;
 	if (sparkCounter >= nextSparkInterval) {
-		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, { 1.0f, 0.0f, 0.0f });
-		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 3.0f, 11.0f }, 5, { -1.0f, 0.0f, 0.0f });
-		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 4.0f, -26.0f }, 5, { -1.0f, 0.0f, 0.0f });
+		ParticleEffectManager::GetInstance()->Emit("spark", {25.0f, 4.0f, 16.0f}, 5, {1.0f, 0.0f, 0.0f});
+		ParticleEffectManager::GetInstance()->Emit("spark", {-31.0f, 3.0f, 11.0f}, 5, {-1.0f, 0.0f, 0.0f});
+		ParticleEffectManager::GetInstance()->Emit("spark", {-31.0f, 4.0f, -26.0f}, 5, {-1.0f, 0.0f, 0.0f});
 
 		// 次の間隔をランダムに設定
 		nextSparkInterval = RandomGenerator::GetInstance()->RandomValue(20, 50);
@@ -210,7 +212,7 @@ void TitleScene::Draw() {
 
 	///
 	///	シャドウマップ描画
-	/// 
+	///
 
 	// ライトカメラの更新
 	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
@@ -244,7 +246,7 @@ void TitleScene::Draw() {
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
 	///
-	
+
 	field_->Draw();
 	obstacleManager_->Draw({0.0f, 0.0f, 0.0f});
 
@@ -265,7 +267,7 @@ void TitleScene::Draw() {
 	spriteStartButton_->Draw();
 
 	// フェード描画
-	FadeTransition::GetInstance()->Draw();
+	SplitBlockTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
@@ -292,16 +294,12 @@ void TitleScene::Draw() {
 
 	ImGui::Separator();
 
-	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
+	/*ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
 	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
-	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);
+	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);*/
 
 	ImGui::Separator();
-
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, {1.0f, 0.0f, 0.0f});
-	}
 
 	ImGui::End();
 
@@ -314,17 +312,12 @@ void TitleScene::Draw() {
 	dxBase->EndFrame();
 }
 
-void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float height, float speed)
-{
+void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float height, float speed) {
 	static float angle = 0.0f;
 	angle += TimeManager::GetInstance()->GetDeltaTime() * speed;
 
 	// 新しいカメラ位置を円運動で計算
-	Float3 cameraPos = {
-		std::cosf(angle) * radius,
-		height,
-		std::sinf(angle) * radius
-	};
+	Float3 cameraPos = {std::cosf(angle) * radius, height, std::sinf(angle) * radius};
 	camera->transform.translate = cameraPos;
 
 	// ターゲットを向くように回転を計算
@@ -359,3 +352,22 @@ void TitleScene::DebugCameraUpdate(Input* input) {
 	prevUseDebugCamera = useDebugCamera;
 }
 #endif // _DEBUG
+
+bool TitleScene::IsInsideClientCursor() {
+	// ウインドウハンドル取得
+	HWND hwnd = Window::GetHandle();
+
+	// マウス位置の取得
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	// クライアント座標に変換
+	ScreenToClient(hwnd, &cursorPos);
+
+	// クライアント領域の取得
+	RECT clientRect;
+	GetClientRect(hwnd, &clientRect);
+
+	// クライアント領域内にあるか判定
+	return {cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) && cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top)};
+}

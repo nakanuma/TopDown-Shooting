@@ -8,7 +8,7 @@
 #include <Engine/Math/MyMath.h>
 
 /// <summary>
-/// JSONファイルから読み込んだデータを保持
+/// JSONファイルから読み込んだステージデータを管理するクラス
 /// </summary>
 class Loader {
 public:
@@ -19,7 +19,7 @@ public:
 		Float3 scale;
 
 		Float3 colliderSize; // 障害物で使用
-		std::string pairID; // テレポーターで使用
+		std::string pairID;  // テレポーターで使用
 	};
 
 public:

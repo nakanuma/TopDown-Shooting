@@ -3,20 +3,16 @@
 // Engine
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void GroundWarning::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model)
-{
+void GroundWarning::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
-	/// 
+	///
 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = { radius_, radius_, radius_ };
-	objectBullet_->materialCB_.data_->color = { 1.0f, 1.0f, 1.0f, 0.5f };
+	objectBullet_->transform_.scale = {radius_, radius_, radius_};
+	objectBullet_->materialCB_.data_->color = {1.0f, 1.0f, 1.0f, 0.5f};
 
 	///
 	///	コライダー生成
@@ -40,14 +36,10 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	speed_ = 0.0f;
 
 	// 速度
-	velocity_ = { 0.0f, 0.0f, 0.0f };
+	velocity_ = {0.0f, 0.0f, 0.0f};
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void GroundWarning::Update()
-{
+void GroundWarning::Update() {
 	// 時間経過による削除
 	elapsedTime_ += 1.0f / 60.0f;
 	if (elapsedTime_ > kMaxLifeTime) {
@@ -62,7 +54,7 @@ void GroundWarning::Update()
 	if (!colliderEnabled_ && elapsedTime_ >= hitDelay_) {
 		colliderEnabled_ = true;
 
-		Float3 offset = { 0.0f, 1.5f, 0.0f };
+		Float3 offset = {0.0f, 1.5f, 0.0f};
 		// 煙パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);
 		// 飛散パーティクル発生
@@ -76,20 +68,12 @@ void GroundWarning::Update()
 	objectBullet_->UpdateMatrix();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void GroundWarning::Draw()
-{
+void GroundWarning::Draw() {
 	// オブジェクト描画
 	/*objectBullet_->Draw();*/
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
-void GroundWarning::OnCollision(Collider* other)
-{
+void GroundWarning::OnCollision(Collider* other) {
 	// vs Player
 	if (other->GetTag() == "Player") {
 		// 死亡させる
@@ -99,11 +83,7 @@ void GroundWarning::OnCollision(Collider* other)
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
-void GroundWarning::UpdateCollider()
-{
+void GroundWarning::UpdateCollider() {
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
 		// 中心
 		sphere->center_ = objectBullet_->transform_.translate;

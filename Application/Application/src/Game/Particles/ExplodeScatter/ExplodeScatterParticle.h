@@ -22,8 +22,7 @@ struct ExplodeScatterParticleData {
 /// <summary>
 /// ボスの地面警告攻撃の爆発後飛散パーティクル
 /// </summary>
-class ExplodeScatterParticle : public BaseParticleEffect<ExplodeScatterParticleData>
-{
+class ExplodeScatterParticle : public BaseParticleEffect<ExplodeScatterParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -41,4 +40,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(ExplodeScatterParticleData& p, float dt) override;
 };
-

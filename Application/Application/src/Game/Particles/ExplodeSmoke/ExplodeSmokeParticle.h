@@ -21,10 +21,9 @@ struct ExplodeSmokeParticleData {
 };
 
 /// <summary>
-/// 爆発後煙パーティクル
+/// ボスのミサイル爆発後の煙パーティクル
 /// </summary>
-class ExplodeSmokeParticle : public BaseParticleEffect<ExplodeSmokeParticleData>
-{
+class ExplodeSmokeParticle : public BaseParticleEffect<ExplodeSmokeParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -42,4 +41,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(ExplodeSmokeParticleData& p, float dt) override;
 };
-

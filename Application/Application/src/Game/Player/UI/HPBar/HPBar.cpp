@@ -6,9 +6,6 @@
 // Application
 #include <src/Game/Player/Player.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	///
 	/// HPバー（後景）
@@ -31,9 +28,6 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	spriteHPForeground_->SetColor({1.0f, 0.2f, 0.2f, 1.0f}); // 赤
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void HPBar::Update(const Player* player) {
 	///
 	/// HPバー（後景）
@@ -56,9 +50,6 @@ void HPBar::Update(const Player* player) {
 	spriteHPForeground_->Update();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void HPBar::Draw() {
 	///
 	///	HPバー（後景）

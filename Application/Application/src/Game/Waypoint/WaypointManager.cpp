@@ -1,27 +1,20 @@
 #include "WaypointManager.h"
 
 // C++
-#include <queue>
 #include <algorithm>
+#include <queue>
 #include <unordered_map>
 
 // Engine
-#include <Engine/Wrapper/ImguiWrapper.h>
 #include <Engine/Collider/CollisionManager.h>
+#include <Engine/Wrapper/ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// インスタンス取得
-// ---------------------------------------------------------
 WaypointManager* WaypointManager::GetInstance() {
 	static WaypointManager instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
-{
+void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	waypoints_.clear();
 
 	uint32_t waypointID = 0; // カウント
@@ -31,7 +24,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 	// 左下と右上を指定
 	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};
-	Float3 topRight = { 70.0f, 2.0f, 120.0f };
+	Float3 topRight = {70.0f, 2.0f, 120.0f};
 	// 分割数（隣接ノードの距離に合わせる）
 	float spacing = maxDistance_;
 
@@ -40,7 +33,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 	uint32_t numZ = static_cast<uint32_t>(std::floor((topRight.z - bottomLeft.z) / spacing)) + 1;
 
 	// 生成時の衝突判定を行うコライダータグ
-	std::unordered_set<std::string> checkTags = { "Obstacle" };
+	std::unordered_set<std::string> checkTags = {"Obstacle"};
 
 	for (uint32_t x = 0; x < numX; ++x) {
 		for (uint32_t z = 0; z < numZ; ++z) {
@@ -63,11 +56,7 @@ void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas)
 	ComputeNeighbors();
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void WaypointManager::Update()
-{
+void WaypointManager::Update() {
 	for (auto& wp : waypoints_) {
 		wp->Update();
 	}
@@ -76,8 +65,7 @@ void WaypointManager::Update()
 /// <summary>
 /// 描画処理
 /// </summary>
-void WaypointManager::Draw()
-{
+void WaypointManager::Draw() {
 #ifdef _DEBUG
 	for (auto& wp : waypoints_) {
 		wp->Draw();
@@ -85,11 +73,7 @@ void WaypointManager::Draw()
 #endif
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
-void WaypointManager::Debug() 
-{
+void WaypointManager::Debug() {
 	ImGui::Begin("WaypointManager");
 
 	ImGui::Text("Total Waypoints : %zu", waypoints_.size());
@@ -132,8 +116,7 @@ void WaypointManager::Debug()
 	ImGui::End();
 }
 
-void WaypointManager::ComputeNeighbors()
-{
+void WaypointManager::ComputeNeighbors() {
 	for (auto& wpA : waypoints_) {
 		wpA->ClearNeighbors();
 
@@ -151,18 +134,11 @@ void WaypointManager::ComputeNeighbors()
 				continue;
 			}
 
-
 			// レイキャストで無視するコライダーリスト
-			std::unordered_set<std::string> ignoreTags = { "Player" };
+			std::unordered_set<std::string> ignoreTags = {"Player"};
 			// レイキャストで障害物チェック
 			RayCastHit hit{};
-			bool rayHit = CollisionManager::GetInstance()->RayCast(
-				wpA->GetPosition(),
-				Float3::Normalize(dir),
-				dist,
-				&hit,
-				ignoreTags
-			);
+			bool rayHit = CollisionManager::GetInstance()->RayCast(wpA->GetPosition(), Float3::Normalize(dir), dist, &hit, ignoreTags);
 
 			// ウェイポイント同士のレイが障害物に遮られているかチェック
 			if (rayHit && hit.hitCollider->GetTag() == "NormalObstacle") {
@@ -175,11 +151,7 @@ void WaypointManager::ComputeNeighbors()
 	}
 }
 
-// ---------------------------------------------------------
-// 最も近いウェイポイントを返す
-// ---------------------------------------------------------
-Waypoint* WaypointManager::FindClosestWaypoint(const Float3& pos)
-{
+Waypoint* WaypointManager::FindClosestWaypoint(const Float3& pos) {
 	Waypoint* closest = nullptr;
 	float minDist = 3.402823466e+38f; // 最初に必ず比較が行われるように安全のためfloatの最大値を入れておく
 
@@ -197,12 +169,9 @@ Waypoint* WaypointManager::FindClosestWaypoint(const Float3& pos)
 	return closest;
 }
 
-// ---------------------------------------------------------
-// A*アルゴリズムを用いた経路探索
-// ---------------------------------------------------------
-std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal)
-{
-	if (!start || !goal) return {};
+std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal) {
+	if (!start || !goal)
+		return {};
 
 	// 未探索ノードの管理を行う優先度付きキュー
 	std::priority_queue<NodeRecord, std::vector<NodeRecord>, std::greater<>> openList;
@@ -212,7 +181,7 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 	std::unordered_map<Waypoint*, float> costSoFar;
 
 	// 初期ノードの追加
-	openList.push({ start, nullptr, 0.0f, Float3::Length(goal->GetPosition() - start->GetPosition()) });
+	openList.push({start, nullptr, 0.0f, Float3::Length(goal->GetPosition() - start->GetPosition())});
 	cameFrom[start] = nullptr;
 	costSoFar[start] = 0.0f;
 
@@ -244,7 +213,7 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 				costSoFar[neighbor] = newCost;
 				// priorityを計算してオープンリストに追加
 				float priority = newCost + Float3::Length(neighbor->GetPosition() - goal->GetPosition());
-				openList.push({ neighbor, current.wp, newCost, priority });
+				openList.push({neighbor, current.wp, newCost, priority});
 				cameFrom[neighbor] = current.wp;
 			}
 		}

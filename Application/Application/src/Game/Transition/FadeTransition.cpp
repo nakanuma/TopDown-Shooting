@@ -5,37 +5,26 @@
 #include <algorithm>
 
 // Engine
-#include <TextureManager.h>
+#include "SplitBlockTransition.h"
 #include <Engine/Util/TimeManager.h>
+#include <TextureManager.h>
 
-// ---------------------------------------------------------
-// インスタンス取得
-// ---------------------------------------------------------
-FadeTransition* FadeTransition::GetInstance()
-{
+FadeTransition* FadeTransition::GetInstance() {
 	static FadeTransition instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void FadeTransition::Initialize(SpriteCommon* spriteCommon)
-{
+void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
 	uint32_t textureWhite = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
-	Float2 windowSize = { static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight()) };
+	Float2 windowSize = {static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())};
 
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(spriteCommon, textureWhite);
 	sprite_->SetSize(windowSize);
-	sprite_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+	sprite_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});
 }
 
-// ---------------------------------------------------------
-// フェードイン開始（暗い画面から徐々に見えるように）
-// ---------------------------------------------------------
-void FadeTransition::StartFadeIn(float duration, float delayBeforeStart)
-{
+void FadeTransition::StartFadeIn(float duration, float delayBeforeStart) {
 	state_ = State::FadeIn;
 	alpha_ = 1.0f;
 	duration_ = duration;
@@ -44,11 +33,7 @@ void FadeTransition::StartFadeIn(float duration, float delayBeforeStart)
 	onFadeComplete_ = nullptr;
 }
 
-// ---------------------------------------------------------
-// フェードアウト開始（徐々に暗くなるように）
-// ---------------------------------------------------------
-void FadeTransition::StartFadeOut(float duration, std::function<void()> onComplete, float delayAfterComplete)
-{
+void FadeTransition::StartFadeOut(float duration, std::function<void()> onComplete, float delayAfterComplete) {
 	state_ = State::FadeOut;
 	alpha_ = 0.0f;
 	duration_ = duration;
@@ -58,12 +43,9 @@ void FadeTransition::StartFadeOut(float duration, std::function<void()> onComple
 	onFadeComplete_ = onComplete;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void FadeTransition::Update() 
-{
-	if (state_ == State::None) return;
+void FadeTransition::Update() {
+	if (state_ == State::None)
+		return;
 
 	float dt = TimeManager::GetInstance()->GetDeltaTime();
 
@@ -72,7 +54,8 @@ void FadeTransition::Update()
 		// フェードイン前遅延待機
 		if (delayBeforeFadeIn_ > 0.0f) {
 			delayBeforeFadeIn_ -= dt;
-			if (delayBeforeFadeIn_ < 0.0f) delayBeforeFadeIn_ = 0.0f;
+			if (delayBeforeFadeIn_ < 0.0f)
+				delayBeforeFadeIn_ = 0.0f;
 
 			// 待機中は暗く
 			alpha_ = 1.0f;
@@ -122,13 +105,10 @@ void FadeTransition::Update()
 	sprite_->Update();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void FadeTransition::Draw() 
-{
-	if (state_ == State::None && alpha_ <= 0.0f) return;
+void FadeTransition::Draw() {
+	if (state_ == State::None && alpha_ <= 0.0f)
+		return;
 
-	sprite_->SetColor({ 0.0f, 0.0f, 0.0f, alpha_ });
+	sprite_->SetColor({0.0f, 0.0f, 0.0f, alpha_});
 	sprite_->Draw();
 }

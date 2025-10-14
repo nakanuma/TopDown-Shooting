@@ -7,25 +7,21 @@
 // Application
 #include <src/Game/Player/Player.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void HomingMissile::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model)
-{
+void HomingMissile::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
-	/// 
-	
+	///
+
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = { 0.5f, 0.5f, 0.5f };
-	objectBullet_->materialCB_.data_->color = { 0.5f, 0.5f, 0.5f, 1.0f };
+	objectBullet_->transform_.scale = {0.5f, 0.5f, 0.5f};
+	objectBullet_->materialCB_.data_->color = {0.5f, 0.5f, 0.5f, 1.0f};
 
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
 
 	///
 	///	コライダー生成
@@ -52,19 +48,15 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	velocity_ = direciton * speed_;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void HomingMissile::Update()
-{
+void HomingMissile::Update() {
 	///
 	///	移動処理
-	/// 
+	///
 
 	// プレイヤー方向
 	Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate;
 	toTarget = Float3::Normalize(toTarget);
-	
+
 	// 現在の移動方向ベクトル
 	Float3 currentDir = Float3::Normalize(velocity_);
 
@@ -81,11 +73,11 @@ void HomingMissile::Update()
 
 	///
 	///	弾の向きを進行方向へ向ける
-	/// 
-	
+	///
+
 	float yaw = std::atan2(newDir.x, newDir.z);
 	float pitch = -std::asin(newDir.y);
-	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
 
 	// パーティクル発生（後方から出るよう調整）
 	float offsetDistance = -3.0f;
@@ -112,20 +104,12 @@ void HomingMissile::Update()
 	objectBullet_->UpdateMatrix();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void HomingMissile::Draw()
-{
+void HomingMissile::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
-void HomingMissile::OnCollision(Collider* other)
-{
+void HomingMissile::OnCollision(Collider* other) {
 	Float3 bulletPos = this->objectBullet_->transform_.translate;
 
 	// vs Player
@@ -155,11 +139,7 @@ void HomingMissile::OnCollision(Collider* other)
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
-void HomingMissile::UpdateCollider()
-{
+void HomingMissile::UpdateCollider() {
 	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
 		Float3 center = objectBullet_->transform_.translate;
 		Float3 size = colliderSize_;

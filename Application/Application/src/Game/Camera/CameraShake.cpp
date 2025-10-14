@@ -3,17 +3,11 @@
 // C++
 #include <random>
 
-// ---------------------------------------------------------
-// シングルトンインスタンスの取得
-// ---------------------------------------------------------
 CameraShake* CameraShake::GetInstance() {
 	static CameraShake instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void CameraShake::Update() {
 	if (isShaking_) {
 		elapsedTime_ += kDeltaTime;
@@ -28,9 +22,6 @@ void CameraShake::Update() {
 	}
 }
 
-// ---------------------------------------------------------
-// シェイク開始
-// ---------------------------------------------------------
 void CameraShake::StartShake(float duration, float intensity) {
 	duration_ = duration;   // 継続時間セット
 	intensity_ = intensity; // 強度セット
@@ -38,9 +29,6 @@ void CameraShake::StartShake(float duration, float intensity) {
 	isShaking_ = true;      // シェイク開始
 }
 
-// ---------------------------------------------------------
-// シェイク適用
-// ---------------------------------------------------------
 void CameraShake::ApplyShake() {
 	// 残り時間に基づいて強度を線形に減少させる
 	float remainingTime = duration_ - elapsedTime_; // 残り時間

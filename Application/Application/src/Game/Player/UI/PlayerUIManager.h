@@ -6,13 +6,13 @@
 
 // Application
 #include <src/Game/Player/UI/HPBar/HPBar.h>
-#include <src/Game/Player/UI/Reticle/Reticle.h>
 #include <src/Game/Player/UI/OverheatGauge/OverheatGauge.h>
+#include <src/Game/Player/UI/Reticle/Reticle.h>
 
 class Player;
 
 /// <summary>
-/// PlayerUI管理クラス
+/// プレイヤーのUI管理クラス
 /// </summary>
 class PlayerUIManager {
 public:

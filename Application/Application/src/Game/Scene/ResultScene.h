@@ -13,13 +13,15 @@
 #include "SpriteCommon.h"
 #include "TextureManager.h"
 #include <Engine/Collider/CollisionManager.h>
-#include <Engine/Util/TimeManager.h>
 #include <Engine/Texture/PostEffectManager.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
 #include <src/Game/Utility/NumberSprite.h>
 
-// リザルトシーン
+/// <summary>
+/// リザルトシーン
+/// </summary>
 class ResultScene : public BaseScene {
 public:
 	// 初期化
@@ -52,8 +54,8 @@ private:
 
 	///
 	///	スプライト
-	/// 
-	
+	///
+
 	// 通常スプライト
 	std::unique_ptr<Sprite> spriteBackGround_;
 	std::unique_ptr<Sprite> spriteTitleButton_;

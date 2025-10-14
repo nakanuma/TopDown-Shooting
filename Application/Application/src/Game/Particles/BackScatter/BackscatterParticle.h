@@ -21,8 +21,7 @@ struct BackscatterParticleData {
 /// <summary>
 /// 後ろ方向に飛散するパーティクル。障害物や敵に弾が当たったときに発生
 /// </summary>
-class BackscatterParticle : public BaseParticleEffect<BackscatterParticleData>
-{
+class BackscatterParticle : public BaseParticleEffect<BackscatterParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -40,4 +39,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(BackscatterParticleData& p, float dt) override;
 };
-

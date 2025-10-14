@@ -5,25 +5,19 @@
 
 // Application
 #include <src/Game/Particles/Backscatter/BackscatterParticle.h>
-#include <src/Game/Particles/HomingMissile/MissileSmokeParticle.h>
-#include <src/Game/Particles/GroundWarning/RedCircleParticle.h>
-#include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>
 #include <src/Game/Particles/ExplodeScatter/ExplodeScatterParticle.h>
+#include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>
+#include <src/Game/Particles/GroundWarning/RedCircleParticle.h>
+#include <src/Game/Particles/HomingMissile/MissileSmokeParticle.h>
 
 #include <src/Game/Particles/Smoke/SmokeParticle.h>
 #include <src/Game/Particles/Spark/SparkParticle.h>
 
-// ---------------------------------------------------------
-// インスタンス取得
-// ---------------------------------------------------------
 ParticleEffectLoader* ParticleEffectLoader::GetInstance() {
 	static ParticleEffectLoader instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// パーティクルのモデル読み込み・登録
-// ---------------------------------------------------------
 void ParticleEffectLoader::LoadAndRegisterAll() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 

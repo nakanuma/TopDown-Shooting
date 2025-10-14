@@ -9,10 +9,9 @@
 #include <Engine/Collider/CollisionManager.h>
 
 /// <summary>
-/// テレポーター
+/// プレイヤーの使用するテレポーター
 /// </summary>
-class Teleporter : public ICollisionCallback
-{
+class Teleporter : public ICollisionCallback {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -39,7 +38,7 @@ public:
 	/// </summary>
 	/// <param name="id"></param>
 	void SetPairID(std::string id) { pairID_ = id; }
-	
+
 	/// <summary>
 	/// ペアIDを取得
 	/// </summary>
@@ -70,7 +69,7 @@ private:
 	std::unique_ptr<Object3D> object_;
 	// コライダー
 	std::unique_ptr<Collider> collider_;
-	Float3 colliderSize_ = { 3.0f, 0.5f, 3.0f };
+	Float3 colliderSize_ = {3.0f, 0.5f, 3.0f};
 
 	// 固有ID
 	std::string pairID_;

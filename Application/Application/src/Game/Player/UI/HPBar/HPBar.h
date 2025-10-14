@@ -7,7 +7,7 @@
 class Player;
 
 /// <summary>
-/// HPバー
+/// プレイヤーのHPバーUI
 /// </summary>
 class HPBar {
 public:

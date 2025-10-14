@@ -3,6 +3,9 @@
 // Engine
 #include <MyMath.h>
 
+/// <summary>
+/// 汎用ユーティリティクラス
+/// </summary>
 class Utility {
 public:
 	/// <summary>

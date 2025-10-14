@@ -21,8 +21,7 @@ struct RedCircleParticleData {
 /// <summary>
 /// ボスの警告攻撃の赤い円
 /// </summary>
-class RedCircleParticle : public BaseParticleEffect<RedCircleParticleData>
-{
+class RedCircleParticle : public BaseParticleEffect<RedCircleParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -40,4 +39,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(RedCircleParticleData& p, float dt) override;
 };
-

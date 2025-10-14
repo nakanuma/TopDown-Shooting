@@ -7,7 +7,7 @@
 #include <src/Game/Bullet/Base/Bullet.h>
 
 /// <summary>
-/// 敵弾
+/// 敵の通常弾
 /// </summary>
 class EnemyBullet : public Bullet, public ICollisionCallback {
 public:
@@ -62,5 +62,5 @@ private:
 
 	// 弾道用
 	std::deque<Float3> trailPoints_; // 過去位置履歴
-	size_t kMaxTrailPoints = 10; // 残す履歴数
+	size_t kMaxTrailPoints = 10;     // 残す履歴数
 };

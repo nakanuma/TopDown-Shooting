@@ -21,8 +21,7 @@ struct MissileSmokeParticleData {
 /// <summary>
 /// ボスの追尾ミサイルの尾から出る煙パーティクル
 /// </summary>
-class MissileSmokeParticle : public BaseParticleEffect<MissileSmokeParticleData>
-{
+class MissileSmokeParticle : public BaseParticleEffect<MissileSmokeParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -40,4 +39,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(MissileSmokeParticleData& p, float dt) override;
 };
-

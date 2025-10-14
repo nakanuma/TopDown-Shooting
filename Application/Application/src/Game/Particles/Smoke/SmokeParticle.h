@@ -21,10 +21,9 @@ struct SmokeParticleData {
 };
 
 /// <summary>
-/// タイトルのタンクから出る煙に使用
+/// タイトル画面のドラム缶から出る煙パーティクル
 /// </summary>
-class SmokeParticle : public BaseParticleEffect<SmokeParticleData>
-{
+class SmokeParticle : public BaseParticleEffect<SmokeParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -42,4 +41,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(SmokeParticleData& p, float dt) override;
 };
-

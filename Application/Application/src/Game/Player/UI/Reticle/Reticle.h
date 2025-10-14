@@ -5,7 +5,7 @@
 #include <SpriteCommon.h>
 
 /// <summary>
-/// レティクル
+/// プレイヤーのレティクルUI
 /// </summary>
 class Reticle {
 public:

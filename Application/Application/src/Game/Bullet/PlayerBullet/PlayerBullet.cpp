@@ -2,18 +2,15 @@
 
 // Engine
 #include <Collider/CollisionManager.h>
+#include <Easing.h>
+#include <Engine/3D/LineDrawer.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Util/RandomGenerator.h>
-#include <Engine/3D/LineDrawer.h>
 #include <MyMath.h>
-#include <Easing.h>
 
 // Externals
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
@@ -22,12 +19,12 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = { radius_, radius_, radius_ };
+	objectBullet_->transform_.scale = {radius_, radius_, radius_};
 
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
 
 	///
 	///	コライダー生成
@@ -57,9 +54,6 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	velocity_ = direciton * speed_;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void PlayerBullet::Update() {
 	// 前フレーム位置を保存
 	previousPos_ = objectBullet_->transform_.translate;
@@ -85,9 +79,6 @@ void PlayerBullet::Update() {
 	objectBullet_->UpdateMatrix();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void PlayerBullet::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
@@ -96,9 +87,6 @@ void PlayerBullet::Draw() {
 	DrawTrail();
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
 void PlayerBullet::OnCollision(Collider* other) {
 	Float3 bulletPos = this->objectBullet_->transform_.translate;
 	auto rand = RandomGenerator::GetInstance();
@@ -133,16 +121,13 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// vs Obstacle
 	if (other->GetTag() == "Obstacle") {
 		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter",bulletPos, rand->RandomValue(3, 4), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
 void PlayerBullet::UpdateCollider() {
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
 		// 中心
@@ -152,13 +137,9 @@ void PlayerBullet::UpdateCollider() {
 	}
 }
 
-// ---------------------------------------------------------
-// 弾道の描画
-// ---------------------------------------------------------
-void PlayerBullet::DrawTrail()
-{
-	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+void PlayerBullet::DrawTrail() {
+	Float4 headColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	Float4 tailColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {
 		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
@@ -168,12 +149,6 @@ void PlayerBullet::DrawTrail()
 		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
 		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
 
-		LineDrawer::GetInstance()->RegisterTracer(
-			trailPoints_[i - 1],
-			trailPoints_[i],
-			0.5f,
-			c1,
-			c0
-		);
+		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], 0.5f, c1, c0);
 	}
 }

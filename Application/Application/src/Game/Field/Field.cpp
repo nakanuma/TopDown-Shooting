@@ -22,9 +22,7 @@ void Field::Initialize() {
 
 void Field::Update() { objectFloor_->UpdateMatrix(); }
 
-void Field::Draw() {
-	objectFloor_->Draw();
-}
+void Field::Draw() { objectFloor_->Draw(); }
 
 void Field::Debug() {
 #ifdef _DEBUG

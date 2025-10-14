@@ -1,12 +1,9 @@
 #include "Obstacle.h"
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void Obstacle::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, const Float3& colliderSize, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
-	/// 
+	///
 
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
@@ -43,24 +40,11 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	}
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void Obstacle::Update() {
 	object_->UpdateMatrix();
 	object_->UpdateShadowMatrix();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void Obstacle::Draw() {
-	object_->Draw();
-}
+void Obstacle::Draw() { object_->Draw(); }
 
-// ---------------------------------------------------------
-// シャドウマップ用描画処理
-// ---------------------------------------------------------
-void Obstacle::DrawShadow() {
-	object_->DrawShadow();
-}
+void Obstacle::DrawShadow() { object_->DrawShadow(); }

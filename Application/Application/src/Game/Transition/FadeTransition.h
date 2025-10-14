@@ -5,14 +5,14 @@
 #include <memory>
 
 // Engine
-#include <SpriteCommon.h>
+#include "SplitBlockTransition.h"
 #include <Sprite.h>
+#include <SpriteCommon.h>
 
 /// <summary>
-/// フェード
+/// フェードトランジション制御クラス
 /// </summary>
-class FadeTransition
-{
+class FadeTransition {
 public:
 	enum class State {
 		None,
@@ -64,9 +64,8 @@ private:
 	float delayBeforeFadeIn_ = 0.0f; // フェードイン開始前の待機時間
 
 	float delayAfterFadeOutComplete_ = 0.0f; // フェードアウト完了後の待機時間
-	float delayTimerAfterFadeOut_ = 0.0f; // フェードアウト完了してからの待機タイマー
+	float delayTimerAfterFadeOut_ = 0.0f;    // フェードアウト完了してからの待機タイマー
 
 	std::unique_ptr<Sprite> sprite_;
 	std::function<void()> onFadeComplete_;
 };
-

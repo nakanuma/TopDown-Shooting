@@ -3,17 +3,11 @@
 // Engine
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// インスタンス取得
-// ---------------------------------------------------------
 ResultStats* ResultStats::GetInstance() {
 	static ResultStats instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// 戦績をクリア
-// ---------------------------------------------------------
 void ResultStats::Clear() {
 	totalShots_ = 0;
 	hitShots_ = 0;
@@ -22,11 +16,7 @@ void ResultStats::Clear() {
 	clearTime_ = 0.0f;
 }
 
-// ---------------------------------------------------------
-// 命中率を取得
-// ---------------------------------------------------------
-float ResultStats::GetHitRate() const
-{
+float ResultStats::GetHitRate() const {
 	if (totalShots_ == 0) {
 		return 0.0f;
 	}
@@ -34,9 +24,6 @@ float ResultStats::GetHitRate() const
 	return static_cast<float>(hitShots_) / static_cast<float>(totalShots_) * 100.0f;
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
 void ResultStats::Debug() {
 	ImGui::Begin("ResultStats");
 

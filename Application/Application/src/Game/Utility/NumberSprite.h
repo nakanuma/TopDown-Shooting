@@ -5,10 +5,9 @@
 #include <SpriteCommon.h>
 
 /// <summary>
-/// 数字をスプライトで表示
+/// 指定した数字をスプライトで表示するクラス
 /// </summary>
-class NumberSprite
-{
+class NumberSprite {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -30,7 +29,7 @@ private:
 	std::unique_ptr<SpriteCommon> spriteCommon_;
 
 	// 1文字のサイズ
-	Float2 digitSize_{ 32.0f, 32.0f };
+	Float2 digitSize_{32.0f, 32.0f};
 	// 桁数
 	uint32_t digitCount_ = 0;
 	// 各桁の数字
@@ -38,4 +37,3 @@ private:
 	// スプライト
 	std::vector<std::unique_ptr<Sprite>> digits_;
 };
-

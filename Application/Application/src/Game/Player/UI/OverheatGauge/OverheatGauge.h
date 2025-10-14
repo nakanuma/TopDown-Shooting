@@ -7,10 +7,9 @@
 class Player;
 
 /// <summary>
-/// オーバーヒートの円ゲージ
+/// プレイヤーのオーバーヒートの円ゲージUI
 /// </summary>
-class OverheatGauge
-{
+class OverheatGauge {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -30,4 +29,3 @@ public:
 private:
 	std::unique_ptr<Sprite> sprite_;
 };
-

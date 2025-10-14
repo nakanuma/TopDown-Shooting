@@ -6,7 +6,7 @@
 #include <Engine/3D/Object3D.h>
 
 /// <summary>
-/// 障害物の共通クラス
+/// 障害物の基底クラス
 /// </summary>
 class Obstacle : public ICollisionCallback {
 public:
@@ -53,7 +53,11 @@ public:
 	/// <summary>
 	/// コライダーの有効化状態設定
 	/// </summary>
-	void SetActiveCollider(bool active) { if (collider_) { collider_->SetActive(active); }; }
+	void SetActiveCollider(bool active) {
+		if (collider_) {
+			collider_->SetActive(active);
+		};
+	}
 
 protected:
 	// ---------------------------------------------------------

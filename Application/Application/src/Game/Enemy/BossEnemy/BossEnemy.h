@@ -7,8 +7,10 @@
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
 
-class BossEnemy : public Enemy, public ICollisionCallback
-{
+/// <summary>
+/// ボスエネミー
+/// </summary>
+class BossEnemy : public Enemy, public ICollisionCallback {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -92,7 +94,7 @@ private:
 
 	// ミサイルモデル
 	ModelManager::ModelData* modelMissile_;
-	
+
 	// 球
 	ModelManager::ModelData* modelGroundWarning_;
 
@@ -100,8 +102,8 @@ private:
 	// パラメーター
 	// ---------------------------------------------------------
 
-	const Float2 kHPBarPosition = { 640.0f, 25.0f };
-	const Float2 kHPBarSizeBoss = { 640.0f, 50.0f };
+	const Float2 kHPBarPosition = {640.0f, 25.0f};
+	const Float2 kHPBarSizeBoss = {640.0f, 50.0f};
 
 	// プレイヤーへ向かって移動する際の速度
 	float moveSpeed_ = 3.0f;
@@ -118,4 +120,3 @@ private:
 	/// </summary>
 	void BuildBehaviorTree();
 };
-

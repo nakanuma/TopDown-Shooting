@@ -1,23 +1,14 @@
 #include "BulletManager.h"
 
-// ---------------------------------------------------------
-// インスタンス取得
-// ---------------------------------------------------------
 BulletManager* BulletManager::GetInstance() { 
 	static BulletManager instance;
 	return &instance;
 }
 
-// ---------------------------------------------------------
-// 弾の追加
-// ---------------------------------------------------------
 void BulletManager::AddBullet(std::unique_ptr<Bullet> bullet) { 
 	bullets_.push_back(std::move(bullet)); 
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void BulletManager::Update() {
 	// 全ての弾を更新
 	for (auto& bullet : bullets_) {
@@ -35,18 +26,12 @@ void BulletManager::Update() {
 		bullets_.end());
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void BulletManager::Draw() { 
 	for (auto& bullet : bullets_) {
 		bullet->Draw();
 	}
 }
 
-// ---------------------------------------------------------
-// リストのクリア
-// ---------------------------------------------------------
 void BulletManager::Clear()
 {
 	for (auto& bullet : bullets_) {

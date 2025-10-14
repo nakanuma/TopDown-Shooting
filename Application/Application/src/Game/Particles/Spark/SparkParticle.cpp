@@ -1,45 +1,42 @@
 #include "SparkParticle.h"
 
 // Engine
-#include <Engine/Util/RandomGenerator.h>
 #include <Engine/Math/Easing.h>
+#include <Engine/Util/RandomGenerator.h>
 
-SparkParticle::SparkParticle(ModelManager::ModelData& model)
-{
+SparkParticle::SparkParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
 	object_.gTransformationMatrices.Create();
 
 	// ビルボード適用設定
-	isBillboard_ = { false, false, false };
+	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
 	blendMode_ = BlendMode::Normal;
 }
 
-SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
-{
+SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
 	SparkParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
 	p.transform.translate = pos;
 
-	p.transform.scale = { 0.04f, 0.04f, 0.8f };
+	p.transform.scale = {0.04f, 0.04f, 0.8f};
 
 	// veliocity
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;
 	float diff = 0.9f;
-	Float3 randDir = rand->RandomValue({ -diff, 0.0f, -diff }, { diff, 0.0f, diff });
+	Float3 randDir = rand->RandomValue({-diff, 0.0f, -diff}, {diff, 0.0f, diff});
 	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(16.0f, 24.0f);
 
 	// rotate（進行方向を向くように）
 	Float3 dir = Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	p.transform.rotate = { -pitch, -yaw, 0.0f };
+	p.transform.rotate = {-pitch, -yaw, 0.0f};
 
-
-	p.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
 	p.lifeTime = rand->RandomValue(0.3f, 0.5f);
 	p.currentTime = 0.0f;
 
@@ -48,12 +45,11 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	return p;
 }
 
-void SparkParticle::UpdateParticle(SparkParticleData& p, float dt)
-{
+void SparkParticle::UpdateParticle(SparkParticleData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 重力加速度を加える
-	const Float3 gravity = { 0.0f, -9.8f, 0.0f };
+	const Float3 gravity = {0.0f, -9.8f, 0.0f};
 	p.velocity += gravity * dt;
 
 	// 移動

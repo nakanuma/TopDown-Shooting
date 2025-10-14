@@ -2,15 +2,12 @@
 
 // Engine
 #include <Collider/CollisionManager.h>
-#include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/3D/LineDrawer.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Externals
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
@@ -24,7 +21,7 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	objectBullet_->transform_.rotate = { pitch, yaw, 0.0f };
+	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
 
 	///
 	///	コライダー生成
@@ -54,9 +51,6 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	velocity_ = direciton * speed_;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void EnemyBullet::Update() {
 	// 前フレーム位置を保存
 	previousPos_ = objectBullet_->transform_.translate;
@@ -85,9 +79,6 @@ void EnemyBullet::Update() {
 	objectBullet_->UpdateMatrix();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void EnemyBullet::Draw() {
 	// オブジェクト描画
 	objectBullet_->Draw();
@@ -96,9 +87,6 @@ void EnemyBullet::Draw() {
 	DrawTrail();
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
 void EnemyBullet::OnCollision(Collider* other) {
 	Float3 bulletPos = this->objectBullet_->transform_.translate;
 
@@ -119,9 +107,6 @@ void EnemyBullet::OnCollision(Collider* other) {
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
 void EnemyBullet::UpdateCollider() {
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
 		// 中心
@@ -132,8 +117,8 @@ void EnemyBullet::UpdateCollider() {
 }
 
 void EnemyBullet::DrawTrail() {
-	Float4 headColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Float4 tailColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+	Float4 headColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	Float4 tailColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {
 		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
@@ -143,12 +128,6 @@ void EnemyBullet::DrawTrail() {
 		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
 		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
 
-		LineDrawer::GetInstance()->RegisterTracer(
-			trailPoints_[i - 1],
-			trailPoints_[i],
-			0.5f,
-			c1,
-			c0
-		);
+		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], 0.5f, c1, c0);
 	}
 }
