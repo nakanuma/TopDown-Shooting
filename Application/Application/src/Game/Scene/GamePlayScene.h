@@ -13,19 +13,22 @@
 #include "SpriteCommon.h"
 #include "TextureManager.h"
 #include <Engine/Collider/CollisionManager.h>
-#include <Engine/Util/TimeManager.h>
 #include <Engine/Texture/PostEffectManager.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
+#include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Camera/FollowCamera.h>
 #include <src/Game/Enemy/Manager/EnemyManager.h>
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 #include <src/Game/Player/Player.h>
-#include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
 
+/// <summary>
+/// ゲームプレイシーン
+/// </summary>
 class GamePlayScene : public BaseScene {
 public:
 	// 初期化

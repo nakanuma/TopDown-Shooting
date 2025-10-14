@@ -3,9 +3,6 @@
 // Externals
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
@@ -49,18 +46,18 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 
 	// タグに対応したモデルをマップに保存
 	tagModelMap_ = {
-		{"CONTAINER", &modelContainer_},
-		{"FENCE", &modelFence_},
-		{"WALL", &modelWall_},
-		{"BRICKPALLET", &modelBrickPallet_},
-		{"CONCRETEBARRIER", &modelConcreteBarrier_},
-		{"DRUMCAN", &modelDrumCan_},
-		{"WATERTANK", &modelWaterTank_},
-		{"STEELBUNDLE", &modelSteelBundle_},
-		{"VERTICALTANK", &modelVerticalTank_},
-		{"ISOTANK", &modelISOTank_},
-		{"IBCCONTAINER", &modelIBCContainer_}
-	};
+	    {"CONTAINER",       &modelContainer_      },
+	    {"FENCE",           &modelFence_          },
+	    {"WALL",            &modelWall_           },
+	    {"BRICKPALLET",     &modelBrickPallet_    },
+	    {"CONCRETEBARRIER", &modelConcreteBarrier_},
+	    {"DRUMCAN",         &modelDrumCan_        },
+	    {"WATERTANK",       &modelWaterTank_      },
+	    {"STEELBUNDLE",     &modelSteelBundle_    },
+	    {"VERTICALTANK",    &modelVerticalTank_   },
+	    {"ISOTANK",         &modelISOTank_        },
+	    {"IBCCONTAINER",    &modelIBCContainer_   }
+    };
 
 	///
 	///	各障害物の生成
@@ -69,9 +66,6 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	Reload(datas);
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void ObstacleManager::Update(const Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
@@ -88,9 +82,6 @@ void ObstacleManager::Update(const Float3& playerPos) {
 	}
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void ObstacleManager::Draw(const Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
@@ -104,9 +95,6 @@ void ObstacleManager::Draw(const Float3& playerPos) {
 	}
 }
 
-// ---------------------------------------------------------
-// シャドウマップ用描画処理
-// ---------------------------------------------------------
 void ObstacleManager::DrawShadow(const Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
@@ -120,9 +108,6 @@ void ObstacleManager::DrawShadow(const Float3& playerPos) {
 	}
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
 void ObstacleManager::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("obstacleManager");
@@ -160,11 +145,7 @@ void ObstacleManager::Debug() {
 #endif
 }
 
-// ---------------------------------------------------------
-// 再生成処理
-// ---------------------------------------------------------
-void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas)
-{
+void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas) {
 	// 破棄を行ってからリストをクリア
 	for (auto& obstacle : obstacles_) {
 		obstacle->OnDestroy();

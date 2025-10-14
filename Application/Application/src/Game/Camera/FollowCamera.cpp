@@ -3,14 +3,8 @@
 // Application
 #include <src/Game/Utility/Utility.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void FollowCamera::Initialize(const Float3& offset) { offset_ = offset; }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void FollowCamera::Update() {
 	if (!targetTranslate_)
 		return;
@@ -35,9 +29,6 @@ void FollowCamera::Update() {
 	currentPos_ = Float3::Lerp(currentPos_, targetPos, 0.75f);
 }
 
-// ---------------------------------------------------------
-// 追従目標をセット
-// ---------------------------------------------------------
 void FollowCamera::SetTarget(const Float3* translate) {
 	targetTranslate_ = translate;
 	if (targetTranslate_) {

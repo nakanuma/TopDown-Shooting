@@ -5,13 +5,13 @@
 
 // Application
 #include <src/Game/Enemy/Base/Enemy.h>
-#include <src/Game/Loader/Loader.h>
 #include <src/Game/Enemy/BossEnemy/BossEnemy.h>
+#include <src/Game/Loader/Loader.h>
 
 class Player;
 
 /// <summary>
-/// 敵の管理
+/// 敵の管理クラス
 /// </summary>
 class EnemyManager {
 public:

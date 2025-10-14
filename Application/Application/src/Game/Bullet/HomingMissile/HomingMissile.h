@@ -51,7 +51,7 @@ private:
 	// ---------------------------------------------------------
 
 	// コライダーサイズ
-	Float3 colliderSize_ = { 0.5f, 0.5f, 2.5f };
+	Float3 colliderSize_ = {0.5f, 0.5f, 2.5f};
 
 	// 経過時間
 	float elapsedTime_ = 0.0f;
@@ -64,4 +64,3 @@ private:
 	// プレイヤーのポインタ
 	Player* targetPlayer_;
 };
-

@@ -3,24 +3,20 @@
 // Engine
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas)
-{
+void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///
 	///	モデル読み込み
-	/// 
-	
+	///
+
 	modelTeleporter_ = ModelManager::LoadModelFile("resources/Models", "Object/Teleporter/teleporter.obj", dxBase->GetDevice());
 	modelTeleporter_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
 	///	テレポーターの生成
-	/// 
-	
+	///
+
 	for (const auto& data : datas) {
 		if (data.tag == "TELEPORTER") {
 			auto teleporter = std::make_unique<Teleporter>();
@@ -34,7 +30,8 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas)
 	// ペアのテレポーターを設定
 	for (auto& p1 : teleporters_) {
 		for (auto& p2 : teleporters_) {
-			if (p1.get() == p2.get()) continue; // 同一テレポーターは弾く
+			if (p1.get() == p2.get())
+				continue; // 同一テレポーターは弾く
 
 			// 同じペアIDを持つテレポーターをリンクさせる
 			if (p1->GetPairID() == p2->GetPairID()) {
@@ -45,32 +42,20 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas)
 	}
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void TeleporterManager::Update()
-{
+void TeleporterManager::Update() {
 	for (auto& teleporter : teleporters_) {
 		teleporter->Update();
 	}
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void TeleporterManager::Draw()
-{
+void TeleporterManager::Draw() {
 	for (auto& teleporter : teleporters_) {
 		teleporter->Draw();
 	}
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
-void TeleporterManager::Debug()
-{
-#ifdef  _DEBUG
+void TeleporterManager::Debug() {
+#ifdef _DEBUG
 	ImGui::Begin("TeleporterManager");
 
 	for (size_t i = 0; i < teleporters_.size(); ++i) {

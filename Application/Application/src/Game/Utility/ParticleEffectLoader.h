@@ -4,10 +4,9 @@
 #include <Engine/Model/ModelManager.h>
 
 /// <summary>
-/// パーティクルのモデル管理・登録を行うクラス
+/// パーティクルのモデル管理・登録をあらかじめ行うクラス
 /// </summary>
-class ParticleEffectLoader
-{
+class ParticleEffectLoader {
 public:
 	/// <summary>
 	/// インスタンス取得

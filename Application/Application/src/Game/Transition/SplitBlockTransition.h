@@ -5,22 +5,21 @@
 #include <memory>
 
 // Engine
-#include <SpriteCommon.h>
 #include <Sprite.h>
+#include <SpriteCommon.h>
 
 /// <summary>
-/// 分割された矩形がランダムに噛み合って開閉するトランジション
+/// 分割された矩形がランダムに噛み合って開閉するトランジション制御クラス
 /// </summary>
-class SplitBlockTransition
-{
+class SplitBlockTransition {
 public:
 	/// <summary>
 	/// トランジションの状態
 	/// </summary>
 	enum class State {
-		None, // 未実行
+		None,  // 未実行
 		Close, // 開く
-		Open, // 閉じる
+		Open,  // 閉じる
 	};
 
 	/// <summary>
@@ -66,20 +65,20 @@ private:
 	struct Block {
 		std::unique_ptr<Sprite> top;
 		std::unique_ptr<Sprite> bottom;
-		float delay; // 開始までの遅延
+		float delay;    // 開始までの遅延
 		float progress; // 0~1の進行度
 	};
 
 	State state_ = State::None; // 現在のトランジション状態
-	float duration_ = 1.0f; // トランジションにかかる時間
-	float timer_ = 0.0f; // 経過時間
+	float duration_ = 1.0f;     // トランジションにかかる時間
+	float timer_ = 0.0f;        // 経過時間
 
-	float delayBeforeFadeIn_ = 0.0f; // 開くトランジション開始までの遅延時間
+	float delayBeforeFadeIn_ = 0.0f;         // 開くトランジション開始までの遅延時間
 	float delayAfterFadeOutComplete_ = 0.0f; // 閉じるトランジション完了後の遅延時間
-	float delayTimerAfterFadeOut_ = 0.0f; // 閉じるトランジション完了後の遅延時間タイマー
+	float delayTimerAfterFadeOut_ = 0.0f;    // 閉じるトランジション完了後の遅延時間タイマー
 
 	std::vector<Block> blocks_; // 分割ブロック
-	uint32_t splitCount_; // 分割数
+	uint32_t splitCount_;       // 分割数
 	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr;
 	std::function<void()> onFadeComplete_; // 閉じるトランジション完了後のコールバック
 };

@@ -1,83 +1,80 @@
 #include "SmokeParticle.h"
 
 // Engine
-#include <Engine/Util/RandomGenerator.h>
 #include <Engine/Math/Easing.h>
+#include <Engine/Util/RandomGenerator.h>
 
-SmokeParticle::SmokeParticle(ModelManager::ModelData& model)
-{
+SmokeParticle::SmokeParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
 	object_.gTransformationMatrices.Create();
 
 	// ビルボード適用設定
-	isBillboard_ = { false, false, false };
+	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
 	blendMode_ = BlendMode::Normal;
 }
 
-SmokeParticleData SmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
-{
+SmokeParticleData SmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
 	SmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
-	Float3 offset = rand->RandomValue({ 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+	Float3 offset = rand->RandomValue({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
 	p.transform.translate = pos + offset;
-	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
-	p.transform.scale = { 0.25f, 0.25f, 0.25f };
-	p.velocity = rand->RandomValue({ -1.0f, -5.0f, -1.0f }, { 1.0f, 5.0f, 1.0f });
-	p.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+	p.transform.rotate = {0.0f, 0.0f, 0.0f};
+	p.transform.scale = {0.25f, 0.25f, 0.25f};
+	p.velocity = rand->RandomValue({-1.0f, -5.0f, -1.0f}, {1.0f, 5.0f, 1.0f});
+	p.color = {1.0f, 1.0f, 0.0f, 1.0f};
 	p.lifeTime = rand->RandomValue(2.0f, 3.0f);
 	p.currentTime = 0.0f;
 
 	p.initScale = p.transform.scale;
 	p.ascendSpeed = rand->RandomValue(4.0f, 12.0f);
-	p.rotationSpeed = rand->RandomValue({ -3.0f, -3.0f, -3.0f }, { 3.0f, 3.0f, 3.0f });
+	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
 
 	return p;
 }
 
-void SmokeParticle::UpdateParticle(SmokeParticleData& p, float dt)
-{
+void SmokeParticle::UpdateParticle(SmokeParticleData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 	auto rand = RandomGenerator::GetInstance();
 
 	///
 	///	移動
-	/// 
+	///
 
 	// 横方向の速度を減衰
 	float horizontalDamping = Easing::EaseInQuad(1.0f - t);
-	Float3 horizontalVelocity = { p.velocity.x * horizontalDamping, 0.0f, p.velocity.z * horizontalDamping };
+	Float3 horizontalVelocity = {p.velocity.x * horizontalDamping, 0.0f, p.velocity.z * horizontalDamping};
 
 	// 上昇速度を徐々に増加
 	float verticalVelocity = p.ascendSpeed * t;
 
 	// 速度を合成
-	Float3 currentVelocity = horizontalVelocity + Float3{ 0.0f, verticalVelocity, 0.0f };
+	Float3 currentVelocity = horizontalVelocity + Float3{0.0f, verticalVelocity, 0.0f};
 
 	p.transform.translate += currentVelocity * dt;
 
 	///
 	///	回転
-	/// 
+	///
 
 	float damping = Easing::EaseOutQuad(1.0f - t);
 	p.transform.rotate += p.rotationSpeed * damping * dt;
 
 	///
 	///	拡大
-	/// 
+	///
 
 	float startScale = p.initScale.x;
 	float endScale = 1.0f;
 	float scale = Easing::EaseInQuad(t) * (endScale - startScale) + startScale;
-	p.transform.scale = { scale, scale, scale };
+	p.transform.scale = {scale, scale, scale};
 
 	///
 	///	色の変更
-	/// 
+	///
 
 	Float4 color;
 	if (t < 0.25f) {

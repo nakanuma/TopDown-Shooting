@@ -4,13 +4,10 @@
 #include <ImguiWrapper.h>
 
 // Application
-#include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
+#include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Player/Player.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Player* player) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
@@ -24,7 +21,7 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	// 通常敵モデル
 	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/NormalEnemy/normalEnemy.obj", dxBase->GetDevice());
 	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/NormalEnemy/normalEnemy.png", dxBase->GetDevice());
-	
+
 	// 固定敵モデル
 	modelImmobileEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/ImmobileEnemy/immobileEnemy.obj", dxBase->GetDevice());
 	modelImmobileEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/ImmobileEnemy/immobileEnemy.png", dxBase->GetDevice());
@@ -34,7 +31,6 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	modelBossEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/BossEnemy/bossEnemy.png", dxBase->GetDevice());
 
 	// （追加）敵モデル
-
 
 	// 弾モデル
 	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
@@ -55,9 +51,6 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	Reload(datas);
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
@@ -70,14 +63,9 @@ void EnemyManager::Update() {
 			enemy->OnDestroy();
 		}
 	}
-	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(), 
-		[](const std::unique_ptr<Enemy>& enemy) 
-		{ return enemy->IsDead(); }), enemies_.end());
+	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(), [](const std::unique_ptr<Enemy>& enemy) { return enemy->IsDead(); }), enemies_.end());
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void EnemyManager::Draw() {
 	// 全ての敵を描画
 	for (auto& enemy : enemies_) {
@@ -85,18 +73,12 @@ void EnemyManager::Draw() {
 	}
 }
 
-// ---------------------------------------------------------
-// シャドウマップ描画処理
-// ---------------------------------------------------------
 void EnemyManager::DrawShadow() {
 	for (auto& enemy : enemies_) {
 		enemy->DrawShadow();
 	}
 }
 
-// ---------------------------------------------------------
-// UI描画処理
-// ---------------------------------------------------------
 void EnemyManager::DrawUI() {
 	// 全ての敵のUIを描画
 	for (auto& enemy : enemies_) {
@@ -104,9 +86,6 @@ void EnemyManager::DrawUI() {
 	}
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
 void EnemyManager::Debug() {
 #ifdef _DEBUG
 
@@ -132,8 +111,7 @@ void EnemyManager::Debug() {
 		/* BossEnemy（一旦ここでデバッグ表示） */
 		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
 			bossEnemy->Debug();
-		}
-		else if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
+		} else if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
 			normalEnemy->Debug();
 		}
 
@@ -162,12 +140,10 @@ void EnemyManager::Debug() {
 
 			/* NormalEnemy */
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
-
 			}
 
 			/* ImmobileEnemy */
 			if (ImmobileEnemy* immobileEnemy = dynamic_cast<ImmobileEnemy*>(enemy)) {
-
 			}
 
 			ImGui::TreePop();
@@ -179,9 +155,6 @@ void EnemyManager::Debug() {
 #endif // _DEBUG
 }
 
-// ---------------------------------------------------------
-// 再生成処理
-// ---------------------------------------------------------
 void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 	// 破棄を行ってからリストをクリア
 	for (auto& enemy : enemies_) {

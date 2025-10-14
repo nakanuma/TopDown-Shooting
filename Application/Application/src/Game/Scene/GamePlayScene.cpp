@@ -4,11 +4,11 @@
 #include "RTVManager.h"
 #include "SRVManager.h"
 #include "SpriteCommon.h"
-#include <Engine/ParticleEffect/ParticleEffectManager.h>
-#include <Engine/Model/SkyBoxManager.h>
+#include <Engine/3D/LightCamera.h>
 #include <Engine/3D/LineDrawer.h>
 #include <Engine/DirectX/ShadowMapManager.h>
-#include <Engine/3D/LightCamera.h>
+#include <Engine/Model/SkyBoxManager.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // C++
 #include <numbers>
@@ -18,10 +18,10 @@
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
-#include <src/Game/Utility/ParticleEffectLoader.h>
-#include <src/Game/Transition/SplitBlockTransition.h>
-#include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Transition/SplitBlockTransition.h>
+#include <src/Game/Utility/ParticleEffectLoader.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -104,7 +104,7 @@ void GamePlayScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	//// パーティクル生成
-	//ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
+	// ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
@@ -117,7 +117,7 @@ void GamePlayScene::Initialize() {
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
-	CollisionManager::GetInstance()->Update(); // 障害物のコライダーが未登録状態のためここで一度更新しておく
+	CollisionManager::GetInstance()->Update();         // 障害物のコライダーが未登録状態のためここで一度更新しておく
 	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 
 	// シャドウマップ生成
@@ -215,7 +215,7 @@ void GamePlayScene::Draw() {
 
 	///
 	///	シャドウマップ描画処理
-	/// 
+	///
 
 	// ライトカメラの更新
 	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
@@ -245,17 +245,17 @@ void GamePlayScene::Draw() {
 	player_->DrawShadow();
 
 	//----------------------------------//
-	
+
 	// シャドウマップ描画終了
 	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
 
 	///
-	///	
-	/// 
+	///
+	///
 
 	///
 	///	通常オブジェクト描画処理
-	/// 
+	///
 
 	// オブジェクト通常描画処理
 	field_->Draw();
@@ -307,7 +307,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("smoke", { 0.0f, 2.0f, -20.0f }, 20);
+		ParticleEffectManager::GetInstance()->Emit("smoke", {0.0f, 2.0f, -20.0f}, 20);
 	}
 
 	if (ImGui::Button("bulletClear")) {

@@ -5,10 +5,9 @@
 #include <src/Game/Teleporter/Teleporter.h>
 
 /// <summary>
-/// テレポーターの管理
+/// プレイヤーの使用するテレポーターの管理クラス
 /// </summary>
-class TeleporterManager
-{
+class TeleporterManager {
 public:
 	/// <summary>
 	/// 初期化処理
@@ -43,4 +42,3 @@ private:
 
 	std::vector<std::unique_ptr<Teleporter>> teleporters_;
 };
-

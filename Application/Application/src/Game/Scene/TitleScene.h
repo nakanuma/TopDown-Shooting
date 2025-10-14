@@ -13,15 +13,17 @@
 #include "SpriteCommon.h"
 #include "TextureManager.h"
 #include <Engine/Collider/CollisionManager.h>
-#include <Engine/Util/TimeManager.h>
 #include <Engine/Texture/PostEffectManager.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
+#include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
-#include <src/Game/Field/Field.h>
 
-// タイトルシーン
+/// <summary>
+/// タイトルシーン
+/// </summary>
 class TitleScene : public BaseScene {
 public:
 	// 初期化
@@ -62,13 +64,13 @@ private:
 	///
 	/// スプライト
 	///
-	
+
 	std::unique_ptr<Sprite> spriteTitle_;
 	std::unique_ptr<Sprite> spriteStartButton_;
 
 	///
 	///	オブジェクト
-	/// 
+	///
 
 	// 床
 	std::unique_ptr<Field> field_;

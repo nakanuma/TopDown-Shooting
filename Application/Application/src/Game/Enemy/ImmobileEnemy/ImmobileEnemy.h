@@ -9,7 +9,7 @@
 class Player;
 
 /// <summary>
-/// 固定敵
+/// 固定砲台の敵
 /// </summary>
 class ImmobileEnemy : public Enemy, public ICollisionCallback {
 public:
@@ -92,8 +92,8 @@ private:
 
 	///
 	///	プレイヤーとの距離・遮蔽チェック用
-	/// 
-	
+	///
+
 	// プレイヤー索敵距離
 	float searchRange_ = 20.0f;
 	// プレイヤーを発見したかどうか
@@ -126,7 +126,7 @@ private:
 
 	///
 	///	攻撃用
-	/// 
+	///
 
 	// 弾の拡散角
 	float bulletSpreadAngle_ = 0.1f;
@@ -141,9 +141,8 @@ private:
 	bool isReloading_ = false;
 	// リロードにかかる時間
 	const float kReloadTime = 1.5f;
-	//　リロード中の経過時間
+	// 　リロード中の経過時間
 	float reloadTimer_ = 0.0f;
-
 
 private:
 	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_;

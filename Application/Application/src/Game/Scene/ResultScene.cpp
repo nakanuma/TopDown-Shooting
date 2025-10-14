@@ -4,22 +4,22 @@
 #include <numbers>
 
 // Engine
-#include <ImguiWrapper.h>
-#include <SceneManager.h>
 #include <Engine/Util/TimeManager.h>
-#include <ShadowMapManager.h>
+#include <ImguiWrapper.h>
 #include <LightCamera.h>
+#include <SceneManager.h>
+#include <ShadowMapManager.h>
 
 // Application
-#include <src/Game/Transition/FadeTransition.h>
-#include <src/Game/System/ResultStats.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/System/ResultStats.h>
+#include <src/Game/Transition/FadeTransition.h>
 
 void ResultScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{ 0.0f, 30.0f, -50.0f }, Float3{ 0.5f, 0.0f, 0.0f }, 0.45f);
+	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// デバッグカメラの生成と初期化
@@ -46,31 +46,30 @@ void ResultScene::Initialize() {
 
 	///
 	///	スプライト生成
-	/// 
-	
+	///
+
 	// 背景
 	uint32_t textureBackGround = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteBackGround_ = std::make_unique<Sprite>();
 	spriteBackGround_->Initialize(spriteCommon.get(), textureBackGround);
-	spriteBackGround_->SetColor({ 0.5f, 0.5f, 0.5f, 1.0f });
-	spriteBackGround_->SetSize({ 1280.0f, 720.0f });
+	spriteBackGround_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
+	spriteBackGround_->SetSize({1280.0f, 720.0f});
 
 	// タイトルボタン
 	uint32_t textureTitleButton = TextureManager::Load("resources/Images/UI/titleButton.png", dxBase->GetDevice());
 	spriteTitleButton_ = std::make_unique<Sprite>();
 	spriteTitleButton_->Initialize(spriteCommon.get(), textureTitleButton);
-	spriteTitleButton_->SetPosition({ 640.0f, 620.0f });
-	spriteTitleButton_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteTitleButton_->SetPosition({640.0f, 620.0f});
+	spriteTitleButton_->SetAnchorPoint({0.5f, 0.5f});
 
 	// 戦績
 	uint32_t textureRecord = TextureManager::Load("resources/Images/UI/record.png", dxBase->GetDevice());
 	spriteRecord_ = std::make_unique<Sprite>();
 	spriteRecord_->Initialize(spriteCommon.get(), textureRecord);
-	spriteRecord_->SetPosition({ 640.0f, 260.0f });
-	spriteRecord_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteRecord_->SetPosition({640.0f, 260.0f});
+	spriteRecord_->SetAnchorPoint({0.5f, 0.5f});
 
-
-	// 合計ダメージ 
+	// 合計ダメージ
 	spriteTotalDamage_ = std::make_unique<NumberSprite>();
 	spriteTotalDamage_->Initialize(ResultStats::GetInstance()->GetTotalDamage());
 	// キル数
@@ -85,11 +84,11 @@ void ResultScene::Initialize() {
 
 	///
 	///	オブジェクト
-	/// 
+	///
 
 	///
 	///	フェード
-	/// 
+	///
 
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
 	FadeTransition::GetInstance()->StartFadeIn(1.0f);
@@ -106,10 +105,8 @@ void ResultScene::Finalize() {}
 
 void ResultScene::Update() {
 	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() {
-			SceneManager::GetInstance()->ChangeScene("TITLE");
-			}, 0.2f);
-		ResultStats::GetInstance()->Clear(); // 戦績をクリア
+		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, 0.2f);
+		ResultStats::GetInstance()->Clear();   // 戦績をクリア
 		BulletManager::GetInstance()->Clear(); // 弾リストをクリア
 	}
 
@@ -122,9 +119,9 @@ void ResultScene::Update() {
 	spriteRecord_->Update();
 
 	spriteTotalDamage_->Update({640.0f, 130.0f});
-	spriteDefeated_->Update({ 640.0f, 260.0f });
-	spriteHitRate_->Update({ 650.0f, 390.0f });
-	spriteClearTime_->Update({ 650.0f, 520.0f });
+	spriteDefeated_->Update({640.0f, 260.0f});
+	spriteHitRate_->Update({650.0f, 390.0f});
+	spriteClearTime_->Update({650.0f, 520.0f});
 
 #ifdef _DEBUG
 	// デバッグカメラ更新
@@ -139,7 +136,7 @@ void ResultScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -149,8 +146,6 @@ void ResultScene::Draw() {
 	lightManager->TransferContantBuffer();
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
-
-	
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
@@ -166,7 +161,7 @@ void ResultScene::Draw() {
 	///
 	/// ↓ ここからスプライトの描画コマンド
 	///
-	
+
 	spriteBackGround_->Draw();
 	spriteTitleButton_->Draw();
 	spriteRecord_->Draw();

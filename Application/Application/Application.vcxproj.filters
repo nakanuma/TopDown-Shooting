@@ -256,7 +256,7 @@
       <Filter>src\Game\Particles\Spark</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Transition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -387,7 +387,7 @@
       <Filter>src\Game\Particles\Spark</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Transition\SplitBlockTransition.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Transition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

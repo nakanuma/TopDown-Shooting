@@ -5,22 +5,18 @@
 
 // Engine
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
-#include <Engine/Util/TimeManager.h>
-#include <Engine/Util/RandomGenerator.h>
 #include <Engine/Scene/SceneManager.h>
+#include <Engine/Util/RandomGenerator.h>
+#include <Engine/Util/TimeManager.h>
 
 // Application
-#include <src/Game/Player/Player.h>
-#include <src/Game/Bullet/Manager/BulletManager.h>
-#include <src/Game/Bullet/HomingMissile/HomingMissile.h>
 #include <src/Game/Bullet/GroundWarning/GroundWarning.h>
+#include <src/Game/Bullet/HomingMissile/HomingMissile.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
+#include <src/Game/Player/Player.h>
 #include <src/Game/System/ResultStats.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
-void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player)
-{
+void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
 	///
@@ -37,9 +33,9 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate = position;
-	objectEnemy_->transform_.scale = { 1.0f, 1.0f, 1.0f };
-	objectEnemy_->transform_.rotate = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->color = { 0.2f, 0.2f, 0.2f, 1.0f };
+	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
+	objectEnemy_->transform_.rotate = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->materialCB_.data_->color = {0.2f, 0.2f, 0.2f, 1.0f};
 
 	///
 	///	コライダー生成
@@ -48,7 +44,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	collider_ = std::make_unique<OBBCollider>();
 	collider_->SetTag("BossEnemy");
 	collider_->SetOwner(this);
-	colliderSize_ = { 5.0f, 3.0f, 5.0f };
+	colliderSize_ = {5.0f, 3.0f, 5.0f};
 
 	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
@@ -64,15 +60,15 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSizeBoss);
 	spriteHPBackground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
-	spriteHPBackground_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f }); // 黒
+	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});                                            // 黒
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSizeBoss);
-	spriteHPForeground_->SetPosition({ kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y }); // 中心になるよう設定
-	spriteHPForeground_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f }); // 赤
+	spriteHPForeground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
+	spriteHPForeground_->SetColor({1.0f, 0.0f, 0.0f, 1.0f});                                            // 赤
 
 	///
 	///	パラメーター設定
@@ -98,11 +94,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	btEditor_->SetBehaviorTree(behaviorTree_.get());
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void BossEnemy::Update()
-{
+void BossEnemy::Update() {
 	///
 	/// オブジェクト更新処理
 	///
@@ -110,7 +102,8 @@ void BossEnemy::Update()
 	objectEnemy_->UpdateMatrix();
 	objectEnemy_->UpdateShadowMatrix();
 
-	if (!isActive_) return;
+	if (!isActive_)
+		return;
 
 	///
 	///	ビヘイビアツリーを評価
@@ -136,28 +129,14 @@ void BossEnemy::Update()
 	spriteHPForeground_->Update();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
-void BossEnemy::Draw()
-{
+void BossEnemy::Draw() {
 	// オブジェクト描画処理
 	objectEnemy_->Draw();
 }
 
-// ---------------------------------------------------------
-// シャドウマップ描画処理
-// ---------------------------------------------------------
-void BossEnemy::DrawShadow()
-{
-	objectEnemy_->DrawShadow();
-}
+void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
-// ---------------------------------------------------------
-// UI描画処理
-// ---------------------------------------------------------
-void BossEnemy::DrawUI()
-{
+void BossEnemy::DrawUI() {
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
@@ -172,18 +151,15 @@ void BossEnemy::DrawUI()
 	///
 
 	// 現在HPに応じてサイズ変更
-	Float2 hpBarForegroundSize = { kHPBarSizeBoss.x * hpRatio, kHPBarSizeBoss.y };
+	Float2 hpBarForegroundSize = {kHPBarSizeBoss.x * hpRatio, kHPBarSizeBoss.y};
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
 
 	spriteHPForeground_->Draw();
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
 void BossEnemy::Debug() {
 	ImGui::Begin("BossEnemy");
-	
+
 	if (ImGui::Button("Active")) {
 		isActive_ = true;
 	}
@@ -220,11 +196,7 @@ void BossEnemy::Debug() {
 	ImGui::End();
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
-void BossEnemy::OnCollision(Collider* other)
-{
+void BossEnemy::OnCollision(Collider* other) {
 	///
 	/// vs PlayerBullet
 	///
@@ -240,7 +212,7 @@ void BossEnemy::OnCollision(Collider* other)
 
 		// HPを減らす
 		currentHP_ -= damage;
-		ResultStats::GetInstance()->AddHit(); // 弾が命中したことを記録
+		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
 		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
 		// HPが0になったら死亡させる
@@ -254,11 +226,7 @@ void BossEnemy::OnCollision(Collider* other)
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
-void BossEnemy::UpdateCollider()
-{
+void BossEnemy::UpdateCollider() {
 	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
@@ -274,11 +242,7 @@ void BossEnemy::UpdateCollider()
 	}
 }
 
-// ---------------------------------------------------------
-// プレイヤーの方を向く
-// ---------------------------------------------------------
-void BossEnemy::FacePlayer()
-{
+void BossEnemy::FacePlayer() {
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	// 方向ベクトルからY軸回転角度を計算
@@ -287,11 +251,7 @@ void BossEnemy::FacePlayer()
 	objectEnemy_->transform_.rotate.y = targetAngle;
 }
 
-// ---------------------------------------------------------
-// プレイヤーに向かって移動
-// ---------------------------------------------------------
-void BossEnemy::MoveTowardPlayer()
-{
+void BossEnemy::MoveTowardPlayer() {
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	toPlayer.y = 0.0f;
@@ -300,11 +260,7 @@ void BossEnemy::MoveTowardPlayer()
 	objectEnemy_->transform_.translate += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
 }
 
-// ---------------------------------------------------------
-// 追尾ミサイルの発射
-// ---------------------------------------------------------
-void BossEnemy::FireHomingMissile()
-{
+void BossEnemy::FireHomingMissile() {
 	// 発射方向
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	direction = Float3::Normalize(direction);
@@ -316,11 +272,7 @@ void BossEnemy::FireHomingMissile()
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 }
 
-// ---------------------------------------------------------
-// 地面警告攻撃
-// ---------------------------------------------------------
-void BossEnemy::GroundWarningAttack()
-{
+void BossEnemy::GroundWarningAttack() {
 	Float3 playerPos = targetPlayer_->GetTranslate();
 
 	// 弾の生成
@@ -329,31 +281,27 @@ void BossEnemy::GroundWarningAttack()
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 赤い円エフェクト発生
-	ParticleEffectManager::GetInstance()->Emit("redCircle", { playerPos.x, 0.1f, playerPos.z }, 1);
+	ParticleEffectManager::GetInstance()->Emit("redCircle", {playerPos.x, 0.1f, playerPos.z}, 1);
 }
 
-// ---------------------------------------------------------
-// ビヘイビアツリーの構築
-// ---------------------------------------------------------
-void BossEnemy::BuildBehaviorTree()
-{
+void BossEnemy::BuildBehaviorTree() {
 	///
 	///	移動系（並列の一方）
-	/// 
-	
-	auto facePlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
-		enemy->FacePlayer();
-		return BehaviorStatus::Running;
-		}, 
-		"facePlayer"
-	);
+	///
 
-	auto moveTowardPlayer = std::make_unique<ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
-		enemy->MoveTowardPlayer();
-		return BehaviorStatus::Running;
-		},
-		"moveTowardPlayer"
-	);
+	auto facePlayer = std::make_unique<ActionNode<BossEnemy>>(
+	    [](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		    enemy->FacePlayer();
+		    return BehaviorStatus::Running;
+	    },
+	    "facePlayer");
+
+	auto moveTowardPlayer = std::make_unique<ActionNode<BossEnemy>>(
+	    [](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		    enemy->MoveTowardPlayer();
+		    return BehaviorStatus::Running;
+	    },
+	    "moveTowardPlayer");
 
 	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>("moveParallel");
 	moveParallel->AddChild(std::move(facePlayer));
@@ -361,20 +309,20 @@ void BossEnemy::BuildBehaviorTree()
 
 	///
 	///	攻撃系（並列のもう一方）
-	/// 
-	
+	///
+
 	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.1f, 2.5f, "0.1f ~ 2.5f"); // 次の攻撃まで待機
 
-	auto randAttack = std::make_unique <ActionNode<BossEnemy>>([](BossEnemy* enemy, float dt) -> BehaviorStatus {
-		if (rand() % 2 == 0) {
-			enemy->FireHomingMissile();
-		} else {
-			enemy->GroundWarningAttack();
-		}
-		return BehaviorStatus::Success;
-		},
-		"randAttack"
-	);
+	auto randAttack = std::make_unique<ActionNode<BossEnemy>>(
+	    [](BossEnemy* enemy, float dt) -> BehaviorStatus {
+		    if (rand() % 2 == 0) {
+			    enemy->FireHomingMissile();
+		    } else {
+			    enemy->GroundWarningAttack();
+		    }
+		    return BehaviorStatus::Success;
+	    },
+	    "randAttack");
 
 	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>("attackSequence");
 	attackSequence->AddChild(std::move(wait));
@@ -382,7 +330,7 @@ void BossEnemy::BuildBehaviorTree()
 
 	///
 	///	ルートノード
-	/// 
+	///
 
 	auto root = std::make_unique<ParallelNode<BossEnemy>>("root");
 	root->AddChild(std::move(moveParallel));

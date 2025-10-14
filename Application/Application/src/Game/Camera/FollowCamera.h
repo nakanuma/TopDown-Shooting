@@ -4,7 +4,7 @@
 #include <MyMath.h>
 
 /// <summary>
-/// カメラ追従
+/// 追従カメラ管理クラス
 /// </summary>
 class FollowCamera {
 public:

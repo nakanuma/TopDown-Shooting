@@ -19,10 +19,9 @@ struct SparkParticleData {
 };
 
 /// <summary>
-/// タイトルのタンクから出る火花に使用
+/// タイトルのタンクから出る火花パーティクル
 /// </summary>
-class SparkParticle : public BaseParticleEffect<SparkParticleData>
-{
+class SparkParticle : public BaseParticleEffect<SparkParticleData> {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -40,4 +39,3 @@ protected:
 	/// </summary>
 	void UpdateParticle(SparkParticleData& p, float dt) override;
 };
-

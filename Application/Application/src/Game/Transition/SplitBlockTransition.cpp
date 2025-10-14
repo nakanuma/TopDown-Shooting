@@ -1,20 +1,18 @@
 #include "SplitBlockTransition.h"
 
 // Engine
-#include <Window/MyWindow.h>
+#include <Easing.h>
 #include <RandomGenerator.h>
 #include <TextureManager.h>
-#include <Easing.h>
 #include <TimeManager.h>
+#include <Window/MyWindow.h>
 
-SplitBlockTransition* SplitBlockTransition::GetInstance()
-{
+SplitBlockTransition* SplitBlockTransition::GetInstance() {
 	static SplitBlockTransition instance;
 	return &instance;
 }
 
-void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t splitCount)
-{
+void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t splitCount) {
 	spriteCommon_ = std::make_unique<SpriteCommon>();
 	spriteCommon_->Initialize(DirectXBase::GetInstance());
 
@@ -38,11 +36,11 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.top->Initialize(spriteCommon_.get(), textureWhite);
 		block.bottom->Initialize(spriteCommon_.get(), textureWhite);
 
-		block.top->SetSize({ blockWidth, blockHeight });
-		block.bottom->SetSize({ blockWidth, blockHeight });
+		block.top->SetSize({blockWidth, blockHeight});
+		block.bottom->SetSize({blockWidth, blockHeight});
 
-		block.top->SetPosition({ i * blockWidth, -blockHeight });
-		block.bottom->SetPosition({ i * blockWidth, screenHeight });
+		block.top->SetPosition({i * blockWidth, -blockHeight});
+		block.bottom->SetPosition({i * blockWidth, screenHeight});
 
 		// 遅延時間をランダムに設定
 		block.delay = RandomGenerator::GetInstance()->RandomValue(0.0f, 0.25f);
@@ -63,15 +61,14 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		float g = gStart + (gEnd - gStart) * t;
 		float b = bStart + (bEnd - bStart) * t;
 
-		block.top->SetColor({ r, g, b, 1.0f });
-		block.bottom->SetColor({ r, g, b, 1.0f });
+		block.top->SetColor({r, g, b, 1.0f});
+		block.bottom->SetColor({r, g, b, 1.0f});
 
 		blocks_.emplace_back(std::move(block));
 	}
 }
 
-void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart)
-{
+void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart) {
 	state_ = State::Open;
 	duration_ = duration;
 	timer_ = 0.0f;
@@ -82,8 +79,7 @@ void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart)
 	}
 }
 
-void SplitBlockTransition::StartClose(float duration, std::function<void()> onComplete, float delayAfterComplete)
-{
+void SplitBlockTransition::StartClose(float duration, std::function<void()> onComplete, float delayAfterComplete) {
 	state_ = State::Close;
 	duration_ = duration;
 	timer_ = 0.0f;
@@ -96,9 +92,9 @@ void SplitBlockTransition::StartClose(float duration, std::function<void()> onCo
 	}
 }
 
-void SplitBlockTransition::Update()
-{
-	if (state_ == State::None) return;
+void SplitBlockTransition::Update() {
+	if (state_ == State::None)
+		return;
 
 	timer_ += TimeManager::GetInstance()->GetDeltaTime();
 
@@ -135,7 +131,8 @@ void SplitBlockTransition::Update()
 			// 閉じるトランジション完了後の遅延時間が終わったら未実行状態へ
 			if (delayTimerAfterFadeOut_ >= delayAfterFadeOutComplete_) {
 				state_ = State::None;
-				if (onFadeComplete_) onFadeComplete_();
+				if (onFadeComplete_)
+					onFadeComplete_();
 			}
 		} else {
 			state_ = State::None;
@@ -143,9 +140,9 @@ void SplitBlockTransition::Update()
 	}
 }
 
-void SplitBlockTransition::Draw()
-{
-	if (state_ == State::None) return;
+void SplitBlockTransition::Draw() {
+	if (state_ == State::None)
+		return;
 
 	const float screenHeight = static_cast<float>(Window::GetHeight());
 
@@ -164,7 +161,7 @@ void SplitBlockTransition::Draw()
 
 			topY = std::round(-block.top->GetSize().y * easedT);
 			bottomY = std::round(screenHeight - block.bottom->GetSize().y * (1.0f - easedT));
-		// 閉じる（外側から中央へ）
+			// 閉じる（外側から中央へ）
 		} else {
 			easedT = Easing::EaseOutBounce(t);
 

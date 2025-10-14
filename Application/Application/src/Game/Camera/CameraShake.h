@@ -4,41 +4,41 @@
 #include <Engine/Math/MyMath.h>
 
 /// <summary>
-/// ƒJƒƒ‰ƒVƒFƒCƒN
+/// ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯åˆ¶å¾¡ã‚¯ãƒ©ã‚¹
 /// </summary>
 class CameraShake {
 public:
 	/// <summary>
-	/// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìæ“¾
+	/// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å–å¾—
 	/// </summary>
 	static CameraShake* GetInstance();
 
 	/// <summary>
-	/// XVˆ—
+	/// æ›´æ–°å‡¦ç†
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// ƒVƒFƒCƒNŠJn
+	/// ã‚·ã‚§ã‚¤ã‚¯é–‹å§‹
 	/// </summary>
 	void StartShake(float duration, float intensity);
 
 	/// <summary>
-	/// ƒVƒFƒCƒNƒIƒtƒZƒbƒgæ“¾
+	/// ã‚·ã‚§ã‚¤ã‚¯ã‚ªãƒ•ã‚»ãƒƒãƒˆå–å¾—
 	/// </summary>
 	/// <returns></returns>
 	const Float3& GetOffset() const { return offset_; }
 
 private:
 	/// <summary>
-	/// ƒVƒFƒCƒN“K—p
+	/// ã‚·ã‚§ã‚¤ã‚¯é©ç”¨
 	/// </summary>
 	void ApplyShake();
 
-	float duration_ = 0.0f;    // Œp‘±ŠÔ
-	float intensity_ = 0.0f;   // ‹­“x
-	float elapsedTime_ = 0.0f; // Œo‰ßŠÔ
+	float duration_ = 0.0f;    // ç¶™ç¶šæ™‚é–“
+	float intensity_ = 0.0f;   // å¼·åº¦
+	float elapsedTime_ = 0.0f; // çµŒéæ™‚é–“
 	const float kDeltaTime = 1.0f / 60.0f;
-	bool isShaking_ = false; // ƒVƒFƒCƒN’†H
-	Float3 offset_;          // ƒJƒƒ‰‚É‰Á‚¦‚éƒIƒtƒZƒbƒg
+	bool isShaking_ = false; // ã‚·ã‚§ã‚¤ã‚¯ä¸­ï¼Ÿ
+	Float3 offset_;          // ã‚«ãƒ¡ãƒ©ã«åŠ ãˆã‚‹ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 };

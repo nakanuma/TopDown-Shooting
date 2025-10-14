@@ -3,6 +3,9 @@
 // Engine
 #include <Object3D.h>
 
+/// <summary>
+/// 床オブジェクトのクラス
+/// </summary>
 class Field {
 public:
 	void Initialize();

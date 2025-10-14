@@ -6,9 +6,6 @@
 // Application
 #include <src/Game/Player/Player.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void PlayerUIManager::Initialize() {
 	///
 	///	基盤機能
@@ -37,9 +34,6 @@ void PlayerUIManager::Initialize() {
 	overheatGauge_->Initialize(dxBase, spriteCommon_.get());
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void PlayerUIManager::Update(const Player* player) {
 	// レティクル
 	reticle_->Update();
@@ -51,9 +45,6 @@ void PlayerUIManager::Update(const Player* player) {
 	overheatGauge_->Update(player);
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void PlayerUIManager::Draw() {
 	// HPバー
 	hpBar_->Draw();

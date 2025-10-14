@@ -11,8 +11,7 @@
 /// <summary>
 /// ウェイポイント（経路探索用）
 /// </summary>
-class Waypoint
-{
+class Waypoint {
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -57,11 +56,10 @@ public:
 	bool isSelected_;
 
 private:
-	std::string name_; // ウェイポイント名
-	Float3 position_; // 位置
+	std::string name_;                 // ウェイポイント名
+	Float3 position_;                  // 位置
 	std::vector<Waypoint*> neighbors_; // 隣接ノード
 
 	// オブジェクト
 	std::unique_ptr<Object3D> objectSphere_;
 };
-

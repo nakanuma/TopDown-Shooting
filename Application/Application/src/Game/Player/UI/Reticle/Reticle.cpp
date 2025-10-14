@@ -7,9 +7,6 @@
 // Application
 #include <src/Game/Utility/Utility.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	///
 	///	クロスへア（十字線）
@@ -22,9 +19,6 @@ void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	spriteCrosshair_->SetSize({64.0f, 64.0f});
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void Reticle::Update() {
 	///
 	///	クロスヘア（十字線）
@@ -44,9 +38,6 @@ void Reticle::Update() {
 	spriteCrosshair_->SetPosition({screenX, screenY});
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void Reticle::Draw() {
 	///
 	///	クロスヘア（十字線）

@@ -8,7 +8,7 @@
 #include <src/Game/Obstacle/Base/Obstacle.h>
 
 /// <summary>
-/// 障害物の管理
+/// 障害物の管理クラス
 /// </summary>
 class ObstacleManager {
 public:

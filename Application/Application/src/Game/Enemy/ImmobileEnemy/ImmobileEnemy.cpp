@@ -11,12 +11,9 @@
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Player/Player.h>
-#include <src/Game/Utility/Utility.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Utility/Utility.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
@@ -93,9 +90,6 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	BuildBehaviorTree();
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
 void ImmobileEnemy::Update() {
 	///
 	///	コライダー更新処理
@@ -131,25 +125,13 @@ void ImmobileEnemy::Update() {
 	spriteReload_->Update();
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void ImmobileEnemy::Draw() {
 	// オブジェクト描画
 	objectEnemy_->Draw();
 }
 
-// ---------------------------------------------------------
-// シャドウマップ描画処理
-// ---------------------------------------------------------
-void ImmobileEnemy::DrawShadow()
-{
-	objectEnemy_->DrawShadow();
-}
+void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
-// ---------------------------------------------------------
-// UI描画処理
-// ---------------------------------------------------------
 void ImmobileEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
@@ -209,9 +191,6 @@ void ImmobileEnemy::DrawUI() {
 	}
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
 void ImmobileEnemy::OnCollision(Collider* other) {
 	///
 	///	vs PlayerBullet
@@ -224,7 +203,7 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 
 		// HPを減らす
 		currentHP_ -= damage;
-		ResultStats::GetInstance()->AddHit(); // 弾が命中したことを記録
+		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
 		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
 		// HPが0になった敵を死亡させる
@@ -235,9 +214,6 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
 void ImmobileEnemy::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectEnemy_->transform_.translate;
@@ -249,9 +225,6 @@ void ImmobileEnemy::UpdateCollider() {
 	}
 }
 
-// ---------------------------------------------------------
-// プレイヤーとの距離・遮蔽チェック
-// ---------------------------------------------------------
 bool ImmobileEnemy::IsPlayerInSight() {
 	if (!targetPlayer_)
 		return false;
@@ -288,9 +261,6 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	return true;
 }
 
-// ---------------------------------------------------------
-// 索敵モーション : 回転->待機->回転->待機・・・
-// ---------------------------------------------------------
 void ImmobileEnemy::SearchMotion() {
 	searchStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
@@ -334,20 +304,14 @@ void ImmobileEnemy::SearchMotion() {
 	}
 }
 
-// ---------------------------------------------------------
-// プレイヤーの方向を向く
-// ---------------------------------------------------------
-void ImmobileEnemy::FaceToPlayer() { 
+void ImmobileEnemy::FaceToPlayer() {
 	// プレイヤーへの方向ベクトルからY軸回転角度を計算
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate; 
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸に回転を適用
 	objectEnemy_->transform_.rotate.y = targetAngle;
 }
 
-// ---------------------------------------------------------
-// 弾発射処理
-// ---------------------------------------------------------
 void ImmobileEnemy::Shoot() {
 	// 発射方向
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
@@ -368,9 +332,6 @@ void ImmobileEnemy::Shoot() {
 	nextShotInterval_ = 0.0f;
 }
 
-// ---------------------------------------------------------
-// ビヘイビアツリーの構築
-// ---------------------------------------------------------
 void ImmobileEnemy::BuildBehaviorTree() {
 	///
 	///	索敵シーケンス関連
@@ -383,9 +344,7 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	});
 
 	// 距離・遮蔽チェック
-	auto canSeePlayer = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { 
-		return enemy->IsPlayerInSight(); 
-	});
+	auto canSeePlayer = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { return enemy->IsPlayerInSight(); });
 
 	// searchSequence構築
 	auto searchSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
@@ -397,7 +356,7 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///
 
 	// プレイヤーの方向を向く
-	auto faceToPlayer = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) { 
+	auto faceToPlayer = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		enemy->FaceToPlayer();
 		return BehaviorStatus::Success;
 	});
@@ -426,14 +385,14 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	});
 
 	// 射撃可能チェック
-	auto canShoot = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { 
+	auto canShoot = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool {
 		enemy->nextShotInterval_ += TimeManager::GetInstance()->GetDeltaTime();
 		return enemy->nextShotInterval_ >= enemy->kShotInterval && !enemy->isReloading_;
 	});
 
 	// 射撃
-	auto shoot = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) { 
-		enemy->Shoot();	
+	auto shoot = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+		enemy->Shoot();
 		return BehaviorStatus::Success;
 	});
 
@@ -441,9 +400,9 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	auto attackSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
 	attackSequence->AddChild(std::move(faceToPlayer)); // プレイヤーの方向を向く
 	attackSequence->AddChild(std::move(needToReload)); // リロード必要チェック
-	attackSequence->AddChild(std::move(doReload)); // リロード
-	attackSequence->AddChild(std::move(canShoot)); // 射撃可能チェック
-	attackSequence->AddChild(std::move(shoot)); // 射撃
+	attackSequence->AddChild(std::move(doReload));     // リロード
+	attackSequence->AddChild(std::move(canShoot));     // 射撃可能チェック
+	attackSequence->AddChild(std::move(shoot));        // 射撃
 
 	///
 	///	ルートシーケンス

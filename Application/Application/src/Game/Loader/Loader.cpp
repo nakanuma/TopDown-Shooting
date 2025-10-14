@@ -7,9 +7,6 @@
 // Externals
 #include <externals/nlohmann/json.hpp>
 
-// ---------------------------------------------------------
-// JSONファイルの読み込み
-// ---------------------------------------------------------
 void Loader::LoadFromFile(const std::string& filepath) {
 	std::ifstream file(filepath);
 	if (!file.is_open()) {
@@ -43,9 +40,6 @@ void Loader::LoadFromFile(const std::string& filepath) {
 	}
 }
 
-// ---------------------------------------------------------
-// 単体データ取得
-// ---------------------------------------------------------
 Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 	for (const auto& data : datas_) {
 		if (data.tag == tag) {
@@ -57,11 +51,7 @@ Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 	return TransformData{};
 }
 
-// ---------------------------------------------------------
-// 指定ファイルの更新された時間を取得
-// ---------------------------------------------------------
-time_t Loader::GetLastModifiedTime(const std::string& filename)
-{
+time_t Loader::GetLastModifiedTime(const std::string& filename) {
 	struct stat result; // ファイルの情報を格納する構造体
 	// ファイルの状態を取得
 	if (stat(filename.c_str(), &result) == 0) {
@@ -70,15 +60,11 @@ time_t Loader::GetLastModifiedTime(const std::string& filename)
 	return 0;
 }
 
-// ---------------------------------------------------------
-// 更新処理
-// ---------------------------------------------------------
-void Loader::Update()
-{
+void Loader::Update() {
 	// ファイルの変更を検知
 	time_t newModifiedTime = GetLastModifiedTime("resources/Stages/data.json");
 	if (newModifiedTime > lastModifiedTime) {
 		lastModifiedTime = newModifiedTime; // 最終更新時刻を更新しておく
-		fileChanged_ = true; // ファイルに変更があったことを知らせる
+		fileChanged_ = true;                // ファイルに変更があったことを知らせる
 	}
 }

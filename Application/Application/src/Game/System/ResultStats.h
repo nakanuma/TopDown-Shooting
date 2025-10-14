@@ -7,10 +7,9 @@
 #include <TimeManager.h>
 
 /// <summary>
-/// リザルト表示戦績
+/// リザルト表示戦績の管理クラス
 /// </summary>
-class ResultStats
-{
+class ResultStats {
 public:
 	/// <summary>
 	/// インスタンス取得
@@ -47,4 +46,3 @@ private:
 	uint32_t defeated_ = 0;
 	float clearTime_ = 0.0f;
 };
-
