@@ -22,7 +22,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player : public ICollisionCallback, public IConfigurable {
+class Player final : public ICollisionCallback, public IConfigurable {
 public:
 	// =========================================================
 	// Public Methods
@@ -73,13 +73,13 @@ public:
 	/// プレイヤーの現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
+	const Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
 
 	/// <summary>
 	/// プレイヤーの位置を設定します。
 	/// </summary>
 	/// <param name="translate">設定する位置（Float3）</param>
-	void SetTranslate(Float3 translate) const { objectPlayer_->GetTranslate() = translate; }
+	void SetTranslate(const Float3& translate) { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
 	/// プレイヤーの現在HPを取得します。
@@ -131,7 +131,7 @@ private:
 
 private:
 	// =========================================================
-	// Member Variable
+	// Member Variables
 	// =========================================================
 
 	// ----- System -----
@@ -140,8 +140,10 @@ private:
 
 	// ----- Object / Animation -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
 	ModelManager::ModelData modelBullet_;					/* 弾モデル */
+
+	// ----- Animation -----
+	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
 
 	// ----- Collision -----
 	std::unique_ptr<Collider> collider_;					/* コライダー */
@@ -156,7 +158,7 @@ private:
 	bool isMoving_ = false;									/* 移動中フラグ */
 
 	const int32_t kMaxHP = 100;								/* 最大HP */
-	int32_t currentHP_;										/* 現在HP */
+	int32_t currentHP_ = 0;									/* 現在HP */
 
 	// ----- Dash -----
 	bool isDashing_ = false;								/* ダッシュ中フラグ */
@@ -166,18 +168,18 @@ private:
 	const float kDashCoolDown = 1.5f;						/* ダッシュのクールタイム時間 */
 	float dashCooldownTimer_ = 0.0f;						/* ダッシュのクールダウンタイマー */
 
-	float kDashSpeedMultiplier = 3.0f;						/* ダッシュ速度倍率 */
+	const float kDashSpeedMultiplier = 3.0f;				/* ダッシュ速度倍率 */
 
-	// ----- Shooting / Overheat -----
+	// ----- Shooting -----
+	bool isFiring_ = false;									/* 射撃中フラグ */
+	float fireCooldown_ = 0.15f;							/* 連射速度 */
+	float fireTimer_ = 0.0f;								/* 射撃タイマー */
+	const float kMaxRandomAngle = 0.02f;					/* 射撃ブレ角 */
+
+	// ----- Overheat -----
 	float overheatTime_ = 0.0f;								/* オーバーヒートタイマー */
 	const float kOverheatLimit = 3.0f;						/* オーバーヒートになる秒数 */
 	float overheatGainPerSecond_ = 1.0f;					/* オーバーヒート加熱速度（1秒あたり） */
 	float overheatRecoverySpeed_ = 1.6f;					/* オーバーヒート冷却速度（1秒あたり） */
 	bool isOverheated_ = false;								/* オーバーヒート中フラグ */
-	bool isFiring_ = false;									/* 射撃中フラグ */
-
-	float fireCooldown_ = 0.15f;							/* 連射速度 */
-	float fireTimer_ = 0.0f;								/* 射撃タイマー */
-
-	const float kMaxRandomAngle = 0.02f;					/* 射撃ブレ角 */
 };
