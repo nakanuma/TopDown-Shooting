@@ -14,6 +14,9 @@
 /// </summary>
 class FadeTransition {
 public:
+	/// <summary>
+	/// フェード処理の状態を表す列挙体
+	/// </summary>
 	enum class State {
 		None,
 		FadeIn,

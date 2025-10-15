@@ -12,6 +12,9 @@
 /// </summary>
 class Loader {
 public:
+	/// <summary>
+	/// ステージオブジェクト1つ文の変換情報データ
+	/// </summary>
 	struct TransformData {
 		std::string tag;
 		Float3 translate;

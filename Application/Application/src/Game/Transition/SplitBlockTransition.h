@@ -14,7 +14,7 @@
 class SplitBlockTransition {
 public:
 	/// <summary>
-	/// トランジションの状態
+	/// トランジションの状態を表す列挙体
 	/// </summary>
 	enum class State {
 		None,  // 未実行

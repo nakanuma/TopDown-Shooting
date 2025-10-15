@@ -9,7 +9,7 @@
 #include <src/Game/Waypoint/Waypoint.h>
 
 /// <summary>
-/// ノードの情報を保持
+/// ノード1つ分の情報を保持する構造体
 /// </summary>
 struct NodeRecord {
 	Waypoint* wp;         // このノードのウェイポイント
