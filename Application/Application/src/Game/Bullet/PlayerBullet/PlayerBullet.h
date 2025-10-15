@@ -1,66 +1,75 @@
 #pragma once
 
-// C++
+// ---------------------------------------------------------
+// C++ Includes
+// ---------------------------------------------------------
 #include <deque>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
 
-/// <summary>
-/// プレイヤーの通常弾
-/// </summary>
+// =========================================================
+// プレイヤーの通常弾クラス
+// =========================================================
 class PlayerBullet : public Bullet, public ICollisionCallback {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 弾の初期化処理を行います。
 	/// </summary>
+	/// <param name="position">初期位置</param>
+	/// <param name="direciton">方向</param>
+	/// <param name="model">モデルデータ</param>
 	void Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) override;
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update() override;
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw() override;
 
 	/// <summary>
-	/// 衝突時コールバック
+	/// 衝突時のコールバック処理を行います。
 	/// </summary>
-	/// <param name="other"></param>
+	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
 private:
-	// ---------------------------------------------------------
-	// 内部処理
-	// ---------------------------------------------------------
+	// =========================================================
+	// Internal Methods
+	// =========================================================
 
 	/// <summary>
-	/// コライダー更新処理
+	/// コライダーの更新処理を行います。
 	/// </summary>
 	void UpdateCollider();
 
 	/// <summary>
-	/// 弾道の描画
+	/// 弾道の描画処理を行います。
 	/// </summary>
 	void DrawTrail();
 
 private:
-	// ---------------------------------------------------------
-	// パラメーター
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	// 半径
-	float radius_ = 0.2f;
+	// ----- Parameters -----
+	float radius_ = 0.2f;						/* 弾の半径 */
 
-	// 経過時間
-	float elapsedTime_ = 0.0f;
-	// 生存時間
-	const float kMaxLifeTime = 1.0f; // 1秒で消える
+	float elapsedTime_ = 0.0f;					/* 経過時間 */
+	const float kMaxLifeTime = 1.0f;			/* 生存時間（秒） */
 
-	// 弾道用
-	std::deque<Float3> trailPoints_; // 過去位置履歴
-	size_t kMaxTrailPoints = 10;     // 残す履歴数
+	// ----- Trail -----
+	std::deque<Float3> trailPoints_{};			/* 過去フレームの位置を保持 */
+	size_t kMaxTrailPoints = 10;				/* 保持する履歴数 */
 };

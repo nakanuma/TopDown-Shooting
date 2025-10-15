@@ -1,61 +1,66 @@
 #pragma once
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
 
-class Player;
-
-/// <summary>
-/// 地面警告攻撃（ボスの第一形態が使用・弾として管理）
-/// </summary>
+// =========================================================
+// 地面警告攻撃クラス
+// ボスの第一形態が使用。弾として扱う
+// =========================================================
 class GroundWarning : public Bullet, public ICollisionCallback {
 public:
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
-	void Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) override;
+	// =========================================================
+	// Public Methods
+	// =========================================================
 
 	/// <summary>
-	/// 更新処理
+	/// 弾の初期化処理を行います。
+	/// </summary>
+	/// <param name="position">初期位置</param>
+	/// <param name="direciton">方向</param>
+	/// <param name="model">モデルデータ</param>
+	void Initialize(const Float3& position, const Float3& direction, ModelManager::ModelData* model) override;
+
+	/// <summary>
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update() override;
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw() override;
 
 	/// <summary>
-	/// 衝突時コールバック
+	/// 衝突時のコールバック処理を行います。
 	/// </summary>
+	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
 private:
-	// ---------------------------------------------------------
-	// 内部処理
-	// ---------------------------------------------------------
+	// =========================================================
+	// Internal Methods
+	// =========================================================
 
 	/// <summary>
-	/// コライダー更新処理
+	/// コライダーの更新処理を行います。
 	/// </summary>
 	void UpdateCollider();
 
 private:
-	// ---------------------------------------------------------
-	// パラメーター
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	// 半径
-	float radius_ = 5.0f;
+	// ----- Parameters -----
+	float radius_ = 5.0f;						/* 弾の半径 */
 
-	// この秒数経過後から当たり判定を有効にする
-	float hitDelay_ = 0.8f;
-	// コライダー有効化
-	bool colliderEnabled_ = false;
+	float hitDelay_ = 0.8f;						/* 衝突判定を有効化するまでの遅延時間 */
+	bool colliderEnabled_ = false;				/* コライダー有効化フラグ */
 
-	// 経過時間
-	float elapsedTime_ = 0.0f;
-	// 生存時間
-	const float kMaxLifeTime = 1.0f; // 1秒で消える
+	float elapsedTime_ = 0.0f;					/* 経過時間 */
+	const float kMaxLifeTime = 1.0f;			/* 生存時間（秒） */
 };
 

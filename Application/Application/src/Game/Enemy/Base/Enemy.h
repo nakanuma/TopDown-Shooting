@@ -1,134 +1,125 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
 #include <Engine/3D/Object3D.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
 
+// ---------------------------------------------------------
+// Foward Declaration
+// ---------------------------------------------------------
 class Player;
 
-/// <summary>
-/// 敵の基底クラス
-/// </summary>
+// =========================================================
+// 敵の基底クラス
+// =========================================================
 class Enemy {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 敵の初期化処理を行います。
 	/// </summary>
+	/// <param name="position">初期位置</param>
+	/// <param name="model">モデルデータ</param>
+	/// <param name="player">プレイヤーのポインタ</param>
 	virtual void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) = 0;
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	virtual void Update() = 0;
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	virtual void Draw() = 0;
 
 	/// <summary>
-	/// シャドウマップ用描画処理
+	/// シャドウマップ用の描画処理を行います。
 	/// </summary>
 	virtual void DrawShadow() = 0;
 
 	/// <summary>
-	/// UI描画処理
+	/// UIの描画処理を行います。
 	/// </summary>
 	virtual void DrawUI() = 0;
 
 	/// <summary>
-	/// 破棄される際に呼ぶ関数
+	/// 破棄を行います。
 	/// </summary>
 	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
 	/// <summary>
-	/// 死亡フラグの取得
+	/// 死亡フラグの取得を行います。
 	/// </summary>
+	/// <returns>死亡フラグ</returns>
 	bool IsDead() { return isDead_; }
 
 	/// <summary>
-	/// タグの取得（コライダーに設定してあるタグ）
+	/// コライダーのタグを取得します。
 	/// </summary>
+	/// <returns>コライダータグ（string）</returns>
 	std::string GetTag() const { return collider_->GetTag(); }
 
 	/// <summary>
-	/// 現在位置の取得
+	/// 敵の現在位置を取得します。
 	/// </summary>
-	Float3& GetTranslate() const { return objectEnemy_->transform_.translate; }
+	/// <returns>現在の位置（Float3）</returns>
+	const Float3& GetTranslate() const { return objectEnemy_->transform_.translate; }
 
 	/// <summary>
-	/// 残りHPの取得
+	/// 敵の現在HPを取得します。
 	/// </summary>
+	/// <returns>現在のHP</returns>
 	int32_t GetHP() const { return currentHP_; }
 
 protected:
-	// ---------------------------------------------------------
-	// 基盤機能
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	std::unique_ptr<SpriteCommon> spriteCommon_;
+	// ----- System -----	
+	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
 
-	// ---------------------------------------------------------
-	// オブジェクト関連
-	// ---------------------------------------------------------
+	// ----- Object -----
+	std::unique_ptr<Object3D> objectEnemy_;					/* 敵オブジェクト */
 
-	// 敵オブジェクト
-	std::unique_ptr<Object3D> objectEnemy_;
+	// ----- Collision -----
+	std::unique_ptr<Collider> collider_;					/* コライダー */
+	Float3 colliderSize_;									/* コライダーサイズ */
 
-	// ---------------------------------------------------------
-	// コライダー
-	// ---------------------------------------------------------
+	// ----- Sprite -----
+	/// (Todo : 敵用のUIクラスに分ける )
+	const Float2 kHPBarSize = {100.0f, 20.0f};				/* HPバーのサイズ */
+	std::unique_ptr<Sprite> spriteHPBackground_;			/* HPバー後景スプライト */
+	std::unique_ptr<Sprite> spriteHPForeground_;			/* HPバー前景スプライト */
 
-	// コライダー
-	std::unique_ptr<Collider> collider_;
+	const Float2 kReloadSize = {100.0f, 10.0f};				/* リロード表示スプライトのサイズ */
 
-	// コライダーのサイズ
-	Float3 colliderSize_;
+	std::unique_ptr<Sprite> spriteReload_;					/* リロード表示スプライト */
 
-	// ---------------------------------------------------------
-	// スプライト関連
-	// ---------------------------------------------------------
+	// ----- Parameters -----
+	bool isActive_ = false;									/* 有効化フラグ */
+	bool isDead_ = false;									/* 死亡フラグ */
 
-	// HPバーの最大サイズ
-	const Float2 kHPBarSize = {100.0f, 20.0f};
+	int32_t maxHP_ = 0;										/* 最大HP */
+	int32_t currentHP_ = 0;									/* 現在HP */
 
-	// HPバー（後景）
-	std::unique_ptr<Sprite> spriteHPBackground_;
-	// HPバー（前景）
-	std::unique_ptr<Sprite> spriteHPForeground_;
-
-
-	// リロード表示の最大サイズ
-	const Float2 kReloadSize = {100.0f, 10.0f};
-
-	// リロード表示
-	std::unique_ptr<Sprite> spriteReload_;
-
-	// ---------------------------------------------------------
-	// パラメーター
-	// ---------------------------------------------------------
-
-	// 有効化フラグ
-	bool isActive_ = false;
-
-	// 死亡フラグ
-	bool isDead_ = false;
-
-	// 最大HP
-	int32_t maxHP_;
-	// 現在HP
-	int32_t currentHP_;
-
-	// ---------------------------------------------------------
-	// その他
-	// ---------------------------------------------------------
-
-	// 対象のプレイヤー
-	Player* targetPlayer_ = nullptr;
+	Player* targetPlayer_ = nullptr;						/* プレイヤーのポインタ */
 };

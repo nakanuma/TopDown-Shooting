@@ -3,6 +3,9 @@
 // C++
 #include <random>
 
+// Engine
+#include <TimeManager.h>
+
 CameraShake* CameraShake::GetInstance() {
 	static CameraShake instance;
 	return &instance;
@@ -10,7 +13,7 @@ CameraShake* CameraShake::GetInstance() {
 
 void CameraShake::Update() {
 	if (isShaking_) {
-		elapsedTime_ += kDeltaTime;
+		elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
 		// シェイク終了
 		if (elapsedTime_ >= duration_) {
 			isShaking_ = false;

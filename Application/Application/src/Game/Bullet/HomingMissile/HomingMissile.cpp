@@ -142,10 +142,10 @@ void HomingMissile::OnCollision(Collider* other) {
 void HomingMissile::UpdateCollider() {
 	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
 		Float3 center = objectBullet_->transform_.translate;
-		Float3 size = colliderSize_;
+		Float3 size = kColliderSize;
 
 		obb->center_ = center;
-		obb->size_ = colliderSize_;
+		obb->size_ = kColliderSize;
 
 		// 回転軸の更新
 		Matrix rotMat = Matrix::Rotation(objectBullet_->transform_.rotate);

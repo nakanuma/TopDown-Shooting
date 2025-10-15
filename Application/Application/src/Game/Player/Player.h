@@ -22,7 +22,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player final : public ICollisionCallback, public IConfigurable {
+class Player : public ICollisionCallback, public IConfigurable {
 public:
 	// =========================================================
 	// Public Methods
@@ -84,7 +84,7 @@ public:
 	/// <summary>
 	/// プレイヤーの現在HPを取得します。
 	/// </summary>
-	/// <returns>現在HPのHP</returns>
+	/// <returns>現在HP</returns>
 	int32_t GetCurrentHP() const { return currentHP_; }
 
 	/// <summary>
@@ -138,7 +138,7 @@ private:
 	Input* input_ = nullptr;								/* 入力管理 */
 	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
 
-	// ----- Object / Animation -----
+	// ----- Object -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
 	ModelManager::ModelData modelBullet_;					/* 弾モデル */
 
