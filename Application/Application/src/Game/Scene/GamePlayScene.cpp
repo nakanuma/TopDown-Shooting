@@ -114,7 +114,7 @@ void GamePlayScene::Initialize() {
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
 	CollisionManager::GetInstance()->Update();         // 障害物のコライダーが未登録状態のためここで一度更新しておく
-	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
+	WaypointManager::GetInstance()->Initialize();
 
 	// シャドウマップ生成
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());

@@ -1,65 +1,90 @@
 #pragma once
 
-// C++
+// ---------------------------------------------------------
+// C++ Includes
+// ---------------------------------------------------------
 #include <string>
 #include <vector>
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <MyMath.h>
 #include <Object3D.h>
 
-/// <summary>
-/// ウェイポイント（経路探索用）
-/// </summary>
+// =========================================================
+// ウェイポイント1つ分のクラス
+// 主に敵の経路探索に使用
+// =========================================================
 class Waypoint {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="name">固有の名前</param>
+	/// <param name="pos">位置</param>
+	/// <param name="model">モデルデータ</param>
 	Waypoint(const std::string& name, const Float3& pos, ModelManager::ModelData* model);
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw();
 
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
 	/// <summary>
-	/// 名前を取得
+	/// 名前を取得します。
 	/// </summary>
+	/// <returns>固有の名前（string）</returns>
 	const std::string& GetName() const { return name_; }
 
 	/// <summary>
-	/// 位置を取得
+	/// 位置を取得します。
 	/// </summary>
+	/// <returns>位置（Float3）</returns>
 	const Float3& GetPosition() const { return position_; }
 
 	/// <summary>
-	/// 隣接ノードを追加
+	/// 隣接ノードを追加します。
 	/// </summary>
+	/// <param name="neighbor">隣接ノードのポインタ</param>
 	void AddNeighbor(Waypoint* neighbor) { neighbors_.push_back(neighbor); }
 
 	/// <summary>
-	/// 隣接ノードのリストをクリア
+	/// 隣接ノードのリストをクリアします。
 	/// </summary>
 	void ClearNeighbors() { neighbors_.clear(); }
 
 	/// <summary>
-	/// 隣接ノードを取得
+	/// 隣接ノードを取得します。
 	/// </summary>
+	/// <returns>隣接ノードのリスト</returns>
 	const std::vector<Waypoint*>& GetNeighbors() const { return neighbors_; }
 
-	bool isSelected_;
+	bool isSelected_;								/* 選択中フラグ */
 
 private:
-	std::string name_;                 // ウェイポイント名
-	Float3 position_;                  // 位置
-	std::vector<Waypoint*> neighbors_; // 隣接ノード
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	// オブジェクト
-	std::unique_ptr<Object3D> objectSphere_;
+	// ----- Parameters -----
+	std::string name_;									/* ウェイポイント名 */
+	Float3 position_;									/* 位置 */
+	std::vector<Waypoint*> neighbors_;					/* 隣接ノード */
+
+	// ----- Object -----
+	std::unique_ptr<Object3D> objectSphere_;			/* ウェイポイント表示用の球体オブジェクト */
 };

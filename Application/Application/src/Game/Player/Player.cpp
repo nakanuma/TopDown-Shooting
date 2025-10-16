@@ -251,7 +251,7 @@ void Player::Debug() {
 
 void Player::FaceCursor() {
 	// プレイヤーからカーソルへの方向ベクトル
-	Float3 direction = Utility::CalclateCursorPosition() - objectPlayer_->GetTranslate();
+	Float3 direction = Utility::CalculateCursorPosition() - objectPlayer_->GetTranslate();
 
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
@@ -329,7 +329,7 @@ void Player::HandleShooting() {
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0)) {
 		// カーソル位置の取得
-		Float3 cursorPos = Utility::CalclateCursorPosition();
+		Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
 		Float3 playerPos = objectPlayer_->GetTranslate();
 

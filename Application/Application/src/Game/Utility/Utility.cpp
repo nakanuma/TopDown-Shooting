@@ -14,7 +14,7 @@ Float3 Utility::WorldToScreen(Float3 worldPosition) {
 	return screenPosition;
 }
 
-Float3 Utility::CalclateCursorPosition() {
+Float3 Utility::CalculateCursorPosition() {
 	// マウス位置の取得
 	Float2 mousePos = Float2(Input::GetInstance()->GetMousePosition().x, Input::GetInstance()->GetMousePosition().y);
 

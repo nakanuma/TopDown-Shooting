@@ -1,25 +1,32 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Engine/Model/ModelManager.h>
 
-/// <summary>
-/// パーティクルのモデル管理・登録をあらかじめ行うクラス
-/// </summary>
+// =========================================================
+// パーティクルのモデル管理・登録をあらかじめ行うクラス
+// =========================================================
 class ParticleEffectLoader {
 public:
 	/// <summary>
-	/// インスタンス取得
+	/// インスタンスの取得を行います。
 	/// </summary>
+	/// <returns>シングルトンインスタンス</returns>
 	static ParticleEffectLoader* GetInstance();
 
 	/// <summary>
-	/// パーティクルのモデル読み込み・登録
+	/// パーティクルのモデル読み込み・登録を行います。
 	/// </summary>
 	void LoadAndRegisterAll();
 
 private:
-	// パーティクル用モデル
-	ModelManager::ModelData modelSmoothCube_;
-	ModelManager::ModelData modelPlane_;
+	// =========================================================
+	// Member Variables
+	// =========================================================
+
+	// ----- Models -----
+	ModelManager::ModelData modelSmoothCube_; 			/* 滑らかな立方体モデル */
+	ModelManager::ModelData modelPlane_;				/* 平面モデル */
 };

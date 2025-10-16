@@ -34,7 +34,7 @@ void OverheatGauge::Update(const Player* player) {
 	/// カーソルのワールド座標をスクリーン座標に変換してスプライト位置を設定
 	///
 
-	Float3 screenPos = Float3::Transform(Utility::CalclateCursorPosition(), Camera::GetCurrent()->GetViewProjectionMatrix());
+	Float3 screenPos = Float3::Transform(Utility::CalculateCursorPosition(), Camera::GetCurrent()->GetViewProjectionMatrix());
 
 	float screenWidth = static_cast<float>(Window::GetWidth());
 	float screenHeight = static_cast<float>(Window::GetHeight());
