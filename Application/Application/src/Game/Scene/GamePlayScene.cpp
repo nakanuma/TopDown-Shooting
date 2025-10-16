@@ -30,10 +30,6 @@ void GamePlayScene::Initialize() {
 	camera = std::make_unique<Camera>(Float3{0.0f, 50.0f, -55.0f}, Float3{std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
-	// デバッグカメラの生成と初期化
-	debugCamera = std::make_unique<DebugCamera>();
-	debugCamera->Initialize();
-
 	// SpriteCommonの生成と初期化
 	spriteCommon = std::make_unique<SpriteCommon>();
 	spriteCommon->Initialize(DirectXBase::GetInstance());
@@ -170,9 +166,6 @@ void GamePlayScene::Update() {
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 #ifdef _DEBUG
-	// デバッグカメラ更新
-	DebugCameraUpdate(input);
-
 	loader_->Update();
 	// ステージデータファイルに変更があれば再生成
 	if (loader_->HasFileChanged()) {
@@ -317,7 +310,6 @@ void GamePlayScene::Debug() {
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
-	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
 	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
 	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
@@ -342,29 +334,3 @@ void GamePlayScene::Debug() {
 	ResultStats::GetInstance()->Debug();*/
 #endif
 }
-
-#ifdef _DEBUG
-void GamePlayScene::DebugCameraUpdate(Input* input) {
-	// 前回のカメラモード状態を保持
-	static bool prevUseDebugCamera = false;
-
-	// デバッグカメラが有効になった瞬間に通常カメラのTransformを保存
-	if (useDebugCamera && !prevUseDebugCamera) {
-		savedCameraTransform = camera->transform;
-	}
-
-	// デバッグカメラが有効の場合
-	if (useDebugCamera) {
-		// デバッグカメラの更新
-		debugCamera->Update(input);
-		// 通常カメラにデバッグカメラのTransformを適用
-		camera->transform = debugCamera->transform_;
-	} else if (!useDebugCamera && prevUseDebugCamera) {
-		// 通常カメラのTransformを再現
-		camera->transform = savedCameraTransform;
-	}
-
-	// 現在のカメラモードを保存して次のフレームで使う
-	prevUseDebugCamera = useDebugCamera;
-}
-#endif // _DEBUG

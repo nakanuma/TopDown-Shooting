@@ -1,53 +1,57 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Player/UI/HPBar/HPBar.h>
 #include <src/Game/Player/UI/OverheatGauge/OverheatGauge.h>
 #include <src/Game/Player/UI/Reticle/Reticle.h>
 
+// ---------------------------------------------------------
+// Foward Declaration
+// ---------------------------------------------------------
 class Player;
 
-/// <summary>
-/// プレイヤーのUI管理クラス
-/// </summary>
+// =========================================================
+// プレイヤーの全てのUI管理を行うクラス
+// =========================================================
 class PlayerUIManager {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 全てのUIの初期化処理を行います。
 	/// </summary>
 	void Initialize();
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update(const Player* player);
 
 	/// <summary>
-	/// 描画処理
+	/// スプライトの描画処理を行います。
 	/// </summary>
 	void Draw();
 
 private:
-	// ---------------------------------------------------------
-	// システム関連
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	// スプライト基盤
-	std::unique_ptr<SpriteCommon> spriteCommon_;
+	// ----- System -----
+	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
 
-	// ---------------------------------------------------------
-	// UI
-	// ---------------------------------------------------------
-
-	// レティクル
-	std::unique_ptr<Reticle> reticle_;
-	// HPバー
-	std::unique_ptr<HPBar> hpBar_;
-
-	// オーバーヒートゲージ
-	std::unique_ptr<OverheatGauge> overheatGauge_;
+	// ----- UI -----
+	std::unique_ptr<Reticle> reticle_;						/* レティクル */
+	std::unique_ptr<HPBar> hpBar_;							/* HPバー */
+	std::unique_ptr<OverheatGauge> overheatGauge_;			/* オーバーヒートゲージ */
 };

@@ -1,44 +1,49 @@
 #pragma once
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Teleporter/Teleporter.h>
 
-/// <summary>
-/// プレイヤーの使用するテレポーターの管理クラス
-/// </summary>
+// =========================================================
+// テレポーターの管理クラス
+// =========================================================
 class TeleporterManager {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 全てのテレポーターの初期化処理を行います。
 	/// </summary>
+	/// <param name="datas">初期位置や回転などのTransformデータ</param>
 	void Initialize(std::vector<Loader::TransformData> datas);
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw();
 
 	/// <summary>
-	/// デバッグ表示
+	/// デバッグ用の描画処理を行います。
 	/// </summary>
 	void Debug();
 
 private:
-	// ---------------------------------------------------------
-	// モデル
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	ModelManager::ModelData modelTeleporter_;
+	// ----- Models -----
+	ModelManager::ModelData modelTeleporter_;				/* テレポーターモデル */
 
-	// ---------------------------------------------------------
-	// テレポーター
-	// ---------------------------------------------------------
-
-	std::vector<std::unique_ptr<Teleporter>> teleporters_;
+	// ----- Container -----
+	std::vector<std::unique_ptr<Teleporter>> teleporters_;	/* テレポーター全てを格納したコンテナ */
 };

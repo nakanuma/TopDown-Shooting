@@ -1,31 +1,47 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Foward Declaration
+// ---------------------------------------------------------
 class Player;
 
-/// <summary>
-/// プレイヤーのオーバーヒートの円ゲージUI
-/// </summary>
+// =========================================================
+// プレイヤーのオーバーヒートの円ゲージUIクラス
+// =========================================================
 class OverheatGauge {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// UIの初期化処理を行います。
 	/// </summary>
+	/// <param name="dxBase">DirectX基盤クラス</param>
+	/// <param name="spriteCommon">スプライト共通クラス</param>
 	void Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon);
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update(const Player* player);
 
 	/// <summary>
-	/// 描画処理
+	/// スプライトの描画処理を行います。
 	/// </summary>
 	void Draw();
 
 private:
-	std::unique_ptr<Sprite> sprite_;
+	// =========================================================
+	// Member Variables
+	// =========================================================
+
+	// ----- Sprite -----
+	std::unique_ptr<Sprite> sprite_;		/* ゲージ用スプライト */
 };

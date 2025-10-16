@@ -1,9 +1,10 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include "BaseScene.h"
 #include "Camera.h"
-#include "DebugCamera.h"
 #include "Input.h"
 #include "LightManager.h"
 #include "ModelManager.h"
@@ -16,60 +17,63 @@
 #include <Engine/Texture/PostEffectManager.h>
 #include <Engine/Util/TimeManager.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Utility/NumberSprite.h>
 
-/// <summary>
-/// リザルトシーン
-/// </summary>
+// =========================================================
+// リザルトシーンシーンクラス
+// =========================================================
 class ResultScene : public BaseScene {
 public:
-	// 初期化
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
+	/// <summary>
+	/// リザルトシーンの初期化処理を行います。
+	/// </summary>
 	void Initialize() override;
 
-	// 終了
+	/// <summary>
+	/// リザルトシーンの終了処理を行います。
+	/// </summary>
 	void Finalize() override;
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 毎フレームの更新処理を行います。
+	/// </summary>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// シーンの描画処理を行います。
+	/// </summary>
 	void Draw() override;
 
 private:
-#ifdef _DEBUG
-	bool useDebugCamera = false;    // デバッグカメラが有効か
-	Transform savedCameraTransform; // 通常カメラのTransformを保持
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	void DebugCameraUpdate(Input* input);
-#endif
+	// ----- System -----
+	std::unique_ptr<Camera> camera = nullptr;				/* 3Dカメラクラス */
+	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;	/* スプライト共通処理クラス */
+	std::unique_ptr<SoundManager> soundManager = nullptr;	/* サウンド管理クラス */
+	Input* input = nullptr;									/* 入力管理クラス */
+	LightManager* lightManager = nullptr;					/* 各ライト管理クラス */
 
-private:
-	std::unique_ptr<Camera> camera = nullptr;
-	std::unique_ptr<DebugCamera> debugCamera = nullptr;
-	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;
-	std::unique_ptr<SoundManager> soundManager = nullptr;
-	Input* input = nullptr;
-	LightManager* lightManager = nullptr;
+	// ----- Sprite -----
+	/// Todo : 適切なクラスへの整理
+	std::unique_ptr<Sprite> spriteBackGround_;				/* 背景スプライト */
+	std::unique_ptr<Sprite> spriteTitleButton_;				/* タイトルボタンスプライト */
+	std::unique_ptr<Sprite> spriteRecord_;					/* 戦績スプライト */
 
-	///
-	///	スプライト
-	///
+	std::unique_ptr<NumberSprite> spriteTotalDamage_;		/* 合計ダメージ数字スプライト */
+	std::unique_ptr<NumberSprite> spriteDefeated_;			/* 撃破数数字スプライト */
+	std::unique_ptr<NumberSprite> spriteHitRate_;			/* 命中率数字スプライト */
+	std::unique_ptr<NumberSprite> spriteClearTime_;			/* クリアタイム数字スプライト */
 
-	// 通常スプライト
-	std::unique_ptr<Sprite> spriteBackGround_;
-	std::unique_ptr<Sprite> spriteTitleButton_;
-	std::unique_ptr<Sprite> spriteRecord_;
-
-	// 数字表示用スプライト
-	std::unique_ptr<NumberSprite> spriteTotalDamage_;
-	std::unique_ptr<NumberSprite> spriteDefeated_;
-	std::unique_ptr<NumberSprite> spriteHitRate_;
-	std::unique_ptr<NumberSprite> spriteClearTime_;
-
-	///
-	/// その他
-	///
-
-	int32_t shadowMapHandle_;
+	// ----- Others -----
+	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
 };

@@ -81,7 +81,7 @@ private:
 
 	/// <summary>
 	/// 索敵モーションを行います。
-	/// : 回転->待機->回転->待機・・・を繰り返す
+	/// : 回転->待機->回転->待機・・・のループを行う
 	/// </summary>
 	void SearchMotion();
 
@@ -113,10 +113,10 @@ private:
 	bool isPlayerVisible_ = false;								/* プレイヤー発見フラグ */
 
 	enum class SearchState {									/* 索敵時の状態を表す列挙体 */
-		Rotate,
-		Wait,
+		Rotate,													/* 回転中 */
+		Wait,													/* 待機中 */
 	};
-	SearchState searchState_ = SearchState::Wait;				/* 索敵時の状態 */
+	SearchState searchState_ = SearchState::Wait;				/* 現在の索敵状態 */
 
 	float searchStateTimer_ = 0.0f;								/* 索敵時タイマー */
 	
