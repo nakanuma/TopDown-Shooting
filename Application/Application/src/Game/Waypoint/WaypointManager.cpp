@@ -14,7 +14,7 @@ WaypointManager* WaypointManager::GetInstance() {
 	return &instance;
 }
 
-void WaypointManager::Initialize(const std::vector<Loader::TransformData> datas) {
+void WaypointManager::Initialize() {
 	waypoints_.clear();
 
 	uint32_t waypointID = 0; // カウント

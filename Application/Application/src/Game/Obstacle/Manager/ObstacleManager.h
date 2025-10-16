@@ -1,93 +1,79 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Engine/Model/ModelManager.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Base/Obstacle.h>
 
-/// <summary>
-/// 障害物の管理クラス
-/// </summary>
+// =========================================================
+// 障害物の管理クラス
+// =========================================================
 class ObstacleManager {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 障害物の初期化処理を行います。
 	/// </summary>
+	/// <param name="data">初期位置や回転などのTransformデータ</param>
 	void Initialize(const std::vector<Loader::TransformData> datas);
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update(const Float3& playerPos);
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw(const Float3& playerPos);
 
 	/// <summary>
-	/// シャドウマップ用描画処理
+	/// シャドウマップ用の描画処理を行います。
 	/// </summary>
 	void DrawShadow(const Float3& playerPos);
 
 	/// <summary>
-	/// デバッグ表示
+	/// デバッグ用の描画処理を行います。
 	/// </summary>
 	void Debug();
 
 	/// <summary>
-	/// 再生成処理
+	/// 全ての障害物の再生成処理を行います。
 	/// </summary>
 	void Reload(const std::vector<Loader::TransformData> datas);
 
 private:
-	// ---------------------------------------------------------
-	// 内部処理
-	// ---------------------------------------------------------
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-private:
-	// ---------------------------------------------------------
-	// モデル
-	// ---------------------------------------------------------
+	// ----- Models -----
+	ModelManager::ModelData modelContainer_;									/* コンテナモデル */
+	ModelManager::ModelData modelFence_;										/* フェンスモデル */
+	ModelManager::ModelData modelWall_;											/* 壁モデル */
+	ModelManager::ModelData modelBrickPallet_;									/* レンガパレットモデル */
+	ModelManager::ModelData modelConcreteBarrier_;								/* コンクリートバリアモデル */
+	ModelManager::ModelData modelDrumCan_;										/* ドラム缶モデル */
+	ModelManager::ModelData modelWaterTank_;									/* 貯水タンクモデル */
+	ModelManager::ModelData modelSteelBundle_;									/* 鉄骨モデル */
+	ModelManager::ModelData modelVerticalTank_;									/* 縦型タンクモデル */
+	ModelManager::ModelData modelISOTank_;										/* ISOタンクモデル */
+	ModelManager::ModelData modelIBCContainer_;									/* IBCコンテナモデル */
 
-	// コンテナ
-	ModelManager::ModelData modelContainer_;
-	// フェンス
-	ModelManager::ModelData modelFence_;
-	// 壁
-	ModelManager::ModelData modelWall_;
-	// レンガのパレット積み
-	ModelManager::ModelData modelBrickPallet_;
-	// コンクリートバリア
-	ModelManager::ModelData modelConcreteBarrier_;
-	// ドラム缶
-	ModelManager::ModelData modelDrumCan_;
-	// 貯水タンク
-	ModelManager::ModelData modelWaterTank_;
-	// 鉄骨の束
-	ModelManager::ModelData modelSteelBundle_;
-	// 縦型タンク
-	ModelManager::ModelData modelVerticalTank_;
-	// ISOタンク
-	ModelManager::ModelData modelISOTank_;
-	// IBCコンテナ
-	ModelManager::ModelData modelIBCContainer_;
+	// ----- Container -----
+	std::vector<std::unique_ptr<Obstacle>> obstacles_;							/* 全ての障害物を格納したコンテナ*/
 
-	// ---------------------------------------------------------
-	// リスト
-	// ---------------------------------------------------------
+	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};	/* タグとモデルデータのマップ */
 
-	// 障害物のリスト
-	std::vector<std::unique_ptr<Obstacle>> obstacles_;
-
-	// タグごとのモデルをマップで保持
-	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};
-
-	// ---------------------------------------------------------
-	// その他
-	// ---------------------------------------------------------
-
-	const float kActiveDistance = 50.0f;
+	// ----- Parameters -----
+	const float kActiveDistance = 50.0f;										/* 障害物の有効化距離 */
 };

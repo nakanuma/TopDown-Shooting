@@ -18,9 +18,6 @@
 // externals
 #include <ImguiWrapper.h>
 
-// ---------------------------------------------------------
-// 初期化処理
-// ---------------------------------------------------------
 void Player::Initialize(const Loader::TransformData& data) {
 	///
 	///	基盤機能
@@ -94,9 +91,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 	InitConfig(); // 初回読み込み
 }
 
-// ---------------------------------------------------------
-// 毎フレーム更新処理
-// ---------------------------------------------------------
 void Player::Update() {
 	///
 	///	内部処理
@@ -132,31 +126,19 @@ void Player::Update() {
 	ui_->Update(this);
 }
 
-// ---------------------------------------------------------
-// 描画処理
-// ---------------------------------------------------------
 void Player::Draw() {
 	// プレイヤーオブジェクト描画
 	objectPlayer_->Draw();
 }
 
-// ---------------------------------------------------------
-// シャドウマップ描画処理
-// ---------------------------------------------------------
 void Player::DrawShadow() { 
 	objectPlayer_->DrawShadow(); 
 }
 
-// ---------------------------------------------------------
-// UI描画処理
-// ---------------------------------------------------------
 void Player::DrawUI() { 
 	ui_->Draw(); 
 }
 
-// ---------------------------------------------------------
-// 衝突時コールバック
-// ---------------------------------------------------------
 void Player::OnCollision(Collider* other) {
 	///
 	/// vs NormalEnemy
@@ -225,9 +207,6 @@ void Player::OnCollision(Collider* other) {
 	}
 }
 
-// ---------------------------------------------------------
-// デバッグ表示
-// ---------------------------------------------------------
 void Player::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -270,12 +249,9 @@ void Player::Debug() {
 #endif //  _DEBUG
 }
 
-// ---------------------------------------------------------
-// カーソル方向へ向くよう回転させる
-// ---------------------------------------------------------
 void Player::FaceCursor() {
 	// プレイヤーからカーソルへの方向ベクトル
-	Float3 direction = Utility::CalclateCursorPosition() - objectPlayer_->GetTranslate();
+	Float3 direction = Utility::CalculateCursorPosition() - objectPlayer_->GetTranslate();
 
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
@@ -289,9 +265,6 @@ void Player::FaceCursor() {
 	objectPlayer_->GetRotate().y = angle;
 }
 
-// ---------------------------------------------------------
-// 移動処理
-// ---------------------------------------------------------
 void Player::HandleMove() {
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 
@@ -348,9 +321,6 @@ void Player::HandleMove() {
 	objectPlayer_->GetTranslate() += velocity_;
 }
 
-// ---------------------------------------------------------
-// 弾の発射処理
-// ---------------------------------------------------------
 void Player::HandleShooting() {
 	///
 	///	左クリックで弾の生成
@@ -359,7 +329,7 @@ void Player::HandleShooting() {
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0)) {
 		// カーソル位置の取得
-		Float3 cursorPos = Utility::CalclateCursorPosition();
+		Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
 		Float3 playerPos = objectPlayer_->GetTranslate();
 
@@ -391,9 +361,6 @@ void Player::HandleShooting() {
 	}
 }
 
-// ---------------------------------------------------------
-// オーバーヒートの管理処理
-// ---------------------------------------------------------
 void Player::HandleOverHeat()
 {
 	// 左クリック取得
@@ -430,9 +397,6 @@ void Player::HandleOverHeat()
 	}
 }
 
-// ---------------------------------------------------------
-// コライダー更新処理
-// ---------------------------------------------------------
 void Player::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
 		Float3 center = objectPlayer_->GetTranslate();

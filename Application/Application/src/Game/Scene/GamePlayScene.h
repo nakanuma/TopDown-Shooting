@@ -1,9 +1,10 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include "BaseScene.h"
 #include "Camera.h"
-#include "DebugCamera.h"
 #include "Input.h"
 #include "LightManager.h"
 #include "ModelManager.h"
@@ -16,7 +17,9 @@
 #include <Engine/Texture/PostEffectManager.h>
 #include <Engine/Util/TimeManager.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Camera/FollowCamera.h>
 #include <src/Game/Enemy/Manager/EnemyManager.h>
@@ -26,71 +29,64 @@
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
 
-/// <summary>
-/// ゲームプレイシーン
-/// </summary>
+// =========================================================
+// ゲームプレイシーンクラス
+// =========================================================
 class GamePlayScene : public BaseScene {
 public:
-	// 初期化
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
+	/// <summary>
+	/// ゲームシーンの初期化処理を行います。
+	/// </summary>
 	void Initialize() override;
 
-	// 終了
+	/// <summary>
+	/// ゲームシーンの終了処理を行います。
+	/// </summary>
 	void Finalize() override;
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 毎フレームの更新処理を行います。
+	/// </summary>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// シーンの描画処理を行います。
+	/// </summary>
 	void Draw() override;
 
-	// デバッグ
+	/// <summary>
+	/// デバッグ用の描画処理を行います。
+	/// </summary>
 	void Debug();
 
 private:
-#ifdef _DEBUG
-	bool useDebugCamera = false;    // デバッグカメラが有効か
-	Transform savedCameraTransform; // 通常カメラのTransformを保持
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	void DebugCameraUpdate(Input* input);
-#endif
+	// ----- System -----
+	std::unique_ptr<Camera> camera = nullptr;				/* 3Dカメラクラス */
+	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;	/* スプライト共通処理 */
+	std::unique_ptr<SoundManager> soundManager = nullptr;	/* サウンド管理クラス */
+	Input* input = nullptr;									/* 入力管理クラス */
+	LightManager* lightManager = nullptr;					/* 各ライト管理クラス */
 
-private:
-	std::unique_ptr<Camera> camera = nullptr;
-	std::unique_ptr<DebugCamera> debugCamera = nullptr;
-	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;
-	std::unique_ptr<SoundManager> soundManager = nullptr;
-	Input* input = nullptr;
-	LightManager* lightManager = nullptr;
+	// ----- Loader -----
+	std::unique_ptr<Loader> loader_;						/* ステージデータの管理クラス */
 
-	///
-	/// ↓ ゲームシーン用
-	///
+	// ----- Object -----
+	std::unique_ptr<Field> field_;							/* 床オブジェクト */
+	std::unique_ptr<Player> player_;						/* プレイヤーオブジェクト */
+	std::unique_ptr<EnemyManager> enemyManager_;			/* 敵管理クラス */
+	std::unique_ptr<ObstacleManager> obstacleManager_;		/* 障害物管理クラス */
+	std::unique_ptr<TeleporterManager> teleporterManager_;	/* テレポーター管理クラス */
 
-	/* ステージデータ */
-
-	// ローダー
-	std::unique_ptr<Loader> loader_;
-
-	/* オブジェクト関連 */
-
-	// 床
-	std::unique_ptr<Field> field_;
-	// プレイヤー
-	std::unique_ptr<Player> player_;
-	// 敵の管理クラス
-	std::unique_ptr<EnemyManager> enemyManager_;
-	// 障害物の管理クラス
-	std::unique_ptr<ObstacleManager> obstacleManager_;
-	// テレポーターの管理クラス
-	std::unique_ptr<TeleporterManager> teleporterManager_;
-
-	/* その他 */
-
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_;
-
-	// ポストエフェクト
-	std::unique_ptr<PostEffectManager> postEffectManager_;
-
-	uint32_t shadowMapHandle_;
+	// ----- Others -----
+	std::unique_ptr<FollowCamera> followCamera_;			/* 追従カメラ管理クラス */
+	std::unique_ptr<PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
+	uint32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
 };

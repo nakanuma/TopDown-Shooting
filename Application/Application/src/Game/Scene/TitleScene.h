@@ -1,9 +1,10 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include "BaseScene.h"
 #include "Camera.h"
-#include "DebugCamera.h"
 #include "Input.h"
 #include "LightManager.h"
 #include "ModelManager.h"
@@ -16,74 +17,84 @@
 #include <Engine/Texture/PostEffectManager.h>
 #include <Engine/Util/TimeManager.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 
-/// <summary>
-/// タイトルシーン
-/// </summary>
+// =========================================================
+// タイトルシーンクラス
+// =========================================================
 class TitleScene : public BaseScene {
 public:
-	// 初期化
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
+	/// <summary>
+	/// タイトルシーンの初期化処理を行います。
+	/// </summary>
 	void Initialize() override;
 
-	// 終了
+	/// <summary>
+	/// リザルトシーンの終了処理を行います。
+	/// </summary>
 	void Finalize() override;
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 毎フレームの更新処理を行います。
+	/// </summary>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// シーンの描画処理を行います。
+	/// </summary>
 	void Draw() override;
 
-	// 中心を向きながらカメラ回転
+private:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// 中心を向きながらカメラ回転を行います。
+	/// </summary>
+	/// <param name="target">ターゲット座標</param>
+	/// <param name="radius">回転半径</param>
+	/// <param name="height">カメラの高さ</param>
+	/// <param name="speed">回転速度</param>
 	void UpdateOrbitCamera(const Float3& target, float radius, float height, float speed);
 
-private:
-#ifdef _DEBUG
-	bool useDebugCamera = false;    // デバッグカメラが有効か
-	Transform savedCameraTransform; // 通常カメラのTransformを保持
-
-	void DebugCameraUpdate(Input* input);
-#endif
 	/// <summary>
-	/// カーソルがクライアント領域内にあるか確認
+	/// カーソルがクライアント領域内にあるか確認します。
 	/// </summary>
+	/// <returns>カーソル領域内判定フラグ</returns>
 	bool IsInsideClientCursor();
 
 private:
-	std::unique_ptr<Camera> camera = nullptr;
-	std::unique_ptr<DebugCamera> debugCamera = nullptr;
-	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;
-	std::unique_ptr<SoundManager> soundManager = nullptr;
-	Input* input = nullptr;
-	LightManager* lightManager = nullptr;
+	// =========================================================
+	// Member Variables
+	// =========================================================
 
-	///
-	/// スプライト
-	///
+	// ----- System -----
+	std::unique_ptr<Camera> camera = nullptr;				/* 3Dカメラクラス */
+	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;	/* スプライト共通処理クラス */
+	std::unique_ptr<SoundManager> soundManager = nullptr;	/* サウンド管理クラス */
+	Input* input = nullptr;									/* 入力管理クラス */
+	LightManager* lightManager = nullptr;					/* 各ライト管理クラス */
 
-	std::unique_ptr<Sprite> spriteTitle_;
-	std::unique_ptr<Sprite> spriteStartButton_;
+	// ----- Sprite -----
+	/// Todo : 適切なクラスへの整理
+	std::unique_ptr<Sprite> spriteTitle_;					/* タイトルロゴスプライト */
+	std::unique_ptr<Sprite> spriteStartButton_;				/* スタートボタンスプライト */
 
-	///
-	///	オブジェクト
-	///
+	// ----- Objects -----
+	std::unique_ptr<Field> field_;							/* 床オブジェクト */
+	std::unique_ptr<ObstacleManager> obstacleManager_;		/* 障害物管理クラス */
 
-	// 床
-	std::unique_ptr<Field> field_;
-	// 障害物の管理クラス
-	std::unique_ptr<ObstacleManager> obstacleManager_;
-
-	///
-	/// その他
-	///
-
-	// ローダー
-	std::unique_ptr<Loader> loader_;
-
-	// シャドウマップ
-	int32_t shadowMapHandle_;
+	// ----- Others -----
+	std::unique_ptr<Loader> loader_;						/* ステージデータの管理クラス */
+	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
 };

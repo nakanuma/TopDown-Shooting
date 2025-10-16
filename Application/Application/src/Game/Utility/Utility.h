@@ -1,20 +1,29 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <MyMath.h>
 
-/// <summary>
-/// 汎用ユーティリティクラス
-/// </summary>
+// =========================================================
+// 汎用ユーティリティクラス
+// =========================================================
 class Utility {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// ワールド座標をスクリーン座標に変換
+	/// ワールド座標をスクリーン座標に変換します。
 	/// </summary>
+	/// <param name="worldPosition">ワールド座標</param>
+	/// <returns>スクリーン座標</returns>
 	static Float3 WorldToScreen(Float3 worldPosition);
 
 	/// <summary>
-	/// カーソル位置のワールド座標を取得
+	/// カーソル位置のワールド座標を取得します。
 	/// </summary>
-	static Float3 CalclateCursorPosition();
+	/// <returns>カーソル位置のワールド座標</returns>
+	static Float3 CalculateCursorPosition();
 };

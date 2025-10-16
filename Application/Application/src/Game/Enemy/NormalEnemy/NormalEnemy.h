@@ -1,168 +1,181 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Engine/BehaviourTree/BehaviorTree.h>
 #include <Engine/BehaviourTree/BehaviorTreeEditor.h>
 #include <Engine/Util/ParameterSystem.h>
 
-// Application
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 
-/// <summary>
-/// 通常の敵
-/// </summary>
+// =========================================================
+// 通常の敵クラス
+// =========================================================
 class NormalEnemy : public Enemy, public ICollisionCallback, public IConfigurable {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// 初期化処理
+	/// 敵の初期化処理を行います。
 	/// </summary>
+	/// <param name="position">初期位置</param>
+	/// <param name="model">モデルデータ</param>
+	/// <param name="player">プレイヤーのポインタ</param>
 	void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) override;
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update() override;
 
 	/// <summary>
-	/// 描画処理
+	/// モデルの描画処理を行います。
 	/// </summary>
 	void Draw() override;
 
 	/// <summary>
-	/// シャドウマップ描画処理
+	/// シャドウマップ用の描画処理を行います。
 	/// </summary>
 	void DrawShadow() override;
 
 	/// <summary>
-	/// UI描画処理
+	/// UIの描画処理を行います。
 	/// </summary>
 	void DrawUI() override;
 
 	/// <summary>
-	/// 衝突時コールバック
+	/// 衝突時のコールバック処理を行います。
 	/// </summary>
+	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
 	/// <summary>
-	/// 弾モデルのセット
-	/// </summary>
-	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
-
-	/// <summary>
-	/// デバッグ表示
+	/// デバッグ用の描画処理を行います。
 	/// </summary>
 	void Debug();
 
-private:
-	// ---------------------------------------------------------
-	// 内部処理
-	// ---------------------------------------------------------
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
 
 	/// <summary>
-	/// コライダー更新処理
+	/// 弾モデルをセットします。
+	/// </summary>
+	/// <param name="model">モデルデータ</param>
+	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
+
+private:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// コライダーの更新処理を行います。
 	/// </summary>
 	void UpdateCollider();
 
 	/// <summary>
-	/// 経路探索で得たウェイポイント列に沿って移動（移動デバッグ用）
+	/// 経路探索で得たウェイポイント列に沿って移動します。
 	/// </summary>
+	/// <param name="path">移動経路</param>
+	/// <param name="speed">移動速度</param>
 	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
 
-	/* 索敵時 */
-
 	/// <summary>
-	/// プレイヤーの視界チェック
+	/// プレイヤーとの距離・遮蔽チェックを行います。
 	/// </summary>
+	/// <returns>プレイヤー発見フラグ</returns>
 	bool IsPlayerInSight();
 
 	/// <summary>
-	/// 索敵中の視界をデバッグ用に可視化（扇形）
+	/// 敵の扇形の視界を可視化します。（デバッグ用）
 	/// </summary>
 	void DrawDebugSight();
 
+private:
 	/// <summary>
-	/// 一定範囲内をランダムに移動
+	/// 敵が一定範囲内をランダムに移動します。
 	/// </summary>
+	/// <returns>BehaviorStatus</returns>
 	BehaviorStatus RandomPatrol();
 
 	/// <summary>
-	/// ランダムに回転
+	/// ランダムに敵の回転を行います。
 	/// </summary>
+	/// <returns>BehaviorStatus</returns>
 	BehaviorStatus RandomRotate();
 
-	/* 攻撃時 */
-
 	/// <summary>
-	/// プレイヤーの方向を向く
+	/// プレイヤー方向へ敵を回線させます。
 	/// </summary>
+	/// <returns>BehaviorStatus</returns>
 	BehaviorStatus FacePlayer();
 
 	/// <summary>
-	/// 弾発射処理
+	/// 弾の発射処理を行います。
 	/// </summary>
+	/// <returns>BehaviorStatus</returns>
 	BehaviorStatus Shoot();
 
 	/// <summary>
-	/// プレイヤーへの移動（プレイヤー発見時かつ、視界が遮られている場合）
+	/// 経路探索をしてプレイヤーまで移動します。
 	/// </summary>
+	/// <returns>BehaviorStatus</returns>
 	BehaviorStatus MoveToPlayer();
 
-private:
-	// ---------------------------------------------------------
-	// モデル
-	// ---------------------------------------------------------
-
-	ModelManager::ModelData* modelEnemyBullet_;
-
-	// ---------------------------------------------------------
-	// パラメーター
-	// ---------------------------------------------------------
-
-	// 移動速度
-	float speed_ = 10.0f;
-	// プレイヤー発見フラグ
-	bool isPlayerDetected_ = false;
-
-	/* 索敵時に使用 */
-
-	float searchRadius_ = 20.0f; // 索敵半径
-	float searchFovDeg_ = 80.0f; // 索敵視野角
-
-	Float3 spawnPosition_;                // 初期スポーン地点
-	float patrolRange_ = 12.0f;           // スポーン地点からの最大移動範囲
-	float minPatrolRange_ = 5.0f;         // 現在地から最低限移動する範囲
-	Waypoint* currentTargetWP_ = nullptr; // 現在の移動目標
-	float patrolMoveSpeed_ = 5.0f;        // 索敵時スピード
-
-	float rotateTimer_ = 0.0f;     // 回転用タイマー
-	float rotateDirection_ = 0.0f; // 回転方向
-
-	/* 攻撃時に使用 */
-
-	float bulletSpreadAngle_ = 0.1f;   // 弾の拡散角
-	const uint32_t kMagazineSize = 12; // マガジン最大サイズ
-	uint32_t currentAmmo_ = 0;         // 現在の弾数
-	uint32_t burstCount_ = 0;          // 現在のバースト内で撃った弾数
-	const uint32_t kBurstSize = 3;     // 1回のバースト発射数
-	const float kBurstInterval = 0.2f; // バースト内の発射間隔
-	float burstCooldown_ = 0.0f;       // バースト内のクールタイム
-	const float kFireInterval = 0.6f;  // バースト間の待機時間
-	float fireCooldown_ = 0.0f;        // バースト間のクールタイム
-
-	const float kReloadTime = 2.0f; // リロードにかかる時間
-	float reloadTimer_ = 0.0f;      // リロード中タイマー
-	bool isReloading_ = false;      // リロードしているかフラグ
-
-	// ---------------------------------------------------------
-	// BehaviorTree
-	// ---------------------------------------------------------
-
-	std::unique_ptr<BehaviorTree<NormalEnemy>> behaviorTree_;
-	std::unique_ptr<BehaviorTreeEditor<NormalEnemy>> btEditor_;
-
 	/// <summary>
-	/// ビヘイビアツリーの構築
+	/// BehaviorTreeの構築を行います。
 	/// </summary>
 	void BuildBehaviorTree();
+
+private:
+	// =========================================================
+	// Member Variables
+	// =========================================================
+
+	// ----- Models -----
+	ModelManager::ModelData* modelEnemyBullet_;					/* 弾モデル */
+
+	// ----- Parameters -----
+	float speed_ = 10.0f;										/* 移動速度 */ 
+	bool isPlayerDetected_ = false;								/* プレイヤー発見フラグ */
+
+	// ----- Search -----
+	float searchRadius_ = 20.0f;								/* 索敵半径 */
+	float searchFovDeg_ = 80.0f;								/* 索敵視野角 */
+
+	Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f};					/* 初期スポーン地点 */
+	float patrolRange_ = 12.0f;									/* スポーン地点からの最大移動範囲 */
+	float minPatrolRange_ = 5.0f;								/* 現在地から最低限移動する範囲 */
+	Waypoint* currentTargetWP_ = nullptr;						/* 現在の移動目標 */
+	float patrolMoveSpeed_ = 5.0f;								/* 索敵時移動速度 */
+
+	float rotateTimer_ = 0.0f;									/* 回転時タイマー */
+	float rotateDirection_ = 0.0f;								/* 回転方向 */
+
+	// ----- Attack -----
+	float bulletSpreadAngle_ = 0.1f;							/* 弾の拡散角 */
+	const uint32_t kMagazineSize = 12;							/* マガジン最大サイズ */
+	uint32_t currentAmmo_ = 0;									/* 現在の弾数 */
+	uint32_t burstCount_ = 0;									/* 現在のバースト内で撃った弾数 */
+	const uint32_t kBurstSize = 3;								/* 1回のバースト発射数 */
+	const float kBurstInterval = 0.2f;							/* バースト内の発射間隔 */
+	float burstCooldown_ = 0.0f;								/* バースト内のクールタイム */
+	const float kFireInterval = 0.6f;							/* バースト間の待機時間 */
+	float fireCooldown_ = 0.0f;									/* バースト間のクールタイム */
+
+	const float kReloadTime = 2.0f;								/* リロード所要時間 */
+	float reloadTimer_ = 0.0f;									/* リロード中タイマー */
+	bool isReloading_ = false;									/* リロード中フラグ */
+
+	// ----- BehaviorTree -----
+	std::unique_ptr<BehaviorTree<NormalEnemy>> behaviorTree_;	/* behaviorTree */
+	std::unique_ptr<BehaviorTreeEditor<NormalEnemy>> btEditor_;	/* BehaviorTreeEditor */
 };

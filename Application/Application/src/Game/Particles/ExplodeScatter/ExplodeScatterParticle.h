@@ -1,6 +1,8 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Engine/Math/MyMath.h>
 #include <Engine/Model/ModelManager.h>
 #include <Engine/ParticleEffect/BaseParticleEffect.h>
@@ -9,34 +11,50 @@
 /// パーティクルデータ
 /// </summary>
 struct ExplodeScatterParticleData {
-	Transform transform;
-	Float3 velocity;
-	Float4 color;
-	float lifeTime;
-	float currentTime;
+	Transform transform;			/* 位置 */
+	Float3 velocity;				/* 速度ベクトル */
+	Float4 color;					/* 色 */
+	float lifeTime;					/* 生存時間 */
+	float currentTime;				/* 経過時間 */
 
-	Float3 initScale;
-	Float3 rotationSpeed;
+	Float3 initScale;				/* 初期スケール */
+	Float3 rotationSpeed;			/* 回転速度 */
 };
 
-/// <summary>
-/// ボスの地面警告攻撃の爆発後飛散パーティクル
-/// </summary>
+// =========================================================
+// 爆発後飛散パーティクルクラス
+// ボスの地面警告攻撃時に発生
+// =========================================================
 class ExplodeScatterParticle : public BaseParticleEffect<ExplodeScatterParticleData> {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="model">モデルデータ</param>
 	ExplodeScatterParticle(ModelManager::ModelData& model);
 
 protected:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
 	/// <summary>
-	/// パーティクル固有の生成処理
+	/// パーティクル固有の生成処理を行います。
 	/// </summary>
+	/// <param name="pos">初期位置</param>
+	/// <param name="velocity">速度ベクトル</param>
+	/// <param name="angle">初期回転角</param>
+	/// <returns>パーティクルデータ</returns>
 	ExplodeScatterParticleData CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) override;
 
 	/// <summary>
-	/// パーティクル固有の更新処理
+	/// パーティクル固有の毎フレームの更新処理を行います。
 	/// </summary>
+	/// <param name="p">パーティクルデータ</param>
+	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(ExplodeScatterParticleData& p, float dt) override;
 };

@@ -1,84 +1,111 @@
 #pragma once
 
-// C++
+// ---------------------------------------------------------
+// C++ Includes
+// ---------------------------------------------------------
 #include <functional>
 #include <memory>
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
-/// <summary>
-/// 分割された矩形がランダムに噛み合って開閉するトランジション制御クラス
-/// </summary>
+// =========================================================
+// 矩形トランジション制御クラス
+// 分割された矩形がランダムに噛み合って開閉する
+// =========================================================
 class SplitBlockTransition {
 public:
 	/// <summary>
 	/// トランジションの状態を表す列挙体
 	/// </summary>
 	enum class State {
-		None,  // 未実行
-		Close, // 開く
-		Open,  // 閉じる
+		None,  /* 未実行 */
+		Close, /* 開く */
+		Open,  /* 閉じる */
 	};
 
+public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// インスタンスの取得を行います。
 	/// </summary>
+	/// <returns>シングルトンインスタンス</returns>
 	static SplitBlockTransition* GetInstance();
 
 	/// <summary>
-	/// 初期化処理
+	/// トランジションの初期化処理を行います。
 	/// </summary>
+	/// <param name="spriteCommon">スプライト共通処理クラス</param>
+	/// <param name="splitCount">分割数</param>
 	void Initialize(SpriteCommon* spriteCommon, uint32_t splitCount = 8);
 
 	/// <summary>
-	/// 開くトランジションの開始
+	/// 開くトランジションを開始します。
 	/// </summary>
+	/// <param name="duration">所要時間</param>
+	/// <param name="delayBeforeStart">開始までの遅延時間</param>
 	void StartOpen(float duration, float delayBeforeStart = 0.0f);
 
 	/// <summary>
-	/// 閉じるトランジションの開始
+	/// 閉じるトランジションを開始します。
 	/// </summary>
+	/// <param name="duration">所要時間</param>
+	/// <param name="onComplete">完了に実行するコールバック関数</param>
+	/// <param name="delayAfterComplete">完了までの遅延時間</param>
 	void StartClose(float duration, std::function<void()> onComplete, float delayAfterComplete = 0.0f);
 
 	/// <summary>
-	/// 更新処理
+	/// 毎フレームの更新処理を行います。
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// 描画処理
+	/// スプライトの描画処理を行います。
 	/// </summary>
 	void Draw();
 
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
 	/// <summary>
-	/// 終了判定
+	/// フェードが完了したかを取得します。
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>フェード完了フラグ</returns>
 	bool IsFinished() const { return state_ == State::None; }
 
 private:
+	// =========================================================
+	// Member Variables
+	// =========================================================
+
 	/// <summary>
 	/// 1ブロックの情報（上下のスプライト + 進行度）
 	/// </summary>
 	struct Block {
-		std::unique_ptr<Sprite> top;
-		std::unique_ptr<Sprite> bottom;
-		float delay;    // 開始までの遅延
-		float progress; // 0~1の進行度
+		std::unique_ptr<Sprite> top;							/* 上側のスプライト */
+		std::unique_ptr<Sprite> bottom;							/* 下側のスプライト */
+		float delay;											/* 開始までの遅延 */
+		float progress;											/* 0~1の進行度 */
 	};
 
-	State state_ = State::None; // 現在のトランジション状態
-	float duration_ = 1.0f;     // トランジションにかかる時間
-	float timer_ = 0.0f;        // 経過時間
+	// ----- Parameters -----
+	State state_ = State::None;									/* 現在のトランジション状態 */
+	float duration_ = 1.0f;										/* トランジションにかかる時間 */
+	float timer_ = 0.0f;										/* 経過時間 */
 
-	float delayBeforeFadeIn_ = 0.0f;         // 開くトランジション開始までの遅延時間
-	float delayAfterFadeOutComplete_ = 0.0f; // 閉じるトランジション完了後の遅延時間
-	float delayTimerAfterFadeOut_ = 0.0f;    // 閉じるトランジション完了後の遅延時間タイマー
+	float delayBeforeFadeIn_ = 0.0f;							/* 開くトランジション開始までの遅延時間 */
+	float delayAfterFadeOutComplete_ = 0.0f;					/* 閉じるトランジション完了後の遅延時間 */
+	float delayTimerAfterFadeOut_ = 0.0f;						/* 閉じるトランジション完了後の遅延時間タイマー */
 
-	std::vector<Block> blocks_; // 分割ブロック
-	uint32_t splitCount_;       // 分割数
-	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr;
-	std::function<void()> onFadeComplete_; // 閉じるトランジション完了後のコールバック
+	std::vector<Block> blocks_;									/* 分割ブロック */
+	uint32_t splitCount_;										/* 分割数 */
+	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr;		/* スプライト共通処理クラス */
+	std::function<void()> onFadeComplete_;						/* 閉じるトランジション完了後のコールバック */
 };

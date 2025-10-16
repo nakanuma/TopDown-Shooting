@@ -1,21 +1,45 @@
 #pragma once
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Object3D.h>
 
-/// <summary>
-/// 床オブジェクトのクラス
-/// </summary>
+// =========================================================
+// 床オブジェクトのクラス
+// =========================================================
 class Field {
 public:
+	// =========================================================
+	// Public Methods
+	// =========================================================
+
+	/// <summary>
+	/// 床オブジェクトの初期化処理を行います。
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// 毎フレームの更新処理を行います。
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// モデルの描画処理を行います。
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// デバッグ用の描画処理を行います。
+	/// </summary>
 	void Debug();
 
 private:
-	// オブジェクト
-	ModelManager::ModelData modelFloor_;
-	std::unique_ptr<Object3D> objectFloor_;
+	// =========================================================
+	// Member Variables
+	// =========================================================
+
+	// ----- Models -----
+	ModelManager::ModelData modelFloor_;				/* 床モデル */
+	std::unique_ptr<Object3D> objectFloor_;				/* 床オブジェクト */
 };

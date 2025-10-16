@@ -23,10 +23,6 @@ void TitleScene::Initialize() {
 	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
-	// デバッグカメラの生成と初期化
-	debugCamera = std::make_unique<DebugCamera>();
-	debugCamera->Initialize();
-
 	// SpriteCommonの生成と初期化
 	spriteCommon = std::make_unique<SpriteCommon>();
 	spriteCommon->Initialize(DirectXBase::GetInstance());
@@ -185,11 +181,6 @@ void TitleScene::Update() {
 		nextSparkInterval = RandomGenerator::GetInstance()->RandomValue(20, 50);
 		sparkCounter = 0;
 	}
-
-#ifdef _DEBUG
-	// デバッグカメラ更新
-	DebugCameraUpdate(input);
-#endif
 }
 
 void TitleScene::Draw() {
@@ -280,7 +271,6 @@ void TitleScene::Draw() {
 	ImGui::Begin("TitleSceneInfo");
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
 	if (ImGui::Button("GAMEPLAY")) {
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
@@ -326,32 +316,6 @@ void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float hei
 	camera->transform.rotate.y = std::atan2f(forward.x, forward.z);
 	camera->transform.rotate.x = std::asinf(-forward.y);
 }
-
-#ifdef _DEBUG
-void TitleScene::DebugCameraUpdate(Input* input) {
-	// 前回のカメラモード状態を保持
-	static bool prevUseDebugCamera = false;
-
-	// デバッグカメラが有効になった瞬間に通常カメラのTransformを保存
-	if (useDebugCamera && !prevUseDebugCamera) {
-		savedCameraTransform = camera->transform;
-	}
-
-	// デバッグカメラが有効の場合
-	if (useDebugCamera) {
-		// デバッグカメラの更新
-		debugCamera->Update(input);
-		// 通常カメラにデバッグカメラのTransformを適用
-		camera->transform = debugCamera->transform_;
-	} else if (!useDebugCamera && prevUseDebugCamera) {
-		// 通常カメラのTransformを再現
-		camera->transform = savedCameraTransform;
-	}
-
-	// 現在のカメラモードを保存して次のフレームで使う
-	prevUseDebugCamera = useDebugCamera;
-}
-#endif // _DEBUG
 
 bool TitleScene::IsInsideClientCursor() {
 	// ウインドウハンドル取得

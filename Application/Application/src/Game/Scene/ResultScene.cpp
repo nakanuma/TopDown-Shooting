@@ -22,10 +22,6 @@ void ResultScene::Initialize() {
 	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
-	// デバッグカメラの生成と初期化
-	debugCamera = std::make_unique<DebugCamera>();
-	debugCamera->Initialize();
-
 	// SpriteCommonの生成と初期化
 	spriteCommon = std::make_unique<SpriteCommon>();
 	spriteCommon->Initialize(DirectXBase::GetInstance());
@@ -122,11 +118,6 @@ void ResultScene::Update() {
 	spriteDefeated_->Update({640.0f, 260.0f});
 	spriteHitRate_->Update({650.0f, 390.0f});
 	spriteClearTime_->Update({650.0f, 520.0f});
-
-#ifdef _DEBUG
-	// デバッグカメラ更新
-	DebugCameraUpdate(input);
-#endif
 }
 
 void ResultScene::Draw() {
@@ -185,7 +176,6 @@ void ResultScene::Draw() {
 	ImGui::Begin("ResultSceneInfo");
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::Checkbox("useDebugCamera", &useDebugCamera);
 
 	if (ImGui::Button("TITLE")) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");
@@ -210,29 +200,3 @@ void ResultScene::Draw() {
 	// フレーム終了処理
 	dxBase->EndFrame();
 }
-
-#ifdef _DEBUG
-void ResultScene::DebugCameraUpdate(Input* input) {
-	// 前回のカメラモード状態を保持
-	static bool prevUseDebugCamera = false;
-
-	// デバッグカメラが有効になった瞬間に通常カメラのTransformを保存
-	if (useDebugCamera && !prevUseDebugCamera) {
-		savedCameraTransform = camera->transform;
-	}
-
-	// デバッグカメラが有効の場合
-	if (useDebugCamera) {
-		// デバッグカメラの更新
-		debugCamera->Update(input);
-		// 通常カメラにデバッグカメラのTransformを適用
-		camera->transform = debugCamera->transform_;
-	} else if (!useDebugCamera && prevUseDebugCamera) {
-		// 通常カメラのTransformを再現
-		camera->transform = savedCameraTransform;
-	}
-
-	// 現在のカメラモードを保存して次のフレームで使う
-	prevUseDebugCamera = useDebugCamera;
-}
-#endif // _DEBUG

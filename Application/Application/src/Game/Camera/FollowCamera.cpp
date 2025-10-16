@@ -13,7 +13,7 @@ void FollowCamera::Update() {
 	Float3 targetPos = *targetTranslate_ + offset_;
 
 	// カーソルのワールド座標を取得
-	Float3 cursorPos = Utility::CalclateCursorPosition();
+	Float3 cursorPos = Utility::CalculateCursorPosition();
 
 	// カーソルの方向へ補正
 	Float3 cursorOffset = cursorPos - *targetTranslate_;
