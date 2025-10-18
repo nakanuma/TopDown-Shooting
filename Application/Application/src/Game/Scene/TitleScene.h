@@ -3,16 +3,16 @@
 // ---------------------------------------------------------
 // Engine Includes
 // ---------------------------------------------------------
-#include "BaseScene.h"
-#include "Camera.h"
-#include "Input.h"
-#include "LightManager.h"
-#include "ModelManager.h"
-#include "Object3D.h"
-#include "SoundManager.h"
-#include "Sprite.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
+#include <BaseScene.h>
+#include <Camera.h>
+#include <Input.h>
+#include <LightManager.h>
+#include <ModelManager.h>
+#include <Object3D.h>
+#include <SoundManager.h>
+#include <Sprite.h>
+#include <SpriteCommon.h>
+#include <TextureManager.h>
 #include <Engine/Collider/CollisionManager.h>
 #include <Engine/Texture/PostEffectManager.h>
 #include <Engine/Util/TimeManager.h>
@@ -66,12 +66,6 @@ private:
 	/// <param name="height">カメラの高さ</param>
 	/// <param name="speed">回転速度</param>
 	void UpdateOrbitCamera(const Float3& target, float radius, float height, float speed);
-
-	/// <summary>
-	/// カーソルがクライアント領域内にあるか確認します。
-	/// </summary>
-	/// <returns>カーソル領域内判定フラグ</returns>
-	bool IsInsideClientCursor();
 
 private:
 	// =========================================================

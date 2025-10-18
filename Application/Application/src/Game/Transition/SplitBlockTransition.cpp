@@ -25,7 +25,8 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 	const float blockWidth = screenWidth / splitCount_;
 	const float blockHeight = screenHeight / 2.0f; // 画面縦サイズの半分
 
-	uint32_t textureWhite = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
+	uint32_t topRect = TextureManager::Load("resources/Images/UI/topRect.png", DirectXBase::GetInstance()->GetDevice());
+	uint32_t bottomRect = TextureManager::Load("resources/Images/UI/bottomRect.png", DirectXBase::GetInstance()->GetDevice());
 
 	for (uint32_t i = 0; i < splitCount_; ++i) {
 
@@ -33,8 +34,8 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.top = std::make_unique<Sprite>();
 		block.bottom = std::make_unique<Sprite>();
 
-		block.top->Initialize(spriteCommon_.get(), textureWhite);
-		block.bottom->Initialize(spriteCommon_.get(), textureWhite);
+		block.top->Initialize(spriteCommon_.get(), topRect);
+		block.bottom->Initialize(spriteCommon_.get(), bottomRect);
 
 		block.top->SetSize({blockWidth, blockHeight});
 		block.bottom->SetSize({blockWidth, blockHeight});
@@ -43,26 +44,8 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.bottom->SetPosition({i * blockWidth, screenHeight});
 
 		// 遅延時間をランダムに設定
-		block.delay = RandomGenerator::GetInstance()->RandomValue(0.0f, 0.25f);
+		block.delay = i * 0.05f;
 		block.progress = 0.0f;
-
-		// 色をグラデーションになるよう設定
-		float t = static_cast<float>(i) / static_cast<float>(splitCount_ - 1);
-
-		float rStart = 78.0f / 255.0f;
-		float gStart = 103.0f / 255.0f;
-		float bStart = 176.0f / 255.0f;
-
-		float rEnd = 71.0f / 255.0f;
-		float gEnd = 68.0f / 255.0f;
-		float bEnd = 136.0f / 255.0f;
-
-		float r = rStart + (rEnd - rStart) * t;
-		float g = gStart + (gEnd - gStart) * t;
-		float b = bStart + (bEnd - bStart) * t;
-
-		block.top->SetColor({r, g, b, 1.0f});
-		block.bottom->SetColor({r, g, b, 1.0f});
 
 		blocks_.emplace_back(std::move(block));
 	}

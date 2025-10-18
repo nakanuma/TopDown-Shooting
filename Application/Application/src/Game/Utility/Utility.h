@@ -26,4 +26,10 @@ public:
 	/// </summary>
 	/// <returns>カーソル位置のワールド座標</returns>
 	static Float3 CalculateCursorPosition();
+
+	/// <summary>
+	/// カーソルがクライアント領域内にあるか確認します。
+	/// </summary>
+	/// <returns>カーソル領域内判定フラグ</returns>
+	static bool IsInsideClientCursor();
 };

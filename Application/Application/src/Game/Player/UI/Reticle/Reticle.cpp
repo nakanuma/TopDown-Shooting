@@ -1,5 +1,8 @@
 #include "Reticle.h"
 
+// C++
+#include <algorithm>
+
 // Engine
 #include <Engine/3D/Camera.h>
 #include <Engine/Texture/TextureManager.h>
@@ -15,8 +18,8 @@ void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	uint32_t textureTarget = TextureManager::Load("resources/Images/UI/crosshair.png", dxBase->GetDevice());
 	spriteCrosshair_ = std::make_unique<Sprite>();
 	spriteCrosshair_->Initialize(spriteCommon, textureTarget);
-	spriteCrosshair_->SetAnchorPoint({0.5f, 0.5f});
-	spriteCrosshair_->SetSize({64.0f, 64.0f});
+	spriteCrosshair_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteCrosshair_->SetSize({ 64.0f, 64.0f });
 }
 
 void Reticle::Update() {
@@ -35,7 +38,11 @@ void Reticle::Update() {
 	float screenX = (screenPos.x + 1.0f) * 0.5f * screenWidth;
 	float screenY = (1.0f - screenPos.y) * 0.5f * screenHeight;
 
-	spriteCrosshair_->SetPosition({screenX, screenY});
+	// クライアント領域内に収める（画面外へ出たら端へ沿わせる）
+	screenX = std::clamp(screenX, 0.0f, screenWidth);
+	screenY = std::clamp(screenY, 0.0f, screenHeight);
+
+	spriteCrosshair_->SetPosition({ screenX, screenY });
 }
 
 void Reticle::Draw() {

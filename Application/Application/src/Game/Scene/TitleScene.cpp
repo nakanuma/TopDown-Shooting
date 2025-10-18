@@ -15,6 +15,7 @@
 // Application
 #include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
+#include <src/Game/Utility/Utility.h>
 
 void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -109,7 +110,7 @@ void TitleScene::Update() {
 	UpdateOrbitCamera({0.0f, 0.0f, 0.0f}, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && IsInsideClientCursor()) {
+	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
 		SplitBlockTransition::GetInstance()->StartClose(
 		    1.0f,
 		    []() {
@@ -315,23 +316,4 @@ void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float hei
 
 	camera->transform.rotate.y = std::atan2f(forward.x, forward.z);
 	camera->transform.rotate.x = std::asinf(-forward.y);
-}
-
-bool TitleScene::IsInsideClientCursor() {
-	// ウインドウハンドル取得
-	HWND hwnd = Window::GetHandle();
-
-	// マウス位置の取得
-	POINT cursorPos;
-	GetCursorPos(&cursorPos);
-
-	// クライアント座標に変換
-	ScreenToClient(hwnd, &cursorPos);
-
-	// クライアント領域の取得
-	RECT clientRect;
-	GetClientRect(hwnd, &clientRect);
-
-	// クライアント領域内にあるか判定
-	return {cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) && cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top)};
 }

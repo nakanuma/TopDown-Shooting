@@ -122,7 +122,7 @@ void Player::Update() {
 	///
 	///	UI更新処理
 	///
-	
+
 	ui_->Update(this);
 }
 
@@ -131,12 +131,12 @@ void Player::Draw() {
 	objectPlayer_->Draw();
 }
 
-void Player::DrawShadow() { 
-	objectPlayer_->DrawShadow(); 
+void Player::DrawShadow() {
+	objectPlayer_->DrawShadow();
 }
 
-void Player::DrawUI() { 
-	ui_->Draw(); 
+void Player::DrawUI() {
+	ui_->Draw();
 }
 
 void Player::OnCollision(Collider* other) {
@@ -256,13 +256,11 @@ void Player::FaceCursor() {
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
 
-	// 回転方向の分割
-	/*const int32_t division = 32;
-	float step = (PIf * 2.0f) / division;
-	angle = std::round(angle / step) * step;*/
-
-	// Y軸に回転を適用
-	objectPlayer_->GetRotate().y = angle;
+	// カーソルがクライアント領域内にある場合のみ回転を適用
+	if (Utility::IsInsideClientCursor()) {
+		// Y軸に回転を適用
+		objectPlayer_->GetRotate().y = angle;
+	}
 }
 
 void Player::HandleMove() {
