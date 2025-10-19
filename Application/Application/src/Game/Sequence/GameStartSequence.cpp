@@ -38,7 +38,7 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 	spriteTopLetterBox_ = std::make_unique<Sprite>();
 	spriteTopLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteTopLetterBox_->SetAnchorPoint({0.5f, 0.5f});
-	spriteTopLetterBox_->SetColor({0.025f, 0.025f, 0.025f, 1.0f});
+	spriteTopLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 1.0f});
 	spriteTopLetterBox_->SetSize(kLetterBoxSize);
 	spriteTopLetterBox_->SetPosition(topBoxStartPos_);
 
@@ -46,7 +46,7 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 	spriteBottomLetterBox_ = std::make_unique<Sprite>();
 	spriteBottomLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteBottomLetterBox_->SetAnchorPoint({ 0.5f, 0.5f });
-	spriteBottomLetterBox_->SetColor({ 0.025f, 0.025f, 0.025f, 1.0f });
+	spriteBottomLetterBox_->SetColor({ 0.01f, 0.01f, 0.01f, 1.0f });
 	spriteBottomLetterBox_->SetSize(kLetterBoxSize);
 	spriteBottomLetterBox_->SetPosition(bottomBoxStartPos_);
 
