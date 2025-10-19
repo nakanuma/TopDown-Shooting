@@ -28,6 +28,7 @@
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
+#include <src/Game/Sequence/GameStartSequence.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -89,4 +90,5 @@ private:
 	std::unique_ptr<FollowCamera> followCamera_;			/* 追従カメラ管理クラス */
 	std::unique_ptr<PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
 	uint32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
+	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
 };

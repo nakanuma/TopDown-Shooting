@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Sequence\GameStartSequence.cpp" />
     <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp" />
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp" />
     <ClCompile Include="src\Game\Particles\Smoke\SmokeParticle.cpp" />
@@ -52,8 +53,10 @@
     <ClCompile Include="src\Game\Teleporter\Teleporter.cpp" />
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
     <ClCompile Include="src\Game\Scene\SceneFactory.cpp" />
+    <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Sequence\GameStartSequence.h" />
     <ClInclude Include="src\Game\Transition\SplitBlockTransition.h" />
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h" />
     <ClInclude Include="src\Game\Particles\Smoke\SmokeParticle.h" />
@@ -97,6 +100,7 @@
     <ClInclude Include="src\Game\Teleporter\Teleporter.h" />
     <ClInclude Include="src\Game\Teleporter\TeleporterManager.h" />
     <ClInclude Include="src\Game\Scene\SceneFactory.h" />
+    <ClInclude Include="src\Game\Particles\WallCollapse\WallCollapseParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

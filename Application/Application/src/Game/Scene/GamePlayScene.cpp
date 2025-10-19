@@ -27,7 +27,7 @@ void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 50.0f, -55.0f}, Float3{std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f}, 0.45f);
+	camera = std::make_unique<Camera>(Float3{ 0.0f, 50.0f, -55.0f }, Float3{ std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f }, 0.45f);
 	Camera::Set(camera.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -107,8 +107,11 @@ void GamePlayScene::Initialize() {
 	postEffectManager_->Initialize();
 	postEffectManager_->SetEffectType(PostEffectType::Vignette);
 
+	// ゲームスタート時の演出制御クラス
+	gameStartSequence_ = std::make_unique<GameStartSequence>();
+	gameStartSequence_->Initialize(spriteCommon.get());
+
 	// フェード
-	/*SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());*/
 	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 
 	// ウェイポイント初期化
@@ -120,31 +123,36 @@ void GamePlayScene::Initialize() {
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 
 	// 平行光源の初期値設定
-	LightManager::GetInstance()->directionalLightCB_.data_->direction = {0.367f, -0.653f, -0.662f};
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
 
-	// パーティクルのクリア
-	ParticleEffectManager::GetInstance()->Clear();
+
+	// パーティクル生成
+	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 }
 
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
-	ResultStats::GetInstance()->AddTime(); // クリアタイム（経過時間）の記録
+	// ゲームスタート時演出の更新
+	if (!gameStartSequence_->IsFinished()) {
+		gameStartSequence_->Update();
 
-	/*ShowCursor(FALSE);*/
+		// 演出が終了したら追従カメラを有効化
+	} else {
+		// 追従カメラの更新
+		followCamera_->Update();
+		// 追従カメラ + カメラシェイクを現在カメラに適用
+		camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+	}
 
-	// 追従カメラの更新
-	followCamera_->Update();
 	// カメラシェイクの更新
 	CameraShake::GetInstance()->Update();
-	// 追従カメラ + カメラシェイクを現在カメラに適用
-	camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 
 	// フィールド更新
 	field_->Update();
-	// プレイヤー更新
-	player_->Update();
+	// プレイヤー更新（スタート演出終了で操作可能に）
+	player_->Update(gameStartSequence_->IsFinished());
 	// 敵の更新
 	enemyManager_->Update();
 	// 障害物の更新
@@ -164,6 +172,9 @@ void GamePlayScene::Update() {
 	CollisionManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
+
+	// クリアタイム（経過時間）の記録
+	ResultStats::GetInstance()->AddTime();
 
 #ifdef _DEBUG
 	loader_->Update();
@@ -190,7 +201,7 @@ void GamePlayScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -215,7 +226,7 @@ void GamePlayScene::Draw() {
 
 	// プレイヤー中心のBBを生成してライトカメラの行列更新（あとで整理）
 	LightCamera::BoundingBox playerCenterBB;
-	playerCenterBB.SetCenterExtents(player_->GetTranslate(), {30.0f, 10.0f, 30.0f});
+	playerCenterBB.SetCenterExtents(player_->GetTranslate(), { 30.0f, 10.0f, 30.0f });
 	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB);
 
 	// シャドウマップ描画開始
@@ -223,6 +234,11 @@ void GamePlayScene::Draw() {
 
 	// 通常オブジェクト描画
 	//----------------------------------//
+
+	// ゲーム開始演出時オブジェクト
+	if (!gameStartSequence_->IsFinished()) {
+		gameStartSequence_->DrawShadow();
+	}
 
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
@@ -250,6 +266,11 @@ void GamePlayScene::Draw() {
 	///	通常オブジェクト描画処理
 	///
 
+	// ゲーム開始演出時オブジェクト
+	if (!gameStartSequence_->IsFinished()) {
+		gameStartSequence_->Draw();
+	}
+
 	// オブジェクト通常描画処理
 	field_->Draw();
 	player_->Draw();
@@ -272,10 +293,17 @@ void GamePlayScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
+	// スタート演出中は専用UI表示
+	if (!gameStartSequence_->IsFinished()) {
+		gameStartSequence_->DrawUI();
+	// スタート演出が終了したらゲーム用UI表示
+	} else {
+		// プレイヤーUI描画
+		player_->DrawUI();
+	}
+
 	// 敵UI描画
 	enemyManager_->DrawUI();
-	// プレイヤーUI描画
-	player_->DrawUI();
 	// フェード描画
 	SplitBlockTransition::GetInstance()->Draw();
 
@@ -300,11 +328,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("smoke", {0.0f, 2.0f, -20.0f}, 20);
-	}
-
-	if (ImGui::Button("bulletClear")) {
-		BulletManager::GetInstance()->Clear();
+		ParticleEffectManager::GetInstance()->Emit("wallCollapse", { 36.0f, 2.5f, 0.0f }, 200);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
@@ -324,13 +348,6 @@ void GamePlayScene::Debug() {
 
 	ImGui::End();
 
-	/*Debug*/
-	/*CollisionManager::GetInstance()->Debug();
-	player_->Debug();
-	obstacleManager_->Debug();
-	teleporterManager_->Debug();
-	enemyManager_->Debug();
-	WaypointManager::GetInstance()->Debug();
-	ResultStats::GetInstance()->Debug();*/
+	gameStartSequence_->Debug();
 #endif
 }

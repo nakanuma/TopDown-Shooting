@@ -91,19 +91,21 @@ void Player::Initialize(const Loader::TransformData& data) {
 	InitConfig(); // 初回読み込み
 }
 
-void Player::Update() {
+void Player::Update(bool operable) {
 	///
 	///	内部処理
 	///
 
-	// カーソル方向へ向くよう回転
-	FaceCursor();
-	// 移動処理
-	HandleMove();
-	// 射撃 & オーバーヒート処理
-	HandleOverHeat();
-	// HPが0未満にならないよう制限
-	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+	if (operable) {
+		// カーソル方向へ向くよう回転
+		FaceCursor();
+		// 移動処理
+		HandleMove();
+		// 射撃 & オーバーヒート処理
+		HandleOverHeat();
+		// HPが0未満にならないよう制限
+		currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+	}
 
 	///
 	///	コライダー更新処理
@@ -325,7 +327,7 @@ void Player::HandleShooting() {
 	///
 
 	// 左クリックで弾を生成
-	if (input_->IsPressMouse(0)) {
+	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
 		// カーソル位置の取得
 		Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
