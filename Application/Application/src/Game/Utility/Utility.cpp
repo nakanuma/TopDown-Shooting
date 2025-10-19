@@ -55,3 +55,26 @@ Float3 Utility::CalculateCursorPosition() {
 	// 計算できない場合には無効値を返す
 	return Float3(0.0f, 0.0f, 0.0f);
 }
+
+bool Utility::IsInsideClientCursor()
+{
+	// ウインドウハンドル取得
+	HWND hwnd = Window::GetHandle();
+
+	// マウス位置の取得
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	// クライアント座標に変換
+	ScreenToClient(hwnd, &cursorPos);
+
+	// クライアント領域の取得
+	RECT clientRect;
+	GetClientRect(hwnd, &clientRect);
+
+	// クライアント領域内にあるか判定
+	return { 
+		cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) && 
+		cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top) 
+	};
+}

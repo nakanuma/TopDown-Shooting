@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="spriteCommon">スプライト共通処理クラス</param>
 	/// <param name="splitCount">分割数</param>
-	void Initialize(SpriteCommon* spriteCommon, uint32_t splitCount = 8);
+	void Initialize(SpriteCommon* spriteCommon, uint32_t splitCount = 5);
 
 	/// <summary>
 	/// 開くトランジションを開始します。

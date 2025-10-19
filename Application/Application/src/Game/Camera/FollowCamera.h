@@ -50,4 +50,5 @@ private:
 	const Float3* targetTranslate_ = nullptr;			/* 追従対象の座標 */
 	Float3 offset_ = { 0.0f, 0.0f, 0.0f };				/* カメラに加えるオフセット */
 	Float3 currentPos_ = { 0.0f, 0.0f, 0.0f };			/* 現在のカメラ位置 */
+	Float3 cursorOffset_ = { 0.0f, 0.0f, 0.0f };		/* カーソル補正分のオフセット */
 };

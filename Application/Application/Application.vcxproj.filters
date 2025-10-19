@@ -133,6 +133,12 @@
     <Filter Include="src\Game\Particles\Spark">
       <UniqueIdentifier>{f410b5c2-5f99-40d4-9c07-a7829f5b1b54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Game\Sequence">
+      <UniqueIdentifier>{5e31c480-558b-4411-877d-06b472998201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\WallCollapse">
+      <UniqueIdentifier>{09c5a5bd-e99f-4bff-94a6-fe212b2765ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
@@ -216,9 +222,6 @@
     <ClCompile Include="src\Game\Scene\ResultScene.cpp">
       <Filter>src\Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Scene\TestScene.cpp">
-      <Filter>src\Game\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Scene\TitleScene.cpp">
       <Filter>src\Game\Scene</Filter>
     </ClCompile>
@@ -257,6 +260,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp">
       <Filter>src\Game\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Scene\SceneFactory.cpp">
+      <Filter>src\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Sequence\GameStartSequence.cpp">
+      <Filter>src\Game\Sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp">
+      <Filter>src\Game\Particles\WallCollapse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -347,9 +359,6 @@
     <ClInclude Include="src\Game\Scene\ResultScene.h">
       <Filter>src\Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Scene\TestScene.h">
-      <Filter>src\Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\Scene\TitleScene.h">
       <Filter>src\Game\Scene</Filter>
     </ClInclude>
@@ -388,6 +397,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\Transition\SplitBlockTransition.h">
       <Filter>src\Game\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Scene\SceneFactory.h">
+      <Filter>src\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Sequence\GameStartSequence.h">
+      <Filter>src\Game\Sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\WallCollapse\WallCollapseParticle.h">
+      <Filter>src\Game\Particles\WallCollapse</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

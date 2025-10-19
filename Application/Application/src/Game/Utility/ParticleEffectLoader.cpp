@@ -13,6 +13,8 @@
 #include <src/Game/Particles/Smoke/SmokeParticle.h>
 #include <src/Game/Particles/Spark/SparkParticle.h>
 
+#include <src/Game/Particles/WallCollapse/WallCollapseParticle.h>
+
 ParticleEffectLoader* ParticleEffectLoader::GetInstance() {
 	static ParticleEffectLoader instance;
 	return &instance;
@@ -50,4 +52,8 @@ void ParticleEffectLoader::LoadAndRegisterAll() {
 	// 火花パーティクル
 	auto sparkParticle = std::make_unique<SparkParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
+
+	// 壁崩壊パーティクル
+	auto wallCollapseParticle = std::make_unique<WallCollapseParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("wallCollapse", std::move(wallCollapseParticle));
 }

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Sequence\GameStartSequence.cpp" />
     <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp" />
     <ClCompile Include="src\Game\Particles\Spark\SparkParticle.cpp" />
     <ClCompile Include="src\Game\Particles\Smoke\SmokeParticle.cpp" />
@@ -44,7 +45,6 @@
     <ClCompile Include="src\Game\Player\Player.cpp" />
     <ClCompile Include="src\Game\Scene\GamePlayScene.cpp" />
     <ClCompile Include="src\Game\Scene\TitleScene.cpp" />
-    <ClCompile Include="src\Game\Scene\TestScene.cpp" />
     <ClCompile Include="src\Game\Utility\Utility.cpp" />
     <ClCompile Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.cpp" />
@@ -52,8 +52,11 @@
     <ClCompile Include="src\Game\Waypoint\WaypointManager.cpp" />
     <ClCompile Include="src\Game\Teleporter\Teleporter.cpp" />
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
+    <ClCompile Include="src\Game\Scene\SceneFactory.cpp" />
+    <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Sequence\GameStartSequence.h" />
     <ClInclude Include="src\Game\Transition\SplitBlockTransition.h" />
     <ClInclude Include="src\Game\Particles\Spark\SparkParticle.h" />
     <ClInclude Include="src\Game\Particles\Smoke\SmokeParticle.h" />
@@ -89,7 +92,6 @@
     <ClInclude Include="src\Game\Player\Player.h" />
     <ClInclude Include="src\Game\Scene\GamePlayScene.h" />
     <ClInclude Include="src\Game\Scene\TitleScene.h" />
-    <ClInclude Include="src\Game\Scene\TestScene.h" />
     <ClInclude Include="src\Game\Utility\Utility.h" />
     <ClInclude Include="src\Game\Particles\ExplodeSmoke\ExplodeSmokeParticle.h" />
     <ClInclude Include="src\Game\Particles\ExplodeScatter\ExplodeScatterParticle.h" />
@@ -97,6 +99,8 @@
     <ClInclude Include="src\Game\Waypoint\WaypointManager.h" />
     <ClInclude Include="src\Game\Teleporter\Teleporter.h" />
     <ClInclude Include="src\Game\Teleporter\TeleporterManager.h" />
+    <ClInclude Include="src\Game\Scene\SceneFactory.h" />
+    <ClInclude Include="src\Game\Particles\WallCollapse\WallCollapseParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

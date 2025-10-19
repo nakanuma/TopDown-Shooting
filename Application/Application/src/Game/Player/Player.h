@@ -37,7 +37,8 @@ public:
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
-	void Update();
+	/// <param name="operable">操作可能フラグ</param>
+	void Update(bool operable);
 
 	/// <summary>
 	/// モデルの描画処理を行います。
