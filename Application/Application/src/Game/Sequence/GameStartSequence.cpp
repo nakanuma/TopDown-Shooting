@@ -15,8 +15,8 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// 初期カメラを設定
-	/*Camera::GetCurrent()->transform.translate = initCameraPos_;
-	Camera::GetCurrent()->transform.rotate = initCameraRot_;*/
+	Camera::GetCurrent()->transform.translate = initCameraPos_;
+	Camera::GetCurrent()->transform.rotate = initCameraRot_;
 
 	// オブジェクト生成
 	modelCrumblingWall_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/CrumblingWall/crumblingWall.obj", dxBase->GetDevice());

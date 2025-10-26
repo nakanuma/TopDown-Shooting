@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Sequence\GameOverSequence.cpp" />
     <ClCompile Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameStartSequence.cpp" />
     <ClCompile Include="src\Game\Transition\SplitBlockTransition.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Sequence\GameOverSequence.h" />
     <ClInclude Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.h" />
     <ClInclude Include="src\Game\Sequence\GameStartSequence.h" />
     <ClInclude Include="src\Game\Transition\SplitBlockTransition.h" />

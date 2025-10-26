@@ -19,9 +19,11 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Waypoint/WaypointManager.h>
+#include <src/Game/Utility/Utility.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -110,9 +112,13 @@ void GamePlayScene::Initialize() {
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
 	gameStartSequence_->Initialize(spriteCommon.get());
+	// ゲームオーバー時の演出制御クラス
+	gameOverSequence_ = std::make_unique<GameOverSequence>();
+	gameOverSequence_->Initialize(spriteCommon.get());
 
-	// フェード
+	// トランジション
 	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
+	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -138,7 +144,7 @@ void GamePlayScene::Update() {
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
 
-	// 演出が終了したら追従カメラを有効化
+		// 演出が終了したら追従カメラを有効化
 	} else {
 		// プレイヤーが生きている間のみ
 		if (!player_->IsDead()) {
@@ -148,6 +154,17 @@ void GamePlayScene::Update() {
 			camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 		}
 	}
+
+	// ゲームオーバー時演出の開始（プレイヤーの死亡時）
+	if (player_->IsDead() && !gameOverSequence_->IsActive()) {
+		gameOverSequence_->Start(player_->GetTranslate());
+	}
+	// 有効化状態ならゲームオーバー時演出を更新
+	if (gameOverSequence_->IsActive()) {
+		gameOverSequence_->Update();
+	}
+
+
 
 	// カメラシェイクの更新
 	CameraShake::GetInstance()->Update();
@@ -164,8 +181,9 @@ void GamePlayScene::Update() {
 	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
-	// フェード更新
+	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
+	FadeTransition::GetInstance()->Update();
 	// ウェイポイントの更新
 	WaypointManager::GetInstance()->Update();
 
@@ -301,14 +319,23 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawUI();
 		// スタート演出が終了したらゲーム用UI表示
 	} else {
-		// プレイヤーUI描画
-		player_->DrawUI();
+		// プレイヤーUI描画（生きている間のみ）
+		if (!player_->IsDead()) {
+			player_->DrawUI();
+		}
 	}
 
 	// 敵UI描画
 	enemyManager_->DrawUI();
-	// フェード描画
+
+	// ゲームオーバー時のUIを描画
+	if (gameOverSequence_->IsActive()) {
+		gameOverSequence_->DrawUI();
+	}
+
+	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
+	FadeTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド
@@ -318,9 +345,9 @@ void GamePlayScene::Draw() {
 	// デバッグ表示
 	Debug();
 
-	field_->Debug();
-
 	player_->Debug();
+
+	gameOverSequence_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する
@@ -355,7 +382,5 @@ void GamePlayScene::Debug() {
 	}
 
 	ImGui::End();
-
-	gameStartSequence_->Debug();
 #endif
 }

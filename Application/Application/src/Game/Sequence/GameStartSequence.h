@@ -90,7 +90,7 @@ private:
     };
 
     // ----- Parameters -----
-    Phase phase_ = Phase::Finish;                                /* 現在フェーズ */
+    Phase phase_ = Phase::Intro;                                /* 現在フェーズ */
 
     float timer_ = 0.0f;                                        /* タイマー */
     float lerpT_ = 0.0f;                                        /* 補間用タイマー */

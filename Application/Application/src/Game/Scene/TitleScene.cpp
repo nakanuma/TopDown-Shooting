@@ -13,6 +13,7 @@
 #include <ShadowMapManager.h>
 
 // Application
+#include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
 #include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Utility/Utility.h>
@@ -86,10 +87,12 @@ void TitleScene::Initialize() {
 	spriteStartButton_->Update();
 
 	///
-	///	フェード
+	///	トランジション
 	///
 
 	SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->StartFadeIn(0.5f, 0.25f);
 
 	///
 	///	その他
@@ -153,8 +156,9 @@ void TitleScene::Update() {
 	float alpha = (sinf(blinkTimer * 4.0f) + 1.0f) / 2.0f;
 	spriteStartButton_->SetColor({1.0f, 1.0f, 1.0f, alpha});
 
-	// フェード更新
+	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
+	FadeTransition::GetInstance()->Update();
 
 	///
 	///	一旦決め打ちでパーティクル発生
@@ -258,8 +262,9 @@ void TitleScene::Draw() {
 	spriteTitle_->Draw();
 	spriteStartButton_->Draw();
 
-	// フェード描画
+	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
+	FadeTransition::GetInstance()->Draw();
 
 	///
 	/// ↑ ここまでスプライトの描画コマンド

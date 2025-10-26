@@ -139,6 +139,9 @@
     <Filter Include="src\Game\Particles\WallCollapse">
       <UniqueIdentifier>{09c5a5bd-e99f-4bff-94a6-fe212b2765ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Game\Particles\BloodSplatter">
+      <UniqueIdentifier>{584d3187-3c92-4442-97f7-a08ad3a0e3c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
@@ -271,7 +274,10 @@
       <Filter>src\Game\Particles\WallCollapse</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Particles\BloodSplatter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Sequence\GameOverSequence.cpp">
+      <Filter>src\Game\Sequence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -411,7 +417,10 @@
       <Filter>src\Game\Particles\WallCollapse</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\BloodSplatter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Sequence\GameOverSequence.h">
+      <Filter>src\Game\Sequence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

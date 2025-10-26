@@ -35,7 +35,7 @@ BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& po
 
 	p.currentTime = 0.0f;
 
-	p.lifeTime = 2.0f;
+	p.lifeTime = rand->RandomValue(2.5f, 3.0f);
 
 
 	p.initScale = p.transform.scale;
