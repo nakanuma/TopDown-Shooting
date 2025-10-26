@@ -138,12 +138,15 @@ void GamePlayScene::Update() {
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
 
-		// 演出が終了したら追従カメラを有効化
+	// 演出が終了したら追従カメラを有効化
 	} else {
-		// 追従カメラの更新
-		followCamera_->Update();
-		// 追従カメラ + カメラシェイクを現在カメラに適用
-		camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+		// プレイヤーが生きている間のみ
+		if (!player_->IsDead()) {
+			// 追従カメラの更新
+			followCamera_->Update();
+			// 追従カメラ + カメラシェイクを現在カメラに適用
+			camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+		}
 	}
 
 	// カメラシェイクの更新
@@ -296,7 +299,7 @@ void GamePlayScene::Draw() {
 	// スタート演出中は専用UI表示
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->DrawUI();
-	// スタート演出が終了したらゲーム用UI表示
+		// スタート演出が終了したらゲーム用UI表示
 	} else {
 		// プレイヤーUI描画
 		player_->DrawUI();
@@ -314,6 +317,11 @@ void GamePlayScene::Draw() {
 #ifdef _DEBUG
 	// デバッグ表示
 	Debug();
+
+	field_->Debug();
+
+	player_->Debug();
+
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
@@ -328,7 +336,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("wallCollapse", { 36.0f, 2.5f, 0.0f }, 200);
+		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", { 36.0f, 2.5f, 0.0f }, 30);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

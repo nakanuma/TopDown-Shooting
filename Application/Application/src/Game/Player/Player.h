@@ -100,6 +100,12 @@ public:
 	/// <returns>オーバーヒート率（0.0f～1.0f）</returns>
 	float GetOverheatRatio() const { return overheatTime_ / kOverheatLimit; }
 
+	/// <summary>
+	/// 死亡フラグを取得します。
+	/// </summary>
+	/// <returns>死亡フラグ</returns>
+	bool IsDead() const { return isDead_; }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -160,6 +166,8 @@ private:
 
 	const int32_t kMaxHP = 100;								/* 最大HP */
 	int32_t currentHP_ = 0;									/* 現在HP */
+
+	bool isDead_ = false;									/* 死亡フラグ */
 
 	// ----- Dash -----
 	bool isDashing_ = false;								/* ダッシュ中フラグ */

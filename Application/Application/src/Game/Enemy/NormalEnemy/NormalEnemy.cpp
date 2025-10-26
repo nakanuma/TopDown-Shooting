@@ -351,6 +351,9 @@ bool NormalEnemy::IsPlayerInSight() {
 	if (!targetPlayer_)
 		return false;
 
+	if(targetPlayer_->IsDead())
+		return false;
+
 	Float3 enemyPos = this->objectEnemy_->transform_.translate;
 	Float3 playerPos = targetPlayer_->GetTranslate();
 	Float3 toPlayer = playerPos - enemyPos;
@@ -604,6 +607,9 @@ BehaviorStatus NormalEnemy::Shoot() {
 }
 
 BehaviorStatus NormalEnemy::MoveToPlayer() {
+	if (targetPlayer_->IsDead())
+		return BehaviorStatus::Failure;
+
 	// 経路探索でプレイヤーに移動
 	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
 	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());

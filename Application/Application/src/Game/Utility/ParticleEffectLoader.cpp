@@ -9,11 +9,11 @@
 #include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>
 #include <src/Game/Particles/GroundWarning/RedCircleParticle.h>
 #include <src/Game/Particles/HomingMissile/MissileSmokeParticle.h>
-
 #include <src/Game/Particles/Smoke/SmokeParticle.h>
 #include <src/Game/Particles/Spark/SparkParticle.h>
-
 #include <src/Game/Particles/WallCollapse/WallCollapseParticle.h>
+#include <src/Game/Particles/BloodSplatter/BloodSplatterParticle.h>
+
 
 ParticleEffectLoader* ParticleEffectLoader::GetInstance() {
 	static ParticleEffectLoader instance;
@@ -45,15 +45,16 @@ void ParticleEffectLoader::LoadAndRegisterAll() {
 	// 地面警告攻撃の飛散パーティクル
 	auto explodeScatterParticle = std::make_unique<ExplodeScatterParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("explodeScatter", std::move(explodeScatterParticle));
-
 	// 煙パーティクル
 	auto smokeParticle = std::make_unique<SmokeParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("smoke", std::move(smokeParticle));
 	// 火花パーティクル
 	auto sparkParticle = std::make_unique<SparkParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
-
 	// 壁崩壊パーティクル
 	auto wallCollapseParticle = std::make_unique<WallCollapseParticle>(modelSmoothCube_);
 	ParticleEffectManager::GetInstance()->Register("wallCollapse", std::move(wallCollapseParticle));
+	// 血が飛び散るパーティクル
+	auto bloodSplatterParticle = std::make_unique<BloodSplatterParticle>(modelSmoothCube_);
+	ParticleEffectManager::GetInstance()->Register("bloodSplatter", std::move(bloodSplatterParticle));
 }
