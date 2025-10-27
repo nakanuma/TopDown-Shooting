@@ -229,6 +229,9 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	if (!targetPlayer_)
 		return false;
 
+	if (targetPlayer_->IsDead())
+		return false;
+
 	///
 	///	プレイヤーとの距離チェック
 	///

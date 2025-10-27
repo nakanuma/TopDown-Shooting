@@ -29,6 +29,7 @@
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
 #include <src/Game/Sequence/GameStartSequence.h>
+#include <src/Game/Sequence/GameOverSequence.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -91,4 +92,5 @@ private:
 	std::unique_ptr<PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
 	uint32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
 	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
+	std::unique_ptr<GameOverSequence> gameOverSequence_;	/* ゲームオーバー時の演出制御クラス */
 };

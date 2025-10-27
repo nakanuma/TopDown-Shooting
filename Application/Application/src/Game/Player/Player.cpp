@@ -78,7 +78,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	パラメーター設定
 	///
 
-	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
+	//currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
+	currentHP_ = 10;
 
 	///
 	///	調整パラメーター登録
@@ -92,19 +93,34 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
+	// 前フレームでの死亡フラグを保持
+	bool wasDead = isDead_;
+
 	///
 	///	内部処理
 	///
 
-	if (operable) {
+	// 操作可能かつ生きている間のみ入力操作を有効に
+	if (operable && !isDead_) {
 		// カーソル方向へ向くよう回転
 		FaceCursor();
 		// 移動処理
 		HandleMove();
 		// 射撃 & オーバーヒート処理
 		HandleOverHeat();
-		// HPが0未満にならないよう制限
-		currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+	}
+
+	// HPが0未満にならないよう制限
+	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+
+	// HPが0になったら死亡
+	if (currentHP_ <= 0) {
+		isDead_ = true;
+
+		// 死亡したフレームのみパーティクルを発生
+		if(!wasDead){
+			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), 30);
+		}
 	}
 
 	///
@@ -129,11 +145,16 @@ void Player::Update(bool operable) {
 }
 
 void Player::Draw() {
-	// プレイヤーオブジェクト描画
+	// 死亡したら描画スキップ
+	if(isDead_) return;
+
 	objectPlayer_->Draw();
 }
 
 void Player::DrawShadow() {
+	// 死亡したら描画スキップ
+	if (isDead_) return;
+
 	objectPlayer_->DrawShadow();
 }
 
@@ -224,6 +245,8 @@ void Player::Debug() {
 
 	/* Parameter */
 	ImGui::Text("Parameter");
+
+	ImGui::Checkbox("isDead", &isDead_);
 
 	ImGui::BeginDisabled(true); // 操作不可
 	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);

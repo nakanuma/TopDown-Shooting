@@ -252,6 +252,9 @@ void BossEnemy::FacePlayer() {
 }
 
 void BossEnemy::MoveTowardPlayer() {
+	if (targetPlayer_->IsDead())
+		return;
+
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	toPlayer.y = 0.0f;

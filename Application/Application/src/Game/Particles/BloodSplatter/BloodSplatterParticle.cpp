@@ -1,0 +1,93 @@
+#include "BloodSplatterParticle.h"
+
+// Engine
+#include <Engine/Math/Easing.h>
+#include <Engine/Util/RandomGenerator.h>
+
+BloodSplatterParticle::BloodSplatterParticle(ModelManager::ModelData& model)
+{
+	// オブジェクト設定
+	object_.model_ = &model;
+	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices.Create();
+
+	// ビルボード適用設定
+	isBillboard_ = { false, false, false };
+	// ブレンドモード設定
+	blendMode_ = BlendMode::Normal;
+}
+
+BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
+{
+	BloodSplatterParticleData p;
+	auto rand = RandomGenerator::GetInstance();
+
+	p.transform.translate = pos;
+
+	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+
+	float scale = rand->RandomValue(0.1f, 0.25f);
+	p.transform.scale = { scale, scale, scale };
+
+	p.velocity = rand->RandomValue({ -12.0f, 2.0f, -12.0f }, { 12.0f, 4.0f, 12.0f }); // 少し上方向へ
+
+	p.color = { 0.3f, 0.0f, 0.0f, 1.0f };
+
+	p.currentTime = 0.0f;
+
+	p.lifeTime = rand->RandomValue(3.5f, 4.5f);
+
+
+	p.initScale = p.transform.scale;
+
+	return p;
+}
+
+void BloodSplatterParticle::UpdateParticle(BloodSplatterParticleData& p, float dt)
+{
+	// 重力
+	const Float3 kGravity = { 0.0f, -9.8f, 0.0f };
+
+	// 速度の更新
+	p.velocity += kGravity * dt * 5.0f;
+	// 位置の更新
+	p.transform.translate += p.velocity * dt;
+
+	// 仮の床の高さ
+	const float kGroundY = p.initScale.y * 2.0f;
+	// 反発係数
+	const float kBounceFactor = 0.3f;
+	// 摩擦係数
+	const float kFriction = 0.9f;
+
+	// 床に到達したら跳ねるように
+	if (p.transform.translate.y <= kGroundY) {
+		p.transform.translate.y = kGroundY; // 床を貫通しないよう制限
+
+		// Y速度がある程度大きければ符号を反転しながら減衰させる
+		if (std::abs(p.velocity.y) > 1.0f) {
+			p.velocity.y *= -kBounceFactor;
+		} else {
+			p.velocity.y = 0.0f;
+		}
+
+		// XとZの速度を徐々に減衰させて止める
+		p.velocity.x *= kFriction;
+		p.velocity.z *= kFriction;
+	}
+
+	// 動きが止まったことを知らせる
+	if(p.velocity.y == 0.0f && !p.isStop){
+		p.isStop = true;
+		p.stopTime = p.currentTime;
+	}
+
+	// スケールの縮小
+	if(p.isStop){
+		// 両方から止まった瞬間の時間を引いて、正しく最初の生存時間で消えるよう調整
+		float t = std::clamp((p.currentTime - p.stopTime) / (p.lifeTime - p.stopTime), 0.0f, 1.0f);
+		float easeT = Easing::EaseInBack(t);
+		p.transform.scale = p.initScale * (1.0f - easeT);
+	}
+}
+

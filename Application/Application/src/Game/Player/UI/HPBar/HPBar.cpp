@@ -42,6 +42,7 @@ void HPBar::Update(const Player* player) {
 
 	// 現在HPに応じてサイズを変更
 	float hpRatio = static_cast<float>(player->GetCurrentHP()) / static_cast<float>(player->GetMaxHP()); // HP割合
+	
 
 	Float2 hpBarForegroundSize = {kHPBarSize.x * hpRatio, kHPBarSize.y};
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
