@@ -114,12 +114,13 @@ private:
     const float kRotateDuration = 3.0f;                             /* カメラ回転にかかる時間 */
 
     const float kDiedTextDuration = 1.0f;                           /* "YOU DIED"文字スプライトのアニメーションにかかる時間 */
-    const Float2 kDiedTextStartPos = {640.0f, -140.0f};             /* "YOU DIED"文字スプライトの初期位置 */
-    const Float2 kDiedTextEndPos = {640.0f, 140.0f};                /* "YOU DIED"文字スプライトの最終位置 */
+    const Float2 kDiedTextStartPos = {640.0f, -160.0f};             /* "YOU DIED"文字スプライトの初期位置 */
+    const Float2 kDiedTextEndPos = {640.0f, 160.0f};                /* "YOU DIED"文字スプライトの最終位置 */
 
     const float kBackToTitleTextDuration = 0.5f;                    /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
     Float2 backToTitleTextStartSize_ = {0.0f, 0.0f};                /* "クリックでタイトルへ"文字スプライトの初期サイズ */
     Float2 backToTitleTextEndSize_;                                 /* "クリックでタイトルへ"文字スプライトの最終サイズ */
+    const Float2 kBackToTitleTextPos = { 640.0f, 540.0f };          /* "クリックでタイトルへ"文字スプライトの位置 */
 
     // ----- Sprite -----
     std::unique_ptr<Sprite> spriteDiedText_;                        /* "YOU DIED"文字スプライト */

@@ -314,6 +314,9 @@ void GamePlayScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
+	// 敵UI描画
+	enemyManager_->DrawUI();
+
 	// スタート演出中は専用UI表示
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->DrawUI();
@@ -324,9 +327,6 @@ void GamePlayScene::Draw() {
 			player_->DrawUI();
 		}
 	}
-
-	// 敵UI描画
-	enemyManager_->DrawUI();
 
 	// ゲームオーバー時のUIを描画
 	if (gameOverSequence_->IsActive()) {

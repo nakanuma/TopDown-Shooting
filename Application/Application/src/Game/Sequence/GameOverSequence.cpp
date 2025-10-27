@@ -29,7 +29,7 @@ void GameOverSequence::Initialize(SpriteCommon* spriteCommon) {
 	spriteBackToTitleText_ = std::make_unique<Sprite>();
 	spriteBackToTitleText_->Initialize(spriteCommon, textureBackToTitle);
 	spriteBackToTitleText_->SetAnchorPoint({0.5f, 0.5f});
-	spriteBackToTitleText_->SetPosition({640.0f, 580.0f});
+	spriteBackToTitleText_->SetPosition(kBackToTitleTextPos);
 	backToTitleTextEndSize_ = spriteBackToTitleText_->GetSize(); // 最終サイズを保存しておく
 	spriteBackToTitleText_->SetSize(backToTitleTextStartSize_); // スプライトを初期サイズにしておく（0, 0）
 }
@@ -82,7 +82,7 @@ void GameOverSequence::Update() {
 		break;
 	case Phase::Finish:
 		// 左クリック入力でタイトルシーンへ移行
-		if (Input::GetInstance()->IsTriggerMouse(0) && Utility::IsInsideClientCursor()) {
+		if (Input::GetInstance()->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
 			FadeTransition::GetInstance()->StartFadeOut(
 				0.5f,
 				[]() {
