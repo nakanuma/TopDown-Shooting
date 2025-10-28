@@ -1,66 +1,69 @@
 #include "GroundWarning.h"
 
-// Engine
+// ---------------------------------------------------------
+// Engine Includes
+// ---------------------------------------------------------
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <TimeManager.h>
 
 void GroundWarning::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
-	///
-	///	オブジェクト生成
-	///
-
+	// ---------------------------------------------------------
+	// オブジェクト生成・初期設定
+	// ---------------------------------------------------------
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
 	objectBullet_->transform_.scale = {radius_, radius_, radius_};
 	objectBullet_->materialCB_.data_->color = {1.0f, 1.0f, 1.0f, 0.5f};
 
-	///
-	///	コライダー生成
-	///
-
+	// ---------------------------------------------------------
+	// コライダー生成・登録
+	// ---------------------------------------------------------
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->SetTag("GroundWarning");
 	collider_->SetOwner(this);
 
-	// コライダーを登録
 	CollisionManager::GetInstance()->Register(collider_.get());
 
-	///
-	///	パラメーター設定
-	///
-
-	// 攻撃力
-	damage_ = 20;
-
-	// 速さ
-	speed_ = 0.0f;
-
-	// 速度
-	velocity_ = {0.0f, 0.0f, 0.0f};
+	// ---------------------------------------------------------
+	// パラメーター設定
+	// ---------------------------------------------------------
+	damage_ = 20;                   // 攻撃力
+	speed_ = 0.0f;                  // 弾速
+	velocity_ = {0.0f, 0.0f, 0.0f}; // 速度ベクトル
 }
 
 void GroundWarning::Update() {
-	// 時間経過による削除
-	elapsedTime_ += 1.0f / 60.0f;
-	if (elapsedTime_ > kMaxLifeTime) {
+	// ---------------------------------------------------------
+	// 寿命更新
+	// ---------------------------------------------------------
 
-		// 死亡させる
+	// 経過時間の更新
+	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+	// 経過時間が寿命に達したら削除
+	if (elapsedTime_ > kMaxLifeTime) {
 		isDead_ = true;
 		// コライダー破棄
 		OnDestroy();
 	}
 
-	// 指定秒数経過したらコライダー有効化
-	if (!colliderEnabled_ && elapsedTime_ >= hitDelay_) {
-		colliderEnabled_ = true;
+	// ---------------------------------------------------------
+	// コライダー有効化処理
+	// ---------------------------------------------------------
 
-		Float3 offset = {0.0f, 1.5f, 0.0f};
-		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);
-		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25);
+	// 遅延時間分だけ経過したらコライダーを有効化 + パーティクル発生
+	if (!colliderEnabled_ && elapsedTime_ >= kHitDelay) {
+		colliderEnabled_ = true;                                                                                        // コライダーを有効化
+		Float3 offset = {0.0f, 1.5f, 0.0f};                                                                             // 少し上から発生させるためのオフセット
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);   // 煙パーティクル
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25); // 飛散パーティクル
 	}
-	// コライダー更新
+
+	// ---------------------------------------------------------
+	// コライダー・行列更新処理
+	// ---------------------------------------------------------
+
+	// コライダー有効化時のみ更新
 	if (colliderEnabled_) {
 		UpdateCollider();
 	}
@@ -68,13 +71,12 @@ void GroundWarning::Update() {
 	objectBullet_->UpdateMatrix();
 }
 
-void GroundWarning::Draw() {
-	// オブジェクト描画
-	/*objectBullet_->Draw();*/
-}
+void GroundWarning::Draw() {}
 
 void GroundWarning::OnCollision(Collider* other) {
-	// vs Player
+	// ---------------------------------------------------------
+	// プレイヤーとの衝突
+	// ---------------------------------------------------------
 	if (other->GetTag() == "Player") {
 		// 死亡させる
 		isDead_ = true;
@@ -85,9 +87,8 @@ void GroundWarning::OnCollision(Collider* other) {
 
 void GroundWarning::UpdateCollider() {
 	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
-		// 中心
+		// 位置と半径をオブジェクトに追従させる
 		sphere->center_ = objectBullet_->transform_.translate;
-		// 半径
 		sphere->radius_ = radius_;
 	}
 }

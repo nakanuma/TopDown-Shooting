@@ -57,7 +57,7 @@ private:
 	// ----- Parameters -----
 	float radius_ = 5.0f;						/* 弾の半径 */
 
-	float hitDelay_ = 0.8f;						/* 衝突判定を有効化するまでの遅延時間 */
+	const float kHitDelay = 0.8f;				/* 衝突判定を有効化するまでの遅延時間 */
 	bool colliderEnabled_ = false;				/* コライダー有効化フラグ */
 
 	float elapsedTime_ = 0.0f;					/* 経過時間 */

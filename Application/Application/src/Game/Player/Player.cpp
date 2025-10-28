@@ -93,6 +93,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
+	// 一時的に無敵にする
+	currentHP_ = 100;
+
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 

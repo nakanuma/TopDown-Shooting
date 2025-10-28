@@ -78,7 +78,6 @@ protected:
 	std::unique_ptr<Collider> collider_;			/* コライダー */
 
 	// ----- Parameters -----
-	Float3 previousPos_ = {0.0f, 0.0f, 0.0f};		/* 前フレーム位置 */
 	int32_t damage_ = 0;							/* 弾の攻撃力 */
 	float speed_ = 0.0f;							/* 移動速度 */
 	Float3 velocity_ = {0.0f, 0.0f, 0.0f};			/* 速度ベクトル */
