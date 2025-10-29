@@ -158,6 +158,7 @@ void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas) {
 
 	for (const auto& data : datas) {
 		auto it = tagModelMap_.find(data.tag);
+		// タグと一致した障害物のモデルを適用して生成
 		if (it != tagModelMap_.end()) {
 			auto obstacle = std::make_unique<Obstacle>();
 			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, it->second);

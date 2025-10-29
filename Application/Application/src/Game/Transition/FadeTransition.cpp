@@ -18,6 +18,7 @@ void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
 	uint32_t textureWhite = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
 	Float2 windowSize = {static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())};
 
+	// スプライト生成
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(spriteCommon, textureWhite);
 	sprite_->SetSize(windowSize);
@@ -25,6 +26,7 @@ void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
 }
 
 void FadeTransition::StartFadeIn(float duration, float delayBeforeStart) {
+	// 各種パラメーターをフェードイン開始前状態に設定
 	state_ = State::FadeIn;
 	alpha_ = 1.0f;
 	duration_ = duration;
@@ -34,6 +36,7 @@ void FadeTransition::StartFadeIn(float duration, float delayBeforeStart) {
 }
 
 void FadeTransition::StartFadeOut(float duration, std::function<void()> onComplete, float delayAfterComplete) {
+	// 各種パラメーターをフェードアウト開始前状態に設定
 	state_ = State::FadeOut;
 	alpha_ = 0.0f;
 	duration_ = duration;
@@ -63,14 +66,17 @@ void FadeTransition::Update() {
 			return;
 		}
 
+		// Alpha値更新処理
 		timer_ += dt;
 		float t = std::min(timer_ / duration_, 1.0f);
 		alpha_ = 1.0f - t; // 徐々に明るく
 		if (t >= 1.0f) {
 			state_ = State::None;
 		}
+	// フェードアウト
 	} else if (state_ == State::FadeOut) {
 		timer_ += dt;
+		// Alpha値更新処理
 		float t = std::min(timer_ / duration_, 1.0f);
 		alpha_ = t; // 徐々に暗く
 
@@ -106,6 +112,7 @@ void FadeTransition::Update() {
 }
 
 void FadeTransition::Draw() {
+	// フェード非更新状態なら描画スキップ
 	if (state_ == State::None && alpha_ <= 0.0f)
 		return;
 

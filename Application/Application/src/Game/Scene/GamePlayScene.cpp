@@ -299,7 +299,6 @@ void GamePlayScene::Draw() {
 	obstacleManager_->Draw(player_->GetTranslate());
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
-	/*WaypointManager::GetInstance()->Draw();*/
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
 

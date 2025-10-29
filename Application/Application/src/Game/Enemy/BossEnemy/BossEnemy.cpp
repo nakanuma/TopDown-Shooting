@@ -82,6 +82,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	currentHP_ = 1000;
 	maxHP_ = currentHP_;
 
+	// ターゲットの設定
 	targetPlayer_ = player;
 
 	///
@@ -260,6 +261,7 @@ void BossEnemy::MoveTowardPlayer() {
 	toPlayer.y = 0.0f;
 	toPlayer = Float3::Normalize(toPlayer);
 
+	// 移動処理
 	objectEnemy_->transform_.translate += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
 }
 
@@ -268,7 +270,7 @@ void BossEnemy::FireHomingMissile() {
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	direction = Float3::Normalize(direction);
 
-	// 弾の生成
+	// 弾の生成と追加
 	auto newBullet = std::make_unique<HomingMissile>();
 	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelMissile_);
 	newBullet->SetPlayer(targetPlayer_);
@@ -278,7 +280,7 @@ void BossEnemy::FireHomingMissile() {
 void BossEnemy::GroundWarningAttack() {
 	Float3 playerPos = targetPlayer_->GetTranslate();
 
-	// 弾の生成
+	// 弾の生成と追加
 	auto newBullet = std::make_unique<GroundWarning>();
 	newBullet->Initialize({playerPos.x, 0.0f, playerPos.z}, {0.0f, 0.0f, 0.0f}, modelGroundWarning_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
@@ -306,6 +308,7 @@ void BossEnemy::BuildBehaviorTree() {
 	    },
 	    "moveTowardPlayer");
 
+	// 移動パラレルノード構築
 	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>("moveParallel");
 	moveParallel->AddChild(std::move(facePlayer));
 	moveParallel->AddChild(std::move(moveTowardPlayer));
@@ -327,12 +330,13 @@ void BossEnemy::BuildBehaviorTree() {
 	    },
 	    "randAttack");
 
+	// 攻撃シーケンスノード構築
 	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>("attackSequence");
 	attackSequence->AddChild(std::move(wait));
 	attackSequence->AddChild(std::move(randAttack));
 
 	///
-	///	ルートノード
+	///	ルートノード構築
 	///
 
 	auto root = std::make_unique<ParallelNode<BossEnemy>>("root");

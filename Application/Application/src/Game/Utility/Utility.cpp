@@ -5,9 +5,11 @@
 #include <Engine/Input/Input.h>
 
 Float3 Utility::WorldToScreen(Float3 worldPosition) {
+	// ビュー射影行列を取得
 	Matrix worldViewProjMatrix = Camera::GetCurrent()->GetViewProjectionMatrix();
+	// ワールド->クリップへの座標変換
 	Float3 screenPosition = Float3::Transform(worldPosition, worldViewProjMatrix);
-
+	// NDC->スクリーンへの座標変換
 	screenPosition.x = (screenPosition.x + 1.0f) * 0.5f * Window::GetWidth();
 	screenPosition.y = (1.0f - screenPosition.y) * 0.5f * Window::GetHeight();
 

@@ -425,10 +425,10 @@ void Player::HandleOverHeat()
 
 void Player::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		// オブジェクトに追従させる
 		Float3 center = objectPlayer_->GetTranslate();
 		Float3 size = kColliderSize;
 
-		// min
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;
 	}

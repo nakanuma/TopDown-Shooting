@@ -133,17 +133,6 @@ void NormalEnemy::Update() {
 	objectEnemy_->UpdateMatrix();
 	objectEnemy_->UpdateShadowMatrix();
 
-	//// 現在位置から最も近いウェイポイントを取得
-	// Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
-	//// プレイヤー位置に最も近いウェイポイントを取得
-	// Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
-
-	// if (start && goal) {
-	//	// ウェイポイント列の取得をしてそれに沿って移動
-	//	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
-	//	MoveAlongPath(path);
-	// }
-
 	///
 	///	ビヘイビアツリーを評価
 	///
@@ -300,10 +289,10 @@ void NormalEnemy::Debug() {
 
 void NormalEnemy::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		// オブジェクトに追従させる
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
 
-		// min
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;
 	}

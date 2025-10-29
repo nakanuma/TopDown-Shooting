@@ -28,14 +28,15 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 	uint32_t topRect = TextureManager::Load("resources/Images/UI/topRect.png", DirectXBase::GetInstance()->GetDevice());
 	uint32_t bottomRect = TextureManager::Load("resources/Images/UI/bottomRect.png", DirectXBase::GetInstance()->GetDevice());
 
+	// カウント数だけスプライトを生成
 	for (uint32_t i = 0; i < splitCount_; ++i) {
 
 		Block block;
 		block.top = std::make_unique<Sprite>();
 		block.bottom = std::make_unique<Sprite>();
 
-		block.top->Initialize(spriteCommon_.get(), topRect);
-		block.bottom->Initialize(spriteCommon_.get(), bottomRect);
+		block.top->Initialize(spriteCommon_.get(), topRect); // 上側のテクスチャを割り当て
+		block.bottom->Initialize(spriteCommon_.get(), bottomRect); // 下側のテクスチャを割り当て
 
 		block.top->SetSize({blockWidth, blockHeight});
 		block.bottom->SetSize({blockWidth, blockHeight});
@@ -52,6 +53,7 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 }
 
 void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart) {
+	// 各種パラメーターを開始状態に設定
 	state_ = State::Open;
 	duration_ = duration;
 	timer_ = 0.0f;
@@ -63,6 +65,7 @@ void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart) {
 }
 
 void SplitBlockTransition::StartClose(float duration, std::function<void()> onComplete, float delayAfterComplete) {
+	// 各種パラメーターを開始状態に設定
 	state_ = State::Close;
 	duration_ = duration;
 	timer_ = 0.0f;
@@ -86,6 +89,7 @@ void SplitBlockTransition::Update() {
 		return;
 	}
 
+	// 全てのブロックのアニメーションが終了したかのフラグ
 	bool allFinished = true;
 
 	// 各ブロックの進行度を更新
@@ -129,6 +133,7 @@ void SplitBlockTransition::Draw() {
 
 	const float screenHeight = static_cast<float>(Window::GetHeight());
 
+	// 全てのブロックを描画
 	for (auto& block : blocks_) {
 		float t = block.progress;
 		float easedT;

@@ -21,6 +21,7 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 		if (data.tag == "TELEPORTER") {
 			auto teleporter = std::make_unique<Teleporter>();
 			teleporter->Initialize(data.translate, &modelTeleporter_);
+			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
 
 			teleporters_.emplace_back(std::move(teleporter));
@@ -43,12 +44,14 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 }
 
 void TeleporterManager::Update() {
+	// 全てのテレポーターを更新
 	for (auto& teleporter : teleporters_) {
 		teleporter->Update();
 	}
 }
 
 void TeleporterManager::Draw() {
+	// 全てのテレポーターを描画
 	for (auto& teleporter : teleporters_) {
 		teleporter->Draw();
 	}
