@@ -79,10 +79,6 @@ void ResultScene::Initialize() {
 	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), 2);
 
 	///
-	///	オブジェクト
-	///
-
-	///
 	///	フェード
 	///
 

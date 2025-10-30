@@ -19,14 +19,21 @@ RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model) {
 RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
 	RedCircleParticleData p;
 
+	// 位置
 	p.transform.translate = pos;
+	// 回転
 	p.transform.rotate = {PIf / 2.0f, 0.0f, 0.0f}; // 仰向けになるように
+	// スケール
 	p.transform.scale = {0.0f, 0.0f, 0.0f};
+	// 速度ベクトル
 	p.velocity = {0.0f, 0.0f, 0.0f};
+	// 色
 	p.color = {1.0f, 0.0f, 0.0f, 1.0f};
+	// 経過時間
 	p.currentTime = 0.0f;
+	// 生存時間
 	p.lifeTime = 1.0f;
-
+	// 目標スケール
 	p.targetScale = {5.0f, 5.0f, 5.0f}; // 地面警告攻撃の弾と同じサイズ
 	return p;
 }

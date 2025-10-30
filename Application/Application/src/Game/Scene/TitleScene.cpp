@@ -293,11 +293,6 @@ void TitleScene::Draw() {
 
 	ImGui::Separator();
 
-	/*ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
-	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
-	ImGui::DragFloat("intansity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
-	ImGui::ColorEdit4("color", &lightManager->directionalLightCB_.data_->color.x);*/
-
 	ImGui::Separator();
 
 	ImGui::End();

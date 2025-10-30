@@ -74,6 +74,7 @@ void EnemyManager::Draw() {
 }
 
 void EnemyManager::DrawShadow() {
+	// 全ての敵の影を描画
 	for (auto& enemy : enemies_) {
 		enemy->DrawShadow();
 	}
@@ -163,7 +164,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 	enemies_.clear();
 
 	for (const auto& data : datas) {
-		// 通常敵
+		// 通常敵の生成・初期化
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
 			enemy->Initialize(data.translate, &modelNormalEnemy_, player_);
@@ -171,7 +172,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 			enemies_.emplace_back(std::move(enemy));
 		}
 
-		// 固定敵
+		// 固定敵の生成・初期化
 		if (data.tag == "IMMOBILE_ENEMY") {
 			auto enemy = std::make_unique<ImmobileEnemy>();
 			enemy->Initialize(data.translate, &modelImmobileEnemy_, player_);
@@ -179,7 +180,7 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 			enemies_.emplace_back(std::move(enemy));
 		}
 
-		// ボス生成
+		// ボスの生成・初期化
 		if (data.tag == "BOSS_ENEMY") {
 			auto enemy = std::make_unique<BossEnemy>();
 			enemy->Initialize(data.translate, &modelBossEnemy_, player_);

@@ -9,6 +9,7 @@ ResultStats* ResultStats::GetInstance() {
 }
 
 void ResultStats::Clear() {
+	// 全ての戦績をクリア
 	totalShots_ = 0;
 	hitShots_ = 0;
 	totalDamage_ = 0;
@@ -21,12 +22,14 @@ float ResultStats::GetHitRate() const {
 		return 0.0f;
 	}
 
+	// 0~100で命中率を返すよう調整
 	return static_cast<float>(hitShots_) / static_cast<float>(totalShots_) * 100.0f;
 }
 
 void ResultStats::Debug() {
 	ImGui::Begin("ResultStats");
 
+	// 各戦績を表示
 	ImGui::Text("totalShots : %d", totalShots_);
 	ImGui::Text("hitShots : %d", hitShots_);
 	ImGui::Text("totalDamage : %d", totalDamage_);

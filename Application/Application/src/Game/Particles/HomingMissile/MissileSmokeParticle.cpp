@@ -21,15 +21,22 @@ MissileSmokeParticleData MissileSmokeParticle::CreateParticle(const Float3& pos,
 	MissileSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
+	// 位置（オフセットを加える）
 	Float3 offset = rand->RandomValue({-0.4f, -0.4f, -0.4f}, {0.4f, 0.4f, 0.4f});
 	p.transform.translate = pos + offset;
+	// 回転
 	p.transform.rotate = rand->RandomValue({0.0f, 0.0f, 0.0f}, {PIf * 2.0f, PIf * 2.0f, PIf * 2.0f});
+	// スケール
 	p.transform.scale = {0.2f, 0.2f, 0.2f};
+	// 速度ベクトル
 	p.velocity = rand->RandomValue({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
+	// 色
 	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	// 生存時間
 	p.lifeTime = 0.8f;
+	// 経過時間
 	p.currentTime = 0.0f;
-
+	// 初期スケール
 	p.initScale = p.transform.scale;
 
 	return p;

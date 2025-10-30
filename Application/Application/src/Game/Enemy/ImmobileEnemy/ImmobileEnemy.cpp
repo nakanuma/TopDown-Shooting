@@ -216,10 +216,10 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 
 void ImmobileEnemy::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		// オブジェクトに追従させる
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
 
-		// min
 		aabb->min_ = center - size;
 		aabb->max_ = center + size;
 	}
@@ -254,7 +254,7 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	RayCastHit hit{};
 	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, direction, distanceToPlayer, &hit);
 	// 障害物が間にある場合
-	if (rayCastHit && hit.hitCollider->GetTag() == "NormalObstacle") {
+	if (rayCastHit && hit.hitCollider->GetTag() == "Obstacle") {
 		isPlayerVisible_ = false;
 		return false;
 	}
@@ -268,6 +268,7 @@ void ImmobileEnemy::SearchMotion() {
 	searchStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
 	switch (searchState_) {
+	// 索敵・回転時
 	case SearchState::Rotate: {
 		// 回転時間・方向をランダムに設定
 		if (searchRotateDuration_ == 0.0f) {
@@ -288,6 +289,7 @@ void ImmobileEnemy::SearchMotion() {
 
 		break;
 	}
+	// 索敵・待機時
 	case SearchState::Wait: {
 		// 待機時間をランダムに設定
 		if (waitDuration_ == 0.0f) {

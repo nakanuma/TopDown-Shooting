@@ -20,26 +20,27 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	SparkParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
+	// 位置
 	p.transform.translate = pos;
-
+	// スケール
 	p.transform.scale = {0.04f, 0.04f, 0.8f};
-
-	// veliocity
-	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;
+	// 速度ベクトル
+	Float3 baseDir = Float3::Normalize(velocity) * -1.0f; // 引数で受け取った方向と逆向きにする
 	float diff = 0.9f;
-	Float3 randDir = rand->RandomValue({-diff, 0.0f, -diff}, {diff, 0.0f, diff});
+	Float3 randDir = rand->RandomValue({-diff, 0.0f, -diff}, {diff, 0.0f, diff}); // 方向をバラつかせるためのオフセット
 	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(16.0f, 24.0f);
-
-	// rotate（進行方向を向くように）
+	// 回転（進行方向を向くように）
 	Float3 dir = Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
 	p.transform.rotate = {-pitch, -yaw, 0.0f};
-
+	// 色
 	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	// 生存時間
 	p.lifeTime = rand->RandomValue(0.3f, 0.5f);
+	// 経過時間
 	p.currentTime = 0.0f;
-
+	// 初期スケール
 	p.initScale = p.transform.scale;
 
 	return p;

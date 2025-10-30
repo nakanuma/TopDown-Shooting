@@ -34,6 +34,7 @@ void FollowCamera::Update() {
 
 void FollowCamera::SetTarget(const Float3* translate) {
 	targetTranslate_ = translate;
+	// カメラ位置がターゲット位置に基づいて更新されるように
 	if (targetTranslate_) {
 		currentPos_ = *targetTranslate_ + offset_;
 	}

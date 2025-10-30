@@ -20,15 +20,23 @@ ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& 
 	ExplodeScatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
+	// 位置
 	p.transform.translate = pos;
+	// 回転
 	p.transform.rotate = {0.0f, 0.0f, 0.0f};
+	// スケール
 	p.transform.scale = rand->RandomValue({0.2f, 0.2f, 0.2f}, {0.4f, 0.4f, 0.4f});
+	// 速度ベクトル
 	p.velocity = rand->RandomValue({-12.0f, 0.0f, -12.0f}, {12.0f, 8.0f, 12.0f});
+	// 色
 	p.color = {1.0f, 1.0f, 0.0f, 1.0f};
+	// 経過時間
 	p.currentTime = 0.0f;
+	// 生存時間
 	p.lifeTime = rand->RandomValue(0.8f, 1.2f);
-
+	// 初期スケール
 	p.initScale = p.transform.scale;
+	// 回転速度
 	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
 
 	return p;

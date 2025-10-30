@@ -22,31 +22,30 @@ WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos,
 	WallCollapseParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
-	// 範囲（壊れる壁とほぼ同じサイズ）
+	// 位置（壊れる壁の範囲内に生成されるようランダムなオフセットを加える）
 	Float3 spawnRange = {11.5f, 2.5f, 0.5f};
 	Float3 offset = {
 		rand->RandomValue(-spawnRange.x, spawnRange.x),
 		rand->RandomValue(-spawnRange.y, spawnRange.y),
 		rand->RandomValue(-spawnRange.z, spawnRange.z),
 	};
-
 	p.transform.translate = pos + offset;
+	// 回転
 	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
-
+	// スケール
 	float scale = rand->RandomValue(0.2f, 0.8f);
 	p.transform.scale = {scale, scale, scale};
-
-	// 中心から外向きのベクトル
+	// 速度ベクトル
 	Float3 dir = offset;
-	dir += rand->RandomValue({-0.01f, 0.0f, -0.01f}, {0.01f, 0.3f, 0.01f});
+	dir += rand->RandomValue({-0.01f, 0.0f, -0.01f}, {0.01f, 0.3f, 0.01f}); // 中心から外側へ向かうオフセット
 	dir = Float3::Normalize(dir);
-
-	// 初速度
 	float speed = rand->RandomValue(15.0f, 35.0f);
 	p.velocity = dir * speed;
-
+	// 色
 	p.color = { 0.53f, 0.53f, 0.53f, 1.0f };
+	// 生存時間
 	p.lifeTime = rand->RandomValue(2.0f, 3.0f);
+	// 経過時間
 	p.currentTime = 0.0f;
 
 	return p;

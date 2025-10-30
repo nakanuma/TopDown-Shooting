@@ -74,6 +74,7 @@ void Teleporter::OnCollision(Collider* other) {
 
 void Teleporter::UpdateCollider() {
 	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
+		// 位置をオブジェクトに追従させて、サイズを最新状態に更新
 		Float3 center = object_->transform_.translate;
 		Float3 size = colliderSize_;
 

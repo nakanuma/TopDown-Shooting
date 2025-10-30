@@ -82,6 +82,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	currentHP_ = 1000;
 	maxHP_ = currentHP_;
 
+	// ターゲットの設定
 	targetPlayer_ = player;
 
 	///
@@ -231,10 +232,11 @@ void BossEnemy::UpdateCollider() {
 		Float3 center = objectEnemy_->transform_.translate;
 		Float3 size = colliderSize_;
 
+		// コライダーの位置をオブジェクトに追従させ、常にサイズを最新状態にする
 		obb->center_ = center;
 		obb->size_ = colliderSize_;
 
-		// 回転軸の更新
+		// 回転行列を作成して、コライダーの回転軸の更新
 		Matrix rotMat = Matrix::Rotation(objectEnemy_->transform_.rotate);
 		obb->xAxis_ = Float3::Normalize(Float3(rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0]));
 		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));
@@ -260,6 +262,7 @@ void BossEnemy::MoveTowardPlayer() {
 	toPlayer.y = 0.0f;
 	toPlayer = Float3::Normalize(toPlayer);
 
+	// 移動処理
 	objectEnemy_->transform_.translate += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
 }
 
@@ -268,7 +271,7 @@ void BossEnemy::FireHomingMissile() {
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
 	direction = Float3::Normalize(direction);
 
-	// 弾の生成
+	// 弾の生成と追加
 	auto newBullet = std::make_unique<HomingMissile>();
 	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelMissile_);
 	newBullet->SetPlayer(targetPlayer_);
@@ -278,7 +281,7 @@ void BossEnemy::FireHomingMissile() {
 void BossEnemy::GroundWarningAttack() {
 	Float3 playerPos = targetPlayer_->GetTranslate();
 
-	// 弾の生成
+	// 弾の生成と追加
 	auto newBullet = std::make_unique<GroundWarning>();
 	newBullet->Initialize({playerPos.x, 0.0f, playerPos.z}, {0.0f, 0.0f, 0.0f}, modelGroundWarning_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
@@ -306,6 +309,7 @@ void BossEnemy::BuildBehaviorTree() {
 	    },
 	    "moveTowardPlayer");
 
+	// 移動パラレルノード構築
 	auto moveParallel = std::make_unique<ParallelNode<BossEnemy>>("moveParallel");
 	moveParallel->AddChild(std::move(facePlayer));
 	moveParallel->AddChild(std::move(moveTowardPlayer));
@@ -327,12 +331,13 @@ void BossEnemy::BuildBehaviorTree() {
 	    },
 	    "randAttack");
 
+	// 攻撃シーケンスノード構築
 	auto attackSequence = std::make_unique<SequenceNode<BossEnemy>>("attackSequence");
 	attackSequence->AddChild(std::move(wait));
 	attackSequence->AddChild(std::move(randAttack));
 
 	///
-	///	ルートノード
+	///	ルートノード構築
 	///
 
 	auto root = std::make_unique<ParallelNode<BossEnemy>>("root");
