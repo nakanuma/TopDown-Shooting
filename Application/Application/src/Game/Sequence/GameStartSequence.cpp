@@ -132,6 +132,7 @@ void GameStartSequence::DrawUI() {
 void GameStartSequence::Debug() {
 	ImGui::Begin("GameStartSequence");
 
+	// フェーズ名を表示
 	const char* phaseStr = "";
 	switch (phase_) {
 	case Phase::Intro: phaseStr = "Intro"; break;

@@ -150,13 +150,15 @@ void PlayerBullet::DrawTrail() {
 	Float4 headColor = {1.0f, 1.0f, 1.0f, 1.0f};
 	Float4 tailColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
+	// [0]と[1], [1]と[2]... といったように全てのポイントを繋ぐ線を作る
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {
-		float t0 = static_cast<float>(i - 1) / (trailPoints_.size()); // 古い
-		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1); // 新しい
+		// 線分の位置に応じた割合を計算
+		float t0 = static_cast<float>(i - 1) / (trailPoints_.size());
+		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1);
 
 		// 線の両端の色を補間
-		Float4 c0 = Float4::Lerp(tailColor, headColor, t0);
-		Float4 c1 = Float4::Lerp(tailColor, headColor, t1);
+		Float4 c0 = Float4::Lerp(tailColor, headColor, t0); // この線分での末尾の色
+		Float4 c1 = Float4::Lerp(tailColor, headColor, t1); // この線分での先頭の色
 
 		// トレイル線の登録
 		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], 0.5f, c1, c0);

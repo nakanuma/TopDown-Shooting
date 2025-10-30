@@ -19,18 +19,27 @@ ExplodeSmokeParticle::ExplodeSmokeParticle(ModelManager::ModelData& model) {
 ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
 	ExplodeSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
-
+	
+	// 位置（Yにオフセットを加える）
 	Float3 offset = rand->RandomValue({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
 	p.transform.translate = pos + offset;
+	// 回転
 	p.transform.rotate = {0.0f, 0.0f, 0.0f};
+	// スケール
 	p.transform.scale = {0.5f, 0.5f, 0.5f};
+	// 速度ベクトル
 	p.velocity = rand->RandomValue({-5.0f, -5.0f, -5.0f}, {5.0f, 5.0f, 5.0f});
+	// 色
 	p.color = {1.0f, 1.0f, 0.0f, 1.0f};
+	// 生存時間
 	p.lifeTime = rand->RandomValue(2.0f, 3.0f);
+	// 経過時間
 	p.currentTime = 0.0f;
-
+	// 初期スケール
 	p.initScale = p.transform.scale;
+	// 上昇速度
 	p.ascendSpeed = rand->RandomValue(4.0f, 12.0f);
+	// 回転速度
 	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
 
 	return p;

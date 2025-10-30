@@ -1,9 +1,11 @@
 #include "Waypoint.h"
 
 Waypoint::Waypoint(const std::string& name, const Float3& pos, ModelManager::ModelData* model) {
+	// 名前と初期位置を受け取る
 	name_ = name;
 	position_ = pos;
 
+	// 球オブジェクト生成
 	objectSphere_ = std::make_unique<Object3D>();
 	objectSphere_->transform_.translate = pos;
 	objectSphere_->transform_.scale = {0.25f, 0.25f, 0.25f};

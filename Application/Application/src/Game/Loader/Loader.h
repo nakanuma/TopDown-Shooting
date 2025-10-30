@@ -17,7 +17,7 @@
 class Loader {
 public:
 	/// <summary>
-	/// ステージオブジェクト1つ文の変換情報データ
+	/// ステージオブジェクト1つ分の変換情報データ
 	/// </summary>
 	struct TransformData {
 		std::string tag;			/* タグ（string） */

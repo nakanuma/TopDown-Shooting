@@ -104,6 +104,7 @@ void GameOverSequence::Debug() {
 
 	ImGui::Text("Timer : %.2f", timer_);
 
+	// フェーズ名の表示
 	const char* phaseStr = "";
 	switch (phase_)
 	{

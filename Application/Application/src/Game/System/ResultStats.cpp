@@ -29,6 +29,7 @@ float ResultStats::GetHitRate() const {
 void ResultStats::Debug() {
 	ImGui::Begin("ResultStats");
 
+	// 各戦績を表示
 	ImGui::Text("totalShots : %d", totalShots_);
 	ImGui::Text("hitShots : %d", hitShots_);
 	ImGui::Text("totalDamage : %d", totalDamage_);

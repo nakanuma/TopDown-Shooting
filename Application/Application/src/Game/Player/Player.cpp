@@ -8,6 +8,7 @@
 #include <Camera.h>
 #include <Engine/Util/TimeManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <RandomGenerator.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -78,8 +79,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	パラメーター設定
 	///
 
-	//currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
-	currentHP_ = 10;
+	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
 
 	///
 	///	調整パラメーター登録
@@ -93,9 +93,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
-	// 一時的に無敵にする
-	currentHP_ = 100;
-
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
@@ -170,7 +167,7 @@ void Player::OnCollision(Collider* other) {
 	/// vs NormalEnemy
 	///
 	if (other->GetTag() == "NormalEnemy") {
-		/*currentHP_--;*/
+		
 	}
 
 	///
@@ -294,6 +291,7 @@ void Player::FaceCursor() {
 void Player::HandleMove() {
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 
+	// キー入力で速度ベクトル加算
 	if (input_->PushKey(DIK_W))
 		velocity_.z += 1.0f;
 	if (input_->PushKey(DIK_S))
@@ -371,12 +369,11 @@ void Player::HandleShooting() {
 			blurAmount *= 3.0f; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
-		std::mt19937 rng(std::random_device{}());
-		std::uniform_real_distribution<float> blurDist(-blurAmount, blurAmount);
+		float blurDist = RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
 
 		// Y成分以外のランダムベクトルを加算
-		direction.x += blurDist(rng);
-		direction.z += blurDist(rng);
+		direction.x += blurDist;
+		direction.z += blurDist;
 		direction = Float3::Normalize(direction); // 再正規化
 
 		// 弾の生成・初期化

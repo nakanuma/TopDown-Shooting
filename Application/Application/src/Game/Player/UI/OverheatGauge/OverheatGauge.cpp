@@ -13,6 +13,7 @@
 void OverheatGauge::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	uint32_t texture = TextureManager::Load("resources/Images/UI/ringGauge.png", dxBase->GetDevice());
 
+	// スプライト生成
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(spriteCommon, texture);
 	sprite_->SetAnchorPoint({0.5f, 0.5f});

@@ -150,10 +150,11 @@ void HomingMissile::UpdateCollider() {
 		Float3 center = objectBullet_->transform_.translate;
 		Float3 size = kColliderSize;
 
+		// コライダーの位置をオブジェクトに追従させ、常にサイズを最新状態にする
 		obb->center_ = center;
 		obb->size_ = kColliderSize;
 
-		// 回転軸の更新
+		// 回転行列を作成して、コライダーの回転軸の更新
 		Matrix rotMat = Matrix::Rotation(objectBullet_->transform_.rotate);
 		obb->xAxis_ = Float3::Normalize(Float3(rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0]));
 		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));

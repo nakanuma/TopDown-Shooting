@@ -22,22 +22,22 @@ BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& po
 	BloodSplatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 
+	// 位置
 	p.transform.translate = pos;
-
+	// 回転
 	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
-
+	// スケール
 	float scale = rand->RandomValue(0.1f, 0.25f);
 	p.transform.scale = { scale, scale, scale };
-
+	// 速度ベクトル
 	p.velocity = rand->RandomValue({ -12.0f, 2.0f, -12.0f }, { 12.0f, 4.0f, 12.0f }); // 少し上方向へ
-
+	// 色
 	p.color = { 0.3f, 0.0f, 0.0f, 1.0f };
-
+	// 経過時間
 	p.currentTime = 0.0f;
-
+	// 生存時間
 	p.lifeTime = rand->RandomValue(3.5f, 4.5f);
-
-
+	// 初期スケール
 	p.initScale = p.transform.scale;
 
 	return p;
