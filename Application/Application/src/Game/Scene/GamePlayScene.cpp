@@ -50,9 +50,6 @@ void GamePlayScene::Initialize() {
 	lightManager = LightManager::GetInstance();
 	lightManager->Initialize();
 
-	// SkyBoxの初期化
-	SkyBoxManager::GetInstance()->Initialize("resources/Images/skybox.dds");
-
 	///
 	///	↓ ゲームシーン用
 	///
@@ -238,9 +235,9 @@ void GamePlayScene::Draw() {
 	// スカイボックス描画
 	SkyBoxManager::GetInstance()->Draw();
 
-	///
-	///	シャドウマップ描画処理
-	///
+	// ---------------------------------------------------------
+	// シャドウマップ描画処理開始
+	// ---------------------------------------------------------
 
 	// ライトカメラの更新
 	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
@@ -276,12 +273,10 @@ void GamePlayScene::Draw() {
 
 	//----------------------------------//
 
-	// シャドウマップ描画終了
 	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
-
-	///
-	///
-	///
+	// ---------------------------------------------------------
+	// シャドウマップ描画処理終了
+	// ---------------------------------------------------------
 
 	///
 	///	通常オブジェクト描画処理

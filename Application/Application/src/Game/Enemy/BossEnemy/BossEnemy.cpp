@@ -55,7 +55,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///
 
 	// HPバー（後景）
-	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPBackground = TextureManager::Load("white.png");
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSizeBoss);
@@ -63,7 +63,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});                                            // 黒
 
 	// HPバー（前景）
-	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSizeBoss);

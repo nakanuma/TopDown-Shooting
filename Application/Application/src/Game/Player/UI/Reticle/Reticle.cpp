@@ -15,7 +15,7 @@ void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	///	クロスへア（十字線）
 	///
 
-	uint32_t textureTarget = TextureManager::Load("resources/Images/UI/crosshair.png", dxBase->GetDevice());
+	uint32_t textureTarget = TextureManager::Load("UI/crosshair.png");
 	spriteCrosshair_ = std::make_unique<Sprite>();
 	spriteCrosshair_->Initialize(spriteCommon, textureTarget);
 	spriteCrosshair_->SetAnchorPoint({ 0.5f, 0.5f });

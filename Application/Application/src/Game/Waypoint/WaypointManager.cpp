@@ -19,8 +19,8 @@ void WaypointManager::Initialize() {
 
 	uint32_t waypointID = 0; // カウント
 
-	modelSphere_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", DirectXBase::GetInstance()->GetDevice());
-	modelSphere_.material.textureHandle = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
+	modelSphere_ = ModelManager::LoadModelFile("sphere.obj");
+	modelSphere_.material.textureHandle = TextureManager::Load("white.png");
 
 	// 左下と右上を指定
 	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};

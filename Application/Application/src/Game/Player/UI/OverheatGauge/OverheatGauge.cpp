@@ -11,7 +11,7 @@
 #include <src/Game/Utility/Utility.h>
 
 void OverheatGauge::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
-	uint32_t texture = TextureManager::Load("resources/Images/UI/ringGauge.png", dxBase->GetDevice());
+	uint32_t texture = TextureManager::Load("UI/ringGauge.png");
 
 	// スプライト生成
 	sprite_ = std::make_unique<Sprite>();

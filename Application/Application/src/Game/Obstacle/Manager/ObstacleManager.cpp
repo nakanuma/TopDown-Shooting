@@ -11,38 +11,38 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas)
 	///
 
 	// コンテナ
-	modelContainer_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/Container/container.obj", dxBase->GetDevice());
-	modelContainer_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/container.png", dxBase->GetDevice());
+	modelContainer_ = ModelManager::LoadModelFile("Obstacle/Container/container.obj");
+	modelContainer_.material.textureHandle = TextureManager::Load("Obstacle/container.png");
 	// フェンス
-	modelFence_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/Fence/fence.obj", dxBase->GetDevice());
-	modelFence_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/fence.png", dxBase->GetDevice());
+	modelFence_ = ModelManager::LoadModelFile("Obstacle/Fence/fence.obj");
+	modelFence_.material.textureHandle = TextureManager::Load("Obstacle/fence.png");
 	// 壁
-	modelWall_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/Wall/wall.obj", dxBase->GetDevice());
-	modelWall_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/wall.png", dxBase->GetDevice());
+	modelWall_ = ModelManager::LoadModelFile("Obstacle/Wall/wall.obj");
+	modelWall_.material.textureHandle = TextureManager::Load("Obstacle/wall.png");
 	// レンガのパレット積み
-	modelBrickPallet_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/BrickPallet/brickPallet.obj", dxBase->GetDevice());
-	modelBrickPallet_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/brickPallet.png", dxBase->GetDevice());
+	modelBrickPallet_ = ModelManager::LoadModelFile("Obstacle/BrickPallet/brickPallet.obj");
+	modelBrickPallet_.material.textureHandle = TextureManager::Load("Obstacle/brickPallet.png");
 	// コンクリートバリア
-	modelConcreteBarrier_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/ConcreteBarrier/concreteBarrier.obj", dxBase->GetDevice());
-	modelConcreteBarrier_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/concreteBarrier.png", dxBase->GetDevice());
+	modelConcreteBarrier_ = ModelManager::LoadModelFile("Obstacle/ConcreteBarrier/concreteBarrier.obj");
+	modelConcreteBarrier_.material.textureHandle = TextureManager::Load("Obstacle/concreteBarrier.png");
 	// ドラム缶
-	modelDrumCan_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/DrumCan/drumCan.obj", dxBase->GetDevice());
-	modelDrumCan_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/drumCan.png", dxBase->GetDevice());
+	modelDrumCan_ = ModelManager::LoadModelFile("Obstacle/DrumCan/drumCan.obj");
+	modelDrumCan_.material.textureHandle = TextureManager::Load("Obstacle/drumCan.png");
 	// 貯水タンク
-	modelWaterTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/WaterTank/waterTank.obj", dxBase->GetDevice());
-	modelWaterTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/waterTank.png", dxBase->GetDevice());
+	modelWaterTank_ = ModelManager::LoadModelFile("Obstacle/WaterTank/waterTank.obj");
+	modelWaterTank_.material.textureHandle = TextureManager::Load("Obstacle/waterTank.png");
 	// 鉄骨の束
-	modelSteelBundle_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/SteelBundle/steelBundle.obj", dxBase->GetDevice());
-	modelSteelBundle_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/steelBundle.png", dxBase->GetDevice());
+	modelSteelBundle_ = ModelManager::LoadModelFile("Obstacle/SteelBundle/steelBundle.obj");
+	modelSteelBundle_.material.textureHandle = TextureManager::Load("Obstacle/steelBundle.png");
 	// 縦型タンク
-	modelVerticalTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/VerticalTank/verticalTank.obj", dxBase->GetDevice());
-	modelVerticalTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/verticalTank.png", dxBase->GetDevice());
+	modelVerticalTank_ = ModelManager::LoadModelFile("Obstacle/VerticalTank/verticalTank.obj");
+	modelVerticalTank_.material.textureHandle = TextureManager::Load("Obstacle/verticalTank.png");
 	// ISOタンク
-	modelISOTank_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/ISOTank/ISOTank.obj", dxBase->GetDevice());
-	modelISOTank_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/ISOTank.png", dxBase->GetDevice());
+	modelISOTank_ = ModelManager::LoadModelFile("Obstacle/ISOTank/ISOTank.obj");
+	modelISOTank_.material.textureHandle = TextureManager::Load("Obstacle/ISOTank.png");
 	// IBCコンテナ
-	modelIBCContainer_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/IBCContainer/IBCContainer.obj", dxBase->GetDevice());
-	modelIBCContainer_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/IBCContainer.png", dxBase->GetDevice());
+	modelIBCContainer_ = ModelManager::LoadModelFile("Obstacle/IBCContainer/IBCContainer.obj");
+	modelIBCContainer_.material.textureHandle = TextureManager::Load("Obstacle/IBCContainer.png");
 
 	// タグに対応したモデルをマップに保存
 	tagModelMap_ = {

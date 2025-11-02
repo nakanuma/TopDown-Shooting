@@ -10,8 +10,8 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 	///	モデル読み込み
 	///
 
-	modelTeleporter_ = ModelManager::LoadModelFile("resources/Models", "Object/Teleporter/teleporter.obj", dxBase->GetDevice());
-	modelTeleporter_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelTeleporter_ = ModelManager::LoadModelFile("Object/Teleporter/teleporter.obj");
+	modelTeleporter_.material.textureHandle = TextureManager::Load("white.png");
 
 	///
 	///	テレポーターの生成

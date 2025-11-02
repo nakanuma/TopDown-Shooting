@@ -8,6 +8,8 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
 	object_->transform_.translate = position;
+	object_->materialCB_.data_->useEnvironmentMap = true;
+	object_->materialCB_.data_->environmentStrength = 0.1f;
 
 	Float3 size = colliderSize;
 

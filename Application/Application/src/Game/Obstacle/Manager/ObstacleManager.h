@@ -75,5 +75,5 @@ private:
 	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};	/* タグとモデルデータのマップ */
 
 	// ----- Parameters -----
-	const float kActiveDistance = 75.0f;										/* 障害物の有効化距離 */
+	const float kActiveDistance = 50.0f;										/* 障害物の有効化距離 */
 };

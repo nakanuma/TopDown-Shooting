@@ -19,22 +19,22 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 	Camera::GetCurrent()->transform.rotate = initCameraRot_;
 
 	// オブジェクト生成
-	modelCrumblingWall_ = ModelManager::LoadModelFile("resources/Models", "Obstacle/CrumblingWall/crumblingWall.obj", dxBase->GetDevice());
-	modelCrumblingWall_.material.textureHandle = TextureManager::Load("resources/Images/Obstacle/crumblingWall.png", dxBase->GetDevice());
+	modelCrumblingWall_ = ModelManager::LoadModelFile("Obstacle/CrumblingWall/crumblingWall.obj");
+	modelCrumblingWall_.material.textureHandle = TextureManager::Load("Obstacle/crumblingWall.png");
 
 	objectCrumblingWall_ = std::make_unique<Object3D>();
 	objectCrumblingWall_->model_ = &modelCrumblingWall_;
 	objectCrumblingWall_->transform_.translate = { 36.0f, 2.5f, 0.0f }; // 初期位置
 
-	modelDynamite_ = ModelManager::LoadModelFile("resources/Models", "Object/Dynamite/dynamite.obj", dxBase->GetDevice());
-	modelDynamite_.material.textureHandle = TextureManager::Load("resources/Images/Object/dynamite.png", dxBase->GetDevice());
+	modelDynamite_ = ModelManager::LoadModelFile("Object/Dynamite/dynamite.obj");
+	modelDynamite_.material.textureHandle = TextureManager::Load("Object/dynamite.png");
 
 	objectDynamite_ = std::make_unique<Object3D>();
 	objectDynamite_->model_ = &modelDynamite_;
 	objectDynamite_->transform_.translate = { 36.0f, 2.5f, -1.5f }; // 初期位置
 
 	// スプライト生成
-	uint32_t textureWhite = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureWhite = TextureManager::Load("white.png");
 	spriteTopLetterBox_ = std::make_unique<Sprite>();
 	spriteTopLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteTopLetterBox_->SetAnchorPoint({0.5f, 0.5f});

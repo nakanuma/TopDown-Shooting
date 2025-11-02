@@ -11,6 +11,7 @@
 #include <RandomGenerator.h>
 #include <SceneManager.h>
 #include <ShadowMapManager.h>
+#include <SkyBoxManager.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
@@ -52,13 +53,13 @@ void TitleScene::Initialize() {
 	///
 
 	// タイトル
-	uint32_t textureTitle = TextureManager::Load("resources/Images/UI/title.png", dxBase->GetDevice());
+	uint32_t textureTitle = TextureManager::Load("UI/title.png");
 	spriteTitle_ = std::make_unique<Sprite>();
 	spriteTitle_->Initialize(spriteCommon.get(), textureTitle);
 	spriteTitle_->SetPosition({ 640.0f, 140.0f });
 	spriteTitle_->SetAnchorPoint({ 0.5f, 0.5f });
 
-	uint32_t textureStart = TextureManager::Load("resources/Images/UI/startButton.png", dxBase->GetDevice());
+	uint32_t textureStart = TextureManager::Load("UI/startButton.png");
 	spriteStartButton_ = std::make_unique<Sprite>();
 	spriteStartButton_->Initialize(spriteCommon.get(), textureStart);
 	spriteStartButton_->SetPosition({ 640.0f, 580.0f });
@@ -67,6 +68,9 @@ void TitleScene::Initialize() {
 	///
 	///	オブジェクト
 	///
+
+	// SkyBoxの初期化
+	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 
 	// 床生成
 	field_ = std::make_unique<Field>();
@@ -160,6 +164,9 @@ void TitleScene::Update() {
 	SplitBlockTransition::GetInstance()->Update();
 	FadeTransition::GetInstance()->Update();
 
+	// SkyBox更新
+	SkyBoxManager::GetInstance()->Update();
+
 	///
 	///	一旦決め打ちでパーティクル発生
 	///
@@ -205,6 +212,9 @@ void TitleScene::Draw() {
 	lightManager->TransferContantBuffer();
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
+
+	// スカイボックス描画
+	SkyBoxManager::GetInstance()->Draw();
 
 	///
 	///	シャドウマップ描画

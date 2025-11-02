@@ -24,11 +24,11 @@ void ParticleEffectLoader::LoadAndRegisterAll() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	/* パーティクルモデル生成 + パーティクル登録 */
-	modelSmoothCube_ = ModelManager::LoadModelFile("resources/Models/", "smoothCube.obj", dxBase->GetDevice());
-	modelSmoothCube_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelSmoothCube_ = ModelManager::LoadModelFile("smoothCube.obj");
+	modelSmoothCube_.material.textureHandle = TextureManager::Load("white.png");
 
-	modelPlane_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
-	modelPlane_.material.textureHandle = TextureManager::Load("resources/Images/Effect/circle.png", dxBase->GetDevice());
+	modelPlane_ = ModelManager::LoadModelFile("plane.obj");
+	modelPlane_.material.textureHandle = TextureManager::Load("Effect/circle.png");
 
 	// 後ろへ飛散するパーティクル
 	auto backScatterParticle = std::make_unique<BackscatterParticle>(modelSmoothCube_);

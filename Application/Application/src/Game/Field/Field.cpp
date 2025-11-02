@@ -10,8 +10,8 @@ void Field::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// 床オブジェクト生成
-	modelFloor_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
-	modelFloor_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelFloor_ = ModelManager::LoadModelFile("plane.obj");
+	modelFloor_.material.textureHandle = TextureManager::Load("white.png");
 
 	objectFloor_ = std::make_unique<Object3D>();
 	objectFloor_->model_ = &modelFloor_;

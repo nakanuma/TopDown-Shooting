@@ -38,9 +38,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 	/// 
 
 	// 前移動
-	walkData_.modelData = ModelManager::LoadModelFile("resources/Models/Character/Player", "walk.gltf", dxBase->GetDevice());
-	walkData_.modelData.material.textureHandle = TextureManager::Load("resources/Images/Character/Player/player.png", dxBase->GetDevice());
-	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models/Character/Player", "walk.gltf");
+	walkData_.modelData = ModelManager::LoadModelFile("Character/Player/walk.gltf");
+	walkData_.modelData.material.textureHandle = TextureManager::Load("Character/Player/player.png");
+	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models", "Character/Player/walk.gltf");
 	walkData_.skeleton.CreateSkeleton(walkData_.modelData.rootNode);
 
 	///
@@ -54,8 +54,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_->SetPlayBackSpeed(1.5f);
 
 	// 弾モデル読み込み
-	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
-	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelBullet_ = ModelManager::LoadModelFile("Bullet/TestBullet/testBullet.obj");
+	modelBullet_.material.textureHandle = TextureManager::Load("white.png");
 
 	///
 	///	コライダー生成

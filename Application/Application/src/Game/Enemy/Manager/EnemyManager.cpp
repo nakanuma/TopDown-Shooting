@@ -19,30 +19,30 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	///
 
 	// 通常敵モデル
-	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/NormalEnemy/normalEnemy.obj", dxBase->GetDevice());
-	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/NormalEnemy/normalEnemy.png", dxBase->GetDevice());
+	modelNormalEnemy_ = ModelManager::LoadModelFile("Character/Enemy/NormalEnemy/normalEnemy.obj");
+	modelNormalEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/NormalEnemy/normalEnemy.png");
 
 	// 固定敵モデル
-	modelImmobileEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/ImmobileEnemy/immobileEnemy.obj", dxBase->GetDevice());
-	modelImmobileEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/ImmobileEnemy/immobileEnemy.png", dxBase->GetDevice());
+	modelImmobileEnemy_ = ModelManager::LoadModelFile("Character/Enemy/ImmobileEnemy/immobileEnemy.obj");
+	modelImmobileEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/ImmobileEnemy/immobileEnemy.png");
 
 	// ボスモデル
-	modelBossEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/BossEnemy/bossEnemy.obj", dxBase->GetDevice());
-	modelBossEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/BossEnemy/bossEnemy.png", dxBase->GetDevice());
+	modelBossEnemy_ = ModelManager::LoadModelFile("Character/Enemy/BossEnemy/bossEnemy.obj");
+	modelBossEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/BossEnemy/bossEnemy.png");
 
 	// （追加）敵モデル
 
 	// 弾モデル
-	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
-	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelEnemyBullet_ = ModelManager::LoadModelFile("Bullet/TestBullet/testBullet.obj");
+	modelEnemyBullet_.material.textureHandle = TextureManager::Load("white.png");
 
 	// ミサイルモデル
-	modelMissile_ = ModelManager::LoadModelFile("resources/Models", "Bullet/Missile/missile.obj", dxBase->GetDevice());
-	modelMissile_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelMissile_ = ModelManager::LoadModelFile("Bullet/Missile/missile.obj");
+	modelMissile_.material.textureHandle = TextureManager::Load("white.png");
 
 	// 地面警告モデル
-	modelGroundWarning_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
-	modelGroundWarning_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	modelGroundWarning_ = ModelManager::LoadModelFile("sphere.obj");
+	modelGroundWarning_.material.textureHandle = TextureManager::Load("white.png");
 
 	///
 	///	各敵の生成

@@ -15,7 +15,7 @@ FadeTransition* FadeTransition::GetInstance() {
 }
 
 void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
-	uint32_t textureWhite = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
+	uint32_t textureWhite = TextureManager::Load("white.png");
 	Float2 windowSize = {static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())};
 
 	// スプライト生成

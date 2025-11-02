@@ -11,7 +11,7 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	/// HPバー（後景）
 	///
 
-	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPBackground = TextureManager::Load("white.png");
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon, textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
@@ -21,7 +21,7 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	/// HPバー（前景）
 	///
 
-	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon, textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);

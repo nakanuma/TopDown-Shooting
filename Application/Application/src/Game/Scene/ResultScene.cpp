@@ -45,21 +45,21 @@ void ResultScene::Initialize() {
 	///
 
 	// 背景
-	uint32_t textureBackGround = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureBackGround = TextureManager::Load("white.png");
 	spriteBackGround_ = std::make_unique<Sprite>();
 	spriteBackGround_->Initialize(spriteCommon.get(), textureBackGround);
 	spriteBackGround_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
 	spriteBackGround_->SetSize({1280.0f, 720.0f});
 
 	// タイトルボタン
-	uint32_t textureTitleButton = TextureManager::Load("resources/Images/UI/titleButton.png", dxBase->GetDevice());
+	uint32_t textureTitleButton = TextureManager::Load("UI/titleButton.png");
 	spriteTitleButton_ = std::make_unique<Sprite>();
 	spriteTitleButton_->Initialize(spriteCommon.get(), textureTitleButton);
 	spriteTitleButton_->SetPosition({640.0f, 620.0f});
 	spriteTitleButton_->SetAnchorPoint({0.5f, 0.5f});
 
 	// 戦績
-	uint32_t textureRecord = TextureManager::Load("resources/Images/UI/record.png", dxBase->GetDevice());
+	uint32_t textureRecord = TextureManager::Load("UI/record.png");
 	spriteRecord_ = std::make_unique<Sprite>();
 	spriteRecord_->Initialize(spriteCommon.get(), textureRecord);
 	spriteRecord_->SetPosition({640.0f, 260.0f});

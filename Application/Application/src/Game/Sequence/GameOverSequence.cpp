@@ -19,13 +19,13 @@ void GameOverSequence::Initialize(SpriteCommon* spriteCommon) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// スプライト生成
-	uint32_t textureYouDied = TextureManager::Load("resources/Images/UI/youDied.png", dxBase->GetDevice());
+	uint32_t textureYouDied = TextureManager::Load("UI/youDied.png");
 	spriteDiedText_ = std::make_unique<Sprite>();
 	spriteDiedText_->Initialize(spriteCommon, textureYouDied);
 	spriteDiedText_->SetAnchorPoint({0.5f, 0.5f});
 	spriteDiedText_->SetPosition(kDiedTextStartPos);
 
-	uint32_t textureBackToTitle = TextureManager::Load("resources/Images/UI/backToTitle.png", dxBase->GetDevice());
+	uint32_t textureBackToTitle = TextureManager::Load("UI/backToTitle.png");
 	spriteBackToTitleText_ = std::make_unique<Sprite>();
 	spriteBackToTitleText_->Initialize(spriteCommon, textureBackToTitle);
 	spriteBackToTitleText_->SetAnchorPoint({0.5f, 0.5f});
