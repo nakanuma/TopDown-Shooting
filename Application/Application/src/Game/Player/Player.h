@@ -147,7 +147,6 @@ private:
 
 	// ----- Object -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	ModelManager::ModelData modelBullet_;					/* 弾モデル */
 
 	// ----- Animation -----
 	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */

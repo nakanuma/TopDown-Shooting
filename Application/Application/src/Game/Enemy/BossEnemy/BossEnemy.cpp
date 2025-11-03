@@ -273,7 +273,7 @@ void BossEnemy::FireHomingMissile() {
 
 	// 弾の生成と追加
 	auto newBullet = std::make_unique<HomingMissile>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelMissile_);
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Missile"));
 	newBullet->SetPlayer(targetPlayer_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 }
@@ -283,7 +283,7 @@ void BossEnemy::GroundWarningAttack() {
 
 	// 弾の生成と追加
 	auto newBullet = std::make_unique<GroundWarning>();
-	newBullet->Initialize({playerPos.x, 0.0f, playerPos.z}, {0.0f, 0.0f, 0.0f}, modelGroundWarning_);
+	newBullet->Initialize({playerPos.x, 0.0f, playerPos.z}, {0.0f, 0.0f, 0.0f}, &ModelManager::GetInstance()->GetModel("Sphere"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 赤い円エフェクト発生
@@ -318,7 +318,7 @@ void BossEnemy::BuildBehaviorTree() {
 	///	攻撃系（並列のもう一方）
 	///
 
-	auto wait = std::make_unique<WaitNode<BossEnemy>>(0.1f, 2.5f, "0.1f ~ 2.5f"); // 次の攻撃まで待機
+	auto wait = std::make_unique<WaitNode<BossEnemy>>(3.0f, 6.0f, "3.0f ~ 6.0f"); // 次の攻撃まで待機
 
 	auto randAttack = std::make_unique<ActionNode<BossEnemy>>(
 	    [](BossEnemy* enemy, float dt) -> BehaviorStatus {

@@ -59,22 +59,6 @@ public:
 	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
-	// =========================================================
-	// Getter / Setter
-	// =========================================================
-
-	/// <summary>
-	/// 追尾ミサイルのモデルをセットします。
-	/// </summary>
-	/// <param name="model">モデルデータ</param>
-	void SetMissileModel(ModelManager::ModelData* model) { modelMissile_ = model; }
-
-	/// <summary>
-	/// 地面警告攻撃のモデルをセットします。
-	/// </summary>
-	/// <param name="model">モデルデータ</param>
-	void SetGroundWarningModel(ModelManager::ModelData* model) { modelGroundWarning_ = model; }
-
 private:
 	// =========================================================
 	// Internal Methods
@@ -114,10 +98,6 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData* modelMissile_;						/* 追尾ミサイルモデル */
-	ModelManager::ModelData* modelGroundWarning_;				/* 地面警告攻撃モデル */
 
 	// ----- Parameters -----
 	const Float2 kHPBarPosition = {640.0f, 25.0f};				/* HPバーの位置 */

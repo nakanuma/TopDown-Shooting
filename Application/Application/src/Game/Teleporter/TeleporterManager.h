@@ -41,9 +41,6 @@ private:
 	// Member Variables
 	// =========================================================
 
-	// ----- Models -----
-	ModelManager::ModelData modelTeleporter_;				/* テレポーターモデル */
-
 	// ----- Container -----
 	std::vector<std::unique_ptr<Teleporter>> teleporters_;	/* テレポーター全てを格納したコンテナ */
 };

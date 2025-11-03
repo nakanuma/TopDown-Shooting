@@ -63,15 +63,6 @@ private:
 	// Member Variables
 	// =========================================================
 
-	// ----- Models -----
-	ModelManager::ModelData modelNormalEnemy_;			/* 通常敵モデル */
-	ModelManager::ModelData modelImmobileEnemy_;		/* 固定砲台敵モデル */
-	ModelManager::ModelData modelBossEnemy_;			/* ボスエネミーモデル */
-
-	ModelManager::ModelData modelEnemyBullet_;			/* 弾モデル */
-	ModelManager::ModelData modelMissile_;				/* 追尾ミサイルモデル */
-	ModelManager::ModelData modelGroundWarning_;		/* 地面警告攻撃モデル */
-
 	// ----- Container -----
 	std::vector<std::unique_ptr<Enemy>> enemies_;		/* 全ての敵を格納したコンテナ */
 

@@ -21,7 +21,6 @@
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
-#include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/Utility/Utility.h>
 
@@ -128,10 +127,6 @@ void GamePlayScene::Initialize() {
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
-
-
-	// パーティクル生成
-	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 }
 
 void GamePlayScene::Finalize() {}

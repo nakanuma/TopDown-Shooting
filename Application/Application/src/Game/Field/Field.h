@@ -40,6 +40,5 @@ private:
 	// =========================================================
 
 	// ----- Models -----
-	ModelManager::ModelData modelFloor_;				/* 床モデル */
 	std::unique_ptr<Object3D> objectFloor_;				/* 床オブジェクト */
 };

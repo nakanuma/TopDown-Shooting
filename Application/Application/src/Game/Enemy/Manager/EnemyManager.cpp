@@ -15,36 +15,6 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Pl
 	player_ = player;
 
 	///
-	///	各モデル読み込み
-	///
-
-	// 通常敵モデル
-	modelNormalEnemy_ = ModelManager::LoadModelFile("Character/Enemy/NormalEnemy/normalEnemy.obj");
-	modelNormalEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/NormalEnemy/normalEnemy.png");
-
-	// 固定敵モデル
-	modelImmobileEnemy_ = ModelManager::LoadModelFile("Character/Enemy/ImmobileEnemy/immobileEnemy.obj");
-	modelImmobileEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/ImmobileEnemy/immobileEnemy.png");
-
-	// ボスモデル
-	modelBossEnemy_ = ModelManager::LoadModelFile("Character/Enemy/BossEnemy/bossEnemy.obj");
-	modelBossEnemy_.material.textureHandle = TextureManager::Load("Character/Enemy/BossEnemy/bossEnemy.png");
-
-	// （追加）敵モデル
-
-	// 弾モデル
-	modelEnemyBullet_ = ModelManager::LoadModelFile("Bullet/TestBullet/testBullet.obj");
-	modelEnemyBullet_.material.textureHandle = TextureManager::Load("white.png");
-
-	// ミサイルモデル
-	modelMissile_ = ModelManager::LoadModelFile("Bullet/Missile/missile.obj");
-	modelMissile_.material.textureHandle = TextureManager::Load("white.png");
-
-	// 地面警告モデル
-	modelGroundWarning_ = ModelManager::LoadModelFile("sphere.obj");
-	modelGroundWarning_.material.textureHandle = TextureManager::Load("white.png");
-
-	///
 	///	各敵の生成
 	///
 
@@ -91,14 +61,6 @@ void EnemyManager::Debug() {
 #ifdef _DEBUG
 
 	ImGui::Begin("enemyManager");
-
-	// スポーンボタン（デバッグ用）
-	if (ImGui::Button("spawn")) {
-		auto enemy = std::make_unique<BossEnemy>();
-		enemy->Initialize({0.0f, 3.0f, 0.0f}, &modelBossEnemy_, player_);
-
-		enemies_.emplace_back(std::move(enemy));
-	}
 
 	ImGui::Separator();
 	ImGui::Text("Total Enemies: %zu", enemies_.size());
@@ -167,25 +129,21 @@ void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
 		// 通常敵の生成・初期化
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &modelNormalEnemy_, player_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
 		// 固定敵の生成・初期化
 		if (data.tag == "IMMOBILE_ENEMY") {
 			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &modelImmobileEnemy_, player_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
 		// ボスの生成・初期化
 		if (data.tag == "BOSS_ENEMY") {
 			auto enemy = std::make_unique<BossEnemy>();
-			enemy->Initialize(data.translate, &modelBossEnemy_, player_);
-			enemy->SetMissileModel(&modelMissile_);
-			enemy->SetGroundWarningModel(&modelGroundWarning_);
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 	}

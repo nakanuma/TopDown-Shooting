@@ -53,10 +53,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_->GetTranslate() = data.translate;
 	objectPlayer_->SetPlayBackSpeed(1.5f);
 
-	// 弾モデル読み込み
-	modelBullet_ = ModelManager::LoadModelFile("Bullet/TestBullet/testBullet.obj");
-	modelBullet_.material.textureHandle = TextureManager::Load("white.png");
-
 	///
 	///	コライダー生成
 	///
@@ -378,7 +374,7 @@ void Player::HandleShooting() {
 
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &modelBullet_);
+		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 	}

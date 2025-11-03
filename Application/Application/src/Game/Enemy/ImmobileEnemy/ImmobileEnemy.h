@@ -53,16 +53,6 @@ public:
 	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
-	// =========================================================
-	// Getter / Setter
-	// =========================================================
-
-	/// <summary>
-	/// 弾モデルをセットします。
-	/// </summary>
-	/// <param name="model">モデルデータ</param>
-	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
-
 private:
 	// =========================================================
 	// Internal Methods
@@ -104,9 +94,6 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData* modelEnemyBullet_;					/* 弾モデル */
 
 	// ----- Search -----
 	float searchRange_ = 20.0f;									/* プレイヤーを発見できる距離 */

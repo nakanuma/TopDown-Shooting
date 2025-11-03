@@ -61,16 +61,6 @@ public:
 	/// </summary>
 	void Debug();
 
-	// =========================================================
-	// Getter / Setter
-	// =========================================================
-
-	/// <summary>
-	/// 弾モデルをセットします。
-	/// </summary>
-	/// <param name="model">モデルデータ</param>
-	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
-
 private:
 	// =========================================================
 	// Internal Methods
@@ -139,9 +129,6 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData* modelEnemyBullet_;					/* 弾モデル */
 
 	// ----- Parameters -----
 	float speed_ = 10.0f;										/* 移動速度 */ 

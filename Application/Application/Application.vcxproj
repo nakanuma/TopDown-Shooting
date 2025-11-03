@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\GameResourceLoader\GameResourceLoader.cpp" />
     <ClCompile Include="src\Game\Sequence\GameOverSequence.cpp" />
     <ClCompile Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameStartSequence.cpp" />
@@ -22,7 +23,6 @@
     <ClCompile Include="src\Game\System\ResultStats.cpp" />
     <ClCompile Include="src\Game\Scene\ResultScene.cpp" />
     <ClCompile Include="src\Game\Transition\FadeTransition.cpp" />
-    <ClCompile Include="src\Game\Utility\ParticleEffectLoader.cpp" />
     <ClCompile Include="src\Game\Particles\GroundWarning\RedCircleParticle.cpp" />
     <ClCompile Include="src\Game\Bullet\GroundWarning\GroundWarning.cpp" />
     <ClCompile Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.cpp" />
@@ -58,6 +58,7 @@
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\GameResourceLoader\GameResourceLoader.h" />
     <ClInclude Include="src\Game\Sequence\GameOverSequence.h" />
     <ClInclude Include="src\Game\Particles\BloodSplatter\BloodSplatterParticle.h" />
     <ClInclude Include="src\Game\Sequence\GameStartSequence.h" />
@@ -68,7 +69,6 @@
     <ClInclude Include="src\Game\System\ResultStats.h" />
     <ClInclude Include="src\Game\Scene\ResultScene.h" />
     <ClInclude Include="src\Game\Transition\FadeTransition.h" />
-    <ClInclude Include="src\Game\Utility\ParticleEffectLoader.h" />
     <ClInclude Include="src\Game\Particles\GroundWarning\RedCircleParticle.h" />
     <ClInclude Include="src\Game\Bullet\GroundWarning\GroundWarning.h" />
     <ClInclude Include="src\Game\Particles\HomingMissile\MissileSmokeParticle.h" />

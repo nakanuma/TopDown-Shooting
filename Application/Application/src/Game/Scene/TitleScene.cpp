@@ -16,7 +16,6 @@
 // Application
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
-#include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Utility/Utility.h>
 
 void TitleScene::Initialize() {
@@ -79,9 +78,6 @@ void TitleScene::Initialize() {
 	// 障害物の管理クラス生成
 	obstacleManager_ = std::make_unique<ObstacleManager>();
 	obstacleManager_->Initialize(loader_->GetAllDatas());
-
-	// パーティクル生成
-	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	///
 	///	スプライト

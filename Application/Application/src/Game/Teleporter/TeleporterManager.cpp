@@ -7,20 +7,13 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///
-	///	モデル読み込み
-	///
-
-	modelTeleporter_ = ModelManager::LoadModelFile("Object/Teleporter/teleporter.obj");
-	modelTeleporter_.material.textureHandle = TextureManager::Load("white.png");
-
-	///
 	///	テレポーターの生成
 	///
 
 	for (const auto& data : datas) {
 		if (data.tag == "TELEPORTER") {
 			auto teleporter = std::make_unique<Teleporter>();
-			teleporter->Initialize(data.translate, &modelTeleporter_);
+			teleporter->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("Teleporter"));
 			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
 
