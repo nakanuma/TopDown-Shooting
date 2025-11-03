@@ -8,7 +8,7 @@
 #include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Player/Player.h>
 
-void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Player* player) {
+void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, Player* player) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// プレイヤーのポインタを受け取る

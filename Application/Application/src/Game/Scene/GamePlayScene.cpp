@@ -85,8 +85,8 @@ void GamePlayScene::Initialize() {
 
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
-	teleporterManager_->Initialize(loader_->GetAllDatas());
-
+	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
+	
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 

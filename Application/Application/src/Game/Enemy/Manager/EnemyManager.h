@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	/// <param name="datas">初期位置や回転などのTransformデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const std::vector<Loader::TransformData> datas, Player* player);
+	void Initialize(const std::vector<Loader::TransformData>& datas, Player* player);
 
 	/// <summary>
 	/// 全ての敵の毎フレーム更新処理を行います。

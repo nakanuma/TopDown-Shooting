@@ -3,7 +3,7 @@
 // Externals
 #include <ImguiWrapper.h>
 
-void ObstacleManager::Initialize(const std::vector<Loader::TransformData> datas) {
+void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// タグに対応したモデルデータキーをマップに保存

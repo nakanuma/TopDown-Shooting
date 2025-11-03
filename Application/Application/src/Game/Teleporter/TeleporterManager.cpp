@@ -3,7 +3,7 @@
 // Engine
 #include <ImguiWrapper.h>
 
-void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
+void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	///

@@ -24,7 +24,7 @@ public:
 	/// 障害物の初期化処理を行います。
 	/// </summary>
 	/// <param name="data">初期位置や回転などのTransformデータ</param>
-	void Initialize(const std::vector<Loader::TransformData> datas);
+	void Initialize(const std::vector<Loader::TransformData>& datas);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
