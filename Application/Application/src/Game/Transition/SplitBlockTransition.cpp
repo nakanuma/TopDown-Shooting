@@ -25,8 +25,8 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 	const float blockWidth = screenWidth / splitCount_;
 	const float blockHeight = screenHeight / 2.0f; // 画面縦サイズの半分
 
-	uint32_t topRect = TextureManager::Load("resources/Images/UI/topRect.png", DirectXBase::GetInstance()->GetDevice());
-	uint32_t bottomRect = TextureManager::Load("resources/Images/UI/bottomRect.png", DirectXBase::GetInstance()->GetDevice());
+	uint32_t topRect = TextureManager::Load("UI/topRect.png");
+	uint32_t bottomRect = TextureManager::Load("UI/bottomRect.png");
 
 	// カウント数だけスプライトを生成
 	for (uint32_t i = 0; i < splitCount_; ++i) {

@@ -57,21 +57,3 @@ Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 	assert(false);
 	return TransformData{};
 }
-
-time_t Loader::GetLastModifiedTime(const std::string& filename) {
-	struct stat result; // ファイルの情報を格納する構造体
-	// ファイルの状態を取得
-	if (stat(filename.c_str(), &result) == 0) {
-		return result.st_mtime; // ファイルの最終更新時刻を返す
-	}
-	return 0;
-}
-
-void Loader::Update() {
-	// ファイルの変更を検知
-	time_t newModifiedTime = GetLastModifiedTime("resources/Stages/data.json");
-	if (newModifiedTime > lastModifiedTime) {
-		lastModifiedTime = newModifiedTime; // 最終更新時刻を更新しておく
-		fileChanged_ = true;                // ファイルに変更があったことを知らせる
-	}
-}

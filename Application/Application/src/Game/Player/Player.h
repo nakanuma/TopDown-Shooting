@@ -22,7 +22,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player : public ICollisionCallback, public IConfigurable {
+class Player : public ICollisionCallback, public Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -131,11 +131,6 @@ private:
 	/// </summary>
 	void HandleOverHeat();
 
-	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
-
 private:
 	// =========================================================
 	// Member Variables
@@ -147,7 +142,6 @@ private:
 
 	// ----- Object -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	ModelManager::ModelData modelBullet_;					/* 弾モデル */
 
 	// ----- Animation -----
 	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */

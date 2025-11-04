@@ -13,16 +13,19 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = {radius_, radius_, radius_};
+	objectBullet_->transform_.scale = {kRadius, kRadius, kRadius };
 	objectBullet_->materialCB_.data_->color = {1.0f, 1.0f, 1.0f, 0.5f};
 
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
-	collider_ = std::make_unique<SphereCollider>();
-	collider_->SetTag("GroundWarning");
-	collider_->SetOwner(this);
+	auto sphere = std::make_unique<SphereCollider>();
+	sphere->SetTag("GroundWarning");
+	sphere->SetFollowTarget(&objectBullet_->transform_.translate);
+	sphere->SetRadius(kRadius);
+	sphere->SetOwner(this);
 
+	collider_ = std::move(sphere);
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	// ---------------------------------------------------------
@@ -64,9 +67,7 @@ void GroundWarning::Update() {
 	// ---------------------------------------------------------
 
 	// コライダー有効化時のみ更新
-	if (colliderEnabled_) {
-		UpdateCollider();
-	}
+	if (colliderEnabled_) collider_->Update();
 	// オブジェクト更新
 	objectBullet_->UpdateMatrix();
 }
@@ -82,13 +83,5 @@ void GroundWarning::OnCollision(Collider* other) {
 		isDead_ = true;
 		// コライダー破棄
 		OnDestroy();
-	}
-}
-
-void GroundWarning::UpdateCollider() {
-	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
-		// 位置と半径をオブジェクトに追従させる
-		sphere->center_ = objectBullet_->transform_.translate;
-		sphere->radius_ = radius_;
 	}
 }

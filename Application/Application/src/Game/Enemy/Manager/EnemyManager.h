@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	/// <param name="datas">初期位置や回転などのTransformデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const std::vector<Loader::TransformData> datas, Player* player);
+	void Initialize(const std::vector<Loader::TransformData>& datas, Player* player);
 
 	/// <summary>
 	/// 全ての敵の毎フレーム更新処理を行います。
@@ -53,24 +53,10 @@ public:
 	/// </summary>
 	void Debug();
 
-	/// <summary>
-	/// 全ての敵の再生成処理を行います。
-	/// </summary>
-	void Reload(const std::vector<Loader::TransformData> datas);
-
 private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData modelNormalEnemy_;			/* 通常敵モデル */
-	ModelManager::ModelData modelImmobileEnemy_;		/* 固定砲台敵モデル */
-	ModelManager::ModelData modelBossEnemy_;			/* ボスエネミーモデル */
-
-	ModelManager::ModelData modelEnemyBullet_;			/* 弾モデル */
-	ModelManager::ModelData modelMissile_;				/* 追尾ミサイルモデル */
-	ModelManager::ModelData modelGroundWarning_;		/* 地面警告攻撃モデル */
 
 	// ----- Container -----
 	std::vector<std::unique_ptr<Enemy>> enemies_;		/* 全ての敵を格納したコンテナ */

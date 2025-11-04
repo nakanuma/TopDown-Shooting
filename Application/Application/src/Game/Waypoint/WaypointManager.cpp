@@ -19,9 +19,6 @@ void WaypointManager::Initialize() {
 
 	uint32_t waypointID = 0; // カウント
 
-	modelSphere_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", DirectXBase::GetInstance()->GetDevice());
-	modelSphere_.material.textureHandle = TextureManager::Load("resources/Images/white.png", DirectXBase::GetInstance()->GetDevice());
-
 	// 左下と右上を指定
 	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};
 	Float3 topRight = {70.0f, 2.0f, 120.0f};
@@ -48,7 +45,7 @@ void WaypointManager::Initialize() {
 			}
 
 			std::string name = "WP_" + std::to_string(x) + "_" + std::to_string(z);
-			waypoints_.push_back(std::make_unique<Waypoint>(name, pos, &modelSphere_));
+			waypoints_.push_back(std::make_unique<Waypoint>(name, pos, &ModelManager::GetInstance()->GetModel("Sphere")));
 		}
 	}
 

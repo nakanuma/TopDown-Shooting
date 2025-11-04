@@ -9,12 +9,8 @@
 void Field::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
-	// 床オブジェクト生成
-	modelFloor_ = ModelManager::LoadModelFile("resources/Models", "plane.obj", dxBase->GetDevice());
-	modelFloor_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
 	objectFloor_ = std::make_unique<Object3D>();
-	objectFloor_->model_ = &modelFloor_;
+	objectFloor_->model_ = &ModelManager::GetInstance()->GetModel("Plane");
 	objectFloor_->transform_.rotate = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
 	objectFloor_->transform_.scale = {500.0f, 500.0f, 1.0f};
 	objectFloor_->materialCB_.data_->color = {0.157f, 0.204f, 0.308f, 1.0f};

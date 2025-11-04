@@ -104,10 +104,7 @@ private:
 
     // ----- Objects -----
     std::unique_ptr<Object3D> objectCrumblingWall_;             /* 壊れそうな壁オブジェクト */
-    ModelManager::ModelData modelCrumblingWall_;                /* 壊れそうな壁モデル */
-
     std::unique_ptr<Object3D> objectDynamite_;                  /* ダイナマイトオブジェクト */
-    ModelManager::ModelData modelDynamite_;                     /* ダイナマイトモデル */
 
     bool isDynamiteVisible_ = true;                             /* ダイナマイトの可視状態 */
     bool isExplode_ = false;                                    /* 爆発終了フラグ */

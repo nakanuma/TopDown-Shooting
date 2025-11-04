@@ -38,9 +38,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 	/// 
 
 	// 前移動
-	walkData_.modelData = ModelManager::LoadModelFile("resources/Models/Character/Player", "walk.gltf", dxBase->GetDevice());
-	walkData_.modelData.material.textureHandle = TextureManager::Load("resources/Images/Character/Player/player.png", dxBase->GetDevice());
-	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models/Character/Player", "walk.gltf");
+	walkData_.modelData = ModelManager::LoadModelFile("Character/Player/walk.gltf");
+	walkData_.modelData.material.textureHandle = TextureManager::Load("Character/Player/player.png");
+	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models", "Character/Player/walk.gltf");
 	walkData_.skeleton.CreateSkeleton(walkData_.modelData.rootNode);
 
 	///
@@ -53,20 +53,20 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_->GetTranslate() = data.translate;
 	objectPlayer_->SetPlayBackSpeed(1.5f);
 
-	// 弾モデル読み込み
-	modelBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
-	modelBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
 	///
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("Player");
-	collider_->SetOwner(this);
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("Player");
+	aabb->SetFollowTarget(&objectPlayer_->GetTranslate());
+	aabb->SetSize(kColliderSize);
+	aabb->SetOwner(this);
 
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	UI
@@ -127,7 +127,7 @@ void Player::Update(bool operable) {
 	///	コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	オブジェクト更新処理
@@ -224,8 +224,10 @@ void Player::OnCollision(Collider* other) {
 			objectPlayer_->GetTranslate() += pushVec;
 
 			// コライダーも更新しておく
-			myAABB->min_ += pushVec;
-			myAABB->max_ += pushVec;
+			Float3 currentMin = myAABB->GetMin();
+			Float3 currentMax = myAABB->GetMax();
+			myAABB->SetMin(currentMin + pushVec);
+			myAABB->SetMax(currentMax + pushVec);
 		}
 	}
 }
@@ -378,7 +380,7 @@ void Player::HandleShooting() {
 
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &modelBullet_);
+		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 	}
@@ -417,16 +419,5 @@ void Player::HandleOverHeat()
 		if (isOverheated_ && overheatTime_ <= 0.0f) {
 			isOverheated_ = false;
 		}
-	}
-}
-
-void Player::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectPlayer_->GetTranslate();
-		Float3 size = kColliderSize;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
 	}
 }

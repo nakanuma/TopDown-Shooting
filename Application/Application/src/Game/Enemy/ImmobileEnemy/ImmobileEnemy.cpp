@@ -38,35 +38,39 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("ImmobileEnemy");
-	collider_->SetOwner(this);
 	colliderSize_ = {1.0f, 2.0f, 1.0f};
 
-	// コライダーを登録
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("ImmobileEnemy");
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetSize(colliderSize_);
+	aabb->SetOwner(this);
+
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
 	///
 
 	// HPバー（後景）
-	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPBackground = TextureManager::Load("white.png");
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
 	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f}); // 黒
 
 	// HPバー（前景）
-	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
 	spriteHPForeground_->SetColor({0.0f, 1.0f, 0.5f, 1.0f}); // 緑
 
 	// リロード表示
-	uint32_t textureReload = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureReload = TextureManager::Load("white.png");
 	spriteReload_ = std::make_unique<Sprite>();
 	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
 	spriteReload_->SetSize(kReloadSize);
@@ -95,7 +99,7 @@ void ImmobileEnemy::Update() {
 	///	コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	オブジェクト更新処理
@@ -214,17 +218,6 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 	}
 }
 
-void ImmobileEnemy::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
-	}
-}
-
 bool ImmobileEnemy::IsPlayerInSight() {
 	if (!targetPlayer_)
 		return false;
@@ -328,7 +321,7 @@ void ImmobileEnemy::Shoot() {
 
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelEnemyBullet_);
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 残弾を減らす

@@ -16,7 +16,7 @@
 // =========================================================
 // 通常の敵クラス
 // =========================================================
-class NormalEnemy : public Enemy, public ICollisionCallback, public IConfigurable {
+class NormalEnemy : public Enemy, public ICollisionCallback, public Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -61,25 +61,10 @@ public:
 	/// </summary>
 	void Debug();
 
-	// =========================================================
-	// Getter / Setter
-	// =========================================================
-
-	/// <summary>
-	/// 弾モデルをセットします。
-	/// </summary>
-	/// <param name="model">モデルデータ</param>
-	void SetBulletModel(ModelManager::ModelData* model) { modelEnemyBullet_ = model; }
-
 private:
 	// =========================================================
 	// Internal Methods
 	// =========================================================
-
-	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
 
 	/// <summary>
 	/// 経路探索で得たウェイポイント列に沿って移動します。
@@ -139,9 +124,6 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData* modelEnemyBullet_;					/* 弾モデル */
 
 	// ----- Parameters -----
 	float speed_ = 10.0f;										/* 移動速度 */ 

@@ -19,7 +19,7 @@ public:
 	/// 全てのテレポーターの初期化処理を行います。
 	/// </summary>
 	/// <param name="datas">初期位置や回転などのTransformデータ</param>
-	void Initialize(std::vector<Loader::TransformData> datas);
+	void Initialize(const std::vector<Loader::TransformData>& datas);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -40,9 +40,6 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Models -----
-	ModelManager::ModelData modelTeleporter_;				/* テレポーターモデル */
 
 	// ----- Container -----
 	std::vector<std::unique_ptr<Teleporter>> teleporters_;	/* テレポーター全てを格納したコンテナ */

@@ -24,7 +24,7 @@ public:
 	/// 障害物の初期化処理を行います。
 	/// </summary>
 	/// <param name="data">初期位置や回転などのTransformデータ</param>
-	void Initialize(const std::vector<Loader::TransformData> datas);
+	void Initialize(const std::vector<Loader::TransformData>& datas);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -46,34 +46,16 @@ public:
 	/// </summary>
 	void Debug();
 
-	/// <summary>
-	/// 全ての障害物の再生成処理を行います。
-	/// </summary>
-	void Reload(const std::vector<Loader::TransformData> datas);
-
 private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
-	// ----- Models -----
-	ModelManager::ModelData modelContainer_;									/* コンテナモデル */
-	ModelManager::ModelData modelFence_;										/* フェンスモデル */
-	ModelManager::ModelData modelWall_;											/* 壁モデル */
-	ModelManager::ModelData modelBrickPallet_;									/* レンガパレットモデル */
-	ModelManager::ModelData modelConcreteBarrier_;								/* コンクリートバリアモデル */
-	ModelManager::ModelData modelDrumCan_;										/* ドラム缶モデル */
-	ModelManager::ModelData modelWaterTank_;									/* 貯水タンクモデル */
-	ModelManager::ModelData modelSteelBundle_;									/* 鉄骨モデル */
-	ModelManager::ModelData modelVerticalTank_;									/* 縦型タンクモデル */
-	ModelManager::ModelData modelISOTank_;										/* ISOタンクモデル */
-	ModelManager::ModelData modelIBCContainer_;									/* IBCコンテナモデル */
-
 	// ----- Container -----
 	std::vector<std::unique_ptr<Obstacle>> obstacles_;							/* 全ての障害物を格納したコンテナ*/
 
-	std::unordered_map<std::string, ModelManager::ModelData*> tagModelMap_{};	/* タグとモデルデータのマップ */
+	std::unordered_map<std::string, std::string> tagModelMap_{};	/* タグとモデルデータキーのマップ */
 
 	// ----- Parameters -----
-	const float kActiveDistance = 75.0f;										/* 障害物の有効化距離 */
+	const float kActiveDistance = 50.0f;										/* 障害物の有効化距離 */
 };

@@ -15,7 +15,7 @@ void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
 	spriteCommon_->Initialize(dxBase);
 
 	// テクスチャ読み込み
-	uint32_t texture = TextureManager::Load("resources/Images/UI/number.png", dxBase->GetDevice());
+	uint32_t texture = TextureManager::Load("UI/number.png");
 
 	// 値を文字列化
 	std::ostringstream oss;

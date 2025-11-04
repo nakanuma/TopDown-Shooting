@@ -17,13 +17,16 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("Teleporter");
-	collider_->SetOwner(this);
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("Teleporter");
+	aabb->SetFollowTarget(&object_->transform_.translate);
+	aabb->SetSize(colliderSize_);
+	aabb->SetOwner(this);
 
-	// コライダーを登録
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	// 使用可能にしておく
 	isActive_ = true;
@@ -34,7 +37,7 @@ void Teleporter::Update() {
 	///	コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	オブジェクト更新処理
@@ -69,16 +72,5 @@ void Teleporter::OnCollision(Collider* other) {
 			this->object_->materialCB_.data_->color = {0.0f, 0.0f, 1.0f, 1.0f};
 			pair_->object_->materialCB_.data_->color = {0.0f, 0.0f, 1.0f, 1.0f};
 		}
-	}
-}
-
-void Teleporter::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// 位置をオブジェクトに追従させて、サイズを最新状態に更新
-		Float3 center = object_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
 	}
 }

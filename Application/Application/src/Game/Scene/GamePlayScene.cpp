@@ -21,7 +21,6 @@
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
-#include <src/Game/Utility/ParticleEffectLoader.h>
 #include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/Utility/Utility.h>
 
@@ -49,9 +48,6 @@ void GamePlayScene::Initialize() {
 	// LightManagerの初期化
 	lightManager = LightManager::GetInstance();
 	lightManager->Initialize();
-
-	// SkyBoxの初期化
-	SkyBoxManager::GetInstance()->Initialize("resources/Images/skybox.dds");
 
 	///
 	///	↓ ゲームシーン用
@@ -89,8 +85,8 @@ void GamePlayScene::Initialize() {
 
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
-	teleporterManager_->Initialize(loader_->GetAllDatas());
-
+	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
+	
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -100,9 +96,6 @@ void GamePlayScene::Initialize() {
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
-
-	//// パーティクル生成
-	// ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
@@ -131,10 +124,6 @@ void GamePlayScene::Initialize() {
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
-
-
-	// パーティクル生成
-	ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
 }
 
 void GamePlayScene::Finalize() {}
@@ -196,23 +185,6 @@ void GamePlayScene::Update() {
 
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
-
-#ifdef _DEBUG
-	loader_->Update();
-	// ステージデータファイルに変更があれば再生成
-	if (loader_->HasFileChanged()) {
-		// ステージデータ再読み込み
-		loader_->LoadFromFile("resources/Stages/data.json");
-
-		// 各ステージデータ要素の再生成
-		enemyManager_->Reload(loader_->GetAllDatas());
-		obstacleManager_->Reload(loader_->GetAllDatas());
-
-		// リセットしたことを知らせる
-		loader_->ResetFileChangedFlag();
-	}
-
-#endif
 }
 
 void GamePlayScene::Draw() {
@@ -238,9 +210,9 @@ void GamePlayScene::Draw() {
 	// スカイボックス描画
 	SkyBoxManager::GetInstance()->Draw();
 
-	///
-	///	シャドウマップ描画処理
-	///
+	// ---------------------------------------------------------
+	// シャドウマップ描画処理開始
+	// ---------------------------------------------------------
 
 	// ライトカメラの更新
 	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
@@ -276,12 +248,10 @@ void GamePlayScene::Draw() {
 
 	//----------------------------------//
 
-	// シャドウマップ描画終了
 	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
-
-	///
-	///
-	///
+	// ---------------------------------------------------------
+	// シャドウマップ描画処理終了
+	// ---------------------------------------------------------
 
 	///
 	///	通常オブジェクト描画処理
@@ -345,8 +315,7 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-
-	gameOverSequence_->Debug();
+	CollisionManager::GetInstance()->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

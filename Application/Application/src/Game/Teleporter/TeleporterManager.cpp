@@ -3,15 +3,8 @@
 // Engine
 #include <ImguiWrapper.h>
 
-void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
+void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& datas) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
-
-	///
-	///	モデル読み込み
-	///
-
-	modelTeleporter_ = ModelManager::LoadModelFile("resources/Models", "Object/Teleporter/teleporter.obj", dxBase->GetDevice());
-	modelTeleporter_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
 
 	///
 	///	テレポーターの生成
@@ -20,7 +13,7 @@ void TeleporterManager::Initialize(std::vector<Loader::TransformData> datas) {
 	for (const auto& data : datas) {
 		if (data.tag == "TELEPORTER") {
 			auto teleporter = std::make_unique<Teleporter>();
-			teleporter->Initialize(data.translate, &modelTeleporter_);
+			teleporter->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("Teleporter"));
 			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
 

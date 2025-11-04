@@ -49,35 +49,39 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("NormalEnemy");
-	collider_->SetOwner(this);
-	colliderSize_ = {1.0f, 2.0f, 1.0f};
+	colliderSize_ = { 1.0f, 2.0f, 1.0f };
 
-	// コライダーを登録
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("NormalEnemy");
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetSize(colliderSize_);
+	aabb->SetOwner(this);
+
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
 	///
 
 	// HPバー（後景）
-	uint32_t textureHPBackground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPBackground = TextureManager::Load("white.png");
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
 	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f}); // 黒
 
 	// HPバー（前景）
-	uint32_t textureHPForeground = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
 	spriteHPForeground_->SetColor({0.0f, 1.0f, 0.5f, 1.0f}); // 緑
 
 	// リロード表示
-	uint32_t textureReload = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
+	uint32_t textureReload = TextureManager::Load("white.png");
 	spriteReload_ = std::make_unique<Sprite>();
 	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
 	spriteReload_->SetSize(kReloadSize);
@@ -124,7 +128,7 @@ void NormalEnemy::Update() {
 	/// コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	/// オブジェクト更新処理
@@ -257,8 +261,10 @@ void NormalEnemy::OnCollision(Collider* other) {
 			objectEnemy_->transform_.translate += pushVec;
 
 			// コライダーも更新しておく
-			myAABB->min_ += pushVec;
-			myAABB->max_ += pushVec;
+			Float3 currentMin = myAABB->GetMin();
+			Float3 currentMax = myAABB->GetMax();
+			myAABB->SetMin(currentMin + pushVec);
+			myAABB->SetMax(currentMax + pushVec);
 		}
 	}
 }
@@ -285,17 +291,6 @@ void NormalEnemy::Debug() {
 	ImGui::Begin("NormalEnemy");
 
 	ImGui::End();
-}
-
-void NormalEnemy::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
-	}
 }
 
 void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed) {
@@ -574,7 +569,7 @@ BehaviorStatus NormalEnemy::Shoot() {
 	direction = Float3::Normalize(direction);
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, modelEnemyBullet_);
+	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// カウント更新

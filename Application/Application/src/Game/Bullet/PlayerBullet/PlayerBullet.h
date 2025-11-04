@@ -49,11 +49,6 @@ private:
 	// =========================================================
 
 	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
-
-	/// <summary>
 	/// 弾道の描画処理を行います。
 	/// </summary>
 	void DrawTrail();
@@ -64,7 +59,7 @@ private:
 	// =========================================================
 
 	// ----- Parameters -----
-	float radius_ = 0.2f;						/* 弾の半径 */
+	const float kRadius = 0.2f;					/* 弾の半径 */
 
 	float elapsedTime_ = 0.0f;					/* 経過時間 */
 	const float kMaxLifeTime = 1.0f;			/* 生存時間（秒） */

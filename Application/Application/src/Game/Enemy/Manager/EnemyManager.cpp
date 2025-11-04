@@ -8,47 +8,44 @@
 #include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Player/Player.h>
 
-void EnemyManager::Initialize(const std::vector<Loader::TransformData> datas, Player* player) {
+void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, Player* player) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// プレイヤーのポインタを受け取る
 	player_ = player;
 
 	///
-	///	各モデル読み込み
-	///
-
-	// 通常敵モデル
-	modelNormalEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/NormalEnemy/normalEnemy.obj", dxBase->GetDevice());
-	modelNormalEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/NormalEnemy/normalEnemy.png", dxBase->GetDevice());
-
-	// 固定敵モデル
-	modelImmobileEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/ImmobileEnemy/immobileEnemy.obj", dxBase->GetDevice());
-	modelImmobileEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/ImmobileEnemy/immobileEnemy.png", dxBase->GetDevice());
-
-	// ボスモデル
-	modelBossEnemy_ = ModelManager::LoadModelFile("resources/Models", "Character/Enemy/BossEnemy/bossEnemy.obj", dxBase->GetDevice());
-	modelBossEnemy_.material.textureHandle = TextureManager::Load("resources/Images/Character/Enemy/BossEnemy/bossEnemy.png", dxBase->GetDevice());
-
-	// （追加）敵モデル
-
-	// 弾モデル
-	modelEnemyBullet_ = ModelManager::LoadModelFile("resources/Models", "Bullet/TestBullet/testBullet.obj", dxBase->GetDevice());
-	modelEnemyBullet_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
-	// ミサイルモデル
-	modelMissile_ = ModelManager::LoadModelFile("resources/Models", "Bullet/Missile/missile.obj", dxBase->GetDevice());
-	modelMissile_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
-	// 地面警告モデル
-	modelGroundWarning_ = ModelManager::LoadModelFile("resources/Models", "sphere.obj", dxBase->GetDevice());
-	modelGroundWarning_.material.textureHandle = TextureManager::Load("resources/Images/white.png", dxBase->GetDevice());
-
-	///
 	///	各敵の生成
 	///
 
-	Reload(datas);
+	// 破棄を行ってからリストをクリア
+	for (auto& enemy : enemies_) {
+		enemy->OnDestroy();
+	}
+	enemies_.clear();
+
+	for (const auto& data : datas) {
+		// 通常敵の生成・初期化
+		if (data.tag == "NORMAL_ENEMY") {
+			auto enemy = std::make_unique<NormalEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// 固定敵の生成・初期化
+		if (data.tag == "IMMOBILE_ENEMY") {
+			auto enemy = std::make_unique<ImmobileEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// ボスの生成・初期化
+		if (data.tag == "BOSS_ENEMY") {
+			auto enemy = std::make_unique<BossEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+	}
 }
 
 void EnemyManager::Update() {
@@ -91,14 +88,6 @@ void EnemyManager::Debug() {
 #ifdef _DEBUG
 
 	ImGui::Begin("enemyManager");
-
-	// スポーンボタン（デバッグ用）
-	if (ImGui::Button("spawn")) {
-		auto enemy = std::make_unique<BossEnemy>();
-		enemy->Initialize({0.0f, 3.0f, 0.0f}, &modelBossEnemy_, player_);
-
-		enemies_.emplace_back(std::move(enemy));
-	}
 
 	ImGui::Separator();
 	ImGui::Text("Total Enemies: %zu", enemies_.size());
@@ -154,39 +143,4 @@ void EnemyManager::Debug() {
 	ImGui::End();
 
 #endif // _DEBUG
-}
-
-void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
-	// 破棄を行ってからリストをクリア
-	for (auto& enemy : enemies_) {
-		enemy->OnDestroy();
-	}
-	enemies_.clear();
-
-	for (const auto& data : datas) {
-		// 通常敵の生成・初期化
-		if (data.tag == "NORMAL_ENEMY") {
-			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &modelNormalEnemy_, player_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// 固定敵の生成・初期化
-		if (data.tag == "IMMOBILE_ENEMY") {
-			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &modelImmobileEnemy_, player_);
-			enemy->SetBulletModel(&modelEnemyBullet_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// ボスの生成・初期化
-		if (data.tag == "BOSS_ENEMY") {
-			auto enemy = std::make_unique<BossEnemy>();
-			enemy->Initialize(data.translate, &modelBossEnemy_, player_);
-			enemy->SetMissileModel(&modelMissile_);
-			enemy->SetGroundWarningModel(&modelGroundWarning_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-	}
 }
