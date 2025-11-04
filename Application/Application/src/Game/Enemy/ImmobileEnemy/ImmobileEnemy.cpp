@@ -38,14 +38,18 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("ImmobileEnemy");
-	collider_->SetOwner(this);
 	colliderSize_ = {1.0f, 2.0f, 1.0f};
 
-	// コライダーを登録
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("ImmobileEnemy");
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetSize(colliderSize_);
+	aabb->SetOwner(this);
+
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
@@ -95,7 +99,7 @@ void ImmobileEnemy::Update() {
 	///	コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	オブジェクト更新処理
@@ -211,17 +215,6 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
-	}
-}
-
-void ImmobileEnemy::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
 	}
 }
 

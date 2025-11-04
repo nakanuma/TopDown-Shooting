@@ -22,7 +22,7 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = {radius_, radius_, radius_};
+	objectBullet_->transform_.scale = { kRadius, kRadius, kRadius };
 
 	// 進行方向から向きを計算して回転を設定
 	Float3 dir = Float3::Normalize(direciton);
@@ -33,10 +33,13 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
-	collider_ = std::make_unique<SphereCollider>();
-	collider_->SetTag("PlayerBullet");
-	collider_->SetOwner(this);
+	auto sphere = std::make_unique<SphereCollider>();
+	sphere->SetTag("PlayerBullet");
+	sphere->SetFollowTarget(&objectBullet_->transform_.translate);
+	sphere->SetRadius(kRadius);
+	sphere->SetOwner(this);
 
+	collider_ = std::move(sphere);
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	// ---------------------------------------------------------
@@ -73,7 +76,7 @@ void PlayerBullet::Update() {
 	// ---------------------------------------------------------
 	// コライダー・行列更新処理
 	// ---------------------------------------------------------
-	UpdateCollider();
+	collider_->Update();
 	objectBullet_->UpdateMatrix();
 }
 
@@ -135,14 +138,6 @@ void PlayerBullet::OnCollision(Collider* other) {
 
 		// 死亡させる
 		isDead_ = true;
-	}
-}
-
-void PlayerBullet::UpdateCollider() {
-	if (SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get())) {
-		// 位置と半径をオブジェクトに追従させる
-		sphere->center_ = objectBullet_->transform_.translate;
-		sphere->radius_ = radius_;
 	}
 }
 

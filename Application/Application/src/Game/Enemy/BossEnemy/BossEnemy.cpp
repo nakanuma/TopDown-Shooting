@@ -41,14 +41,19 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<OBBCollider>();
-	collider_->SetTag("BossEnemy");
-	collider_->SetOwner(this);
-	colliderSize_ = {5.0f, 3.0f, 5.0f};
+	colliderSize_ = { 5.0f, 3.0f, 5.0f };
 
-	// コライダーを登録
+	auto obb = std::make_unique<OBBCollider>();
+	obb->SetTag("BossEnemy");
+	obb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	obb->SetFollowRotation(&objectEnemy_->transform_.rotate);
+	obb->SetSize(colliderSize_);
+	obb->SetOwner(this);
+
+	collider_ = std::move(obb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
@@ -118,7 +123,7 @@ void BossEnemy::Update() {
 	/// コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	スプライト更新処理
@@ -224,23 +229,6 @@ void BossEnemy::OnCollision(Collider* other) {
 			// 死亡したらリザルトへ以降（todo : 死亡演出から遷移予定なので仮。あとで削除）
 			SceneManager::GetInstance()->ChangeScene("RESULT");
 		}
-	}
-}
-
-void BossEnemy::UpdateCollider() {
-	if (OBBCollider* obb = dynamic_cast<OBBCollider*>(collider_.get())) {
-		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		// コライダーの位置をオブジェクトに追従させ、常にサイズを最新状態にする
-		obb->center_ = center;
-		obb->size_ = colliderSize_;
-
-		// 回転行列を作成して、コライダーの回転軸の更新
-		Matrix rotMat = Matrix::Rotation(objectEnemy_->transform_.rotate);
-		obb->xAxis_ = Float3::Normalize(Float3(rotMat.r[0][0], rotMat.r[1][0], rotMat.r[2][0]));
-		obb->yAxis_ = Float3::Normalize(Float3(rotMat.r[0][1], rotMat.r[1][1], rotMat.r[2][1]));
-		obb->zAxis_ = Float3::Normalize(Float3(rotMat.r[0][2], rotMat.r[1][2], rotMat.r[2][2]));
 	}
 }
 

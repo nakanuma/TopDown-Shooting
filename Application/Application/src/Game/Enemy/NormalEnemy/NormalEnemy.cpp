@@ -49,14 +49,18 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("NormalEnemy");
-	collider_->SetOwner(this);
-	colliderSize_ = {1.0f, 2.0f, 1.0f};
+	colliderSize_ = { 1.0f, 2.0f, 1.0f };
 
-	// コライダーを登録
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("NormalEnemy");
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetSize(colliderSize_);
+	aabb->SetOwner(this);
+
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	スプライト生成
@@ -124,7 +128,7 @@ void NormalEnemy::Update() {
 	/// コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	/// オブジェクト更新処理
@@ -257,8 +261,10 @@ void NormalEnemy::OnCollision(Collider* other) {
 			objectEnemy_->transform_.translate += pushVec;
 
 			// コライダーも更新しておく
-			myAABB->min_ += pushVec;
-			myAABB->max_ += pushVec;
+			Float3 currentMin = myAABB->GetMin();
+			Float3 currentMax = myAABB->GetMax();
+			myAABB->SetMin(currentMin + pushVec);
+			myAABB->SetMax(currentMax + pushVec);
 		}
 	}
 }
@@ -285,17 +291,6 @@ void NormalEnemy::Debug() {
 	ImGui::Begin("NormalEnemy");
 
 	ImGui::End();
-}
-
-void NormalEnemy::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectEnemy_->transform_.translate;
-		Float3 size = colliderSize_;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
-	}
 }
 
 void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed) {

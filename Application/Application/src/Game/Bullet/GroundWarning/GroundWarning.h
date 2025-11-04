@@ -44,18 +44,13 @@ private:
 	// Internal Methods
 	// =========================================================
 
-	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
-
 private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- Parameters -----
-	float radius_ = 5.0f;						/* 弾の半径 */
+	const float kRadius = 5.0f;					/* 弾の半径 */
 
 	const float kHitDelay = 0.8f;				/* 衝突判定を有効化するまでの遅延時間 */
 	bool colliderEnabled_ = false;				/* コライダー有効化フラグ */

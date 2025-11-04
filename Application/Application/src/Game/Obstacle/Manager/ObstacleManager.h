@@ -46,11 +46,6 @@ public:
 	/// </summary>
 	void Debug();
 
-	/// <summary>
-	/// 全ての障害物の再生成処理を行います。
-	/// </summary>
-	void Reload(const std::vector<Loader::TransformData> datas);
-
 private:
 	// =========================================================
 	// Member Variables

@@ -57,12 +57,16 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	コライダー生成
 	///
 
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("Player");
-	collider_->SetOwner(this);
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("Player");
+	aabb->SetFollowTarget(&objectPlayer_->GetTranslate());
+	aabb->SetSize(kColliderSize);
+	aabb->SetOwner(this);
 
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
-	UpdateCollider(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
 	///	UI
@@ -123,7 +127,7 @@ void Player::Update(bool operable) {
 	///	コライダー更新処理
 	///
 
-	UpdateCollider();
+	collider_->Update();
 
 	///
 	///	オブジェクト更新処理
@@ -220,8 +224,10 @@ void Player::OnCollision(Collider* other) {
 			objectPlayer_->GetTranslate() += pushVec;
 
 			// コライダーも更新しておく
-			myAABB->min_ += pushVec;
-			myAABB->max_ += pushVec;
+			Float3 currentMin = myAABB->GetMin();
+			Float3 currentMax = myAABB->GetMax();
+			myAABB->SetMin(currentMin + pushVec);
+			myAABB->SetMax(currentMax + pushVec);
 		}
 	}
 }
@@ -413,16 +419,5 @@ void Player::HandleOverHeat()
 		if (isOverheated_ && overheatTime_ <= 0.0f) {
 			isOverheated_ = false;
 		}
-	}
-}
-
-void Player::UpdateCollider() {
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		// オブジェクトに追従させる
-		Float3 center = objectPlayer_->GetTranslate();
-		Float3 size = kColliderSize;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
 	}
 }

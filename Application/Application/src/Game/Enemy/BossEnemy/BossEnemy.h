@@ -65,11 +65,6 @@ private:
 	// =========================================================
 
 	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
-
-	/// <summary>
 	/// プレイヤー方向へボスを回転させます。
 	/// </summary>
 	void FacePlayer();

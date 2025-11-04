@@ -25,7 +25,21 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas
 	///	各障害物の生成
 	///
 
-	Reload(datas);
+	// 破棄を行ってからリストをクリア
+	for (auto& obstacle : obstacles_) {
+		obstacle->OnDestroy();
+	}
+	obstacles_.clear();
+
+	for (const auto& data : datas) {
+		auto it = tagModelMap_.find(data.tag);
+		// タグと一致した障害物のモデルを適用して生成
+		if (it != tagModelMap_.end()) {
+			auto obstacle = std::make_unique<Obstacle>();
+			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, &ModelManager::GetInstance()->GetModel(it->second));
+			obstacles_.emplace_back(std::move(obstacle));
+		}
+	}
 }
 
 void ObstacleManager::Update(const Float3& playerPos) {
@@ -105,26 +119,4 @@ void ObstacleManager::Debug() {
 
 	ImGui::End();
 #endif
-}
-
-void ObstacleManager::Reload(const std::vector<Loader::TransformData> datas) {
-	// 破棄を行ってからリストをクリア
-	for (auto& obstacle : obstacles_) {
-		obstacle->OnDestroy();
-	}
-	obstacles_.clear();
-
-	///
-	///	各障害物の生成
-	///
-
-	for (const auto& data : datas) {
-		auto it = tagModelMap_.find(data.tag);
-		// タグと一致した障害物のモデルを適用して生成
-		if (it != tagModelMap_.end()) {
-			auto obstacle = std::make_unique<Obstacle>();
-			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, &ModelManager::GetInstance()->GetModel(it->second));
-			obstacles_.emplace_back(std::move(obstacle));
-		}
-	}
 }

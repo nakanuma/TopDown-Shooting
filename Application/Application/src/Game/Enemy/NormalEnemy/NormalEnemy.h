@@ -16,7 +16,7 @@
 // =========================================================
 // 通常の敵クラス
 // =========================================================
-class NormalEnemy : public Enemy, public ICollisionCallback, public IConfigurable {
+class NormalEnemy : public Enemy, public ICollisionCallback, public Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -65,11 +65,6 @@ private:
 	// =========================================================
 	// Internal Methods
 	// =========================================================
-
-	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
 
 	/// <summary>
 	/// 経路探索で得たウェイポイント列に沿って移動します。

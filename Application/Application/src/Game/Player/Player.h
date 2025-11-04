@@ -22,7 +22,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player : public ICollisionCallback, public IConfigurable {
+class Player : public ICollisionCallback, public Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -130,11 +130,6 @@ private:
 	/// オーバーヒートの管理処理を行います。
 	/// </summary>
 	void HandleOverHeat();
-
-	/// <summary>
-	/// コライダーの更新処理を行います。
-	/// </summary>
-	void UpdateCollider();
 
 private:
 	// =========================================================

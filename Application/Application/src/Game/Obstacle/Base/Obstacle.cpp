@@ -30,16 +30,17 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	collider_->SetTag("Obstacle");
 	collider_->SetOwner(this);
 
-	// コライダーを登録
+	auto aabb = std::make_unique<AABBCollider>();
+	aabb->SetTag("Obstacle");
+	aabb->SetFollowTarget(&object_->transform_.translate);
+	aabb->SetSize(size);
+	aabb->SetOwner(this);
+
+	collider_ = std::move(aabb);
 	CollisionManager::GetInstance()->Register(collider_.get());
 
-	// コライダー更新
-	if (AABBCollider* aabb = dynamic_cast<AABBCollider*>(collider_.get())) {
-		Float3 center = object_->transform_.translate;
-
-		aabb->min_ = center - size;
-		aabb->max_ = center + size;
-	}
+	// コライダー更新（常に更新する必要は無いため初期化時に1度のみ）
+	collider_->Update();
 }
 
 void Obstacle::Update() {

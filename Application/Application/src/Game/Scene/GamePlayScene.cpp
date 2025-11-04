@@ -97,9 +97,6 @@ void GamePlayScene::Initialize() {
 	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
-	//// パーティクル生成
-	// ParticleEffectLoader::GetInstance()->LoadAndRegisterAll();
-
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
@@ -188,23 +185,6 @@ void GamePlayScene::Update() {
 
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
-
-#ifdef _DEBUG
-	loader_->Update();
-	// ステージデータファイルに変更があれば再生成
-	if (loader_->HasFileChanged()) {
-		// ステージデータ再読み込み
-		loader_->LoadFromFile("resources/Stages/data.json");
-
-		// 各ステージデータ要素の再生成
-		enemyManager_->Reload(loader_->GetAllDatas());
-		obstacleManager_->Reload(loader_->GetAllDatas());
-
-		// リセットしたことを知らせる
-		loader_->ResetFileChangedFlag();
-	}
-
-#endif
 }
 
 void GamePlayScene::Draw() {
@@ -335,8 +315,7 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-
-	gameOverSequence_->Debug();
+	CollisionManager::GetInstance()->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

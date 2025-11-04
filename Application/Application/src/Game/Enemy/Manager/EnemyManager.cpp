@@ -18,7 +18,34 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, P
 	///	各敵の生成
 	///
 
-	Reload(datas);
+	// 破棄を行ってからリストをクリア
+	for (auto& enemy : enemies_) {
+		enemy->OnDestroy();
+	}
+	enemies_.clear();
+
+	for (const auto& data : datas) {
+		// 通常敵の生成・初期化
+		if (data.tag == "NORMAL_ENEMY") {
+			auto enemy = std::make_unique<NormalEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// 固定敵の生成・初期化
+		if (data.tag == "IMMOBILE_ENEMY") {
+			auto enemy = std::make_unique<ImmobileEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+
+		// ボスの生成・初期化
+		if (data.tag == "BOSS_ENEMY") {
+			auto enemy = std::make_unique<BossEnemy>();
+			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
+			enemies_.emplace_back(std::move(enemy));
+		}
+	}
 }
 
 void EnemyManager::Update() {
@@ -116,35 +143,4 @@ void EnemyManager::Debug() {
 	ImGui::End();
 
 #endif // _DEBUG
-}
-
-void EnemyManager::Reload(const std::vector<Loader::TransformData> datas) {
-	// 破棄を行ってからリストをクリア
-	for (auto& enemy : enemies_) {
-		enemy->OnDestroy();
-	}
-	enemies_.clear();
-
-	for (const auto& data : datas) {
-		// 通常敵の生成・初期化
-		if (data.tag == "NORMAL_ENEMY") {
-			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// 固定敵の生成・初期化
-		if (data.tag == "IMMOBILE_ENEMY") {
-			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-
-		// ボスの生成・初期化
-		if (data.tag == "BOSS_ENEMY") {
-			auto enemy = std::make_unique<BossEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
-			enemies_.emplace_back(std::move(enemy));
-		}
-	}
 }
