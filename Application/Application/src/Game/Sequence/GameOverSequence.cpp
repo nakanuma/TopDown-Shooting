@@ -14,6 +14,7 @@
 // Application
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Player/Player.h>
 
 void GameOverSequence::Initialize(SpriteCommon* spriteCommon) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -45,7 +46,13 @@ void GameOverSequence::Start(const Float3& playerPos)
 }
 
 void GameOverSequence::Update() {
-	if (phase_ == Phase::None) return;
+	// プレイヤーの死亡を検出してゲームオーバー演出を開始
+	if(player_->IsDead() && !IsActive()) {
+		Start(player_->GetTranslate());
+	}
+
+	// ゲームオーバー演出が行われていない間はスキップ
+	if (!IsActive()) return;
 
 	// タイマー更新
 	timer_ += TimeManager::GetInstance()->GetDeltaTime();
@@ -95,6 +102,9 @@ void GameOverSequence::Update() {
 }
 
 void GameOverSequence::DrawUI() {
+	// ゲームオーバー演出が行われていない間はスキップ
+	if(!IsActive()) return;
+
 	spriteDiedText_->Draw();
 	spriteBackToTitleText_->Draw();
 }

@@ -79,7 +79,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	パラメーター設定
 	///
 
-	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
+	/*currentHP_ = kMaxHP;*/     // 現在HPには最大HPをセット
+
+	currentHP_ = 10;
 
 	///
 	///	調整パラメーター登録
@@ -159,6 +161,9 @@ void Player::DrawShadow() {
 }
 
 void Player::DrawUI() {
+	// 死亡状態ならスキップ
+	if(IsDead()) return;
+
 	ui_->Draw();
 }
 

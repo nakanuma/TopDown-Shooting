@@ -105,9 +105,11 @@ void GamePlayScene::Initialize() {
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
 	gameStartSequence_->Initialize(spriteCommon.get());
+
 	// ゲームオーバー時の演出制御クラス
 	gameOverSequence_ = std::make_unique<GameOverSequence>();
 	gameOverSequence_->Initialize(spriteCommon.get());
+	gameOverSequence_->SetPlayer(player_.get());
 
 	// トランジション
 	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
@@ -144,20 +146,8 @@ void GamePlayScene::Update() {
 		}
 	}
 
-	// ゲームオーバー時演出の開始（プレイヤーの死亡時）
-	if (player_->IsDead() && !gameOverSequence_->IsActive()) {
-		gameOverSequence_->Start(player_->GetTranslate());
-	}
-	// 有効化状態ならゲームオーバー時演出を更新
-	if (gameOverSequence_->IsActive()) {
-		gameOverSequence_->Update();
-	}
-
-
-
 	// カメラシェイクの更新
 	CameraShake::GetInstance()->Update();
-
 	// フィールド更新
 	field_->Update();
 	// プレイヤー更新（スタート演出終了で操作可能に）
@@ -175,6 +165,8 @@ void GamePlayScene::Update() {
 	FadeTransition::GetInstance()->Update();
 	// ウェイポイントの更新
 	WaypointManager::GetInstance()->Update();
+	// ゲームオーバー時演出の更新
+	gameOverSequence_->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -291,17 +283,12 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawUI();
 		// スタート演出が終了したらゲーム用UI表示
 	} else {
-		// プレイヤーUI描画（生きている間のみ）
-		if (!player_->IsDead()) {
-			player_->DrawUI();
-		}
+		// プレイヤーUI描画
+		player_->DrawUI();
 	}
 
-	// ゲームオーバー時のUIを描画
-	if (gameOverSequence_->IsActive()) {
-		gameOverSequence_->DrawUI();
-	}
-
+	// ゲームオーバー時のUI描画
+	gameOverSequence_->DrawUI();
 	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
 	FadeTransition::GetInstance()->Draw();

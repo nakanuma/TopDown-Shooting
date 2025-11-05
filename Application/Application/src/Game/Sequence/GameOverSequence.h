@@ -7,6 +7,11 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Foward Declaration
+// ---------------------------------------------------------
+class Player;
+
 // =========================================================
 // ゲームオーバー時の演出を制御するクラス
 // =========================================================
@@ -58,6 +63,12 @@ public:
     /// </summary>
     /// <returns></returns>
     bool IsFinished() const { return phase_ == Phase::Finish; }
+
+    /// <summary>
+    /// プレイヤーのポインタを設定します。
+    /// </summary>
+    /// <param name="player">プレイヤーのポインタ</param>
+    void SetPlayer(Player* player) { player_ = player; }
 
 private:
     // =========================================================
@@ -125,4 +136,7 @@ private:
     // ----- Sprite -----
     std::unique_ptr<Sprite> spriteDiedText_;                        /* "YOU DIED"文字スプライト */
     std::unique_ptr<Sprite> spriteBackToTitleText_;                 /* "クリックでタイトルへ"文字スプライト */
+
+    // ----- Others -----
+    Player* player_ = nullptr;                                      /* プレイヤーのポインタ */
 };

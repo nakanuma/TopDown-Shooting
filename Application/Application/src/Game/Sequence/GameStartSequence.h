@@ -106,7 +106,7 @@ private:
     std::unique_ptr<Object3D> objectCrumblingWall_;             /* 壊れそうな壁オブジェクト */
     std::unique_ptr<Object3D> objectDynamite_;                  /* ダイナマイトオブジェクト */
 
-    bool isDynamiteVisible_ = true;                             /* ダイナマイトの可視状態 */
+    bool isDynamiteVisible_ = true;                             /* ダイナマイトの可視状態（何度も切り替わる） */
     bool isExplode_ = false;                                    /* 爆発終了フラグ */
 
     // ----- Sprite -----
