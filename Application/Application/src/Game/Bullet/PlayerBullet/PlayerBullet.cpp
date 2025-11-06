@@ -46,15 +46,55 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	// パラメーター設定
 	// ---------------------------------------------------------
 	damage_ = 10;// 攻撃力
-	speed_ = 1.8f;// 弾速
+	speed_ = 4.0f;// 弾速
 	velocity_ = direciton * speed_;// 速度ベクトル
+
+	prevPosition_ = position; // 前フレーム位置を初期化
 }
 
 void PlayerBullet::Update() {
 	// ---------------------------------------------------------
+	// 連続衝突判定（レイキャスト）
+	// ---------------------------------------------------------
+	Float3 currentPos = objectBullet_->transform_.translate;
+	Float3 nextPos = currentPos + velocity_;
+
+	// 前の位置から次の位置までの移動距離
+	Float3 movement = nextPos - currentPos;
+	float moveDistance = Float3::Length(movement);
+
+	// レイキャストで中間の衝突をチェック
+	if(moveDistance > kRadius * 0.5f){ // 移動距離が半径の半分以上の場合のみチェック
+		Float3 rayDirection = Float3::Normalize(movement);
+
+		RayCastHit hit;
+		if(CollisionManager::GetInstance()->RayCast(
+			currentPos,
+			rayDirection,
+			moveDistance + kRadius, // 弾の半径分を追加
+			&hit,
+			{"PlayreBullet"} // 自身は除外する
+		)){
+			// 衝突した位置に弾を移動
+			objectBullet_->transform_.translate = hit.hitPoint;
+
+			// 位置更新をスキップ
+			prevPosition_ = objectBullet_->transform_.translate;
+
+			collider_->Update();
+			objectBullet_->UpdateMatrix();
+			return;
+		}
+	}
+
+	// ---------------------------------------------------------
 	// 位置更新
 	// ---------------------------------------------------------
-	objectBullet_->transform_.translate += velocity_;
+	
+	// 次フレーム位置へ移動
+	objectBullet_->transform_.translate = nextPos;
+	// 前フレーム位置を更新
+	prevPosition_ = currentPos;
 
 	// ---------------------------------------------------------
 	// 前フレーム位置履歴の更新（トレイル用）
@@ -81,11 +121,6 @@ void PlayerBullet::Update() {
 }
 
 void PlayerBullet::Draw() {
-	// ---------------------------------------------------------
-	// オブジェクト描画
-	// ---------------------------------------------------------
-	objectBullet_->Draw();
-
 	// ---------------------------------------------------------
 	// トレイル（弾道エフェクト）描画
 	// ---------------------------------------------------------
@@ -142,8 +177,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 }
 
 void PlayerBullet::DrawTrail() {
-	Float4 headColor = {1.0f, 1.0f, 1.0f, 1.0f};
-	Float4 tailColor = {1.0f, 1.0f, 1.0f, 0.0f};
+	Float4 headColor = {1.0f, 1.0f, 0.33f, 1.0f};
+	Float4 tailColor = {1.0f, 0.215f, 0.06f, 0.0f};
 
 	// [0]と[1], [1]と[2]... といったように全てのポイントを繋ぐ線を作る
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {

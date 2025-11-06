@@ -49,6 +49,9 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 }
 
 void GameStartSequence::Update() {
+	// デバッグスキップ用
+	DebugSkip();
+
 	// タイマー更新
 	timer_ += TimeManager::GetInstance()->GetDeltaTime();
 
@@ -137,6 +140,10 @@ void GameStartSequence::Debug() {
 	}
 	ImGui::Text("Current Phase : %s", phaseStr);
 
+	if(ImGui::Button("Skip")){
+		isDebugSkip_ = true;
+	}
+
 	ImGui::End();
 }
 
@@ -218,5 +225,28 @@ void GameStartSequence::UpdateTransition()
 	if (lerpT_ >= 1.0f) {
 		lerpT_ = 1.0f;
 		phase_ = Phase::Finish;
+	}
+}
+
+void GameStartSequence::DebugSkip()
+{
+	if(isDebugSkip_ && phase_ != Phase::Finish){
+		// カメラを最終位置に設定
+		Camera::GetCurrent()->transform.translate = topdownCameraPos_;
+		Camera::GetCurrent()->transform.rotate = topdownCameraRot_;
+
+		// レターボックスを最終位置に設定
+		spriteTopLetterBox_->SetPosition(topBoxEndPos_);
+		spriteBottomLetterBox_->SetPosition(bottomBoxEndPos_);
+
+		// 爆発済みフラグを立てる
+		isExplode_ = true;
+
+		// 終了フェーズにする
+		phase_ = Phase::Finish;
+		timer_ = 0.0f;
+		lerpT_ = 1.0f;
+
+		return;
 	}
 }

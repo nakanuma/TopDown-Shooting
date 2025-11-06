@@ -79,9 +79,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	パラメーター設定
 	///
 
-	/*currentHP_ = kMaxHP;*/     // 現在HPには最大HPをセット
-
-	currentHP_ = 10;
+	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
 
 	///
 	///	調整パラメーター登録

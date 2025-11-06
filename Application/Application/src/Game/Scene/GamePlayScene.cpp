@@ -112,8 +112,8 @@ void GamePlayScene::Initialize() {
 	gameOverSequence_->SetPlayer(player_.get());
 
 	// トランジション
-	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -302,7 +302,9 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-	CollisionManager::GetInstance()->Debug();
+	/*CollisionManager::GetInstance()->Debug();*/
+
+	gameStartSequence_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

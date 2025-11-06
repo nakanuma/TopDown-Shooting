@@ -3,6 +3,7 @@
 // Engine
 #include <ModelManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <SkyBoxManager.h>
 
 // Application
 #include <src/Game/Particles/Backscatter/BackscatterParticle.h>
@@ -25,6 +26,9 @@ void GameResourceLoader::Initialize() {
 	LoadAllModelData();
 	// パーティクルの生成と登録
 	RegisterAllParticleEffect();
+
+	// SkyBoxの初期化
+	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 }
 
 void GameResourceLoader::LoadAllModelData() {

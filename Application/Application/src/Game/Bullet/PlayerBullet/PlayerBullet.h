@@ -66,5 +66,8 @@ private:
 
 	// ----- Trail -----
 	std::deque<Float3> trailPoints_{};			/* 過去フレームの位置を保持 */
-	size_t kMaxTrailPoints = 10;				/* 保持する履歴数 */
+	size_t kMaxTrailPoints = 5;					/* 保持する履歴数 */
+
+	// ----- Others -----
+	Float3 prevPosition_;						/* 前フレームの位置 */
 };
