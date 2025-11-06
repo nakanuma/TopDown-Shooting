@@ -15,6 +15,7 @@
 #include <src/Game/Particles/Spark/SparkParticle.h>
 #include <src/Game/Particles/WallCollapse/WallCollapseParticle.h>
 #include <src/Game/Particles/BloodSplatter/BloodSplatterParticle.h>
+#include <src/Game/Particles/ImpactSmoke/ImpactSmokeParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -175,6 +176,17 @@ void GameResourceLoader::LoadAllModelData() {
 	);
 
 	// ---------------------------------------------------------
+	// パーティクル用モデル
+	// ---------------------------------------------------------
+
+	// 地面警告表示用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"RedCircle",
+		"Primitive/Plane/plane.obj",
+		"Effect/circle.png"
+	);
+
+	// ---------------------------------------------------------
 	// その他モデル
 	// ---------------------------------------------------------
 
@@ -190,13 +202,6 @@ void GameResourceLoader::LoadAllModelData() {
 		"Teleporter",
 		"Object/Teleporter/teleporter.obj",
 		"white.png"
-	);
-
-	// 地面警告表示用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
-		"RedCircle",
-		"Primitive/Plane/plane.obj",
-		"Effect/circle.png"
 	);
 }
 
@@ -237,4 +242,8 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// 血が飛び散るパーティクル
 	auto bloodSplatterParticle = std::make_unique<BloodSplatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
 	ParticleEffectManager::GetInstance()->Register("bloodSplatter", std::move(bloodSplatterParticle));
+
+	// 弾衝突時の煙パーティクル
+	auto impactSmokeParticle = std::make_unique<ImpactSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("impactSmoke", std::move(impactSmokeParticle));
 }

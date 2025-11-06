@@ -169,7 +169,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Obstacle") {
 		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(4, 5), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("impactSmoke", bulletPos, rand->RandomValue(6, 8), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
