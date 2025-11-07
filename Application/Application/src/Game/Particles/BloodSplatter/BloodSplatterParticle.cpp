@@ -32,7 +32,7 @@ BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& po
 	// 速度ベクトル
 	p.velocity = rand->RandomValue({ -12.0f, 2.0f, -12.0f }, { 12.0f, 4.0f, 12.0f }); // 少し上方向へ
 	// 色
-	p.color = { 0.3f, 0.0f, 0.0f, 1.0f };
+	p.color = { 0.25f, 0.0f, 0.0f, 1.0f };
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 生存時間

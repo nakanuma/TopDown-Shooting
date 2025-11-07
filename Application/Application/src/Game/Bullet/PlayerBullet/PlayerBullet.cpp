@@ -136,7 +136,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "NormalEnemy") {
 		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", bulletPos, rand->RandomValue(1, 2));
+		ParticleEffectManager::GetInstance()->Emit("bloodSmoke", bulletPos, rand->RandomValue(4, 5), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -147,7 +148,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "ImmobileEnemy") {
 		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", bulletPos, rand->RandomValue(1, 2));
+		ParticleEffectManager::GetInstance()->Emit("bloodSmoke", bulletPos, rand->RandomValue(4, 5), velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -158,7 +160,8 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "BossEnemy") {
 		// ヒットエフェクト
-		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(3, 4), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, rand->RandomValue(4, 5), velocity_);
+		ParticleEffectManager::GetInstance()->Emit("impactSmoke", bulletPos, rand->RandomValue(6, 8), velocity_);
 
 		// 死亡させる
 		isDead_ = true;

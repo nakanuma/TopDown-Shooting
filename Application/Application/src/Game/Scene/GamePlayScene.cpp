@@ -320,7 +320,8 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("impactSmoke", { 36.0f, 2.5f, 0.0f }, 10);
+		ParticleEffectManager::GetInstance()->Emit("deathCross", { 36.0f, 2.5f, 0.0f }, 3, {0.0f, 0.0f, 0.0f}, DegToRad(45));
+		ParticleEffectManager::GetInstance()->Emit("deathCross", { 36.0f, 2.5f, 0.0f }, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135));
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

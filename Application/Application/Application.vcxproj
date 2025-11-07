@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.cpp" />
     <ClCompile Include="src\Game\GameResourceLoader\GameResourceLoader.cpp" />
     <ClCompile Include="src\Game\Sequence\GameOverSequence.cpp" />
@@ -59,6 +61,8 @@
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.h" />
+    <ClInclude Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.h" />
     <ClInclude Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.h" />
     <ClInclude Include="src\Game\GameResourceLoader\GameResourceLoader.h" />
     <ClInclude Include="src\Game\Sequence\GameOverSequence.h" />

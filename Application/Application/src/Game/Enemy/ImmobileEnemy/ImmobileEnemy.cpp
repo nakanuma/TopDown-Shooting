@@ -6,6 +6,7 @@
 // Engine
 #include <Engine/Util/RandomGenerator.h>
 #include <Engine/Util/TimeManager.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Application
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
@@ -210,9 +211,14 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
 		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
-		// HPが0になった敵を死亡させる
+		// HPが0になったら自身を死亡させる
 		if (currentHP_ <= 0) {
 			isDead_ = true;
+
+			// 死亡時パーティクル発生
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45)); // クロス片側
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135)); // クロス片側
+
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
 	}

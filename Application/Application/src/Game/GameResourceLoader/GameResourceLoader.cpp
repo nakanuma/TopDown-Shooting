@@ -16,6 +16,8 @@
 #include <src/Game/Particles/WallCollapse/WallCollapseParticle.h>
 #include <src/Game/Particles/BloodSplatter/BloodSplatterParticle.h>
 #include <src/Game/Particles/ImpactSmoke/ImpactSmokeParticle.h>
+#include <src/Game/Particles/BloodSmoke/BloodSmokeParticle.h>
+#include <src/Game/Particles/DeathCrossParticle/DeathCrossParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -186,6 +188,13 @@ void GameResourceLoader::LoadAllModelData() {
 		"Effect/circle.png"
 	);
 
+	// 死亡時のクロスパーティクル用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"DeathCross",
+		"Primitive/Plane/plane.obj",
+		"Effect/glow.png"
+	);
+
 	// ---------------------------------------------------------
 	// その他モデル
 	// ---------------------------------------------------------
@@ -246,4 +255,12 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// 弾衝突時の煙パーティクル
 	auto impactSmokeParticle = std::make_unique<ImpactSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
 	ParticleEffectManager::GetInstance()->Register("impactSmoke", std::move(impactSmokeParticle));
+
+	// 弾衝突時の血煙パーティクル
+	auto bloodSmokeParticle = std::make_unique<BloodSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("bloodSmoke", std::move(bloodSmokeParticle));
+
+	// 死亡時のクロスパーティクル
+	auto deathCrossParticle = std::make_unique<DeathCrossParticle>(ModelManager::GetInstance()->GetModel("DeathCross"));
+	ParticleEffectManager::GetInstance()->Register("deathCross", std::move(deathCrossParticle));
 }

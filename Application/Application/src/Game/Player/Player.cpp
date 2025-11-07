@@ -93,6 +93,9 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
+	// デバッグ用で無敵に
+	currentHP_ = kMaxHP;
+
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
