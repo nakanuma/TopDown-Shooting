@@ -13,7 +13,7 @@ DeathCrossParticle::DeathCrossParticle(ModelManager::ModelData& model)
 	object_.gTransformationMatrices.Create();
 
 	// ビルボード適用設定
-	isBillboard_ = { false, false, false };
+	isBillboard_ = { true, true, true };
 	// ブレンドモード設定
 	blendMode_ = BlendMode::Add;
 }

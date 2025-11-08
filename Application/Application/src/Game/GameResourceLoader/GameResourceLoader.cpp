@@ -212,6 +212,13 @@ void GameResourceLoader::LoadAllModelData() {
 		"Object/Teleporter/teleporter.obj",
 		"white.png"
 	);
+
+	// 銃
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"Gun",
+		"Object/Gun/gun.obj",
+		"white.png"
+	);
 }
 
 void GameResourceLoader::RegisterAllParticleEffect()

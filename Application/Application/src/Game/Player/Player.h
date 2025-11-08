@@ -51,6 +51,11 @@ public:
 	void DrawShadow();
 
 	/// <summary>
+	/// 銃モデルのシャドウマップ用の描画処理を行います。
+	/// </summary>
+	void DrawGunShadow();
+
+	/// <summary>
 	/// UIの描画処理を行います。
 	/// </summary>
 	void DrawUI();
@@ -142,6 +147,7 @@ private:
 
 	// ----- Object -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
+	std::unique_ptr<Object3D> objectGun_;					/* 銃オブジェクト */
 
 	// ----- Animation -----
 	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
