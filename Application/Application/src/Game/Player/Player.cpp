@@ -56,7 +56,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	// 銃オブジェクト生成
 	objectGun_ = std::make_unique<Object3D>();
 	objectGun_->model_ = &ModelManager::GetInstance()->GetModel("Gun");
-	objectGun_->materialCB_.data_->color = {0.25f, 0.25f, 0.25f, 1.0f};
+	objectGun_->materialCB_.data_->color = {0.0f, 0.0f, 0.0f, 1.0f};
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
 	objectGun_->materialCB_.data_->environmentStrength = 0.2f;
 
@@ -101,9 +101,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
-	// デバッグ用で無敵に
-	currentHP_ = kMaxHP;
-
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
@@ -154,7 +151,7 @@ void Player::Update(bool operable) {
 	Float3 forward = {sinf(playerRot.y), 0.0f, cosf(playerRot.y)}; // 前方向ベクトル
 	Float3 right = {cosf(playerRot.y), 0.0f, -sinf(playerRot.y)}; // 右方向ベクトル
 
-	const float gunForwardOffset = 1.0f; // 前方方向へのオフセット
+	const float gunForwardOffset = 1.1f; // 前方方向へのオフセット
 	const float gunRightOffset = 0.3f; // 右方向のオフセット
 	objectGun_->transform_.translate = playerPos + (forward * gunForwardOffset) + (right * gunRightOffset);
 	objectGun_->transform_.rotate = playerRot;
@@ -424,6 +421,9 @@ void Player::HandleShooting() {
 		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
+
+		// パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate.y);
 	}
 }
 

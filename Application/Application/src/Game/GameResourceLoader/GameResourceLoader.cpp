@@ -18,6 +18,7 @@
 #include <src/Game/Particles/ImpactSmoke/ImpactSmokeParticle.h>
 #include <src/Game/Particles/BloodSmoke/BloodSmokeParticle.h>
 #include <src/Game/Particles/DeathCrossParticle/DeathCrossParticle.h>
+#include <src/Game/Particles/ShellEjection/ShellEjectionParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -270,4 +271,8 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// 死亡時のクロスパーティクル
 	auto deathCrossParticle = std::make_unique<DeathCrossParticle>(ModelManager::GetInstance()->GetModel("DeathCross"));
 	ParticleEffectManager::GetInstance()->Register("deathCross", std::move(deathCrossParticle));
+
+	// 薬莢排出パーティクル
+	auto shellEjectionParticle = std::make_unique<ShellEjectionParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("shellEjection", std::move(shellEjectionParticle));
 }
