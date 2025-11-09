@@ -112,10 +112,10 @@ void Player::Update(bool operable) {
 	if (operable && !isDead_) {
 		// カーソル方向へ向くよう回転
 		FaceCursor();
-		// 移動処理
-		HandleMove();
 		// 射撃 & オーバーヒート処理
 		HandleOverHeat();
+		// 移動処理
+		HandleMove();
 	}
 
 	// HPが0未満にならないよう制限
@@ -423,7 +423,11 @@ void Player::HandleShooting() {
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate.y);
+		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate.y); // 薬莢排出
+		
+		Float3 forward = { sinf(objectGun_->transform_.rotate.y), 0.0f, cosf(objectGun_->transform_.rotate.y) }; // 前方向ベクトル
+		const float forwardOffset = 1.4f; // 前方方向へのオフセット
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate + (forward * forwardOffset), 6); // マズルフラッシュ
 	}
 }
 

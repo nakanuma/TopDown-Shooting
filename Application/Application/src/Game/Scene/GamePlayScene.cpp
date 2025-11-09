@@ -321,7 +321,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("shellEjection", { 36.0f, 2.5f, 0.0f }, 1, {0.0f, 0.0f, 0.0f}, 1.0f);
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", { 36.0f, 2.5f, 0.0f }, 6);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

@@ -19,6 +19,7 @@
 #include <src/Game/Particles/BloodSmoke/BloodSmokeParticle.h>
 #include <src/Game/Particles/DeathCrossParticle/DeathCrossParticle.h>
 #include <src/Game/Particles/ShellEjection/ShellEjectionParticle.h>
+#include <src/Game/Particles/MuzzleFlash/MuzzleFlashParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -196,6 +197,13 @@ void GameResourceLoader::LoadAllModelData() {
 		"Effect/glow.png"
 	);
 
+	// 銃のマズルフラッシュ用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"MuzzleFlash",
+		"Primitive/Plane/planeAlign.obj",
+		"Effect/muzzle.png"
+	);
+
 	// ---------------------------------------------------------
 	// その他モデル
 	// ---------------------------------------------------------
@@ -275,4 +283,8 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// 薬莢排出パーティクル
 	auto shellEjectionParticle = std::make_unique<ShellEjectionParticle>(ModelManager::GetInstance()->GetModel("Cube"));
 	ParticleEffectManager::GetInstance()->Register("shellEjection", std::move(shellEjectionParticle));
+
+	// マズルフラッシュパーティクル
+	auto muzzleFlashParticle = std::make_unique<MuzzleFlashParticle>(ModelManager::GetInstance()->GetModel("MuzzleFlash"));
+	ParticleEffectManager::GetInstance()->Register("muzzleFlash", std::move(muzzleFlashParticle));
 }
