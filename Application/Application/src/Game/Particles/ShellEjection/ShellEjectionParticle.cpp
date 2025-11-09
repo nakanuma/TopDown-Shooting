@@ -1,0 +1,65 @@
+#include "ShellEjectionParticle.h"
+
+// Engine
+#include <Engine/Math/Easing.h>
+#include <Engine/Math/MyMath.h>
+#include <Engine/Util/RandomGenerator.h>
+
+ShellEjectionParticle::ShellEjectionParticle(ModelManager::ModelData& model)
+{
+	// オブジェクト設定
+	object_.model_ = &model;
+	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices.Create();
+
+	// ビルボード適用設定
+	isBillboard_ = { false, false, false };
+	// ブレンドモード設定
+	blendMode_ = BlendMode::Normal;
+}
+
+ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
+{
+	ShellEjectionParticleData p;
+	auto rand = RandomGenerator::GetInstance();
+
+	// 位置
+	p.transform.translate = pos;
+	// 回転
+	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	// スケール（縦長の形状）
+	p.transform.scale = { 0.1f, 0.1f, 0.25f };
+	// 速度ベクトル
+	Float3 rightDir = {cosf(angle), 0.0f, -sinf(angle)};
+	Float3 upDir = {0.0f, 1.0f, 0.0f};
+	p.velocity = 
+		rightDir * rand->RandomValue(5.0f, 7.5f) + // 右方向
+		upDir * rand->RandomValue(8.0f, 10.0f); // 上方向
+	// 色
+	p.color = { 0.4f, 0.4f, 0.0f, 1.0f };
+	// 経過時間
+	p.currentTime = 0.0f;
+	// 生存時間
+	p.lifeTime = 1.0f;
+	// 回転速度
+	p.rotationSpeed = rand->RandomValue({ -5.0f, -5.0f, -5.0f }, { 5.0f, 5.0f, 5.0f });
+
+	return p;
+}
+
+void ShellEjectionParticle::UpdateParticle(ShellEjectionParticleData& p, float dt)
+{
+	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
+
+	// 重力加速度
+	const float kGravity = -50.0f;
+
+	// 速度更新
+	p.velocity.y += kGravity * dt;
+
+	// 位置更新
+	p.transform.translate += p.velocity * dt;
+
+	// 回転
+	p.transform.rotate += p.rotationSpeed * dt;
+}

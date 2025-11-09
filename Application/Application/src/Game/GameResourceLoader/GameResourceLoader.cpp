@@ -3,6 +3,7 @@
 // Engine
 #include <ModelManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <SkyBoxManager.h>
 
 // Application
 #include <src/Game/Particles/Backscatter/BackscatterParticle.h>
@@ -14,6 +15,11 @@
 #include <src/Game/Particles/Spark/SparkParticle.h>
 #include <src/Game/Particles/WallCollapse/WallCollapseParticle.h>
 #include <src/Game/Particles/BloodSplatter/BloodSplatterParticle.h>
+#include <src/Game/Particles/ImpactSmoke/ImpactSmokeParticle.h>
+#include <src/Game/Particles/BloodSmoke/BloodSmokeParticle.h>
+#include <src/Game/Particles/DeathCrossParticle/DeathCrossParticle.h>
+#include <src/Game/Particles/ShellEjection/ShellEjectionParticle.h>
+#include <src/Game/Particles/MuzzleFlash/MuzzleFlashParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -25,6 +31,9 @@ void GameResourceLoader::Initialize() {
 	LoadAllModelData();
 	// パーティクルの生成と登録
 	RegisterAllParticleEffect();
+
+	// SkyBoxの初期化
+	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 }
 
 void GameResourceLoader::LoadAllModelData() {
@@ -171,6 +180,31 @@ void GameResourceLoader::LoadAllModelData() {
 	);
 
 	// ---------------------------------------------------------
+	// パーティクル用モデル
+	// ---------------------------------------------------------
+
+	// 地面警告表示用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"RedCircle",
+		"Primitive/Plane/plane.obj",
+		"Effect/circle.png"
+	);
+
+	// 死亡時のクロスパーティクル用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"DeathCross",
+		"Primitive/Plane/plane.obj",
+		"Effect/glow.png"
+	);
+
+	// 銃のマズルフラッシュ用の板
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"MuzzleFlash",
+		"Primitive/Plane/planeAlign.obj",
+		"Effect/muzzle.png"
+	);
+
+	// ---------------------------------------------------------
 	// その他モデル
 	// ---------------------------------------------------------
 
@@ -188,11 +222,11 @@ void GameResourceLoader::LoadAllModelData() {
 		"white.png"
 	);
 
-	// 地面警告表示用の板
+	// 銃
 	ModelManager::GetInstance()->LoadAndRegisterModel(
-		"RedCircle",
-		"Primitive/Plane/plane.obj",
-		"Effect/circle.png"
+		"Gun",
+		"Object/Gun/gun.obj",
+		"white.png"
 	);
 }
 
@@ -233,4 +267,24 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// 血が飛び散るパーティクル
 	auto bloodSplatterParticle = std::make_unique<BloodSplatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
 	ParticleEffectManager::GetInstance()->Register("bloodSplatter", std::move(bloodSplatterParticle));
+
+	// 弾衝突時の煙パーティクル
+	auto impactSmokeParticle = std::make_unique<ImpactSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("impactSmoke", std::move(impactSmokeParticle));
+
+	// 弾衝突時の血煙パーティクル
+	auto bloodSmokeParticle = std::make_unique<BloodSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("bloodSmoke", std::move(bloodSmokeParticle));
+
+	// 死亡時のクロスパーティクル
+	auto deathCrossParticle = std::make_unique<DeathCrossParticle>(ModelManager::GetInstance()->GetModel("DeathCross"));
+	ParticleEffectManager::GetInstance()->Register("deathCross", std::move(deathCrossParticle));
+
+	// 薬莢排出パーティクル
+	auto shellEjectionParticle = std::make_unique<ShellEjectionParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("shellEjection", std::move(shellEjectionParticle));
+
+	// マズルフラッシュパーティクル
+	auto muzzleFlashParticle = std::make_unique<MuzzleFlashParticle>(ModelManager::GetInstance()->GetModel("MuzzleFlash"));
+	ParticleEffectManager::GetInstance()->Register("muzzleFlash", std::move(muzzleFlashParticle));
 }

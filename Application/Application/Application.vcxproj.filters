@@ -282,6 +282,21 @@
     <ClCompile Include="src\Game\GameResourceLoader\GameResourceLoader.cpp">
       <Filter>src\Game\GameResourceLoader</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h">
@@ -424,6 +439,21 @@
     </ClInclude>
     <ClInclude Include="src\Game\GameResourceLoader\GameResourceLoader.h">
       <Filter>src\Game\GameResourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -77,6 +77,11 @@ private:
     /// </summary>
     void UpdateTransition();
 
+    /// <summary>
+    /// デバッグ用の演出スキップを行います。
+    /// </summary>
+    void DebugSkip();
+
 private:
     /// <summary>
     /// 演出のフェーズを表す構造体
@@ -102,11 +107,13 @@ private:
     Float3 topdownCameraPos_ = { 36.0f, 51.8f, -66.0f};         /* トップダウン視点カメラ位置 */
     Float3 topdownCameraRot_ = { PIf / 4.0f, 0.0f, 0.0f };      /* トップダウン視点カメラ回転 */
 
+    bool isDebugSkip_ = true;                                  /* デバッグスキップ用フラグ */
+
     // ----- Objects -----
     std::unique_ptr<Object3D> objectCrumblingWall_;             /* 壊れそうな壁オブジェクト */
     std::unique_ptr<Object3D> objectDynamite_;                  /* ダイナマイトオブジェクト */
 
-    bool isDynamiteVisible_ = true;                             /* ダイナマイトの可視状態 */
+    bool isDynamiteVisible_ = true;                             /* ダイナマイトの可視状態（何度も切り替わる） */
     bool isExplode_ = false;                                    /* 爆発終了フラグ */
 
     // ----- Sprite -----

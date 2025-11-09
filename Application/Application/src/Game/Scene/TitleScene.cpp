@@ -68,9 +68,6 @@ void TitleScene::Initialize() {
 	///	オブジェクト
 	///
 
-	// SkyBoxの初期化
-	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
-
 	// 床生成
 	field_ = std::make_unique<Field>();
 	field_->Initialize();

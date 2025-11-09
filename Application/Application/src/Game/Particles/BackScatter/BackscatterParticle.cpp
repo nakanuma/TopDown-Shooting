@@ -23,12 +23,12 @@ BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, c
 	// 位置
 	p.transform.translate = pos;
 	// スケール
-	p.transform.scale = {0.12f, 0.12f, 0.8f};
+	p.transform.scale = {0.06f, 0.06f, 0.6f};
 	// 速度ベクトル
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f; // 引数で受け取った方向と逆向きにする
-	float diff = 0.9f;
+	float diff = 0.4f;
 	Float3 randDir = rand->RandomValue({-diff, 0.0f, -diff}, {diff, 0.0f, diff}); // 方向をバラつかせるためのオフセット
-	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(16.0f, 24.0f);
+	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(12.0f, 24.0f);
 	// 回転（進行方向を向くように）
 	Float3 dir = Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);

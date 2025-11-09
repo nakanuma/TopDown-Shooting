@@ -105,13 +105,15 @@ void GamePlayScene::Initialize() {
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
 	gameStartSequence_->Initialize(spriteCommon.get());
+
 	// ゲームオーバー時の演出制御クラス
 	gameOverSequence_ = std::make_unique<GameOverSequence>();
 	gameOverSequence_->Initialize(spriteCommon.get());
+	gameOverSequence_->SetPlayer(player_.get());
 
 	// トランジション
-	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -144,20 +146,8 @@ void GamePlayScene::Update() {
 		}
 	}
 
-	// ゲームオーバー時演出の開始（プレイヤーの死亡時）
-	if (player_->IsDead() && !gameOverSequence_->IsActive()) {
-		gameOverSequence_->Start(player_->GetTranslate());
-	}
-	// 有効化状態ならゲームオーバー時演出を更新
-	if (gameOverSequence_->IsActive()) {
-		gameOverSequence_->Update();
-	}
-
-
-
 	// カメラシェイクの更新
 	CameraShake::GetInstance()->Update();
-
 	// フィールド更新
 	field_->Update();
 	// プレイヤー更新（スタート演出終了で操作可能に）
@@ -175,6 +165,8 @@ void GamePlayScene::Update() {
 	FadeTransition::GetInstance()->Update();
 	// ウェイポイントの更新
 	WaypointManager::GetInstance()->Update();
+	// ゲームオーバー時演出の更新
+	gameOverSequence_->Update();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -233,6 +225,7 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawShadow();
 	}
 
+	player_->DrawGunShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
 
@@ -291,17 +284,12 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawUI();
 		// スタート演出が終了したらゲーム用UI表示
 	} else {
-		// プレイヤーUI描画（生きている間のみ）
-		if (!player_->IsDead()) {
-			player_->DrawUI();
-		}
+		// プレイヤーUI描画
+		player_->DrawUI();
 	}
 
-	// ゲームオーバー時のUIを描画
-	if (gameOverSequence_->IsActive()) {
-		gameOverSequence_->DrawUI();
-	}
-
+	// ゲームオーバー時のUI描画
+	gameOverSequence_->DrawUI();
 	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
 	FadeTransition::GetInstance()->Draw();
@@ -315,7 +303,9 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-	CollisionManager::GetInstance()->Debug();
+	/*CollisionManager::GetInstance()->Debug();*/
+
+	gameStartSequence_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する
@@ -331,7 +321,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", { 36.0f, 2.5f, 0.0f }, 30);
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", { 36.0f, 2.5f, 0.0f }, 6);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

@@ -53,6 +53,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_->GetTranslate() = data.translate;
 	objectPlayer_->SetPlayBackSpeed(1.5f);
 
+	// 銃オブジェクト生成
+	objectGun_ = std::make_unique<Object3D>();
+	objectGun_->model_ = &ModelManager::GetInstance()->GetModel("Gun");
+	objectGun_->materialCB_.data_->color = {0.0f, 0.0f, 0.0f, 1.0f};
+	objectGun_->materialCB_.data_->useEnvironmentMap = true;
+	objectGun_->materialCB_.data_->environmentStrength = 0.2f;
+
+
 	///
 	///	コライダー生成
 	///
@@ -104,10 +112,10 @@ void Player::Update(bool operable) {
 	if (operable && !isDead_) {
 		// カーソル方向へ向くよう回転
 		FaceCursor();
-		// 移動処理
-		HandleMove();
 		// 射撃 & オーバーヒート処理
 		HandleOverHeat();
+		// 移動処理
+		HandleMove();
 	}
 
 	// HPが0未満にならないよう制限
@@ -137,6 +145,19 @@ void Player::Update(bool operable) {
 	objectPlayer_->Update(TimeManager::GetInstance()->GetDeltaTime(), isMoving_);
 	objectPlayer_->object_->UpdateShadowMatrix();
 
+	// 銃オブジェクト更新
+	Float3 playerPos = objectPlayer_->GetTranslate();
+	Float3 playerRot = objectPlayer_->GetRotate();
+	Float3 forward = {sinf(playerRot.y), 0.0f, cosf(playerRot.y)}; // 前方向ベクトル
+	Float3 right = {cosf(playerRot.y), 0.0f, -sinf(playerRot.y)}; // 右方向ベクトル
+
+	const float gunForwardOffset = 1.1f; // 前方方向へのオフセット
+	const float gunRightOffset = 0.3f; // 右方向のオフセット
+	objectGun_->transform_.translate = playerPos + (forward * gunForwardOffset) + (right * gunRightOffset);
+	objectGun_->transform_.rotate = playerRot;
+
+	objectGun_->UpdateMatrix();
+
 	///
 	///	UI更新処理
 	///
@@ -149,6 +170,7 @@ void Player::Draw() {
 	if(isDead_) return;
 
 	objectPlayer_->Draw();
+	objectGun_->Draw();
 }
 
 void Player::DrawShadow() {
@@ -158,7 +180,18 @@ void Player::DrawShadow() {
 	objectPlayer_->DrawShadow();
 }
 
+void Player::DrawGunShadow()
+{
+	// 死亡したら描画スキップ
+	if (isDead_) return;
+
+	objectGun_->DrawShadow();
+}
+
 void Player::DrawUI() {
+	// 死亡状態ならスキップ
+	if(IsDead()) return;
+
 	ui_->Draw();
 }
 
@@ -244,6 +277,11 @@ void Player::Debug() {
 	ImGui::DragFloat3("rotate", &objectPlayer_->GetRotate().x, 0.01f);
 
 	ImGui::DragFloat3("scale", &objectPlayer_->GetScale().x, 0.01f);
+
+	ImGui::Separator();
+	ImGui::DragFloat3("Gun:Translate", &objectGun_->transform_.translate.x, 0.01f);
+	ImGui::DragFloat3("Gun:Rotate", &objectGun_->transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("Gun:Scale", &objectGun_->transform_.scale.x, 0.01f);
 
 	/* Parameter */
 	ImGui::Text("Parameter");
@@ -383,6 +421,13 @@ void Player::HandleShooting() {
 		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
+
+		// パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate.y); // 薬莢排出
+		
+		Float3 forward = { sinf(objectGun_->transform_.rotate.y), 0.0f, cosf(objectGun_->transform_.rotate.y) }; // 前方向ベクトル
+		const float forwardOffset = 1.4f; // 前方方向へのオフセット
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate + (forward * forwardOffset), 6); // マズルフラッシュ
 	}
 }
 
