@@ -95,7 +95,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 100;
+	currentHP_ = 40;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
 
 	targetPlayer_ = player;
