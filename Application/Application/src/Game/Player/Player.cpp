@@ -157,6 +157,7 @@ void Player::Update(bool operable) {
 	objectGun_->transform_.rotate = playerRot;
 
 	objectGun_->UpdateMatrix();
+	objectGun_->UpdateShadowMatrix();
 
 	///
 	///	UI更新処理

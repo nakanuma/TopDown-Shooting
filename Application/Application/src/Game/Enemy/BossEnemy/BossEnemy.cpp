@@ -41,7 +41,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	///	コライダー生成
 	///
 
-	colliderSize_ = { 5.0f, 3.0f, 5.0f };
+	colliderSize_ = { 5.2f, 3.0f, 5.2f };
 
 	auto obb = std::make_unique<OBBCollider>();
 	obb->SetTag("BossEnemy");
@@ -84,7 +84,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 1000;
+	currentHP_ = 400;
 	maxHP_ = currentHP_;
 
 	// ターゲットの設定
