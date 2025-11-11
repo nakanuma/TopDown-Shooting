@@ -1,4 +1,4 @@
-#include "NormalEnemy.h"
+﻿#include "NormalEnemy.h"
 
 // C++
 #include <Windows.h>
@@ -108,9 +108,10 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	///	調整パラメーター登録
 	///
 
+#ifdef USE_IMGUI
 	RegisterParam("searchRadius", &searchRadius_, 0.0f, 100.0f, 0.01f);
 	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 360.0f, 1.00f);
-
+#endif
 	SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
 	InitConfig();                                  // 初回読み込み
 
@@ -120,8 +121,10 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 
 	BuildBehaviorTree();
 
+#ifdef USE_IMGUI
 	btEditor_ = std::make_unique<BehaviorTreeEditor<NormalEnemy>>();
 	btEditor_->SetBehaviorTree(behaviorTree_.get());
+#endif
 }
 
 void NormalEnemy::Update() {
@@ -276,6 +279,7 @@ void NormalEnemy::OnCollision(Collider* other) {
 }
 
 void NormalEnemy::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("BehaviorTree_NormalEnemy");
 
 	btEditor_->Draw();
@@ -297,6 +301,7 @@ void NormalEnemy::Debug() {
 	ImGui::Begin("NormalEnemy");
 
 	ImGui::End();
+#endif
 }
 
 void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed) {
@@ -466,7 +471,7 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		}
 
 		// 候補からランダムに1つ選択
-		uint32_t randIndex = RandomGenerator::GetInstance()->RandomValue(0, candidates.size() - 1);
+		uint32_t randIndex = RandomGenerator::GetInstance()->RandomValue(0, static_cast<int>(candidates.size()) - 1);
 		currentTargetWP_ = candidates[randIndex];
 
 		status = BehaviorStatus::Running;

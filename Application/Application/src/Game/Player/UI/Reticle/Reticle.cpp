@@ -1,4 +1,4 @@
-#include "Reticle.h"
+﻿#include "Reticle.h"
 
 // C++
 #include <algorithm>

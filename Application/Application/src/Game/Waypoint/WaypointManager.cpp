@@ -1,4 +1,4 @@
-#include "WaypointManager.h"
+﻿#include "WaypointManager.h"
 
 // C++
 #include <algorithm>
@@ -71,6 +71,7 @@ void WaypointManager::Draw() {
 }
 
 void WaypointManager::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("WaypointManager");
 
 	ImGui::Text("Total Waypoints : %zu", waypoints_.size());
@@ -111,6 +112,7 @@ void WaypointManager::Debug() {
 	}
 
 	ImGui::End();
+#endif
 }
 
 void WaypointManager::ComputeNeighbors() {

@@ -1,4 +1,4 @@
-#include "HPBar.h"
+﻿#include "HPBar.h"
 
 // Engine
 #include <Engine/Texture/TextureManager.h>

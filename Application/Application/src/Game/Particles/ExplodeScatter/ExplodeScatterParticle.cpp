@@ -1,4 +1,4 @@
-#include "ExplodeScatterParticle.h"
+﻿#include "ExplodeScatterParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

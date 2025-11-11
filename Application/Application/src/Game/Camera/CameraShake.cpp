@@ -1,4 +1,4 @@
-#include "CameraShake.h"
+﻿#include "CameraShake.h"
 
 // C++
 #include <random>

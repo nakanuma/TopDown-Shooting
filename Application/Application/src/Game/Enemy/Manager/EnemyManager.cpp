@@ -1,4 +1,4 @@
-#include "EnemyManager.h"
+﻿#include "EnemyManager.h"
 
 // Externals
 #include <ImguiWrapper.h>
@@ -85,8 +85,7 @@ void EnemyManager::DrawUI() {
 }
 
 void EnemyManager::Debug() {
-#ifdef _DEBUG
-
+#ifdef USE_IMGUI
 	ImGui::Begin("enemyManager");
 
 	ImGui::Separator();
@@ -141,6 +140,5 @@ void EnemyManager::Debug() {
 	}
 
 	ImGui::End();
-
-#endif // _DEBUG
+#endif
 }

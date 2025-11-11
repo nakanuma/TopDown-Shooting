@@ -1,4 +1,4 @@
-#include "NumberSprite.h"
+﻿#include "NumberSprite.h"
 
 // C++
 #include <iomanip>

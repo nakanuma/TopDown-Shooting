@@ -1,4 +1,4 @@
-#include "SparkParticle.h"
+﻿#include "SparkParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

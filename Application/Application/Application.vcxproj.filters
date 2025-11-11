@@ -145,6 +145,21 @@
     <Filter Include="src\Game\GameResourceLoader">
       <UniqueIdentifier>{ad8dc25a-6db0-491c-b6b0-d14c7e44e554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Game\Particles\BloodSmoke">
+      <UniqueIdentifier>{388de28b-07b8-4550-aab8-da7e2d3e5184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\DeathCross">
+      <UniqueIdentifier>{1588804d-c7a1-4030-82c3-04b7a6af358a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\ImpactSmoke">
+      <UniqueIdentifier>{94a59e39-aed0-4a7f-8efc-3a5f577eeb00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\MuzzleFlash">
+      <UniqueIdentifier>{e7fcae30-ee54-49c0-8e68-b5020c25d9d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\ShellEjection">
+      <UniqueIdentifier>{8de83806-f9b5-4f50-9073-063e57c55e95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
@@ -282,20 +297,20 @@
     <ClCompile Include="src\Game\GameResourceLoader\GameResourceLoader.cpp">
       <Filter>src\Game\GameResourceLoader</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Particles\BloodSmoke</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Particles\DeathCross</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.cpp">
+      <Filter>src\Game\Particles\ImpactSmoke</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Particles\MuzzleFlash</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.cpp">
+      <Filter>src\Game\Particles\ShellEjection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,20 +455,20 @@
     <ClInclude Include="src\Game\GameResourceLoader\GameResourceLoader.h">
       <Filter>src\Game\GameResourceLoader</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\Particles\BloodSmoke\BloodSmokeParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\BloodSmoke</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\DeathCross</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\ImpactSmoke\ImpactSmokeParticle.h">
+      <Filter>src\Game\Particles\ImpactSmoke</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\MuzzleFlash</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.h">
+      <Filter>src\Game\Particles\ShellEjection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-#include "ResultStats.h"
+﻿#include "ResultStats.h"
 
 // Engine
 #include <ImguiWrapper.h>
@@ -27,6 +27,7 @@ float ResultStats::GetHitRate() const {
 }
 
 void ResultStats::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("ResultStats");
 
 	// 各戦績を表示
@@ -39,4 +40,5 @@ void ResultStats::Debug() {
 	ImGui::Text("hitRate : %.2f", GetHitRate());
 
 	ImGui::End();
+#endif
 }

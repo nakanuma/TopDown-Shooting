@@ -1,4 +1,4 @@
-#include "BossEnemy.h"
+﻿#include "BossEnemy.h"
 
 // C++
 #include <numbers>
@@ -96,8 +96,10 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 
 	BuildBehaviorTree();
 
+#ifdef USE_IMGUI
 	btEditor_ = std::make_unique<BehaviorTreeEditor<BossEnemy>>();
 	btEditor_->SetBehaviorTree(behaviorTree_.get());
+#endif
 }
 
 void BossEnemy::Update() {
@@ -164,6 +166,7 @@ void BossEnemy::DrawUI() {
 }
 
 void BossEnemy::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("BossEnemy");
 
 	if (ImGui::Button("Active")) {
@@ -200,6 +203,7 @@ void BossEnemy::Debug() {
 	}
 
 	ImGui::End();
+#endif
 }
 
 void BossEnemy::OnCollision(Collider* other) {

@@ -1,4 +1,4 @@
-#include "DeathCrossParticle.h"
+﻿#include "DeathCrossParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

@@ -1,4 +1,4 @@
-#include "ResultScene.h"
+﻿#include "ResultScene.h"
 
 // C++
 #include <numbers>
@@ -67,10 +67,10 @@ void ResultScene::Initialize() {
 
 	// 合計ダメージ
 	spriteTotalDamage_ = std::make_unique<NumberSprite>();
-	spriteTotalDamage_->Initialize(ResultStats::GetInstance()->GetTotalDamage());
+	spriteTotalDamage_->Initialize(static_cast<float>(ResultStats::GetInstance()->GetTotalDamage()));
 	// キル数
 	spriteDefeated_ = std::make_unique<NumberSprite>();
-	spriteDefeated_->Initialize(ResultStats::GetInstance()->GetDefeated());
+	spriteDefeated_->Initialize(static_cast<float>(ResultStats::GetInstance()->GetDefeated()));
 	// 命中率
 	spriteHitRate_ = std::make_unique<NumberSprite>();
 	spriteHitRate_->Initialize(ResultStats::GetInstance()->GetHitRate(), 2);
