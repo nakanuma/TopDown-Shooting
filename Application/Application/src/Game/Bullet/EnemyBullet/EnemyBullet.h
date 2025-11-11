@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // C++ Includes
@@ -66,5 +66,5 @@ private:
 
 	// ----- Trail -----
 	std::deque<Float3> trailPoints_{};			/* 過去フレームの位置を保持 */
-	size_t kMaxTrailPoints = 10;				/* 保持する履歴数 */
+	const size_t kMaxTrailPoints = 10;			/* 保持する履歴数 */
 };

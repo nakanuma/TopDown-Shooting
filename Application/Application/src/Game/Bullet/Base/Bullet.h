@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -82,4 +82,4 @@ protected:
 	float speed_ = 0.0f;							/* 移動速度 */
 	Float3 velocity_ = {0.0f, 0.0f, 0.0f};			/* 速度ベクトル */
 	bool isDead_ = false;							/* 死亡フラグ */
-};
+}; 

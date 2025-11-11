@@ -1,4 +1,4 @@
-﻿#include "ResultScene.h"
+#include "ResultScene.h"
 
 // C++
 #include <numbers>
@@ -19,26 +19,26 @@ void ResultScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
-	Camera::Set(camera.get()); // 現在のカメラをセット
+	camera_ = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
+	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
-	spriteCommon = std::make_unique<SpriteCommon>();
-	spriteCommon->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_->Initialize(DirectXBase::GetInstance());
 
 	// TextureManagerの初期化
 	TextureManager::Initialize(dxBase->GetDevice(), SRVManager::GetInstance());
 
 	// SoundManagerの初期化
-	soundManager = std::make_unique<SoundManager>();
-	soundManager->Initialize();
+	soundManager_ = std::make_unique<SoundManager>();
+	soundManager_->Initialize();
 
 	// Inputの初期化
-	input = Input::GetInstance();
+	input_ = Input::GetInstance();
 
 	// LightManagerの初期化
-	lightManager = LightManager::GetInstance();
-	lightManager->Initialize();
+	lightManager_ = LightManager::GetInstance();
+	lightManager_->Initialize();
 
 	///
 	///	スプライト生成
@@ -47,21 +47,21 @@ void ResultScene::Initialize() {
 	// 背景
 	uint32_t textureBackGround = TextureManager::Load("white.png");
 	spriteBackGround_ = std::make_unique<Sprite>();
-	spriteBackGround_->Initialize(spriteCommon.get(), textureBackGround);
+	spriteBackGround_->Initialize(spriteCommon_.get(), textureBackGround);
 	spriteBackGround_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
 	spriteBackGround_->SetSize({1280.0f, 720.0f});
 
 	// タイトルボタン
 	uint32_t textureTitleButton = TextureManager::Load("UI/titleButton.png");
 	spriteTitleButton_ = std::make_unique<Sprite>();
-	spriteTitleButton_->Initialize(spriteCommon.get(), textureTitleButton);
+	spriteTitleButton_->Initialize(spriteCommon_.get(), textureTitleButton);
 	spriteTitleButton_->SetPosition({640.0f, 620.0f});
 	spriteTitleButton_->SetAnchorPoint({0.5f, 0.5f});
 
 	// 戦績
 	uint32_t textureRecord = TextureManager::Load("UI/record.png");
 	spriteRecord_ = std::make_unique<Sprite>();
-	spriteRecord_->Initialize(spriteCommon.get(), textureRecord);
+	spriteRecord_->Initialize(spriteCommon_.get(), textureRecord);
 	spriteRecord_->SetPosition({640.0f, 260.0f});
 	spriteRecord_->SetAnchorPoint({0.5f, 0.5f});
 
@@ -82,7 +82,7 @@ void ResultScene::Initialize() {
 	///	フェード
 	///
 
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
 	FadeTransition::GetInstance()->StartFadeIn(1.0f);
 
 	///
@@ -96,7 +96,7 @@ void ResultScene::Initialize() {
 void ResultScene::Finalize() {}
 
 void ResultScene::Update() {
-	if (input->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
+	if (input_->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
 		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, 0.2f);
 		ResultStats::GetInstance()->Clear();   // 戦績をクリア
 		BulletManager::GetInstance()->Clear(); // 弾リストをクリア
@@ -130,7 +130,7 @@ void ResultScene::Draw() {
 	// カメラの定数バッファを設定
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
-	lightManager->TransferContantBuffer();
+	lightManager_->TransferContantBuffer();
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
 
@@ -143,7 +143,7 @@ void ResultScene::Draw() {
 	///
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-	spriteCommon->PreDraw();
+	spriteCommon_->PreDraw();
 
 	///
 	/// ↓ ここからスプライトの描画コマンド
@@ -180,8 +180,8 @@ void ResultScene::Draw() {
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.01f);
-	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform.translate.x, 0.01f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform.rotate.x, 0.01f);
 
 	ImGui::End();
 
