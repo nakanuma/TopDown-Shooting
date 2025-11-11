@@ -1,4 +1,4 @@
-#include "WaypointManager.h"
+﻿#include "WaypointManager.h"
 
 // C++
 #include <algorithm>

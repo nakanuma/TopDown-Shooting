@@ -1,4 +1,4 @@
-#include "Obstacle.h"
+﻿#include "Obstacle.h"
 
 void Obstacle::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, const Float3& colliderSize, ModelManager::ModelData* model) {
 	///

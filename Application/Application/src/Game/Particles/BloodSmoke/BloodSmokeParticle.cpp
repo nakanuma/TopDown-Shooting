@@ -1,4 +1,4 @@
-#include "BloodSmokeParticle.h"
+﻿#include "BloodSmokeParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

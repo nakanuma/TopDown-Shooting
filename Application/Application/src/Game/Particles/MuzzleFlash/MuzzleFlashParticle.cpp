@@ -1,4 +1,4 @@
-#include "MuzzleFlashParticle.h"
+﻿#include "MuzzleFlashParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

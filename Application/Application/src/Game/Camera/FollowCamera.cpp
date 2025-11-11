@@ -1,4 +1,4 @@
-#include "FollowCamera.h"
+﻿#include "FollowCamera.h"
 
 // Application
 #include <src/Game/Utility/Utility.h>

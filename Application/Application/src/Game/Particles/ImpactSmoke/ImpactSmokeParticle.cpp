@@ -1,4 +1,4 @@
-#include "ImpactSmokeParticle.h"
+﻿#include "ImpactSmokeParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>

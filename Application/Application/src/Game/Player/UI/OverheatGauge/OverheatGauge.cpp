@@ -1,4 +1,4 @@
-#include "OverheatGauge.h"
+﻿#include "OverheatGauge.h"
 
 // C++
 #include <numbers>

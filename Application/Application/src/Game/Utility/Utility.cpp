@@ -1,4 +1,4 @@
-#include "Utility.h"
+﻿#include "Utility.h"
 
 // Engine
 #include <Camera.h>
@@ -18,7 +18,10 @@ Float3 Utility::WorldToScreen(Float3 worldPosition) {
 
 Float3 Utility::CalculateCursorPosition() {
 	// マウス位置の取得
-	Float2 mousePos = Float2(Input::GetInstance()->GetMousePosition().x, Input::GetInstance()->GetMousePosition().y);
+	Float2 mousePos = {
+		static_cast<float>(Input::GetInstance()->GetMousePosition().x), 
+		static_cast<float>(Input::GetInstance()->GetMousePosition().y)
+	};
 
 	// 画面サイズ取得
 	float screenWidth = static_cast<float>(Window::GetWidth());
@@ -58,8 +61,7 @@ Float3 Utility::CalculateCursorPosition() {
 	return Float3(0.0f, 0.0f, 0.0f);
 }
 
-bool Utility::IsInsideClientCursor()
-{
+bool Utility::IsInsideClientCursor() {
 	// ウインドウハンドル取得
 	HWND hwnd = Window::GetHandle();
 
@@ -75,8 +77,5 @@ bool Utility::IsInsideClientCursor()
 	GetClientRect(hwnd, &clientRect);
 
 	// クライアント領域内にあるか判定
-	return { 
-		cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) && 
-		cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top) 
-	};
+	return {cursorPos.x >= 0.0f && cursorPos.x < (clientRect.right - clientRect.left) && cursorPos.y >= 0.0f && cursorPos.y < (clientRect.bottom - clientRect.top)};
 }

@@ -1,4 +1,4 @@
-#include "NormalEnemy.h"
+﻿#include "NormalEnemy.h"
 
 // C++
 #include <Windows.h>
@@ -471,7 +471,7 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		}
 
 		// 候補からランダムに1つ選択
-		uint32_t randIndex = RandomGenerator::GetInstance()->RandomValue(0, candidates.size() - 1);
+		uint32_t randIndex = RandomGenerator::GetInstance()->RandomValue(0, static_cast<int>(candidates.size()) - 1);
 		currentTargetWP_ = candidates[randIndex];
 
 		status = BehaviorStatus::Running;
