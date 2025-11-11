@@ -317,7 +317,7 @@ void GamePlayScene::Draw() {
 }
 
 void GamePlayScene::Debug() {
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {

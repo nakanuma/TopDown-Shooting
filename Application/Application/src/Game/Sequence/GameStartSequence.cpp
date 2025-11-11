@@ -127,6 +127,7 @@ void GameStartSequence::DrawUI() {
 }
 
 void GameStartSequence::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("GameStartSequence");
 
 	// フェーズ名を表示
@@ -145,6 +146,7 @@ void GameStartSequence::Debug() {
 	}
 
 	ImGui::End();
+#endif
 }
 
 void GameStartSequence::UpdateBlink()

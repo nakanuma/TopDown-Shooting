@@ -110,6 +110,7 @@ void GameOverSequence::DrawUI() {
 }
 
 void GameOverSequence::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("GameOverSequence");
 
 	ImGui::Text("Timer : %.2f", timer_);
@@ -129,6 +130,7 @@ void GameOverSequence::Debug() {
 	ImGui::Text("Current Phase : %s", phaseStr);
 
 	ImGui::End();
+#endif
 }
 
 void GameOverSequence::UpdateApproach()

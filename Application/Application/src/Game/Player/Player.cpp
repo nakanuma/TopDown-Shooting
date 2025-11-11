@@ -93,9 +93,10 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	調整パラメーター登録
 	///
 
+#ifdef USE_IMGUI
 	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
 	RegisterParam("fireCooldown", &fireCooldown_, 0.0f, 5.0f, 0.01f);
-
+#endif
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 	InitConfig(); // 初回読み込み
 }
@@ -267,7 +268,7 @@ void Player::OnCollision(Collider* other) {
 }
 
 void Player::Debug() {
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	ImGui::Begin("Player");
 
 	/* Translate */
@@ -312,7 +313,7 @@ void Player::Debug() {
 
 	// コンフィグウインドウ
 	DrawConfigWindow("playerConfig");
-#endif //  _DEBUG
+#endif
 }
 
 void Player::FaceCursor() {
