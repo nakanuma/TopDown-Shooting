@@ -1,4 +1,4 @@
-﻿#include "ExplodeSmokeParticle.h"
+#include "ExplodeSmokeParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -7,8 +7,8 @@
 ExplodeSmokeParticle::ExplodeSmokeParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
@@ -22,11 +22,11 @@ ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos,
 	
 	// 位置（Yにオフセットを加える）
 	Float3 offset = rand->RandomValue({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
-	p.transform.translate = pos + offset;
+	p.transform.translate_ = pos + offset;
 	// 回転
-	p.transform.rotate = {0.0f, 0.0f, 0.0f};
+	p.transform.rotate_ = {0.0f, 0.0f, 0.0f};
 	// スケール
-	p.transform.scale = {0.5f, 0.5f, 0.5f};
+	p.transform.scale_ = {0.5f, 0.5f, 0.5f};
 	// 速度ベクトル
 	p.velocity = rand->RandomValue({-5.0f, -5.0f, -5.0f}, {5.0f, 5.0f, 5.0f});
 	// 色
@@ -36,7 +36,7 @@ ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos,
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
-	p.initScale = p.transform.scale;
+	p.initScale = p.transform.scale_;
 	// 上昇速度
 	p.ascendSpeed = rand->RandomValue(4.0f, 12.0f);
 	// 回転速度
@@ -63,14 +63,14 @@ void ExplodeSmokeParticle::UpdateParticle(ExplodeSmokeParticleData& p, float dt)
 	// 速度を合成
 	Float3 currentVelocity = horizontalVelocity + Float3{0.0f, verticalVelocity, 0.0f};
 
-	p.transform.translate += currentVelocity * dt;
+	p.transform.translate_ += currentVelocity * dt;
 
 	///
 	///	回転
 	///
 
 	float damping = Easing::EaseOutQuad(1.0f - t);
-	p.transform.rotate += p.rotationSpeed * damping * dt;
+	p.transform.rotate_ += p.rotationSpeed * damping * dt;
 
 	///
 	///	拡大
@@ -79,7 +79,7 @@ void ExplodeSmokeParticle::UpdateParticle(ExplodeSmokeParticleData& p, float dt)
 	float startScale = p.initScale.x;
 	float endScale = 1.0f;
 	float scale = Easing::EaseInQuad(t) * (endScale - startScale) + startScale;
-	p.transform.scale = {scale, scale, scale};
+	p.transform.scale_ = {scale, scale, scale};
 
 	///
 	///	色の変更

@@ -1,4 +1,4 @@
-﻿#include "GameOverSequence.h"
+#include "GameOverSequence.h"
 
 // Engine
 #include <ImguiWrapper.h>
@@ -41,7 +41,7 @@ void GameOverSequence::Start(const Float3& playerPos)
 	timer_ = 0.0f;
 	targetPos_ = playerPos;	// プレイヤー死亡位置を注視点に
 
-	approachStartPos_ = Camera::GetCurrent()->transform.translate; // カメラ接近時の開始位置を設定
+	approachStartPos_ = Camera::GetCurrent()->transform_.translate_; // カメラ接近時の開始位置を設定
 	approachEndPos_ = Float3::Lerp(approachStartPos_, targetPos_, kApproachDistance); // どれだけの割合近づくかを設定
 }
 
@@ -141,7 +141,7 @@ void GameOverSequence::UpdateApproach()
 
 	// 開始位置から終了位置までeaseTの割合で補間してカメラ移動
 	Float3 newPos = Float3::Lerp(approachStartPos_, approachEndPos_, easeT);
-	Camera::GetCurrent()->transform.translate = newPos;
+	Camera::GetCurrent()->transform_.translate_ = newPos;
 
 	// 接近が完了したら次のフェーズへ
 	if (t >= 1.0f) {
@@ -170,13 +170,13 @@ void GameOverSequence::UpdateRotate()
 
 	// 新しいカメラ位置を計算
 	Float3 cameraPos = targetPos_ + rotateOffset;
-	Camera::GetCurrent()->transform.translate = cameraPos;
+	Camera::GetCurrent()->transform_.translate_ = cameraPos;
 
 	// ターゲットを向くように回転を計算
 	Float3 forward = Float3::Normalize(targetPos_ - cameraPos);
 
-	Camera::GetCurrent()->transform.rotate.y = std::atan2f(forward.x, forward.z);
-	Camera::GetCurrent()->transform.rotate.x = std::asinf(-forward.y);
+	Camera::GetCurrent()->transform_.rotate_.y = std::atan2f(forward.x, forward.z);
+	Camera::GetCurrent()->transform_.rotate_.x = std::asinf(-forward.y);
 
 	// 回転が完了したら次のフェーズへ
 	if (t >= 1.0f) { 

@@ -1,4 +1,4 @@
-﻿#include "ImmobileEnemy.h"
+#include "ImmobileEnemy.h"
 
 // C++
 #include <numbers>
@@ -31,9 +31,9 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
-	objectEnemy_->transform_.translate = position;
-	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
-	objectEnemy_->transform_.rotate = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->transform_.translate_ = position;
+	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
+	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 
 	///
 	///	コライダー生成
@@ -43,7 +43,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("ImmobileEnemy");
-	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
 	aabb->SetSize(colliderSize_);
 	aabb->SetOwner(this);
 
@@ -139,7 +139,7 @@ void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
 void ImmobileEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
-	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
+	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
 	// 上にずらす分のオフセット
 	const float kOffsetHPBar = 90.0f;
 
@@ -216,8 +216,8 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45)); // クロス片側
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135)); // クロス片側
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45)); // クロス片側
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135)); // クロス片側
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
@@ -236,7 +236,7 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	///
 
 	const Float3 playerPos = targetPlayer_->GetTranslate();
-	const Float3 enemyPos = this->objectEnemy_->transform_.translate;
+	const Float3 enemyPos = this->objectEnemy_->transform_.translate_;
 	const Float3 direction = Float3::Normalize(playerPos - enemyPos);
 	const float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
 
@@ -277,7 +277,7 @@ void ImmobileEnemy::SearchMotion() {
 
 		// 設定された方向への回転
 		float rotateSpeed = (isRotatingRight_ ? 1.0f : -1.0f) * rotationSpeed_;
-		objectEnemy_->transform_.rotate.y += rotateSpeed;
+		objectEnemy_->transform_.rotate_.y += rotateSpeed;
 
 		// 回転時間完了で待機状態へ移行
 		if (searchStateTimer_ >= searchRotateDuration_) {
@@ -310,15 +310,15 @@ void ImmobileEnemy::SearchMotion() {
 
 void ImmobileEnemy::FaceToPlayer() {
 	// プレイヤーへの方向ベクトルからY軸回転角度を計算
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸に回転を適用
-	objectEnemy_->transform_.rotate.y = targetAngle;
+	objectEnemy_->transform_.rotate_.y = targetAngle;
 }
 
 void ImmobileEnemy::Shoot() {
 	// 発射方向
-	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 拡散をランダムに設定
 	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
 	direction.x += randSpread;
@@ -327,7 +327,7 @@ void ImmobileEnemy::Shoot() {
 
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
+	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 残弾を減らす

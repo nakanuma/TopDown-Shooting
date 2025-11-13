@@ -1,4 +1,4 @@
-﻿#include "RedCircleParticle.h"
+#include "RedCircleParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -7,8 +7,8 @@
 RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
@@ -20,11 +20,11 @@ RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const
 	RedCircleParticleData p;
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate = {PIf / 2.0f, 0.0f, 0.0f}; // 仰向けになるように
+	p.transform.rotate_ = {PIf / 2.0f, 0.0f, 0.0f}; // 仰向けになるように
 	// スケール
-	p.transform.scale = {0.0f, 0.0f, 0.0f};
+	p.transform.scale_ = {0.0f, 0.0f, 0.0f};
 	// 速度ベクトル
 	p.velocity = {0.0f, 0.0f, 0.0f};
 	// 色
@@ -43,5 +43,5 @@ void RedCircleParticle::UpdateParticle(RedCircleParticleData& p, float dt) {
 
 	// 拡大
 	float easeT = Easing::EaseOutExpo(t);
-	p.transform.scale = p.targetScale * easeT;
+	p.transform.scale_ = p.targetScale * easeT;
 }

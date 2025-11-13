@@ -1,4 +1,4 @@
-﻿#include "HomingMissile.h"
+#include "HomingMissile.h"
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -17,15 +17,15 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
-	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = {0.5f, 0.5f, 0.5f};
+	objectBullet_->transform_.translate_ = position;
+	objectBullet_->transform_.scale_ = {0.5f, 0.5f, 0.5f};
 	objectBullet_->materialCB_.data_->color = {0.5f, 0.5f, 0.5f, 1.0f};
 
 	// 進行方向から向きを計算して回転を設定
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
+	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
 
 	// ---------------------------------------------------------
 	// コライダー生成・登録
@@ -33,8 +33,8 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	
 	auto obb = std::make_unique<OBBCollider>();
 	obb->SetTag("HomingMissile");
-	obb->SetFollowTarget(&objectBullet_->transform_.translate);
-	obb->SetFollowRotation(&objectBullet_->transform_.rotate);
+	obb->SetFollowTarget(&objectBullet_->transform_.translate_);
+	obb->SetFollowRotation(&objectBullet_->transform_.rotate_);
 	obb->SetSize(kColliderSize);
 	obb->SetOwner(this);
 
@@ -55,7 +55,7 @@ void HomingMissile::Update() {
 	// ---------------------------------------------------------
 
 	// プレイヤー方向
-	Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate;
+	Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate_;
 	toTarget = Float3::Normalize(toTarget);
 
 	// 現在の移動方向ベクトル
@@ -70,7 +70,7 @@ void HomingMissile::Update() {
 	velocity_ = newDir * speed_;
 
 	// 移動
-	objectBullet_->transform_.translate += velocity_;
+	objectBullet_->transform_.translate_ += velocity_;
 
 	// ---------------------------------------------------------
 	// 弾の向きを進行方向へ向ける処理
@@ -78,12 +78,12 @@ void HomingMissile::Update() {
 
 	float yaw = std::atan2(newDir.x, newDir.z);
 	float pitch = -std::asin(newDir.y);
-	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
+	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
 
 	// パーティクル発生（後方から出るよう調整）
 	float offsetDistance = -3.0f;
 	Float3 offset = newDir * offsetDistance;
-	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate + offset, 1);
+	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate_ + offset, 1);
 
 	// ---------------------------------------------------------
 	// 寿命更新
@@ -92,9 +92,9 @@ void HomingMissile::Update() {
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, 15);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, 25);
 
 		// 死亡させる
 		isDead_ = true;
@@ -117,16 +117,16 @@ void HomingMissile::Draw() {
 }
 
 void HomingMissile::OnCollision(Collider* other) {
-	Float3 bulletPos = this->objectBullet_->transform_.translate;
+	Float3 bulletPos = this->objectBullet_->transform_.translate_;
 
 	// ---------------------------------------------------------
 	// プレイヤーとの衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Player") {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, 15);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, 25);
 
 		// 死亡させる
 		isDead_ = true;
@@ -139,9 +139,9 @@ void HomingMissile::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Obstacle") {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, 15);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, 25);
 
 		// 死亡させる
 		isDead_ = true;

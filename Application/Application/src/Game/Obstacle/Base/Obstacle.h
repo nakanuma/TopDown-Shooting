@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -56,13 +56,13 @@ public:
 	/// 現在位置の取得を行います。
 	/// </summary>
 	/// <returns>現在位置（Float3）</returns>
-	Float3& GetTranslate() const { return object_->transform_.translate; }
+	Float3& GetTranslate() const { return object_->transform_.translate_; }
 
 	/// <summary>
 	/// スケールの取得を行います。
 	/// </summary>
 	/// <returns>スケール（Float3）</returns>
-	Float3& GetScale() const { return object_->transform_.scale; }
+	Float3& GetScale() const { return object_->transform_.scale_; }
 
 	/// <summary>
 	/// コライダーの有効化状態を設定します。

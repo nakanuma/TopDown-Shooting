@@ -1,4 +1,4 @@
-﻿#include "DeathCrossParticle.h"
+#include "DeathCrossParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -9,8 +9,8 @@ DeathCrossParticle::DeathCrossParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = { true, true, true };
@@ -23,11 +23,11 @@ DeathCrossParticleData DeathCrossParticle::CreateParticle(const Float3& pos, con
 	DeathCrossParticleData p;
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate = { 0.0f, 0.0f, angle };
+	p.transform.rotate_ = { 0.0f, 0.0f, angle };
 	// スケール
-	p.transform.scale = { 3.5f, 3.5f, 1.0f };
+	p.transform.scale_ = { 3.5f, 3.5f, 1.0f };
 	// 速度ベクトル
 	p.velocity = { 0.0f, 0.0f, 0.0f };
 	// 色
@@ -56,7 +56,7 @@ void DeathCrossParticle::UpdateParticle(DeathCrossParticleData& p, float dt)
 	float scaleT = std::clamp(p.currentTime / scaleDuration, 0.0f, 1.0f);
 	float easeT = Easing::EaseOutQuart(scaleT);
 
-	p.transform.scale.y = Easing::Lerp(startScaleY, endScaleY, easeT);
+	p.transform.scale_.y = Easing::Lerp(startScaleY, endScaleY, easeT);
 
 	///
 	/// 透明化

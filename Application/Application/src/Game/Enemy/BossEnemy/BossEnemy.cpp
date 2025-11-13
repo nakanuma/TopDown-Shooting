@@ -1,4 +1,4 @@
-﻿#include "BossEnemy.h"
+#include "BossEnemy.h"
 
 // C++
 #include <numbers>
@@ -32,9 +32,9 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
-	objectEnemy_->transform_.translate = position;
-	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
-	objectEnemy_->transform_.rotate = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->transform_.translate_ = position;
+	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
+	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = {0.2f, 0.2f, 0.2f, 1.0f};
 
 	///
@@ -45,8 +45,8 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 
 	auto obb = std::make_unique<OBBCollider>();
 	obb->SetTag("BossEnemy");
-	obb->SetFollowTarget(&objectEnemy_->transform_.translate);
-	obb->SetFollowRotation(&objectEnemy_->transform_.rotate);
+	obb->SetFollowTarget(&objectEnemy_->transform_.translate_);
+	obb->SetFollowRotation(&objectEnemy_->transform_.rotate_);
 	obb->SetSize(colliderSize_);
 	obb->SetOwner(this);
 
@@ -185,9 +185,9 @@ void BossEnemy::Debug() {
 		GroundWarningAttack();
 	}
 
-	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate.x, 0.01f);
-	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale.x, 0.01f);
+	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate_.x, 0.01f);
+	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale_.x, 0.01f);
 
 	ImGui::End();
 
@@ -238,11 +238,11 @@ void BossEnemy::OnCollision(Collider* other) {
 
 void BossEnemy::FacePlayer() {
 	// プレイヤーへの方向ベクトル
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 方向ベクトルからY軸回転角度を計算
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸に回転を適用
-	objectEnemy_->transform_.rotate.y = targetAngle;
+	objectEnemy_->transform_.rotate_.y = targetAngle;
 }
 
 void BossEnemy::MoveTowardPlayer() {
@@ -250,22 +250,22 @@ void BossEnemy::MoveTowardPlayer() {
 		return;
 
 	// プレイヤーへの方向ベクトル
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	toPlayer.y = 0.0f;
 	toPlayer = Float3::Normalize(toPlayer);
 
 	// 移動処理
-	objectEnemy_->transform_.translate += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.translate_ += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
 }
 
 void BossEnemy::FireHomingMissile() {
 	// 発射方向
-	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	direction = Float3::Normalize(direction);
 
 	// 弾の生成と追加
 	auto newBullet = std::make_unique<HomingMissile>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Missile"));
+	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &ModelManager::GetInstance()->GetModel("Missile"));
 	newBullet->SetPlayer(targetPlayer_);
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 }

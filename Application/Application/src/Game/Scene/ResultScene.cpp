@@ -123,7 +123,7 @@ void ResultScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap.heap_.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap_.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -180,8 +180,8 @@ void ResultScene::Draw() {
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	ImGui::DragFloat3("camera.translate", &camera_->transform.translate.x, 0.01f);
-	ImGui::DragFloat3("camera.rotate", &camera_->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
 	ImGui::End();
 

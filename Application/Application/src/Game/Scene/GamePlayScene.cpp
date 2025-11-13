@@ -94,7 +94,7 @@ void GamePlayScene::Initialize() {
 
 	// 追従カメラ生成
 	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize(camera_->GetCurrent()->transform.translate); // 初期オフセット
+	followCamera_->Initialize(camera_->GetCurrent()->transform_.translate_); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	// ポストエフェクト管理
@@ -142,7 +142,7 @@ void GamePlayScene::Update() {
 			// 追従カメラの更新
 			followCamera_->Update();
 			// 追従カメラ + カメラシェイクを現在カメラに適用
-			camera_->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+			camera_->transform_.translate_ = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 		}
 	}
 
@@ -186,7 +186,7 @@ void GamePlayScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -325,8 +325,8 @@ void GamePlayScene::Debug() {
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::DragFloat3("camera.translate", &camera_->transform.translate.x, 0.1f);
-	ImGui::DragFloat3("camera.rotate", &camera_->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
 	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager_->directionalLightCB_.data_->direction.x, 0.01f);
 	lightManager_->directionalLightCB_.data_->direction = Float3::Normalize(lightManager_->directionalLightCB_.data_->direction);

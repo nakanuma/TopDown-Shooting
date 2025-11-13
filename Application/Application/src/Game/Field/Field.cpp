@@ -1,4 +1,4 @@
-﻿#include "Field.h"
+#include "Field.h"
 
 // C++
 #include <numbers>
@@ -11,8 +11,8 @@ void Field::Initialize() {
 
 	objectFloor_ = std::make_unique<Object3D>();
 	objectFloor_->model_ = &ModelManager::GetInstance()->GetModel("Plane");
-	objectFloor_->transform_.rotate = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
-	objectFloor_->transform_.scale = {500.0f, 500.0f, 1.0f};
+	objectFloor_->transform_.rotate_ = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
+	objectFloor_->transform_.scale_ = {500.0f, 500.0f, 1.0f};
 	objectFloor_->materialCB_.data_->color = {0.157f, 0.204f, 0.308f, 1.0f};
 }
 
@@ -27,11 +27,11 @@ void Field::Debug() {
 	/* Translate */
 	ImGui::Text("Translate");
 
-	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate.x, 0.01f);
+	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate_.x, 0.01f);
 
-	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate_.x, 0.01f);
 
-	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale.x, 0.01f);
+	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale_.x, 0.01f);
 
 	/*  */
 

@@ -1,4 +1,4 @@
-﻿#include "Obstacle.h"
+#include "Obstacle.h"
 
 void Obstacle::Initialize(const Float3& position, const Float3& scale, const Float3& rotate, const Float3& colliderSize, ModelManager::ModelData* model) {
 	///
@@ -7,7 +7,7 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
-	object_->transform_.translate = position;
+	object_->transform_.translate_ = position;
 	object_->materialCB_.data_->useEnvironmentMap = true;
 	object_->materialCB_.data_->environmentStrength = 0.1f;
 
@@ -16,7 +16,7 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	// 横向き配置かどうかを判定
 	if (std::abs(rotate.z - DegToRad(-90.0f)) < 0.01f) { // Blender上で横向き（-90度）になっているか確認
 		// オブジェクトを横向きにする
-		object_->transform_.rotate.y -= DegToRad(90.0f);
+		object_->transform_.rotate_.y -= DegToRad(90.0f);
 
 		// コライダーのxとzを入れ替え
 		std::swap(size.x, size.z);
@@ -32,7 +32,7 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("Obstacle");
-	aabb->SetFollowTarget(&object_->transform_.translate);
+	aabb->SetFollowTarget(&object_->transform_.translate_);
 	aabb->SetSize(size);
 	aabb->SetOwner(this);
 

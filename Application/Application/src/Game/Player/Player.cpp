@@ -1,4 +1,4 @@
-﻿#define NOMINMAX
+#define NOMINMAX
 #include "Player.h"
 
 // C++
@@ -154,8 +154,8 @@ void Player::Update(bool operable) {
 
 	const float gunForwardOffset = 1.1f; // 前方方向へのオフセット
 	const float gunRightOffset = 0.3f; // 右方向のオフセット
-	objectGun_->transform_.translate = playerPos + (forward * gunForwardOffset) + (right * gunRightOffset);
-	objectGun_->transform_.rotate = playerRot;
+	objectGun_->transform_.translate_ = playerPos + (forward * gunForwardOffset) + (right * gunRightOffset);
+	objectGun_->transform_.rotate_ = playerRot;
 
 	objectGun_->UpdateMatrix();
 	objectGun_->UpdateShadowMatrix();
@@ -281,9 +281,9 @@ void Player::Debug() {
 	ImGui::DragFloat3("scale", &objectPlayer_->GetScale().x, 0.01f);
 
 	ImGui::Separator();
-	ImGui::DragFloat3("Gun:Translate", &objectGun_->transform_.translate.x, 0.01f);
-	ImGui::DragFloat3("Gun:Rotate", &objectGun_->transform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("Gun:Scale", &objectGun_->transform_.scale.x, 0.01f);
+	ImGui::DragFloat3("Gun:Translate", &objectGun_->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("Gun:Rotate", &objectGun_->transform_.rotate_.x, 0.01f);
+	ImGui::DragFloat3("Gun:Scale", &objectGun_->transform_.scale_.x, 0.01f);
 
 	/* Parameter */
 	ImGui::Text("Parameter");
@@ -425,11 +425,11 @@ void Player::HandleShooting() {
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate.y); // 薬莢排出
+		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
 		
-		Float3 forward = { sinf(objectGun_->transform_.rotate.y), 0.0f, cosf(objectGun_->transform_.rotate.y) }; // 前方向ベクトル
+		Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
 		const float forwardOffset = 1.4f; // 前方方向へのオフセット
-		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate + (forward * forwardOffset), 6); // マズルフラッシュ
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * forwardOffset), 6); // マズルフラッシュ
 	}
 }
 

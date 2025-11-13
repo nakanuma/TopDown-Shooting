@@ -195,7 +195,7 @@ void TitleScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -291,8 +291,8 @@ void TitleScene::Draw() {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
-	ImGui::DragFloat3("camera.translate", &camera_->transform.translate.x, 0.01f);
-	ImGui::DragFloat3("camera.rotate", &camera_->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
 	ImGui::Separator();
 
@@ -315,11 +315,11 @@ void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float hei
 
 	// 新しいカメラ位置を円運動で計算
 	Float3 cameraPos = { std::cosf(angle) * radius, height, std::sinf(angle) * radius };
-	camera_->transform.translate = cameraPos;
+	camera_->transform_.translate_ = cameraPos;
 
 	// ターゲットを向くように回転を計算
 	Float3 forward = Float3::Normalize(target - cameraPos);
 
-	camera_->transform.rotate.y = std::atan2f(forward.x, forward.z);
-	camera_->transform.rotate.x = std::asinf(-forward.y);
+	camera_->transform_.rotate_.y = std::atan2f(forward.x, forward.z);
+	camera_->transform_.rotate_.x = std::asinf(-forward.y);
 }

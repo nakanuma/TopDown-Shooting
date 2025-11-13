@@ -58,7 +58,7 @@ public:
 	/// 弾の現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	const Float3& GetTranslate() const { return objectBullet_->transform_.translate; }
+	const Float3& GetTranslate() const { return objectBullet_->transform_.translate_; }
 
 	/// <summary>
 	/// 死亡したかどうかを取得します。

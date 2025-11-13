@@ -1,4 +1,4 @@
-﻿#include "BloodSmokeParticle.h"
+#include "BloodSmokeParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -9,8 +9,8 @@ BloodSmokeParticle::BloodSmokeParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
@@ -25,12 +25,12 @@ BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, con
 
 	// 位置
 	Float3 offset = rand->RandomValue({ -0.25f, -0.25f, -0.25f }, { 0.25f, 0.25f, 0.25f });
-	p.transform.translate = pos + offset;
+	p.transform.translate_ = pos + offset;
 	// スケール
 	float scale = rand->RandomValue(0.2f, 0.4f);
-	p.transform.scale = { scale, scale, scale };
+	p.transform.scale_ = { scale, scale, scale };
 	// 回転
-	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// 速度ベクトル
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f; // 引数で受け取った方向と逆向きにする
 	float diff = 1.0f;
@@ -43,7 +43,7 @@ BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, con
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
-	p.initScale = p.transform.scale;
+	p.initScale = p.transform.scale_;
 	// 回転速度
 	p.rotationSpeed = rand->RandomValue({ -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f });
 
@@ -59,14 +59,14 @@ void BloodSmokeParticle::UpdateParticle(BloodSmokeParticleData& p, float dt)
 	///		
 
 	float moveFactor = Easing::EaseOutQuad(1.0f - t);
-	p.transform.translate += p.velocity * moveFactor * dt;
+	p.transform.translate_ += p.velocity * moveFactor * dt;
 
 	///
 	///	回転
 	///
 
 	float damping = Easing::EaseOutQuad(1.0f - t);
-	p.transform.rotate += p.rotationSpeed * damping * dt;
+	p.transform.rotate_ += p.rotationSpeed * damping * dt;
 
 	///
 	///	拡大
@@ -75,7 +75,7 @@ void BloodSmokeParticle::UpdateParticle(BloodSmokeParticleData& p, float dt)
 	float startScale = p.initScale.x;
 	float endScale = 0.5f;
 	float scale = Easing::EaseInQuad(t) * (endScale - startScale) + startScale;
-	p.transform.scale = { scale, scale, scale };
+	p.transform.scale_ = { scale, scale, scale };
 
 	///
 	/// 透明化

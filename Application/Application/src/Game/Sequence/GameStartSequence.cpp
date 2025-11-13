@@ -1,4 +1,4 @@
-﻿#include "GameStartSequence.h"
+#include "GameStartSequence.h"
 
 // Engine
 #include <ImguiWrapper.h>
@@ -15,17 +15,17 @@ void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// 初期カメラを設定
-	Camera::GetCurrent()->transform.translate = initCameraPos_;
-	Camera::GetCurrent()->transform.rotate = initCameraRot_;
+	Camera::GetCurrent()->transform_.translate_ = initCameraPos_;
+	Camera::GetCurrent()->transform_.rotate_ = initCameraRot_;
 
 	// オブジェクト生成
 	objectCrumblingWall_ = std::make_unique<Object3D>();
 	objectCrumblingWall_->model_ = &ModelManager::GetInstance()->GetModel("CrumblingWall");
-	objectCrumblingWall_->transform_.translate = { 36.0f, 2.5f, 0.0f }; // 初期位置
+	objectCrumblingWall_->transform_.translate_ = { 36.0f, 2.5f, 0.0f }; // 初期位置
 
 	objectDynamite_ = std::make_unique<Object3D>();
 	objectDynamite_->model_ = &ModelManager::GetInstance()->GetModel("Dynamite");
-	objectDynamite_->transform_.translate = { 36.0f, 2.5f, -1.5f }; // 初期位置
+	objectDynamite_->transform_.translate_ = { 36.0f, 2.5f, -1.5f }; // 初期位置
 
 	// スプライト生成
 	uint32_t textureWhite = TextureManager::Load("white.png");
@@ -181,18 +181,18 @@ void GameStartSequence::UpdateExplosion()
 	// 爆発時に1度のみ行う処理
 	if (!isExplode_) {
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("wallCollapse", objectCrumblingWall_->transform_.translate, 200); //壁崩壊パーティクル
+		ParticleEffectManager::GetInstance()->Emit("wallCollapse", objectCrumblingWall_->transform_.translate_, 200); //壁崩壊パーティクル
 		for(int i = 0; i < 50; i++){
 			Float3 offset = RandomGenerator::GetInstance()->RandomValue({-2.0f, -2.5f, 0.0f}, {2.0f, 2.5f, 0.0f});
 			// 爆発煙パーティクル
-			ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectDynamite_->transform_.translate + offset, 1);
+			ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectDynamite_->transform_.translate_ + offset, 1);
 		}
 
 		// カメラシェイク
 		CameraShake::GetInstance()->StartShake(1.5f, 1.0f);
 	}
 	// カメラにシェイクオフセットを加算
-	Camera::GetCurrent()->transform.translate = initCameraPos_ + CameraShake::GetInstance()->GetOffset();
+	Camera::GetCurrent()->transform_.translate_ = initCameraPos_ + CameraShake::GetInstance()->GetOffset();
 
 	// 爆発終了したことを知らせる
 	isExplode_ = true;
@@ -213,8 +213,8 @@ void GameStartSequence::UpdateTransition()
 
 	// 線形補間でカメラを移動
 	float easeT = Easing::EaseOutSine(t);
-	Camera::GetCurrent()->transform.translate = Float3::Lerp(initCameraPos_, topdownCameraPos_, easeT);
-	Camera::GetCurrent()->transform.rotate = Float3::Lerp(initCameraRot_, topdownCameraRot_, easeT);
+	Camera::GetCurrent()->transform_.translate_ = Float3::Lerp(initCameraPos_, topdownCameraPos_, easeT);
+	Camera::GetCurrent()->transform_.rotate_ = Float3::Lerp(initCameraRot_, topdownCameraRot_, easeT);
 
 	// 線形補間でレターボックスを上下に移動
 	float boxEase = Easing::EaseOutQuad(t);
@@ -234,8 +234,8 @@ void GameStartSequence::DebugSkip()
 {
 	if(isDebugSkip_ && phase_ != Phase::Finish){
 		// カメラを最終位置に設定
-		Camera::GetCurrent()->transform.translate = topdownCameraPos_;
-		Camera::GetCurrent()->transform.rotate = topdownCameraRot_;
+		Camera::GetCurrent()->transform_.translate_ = topdownCameraPos_;
+		Camera::GetCurrent()->transform_.rotate_ = topdownCameraRot_;
 
 		// レターボックスを最終位置に設定
 		spriteTopLetterBox_->SetPosition(topBoxEndPos_);

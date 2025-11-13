@@ -1,4 +1,4 @@
-﻿#include "ShellEjectionParticle.h"
+#include "ShellEjectionParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -9,8 +9,8 @@ ShellEjectionParticle::ShellEjectionParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
@@ -24,11 +24,11 @@ ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& po
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// スケール（縦長の形状）
-	p.transform.scale = { 0.1f, 0.1f, 0.25f };
+	p.transform.scale_ = { 0.1f, 0.1f, 0.25f };
 	// 速度ベクトル
 	Float3 rightDir = {cosf(angle), 0.0f, -sinf(angle)};
 	Float3 upDir = {0.0f, 1.0f, 0.0f};
@@ -58,8 +58,8 @@ void ShellEjectionParticle::UpdateParticle(ShellEjectionParticleData& p, float d
 	p.velocity.y += kGravity * dt;
 
 	// 位置更新
-	p.transform.translate += p.velocity * dt;
+	p.transform.translate_ += p.velocity * dt;
 
 	// 回転
-	p.transform.rotate += p.rotationSpeed * dt;
+	p.transform.rotate_ += p.rotationSpeed * dt;
 }

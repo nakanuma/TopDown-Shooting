@@ -1,4 +1,4 @@
-﻿#include "MuzzleFlashParticle.h"
+#include "MuzzleFlashParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -9,8 +9,8 @@ MuzzleFlashParticle::MuzzleFlashParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = { true, true, true };
@@ -29,11 +29,11 @@ MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Float3& pos, c
 	float scaleY = rand->RandomValue(0.8f, 1.0f);
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate = { 0.0f, 0.0f, randAngle };
+	p.transform.rotate_ = { 0.0f, 0.0f, randAngle };
 	// スケール
-	p.transform.scale = { scaleX, scaleY, 1.0f };
+	p.transform.scale_ = { scaleX, scaleY, 1.0f };
 	// 速度ベクトル
 	p.velocity = {0.0f, 0.0f, 0.0f};
 	// 色
@@ -43,7 +43,7 @@ MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Float3& pos, c
 	// 生存時間
 	p.lifeTime = rand->RandomValue(0.05f, 0.05f);
 	// 初期スケール
-	p.initScale = p.transform.scale;
+	p.initScale = p.transform.scale_;
 
 	return p;
 }
@@ -54,6 +54,6 @@ void MuzzleFlashParticle::UpdateParticle(MuzzleFlashParticleData& p, float dt)
 
 	// 拡縮
 	float easeT = Easing::EaseOutExpo(1.0f - t);
-	p.transform.scale.x = Easing::Lerp(p.initScale.x, p.initScale.x * 1.4f, easeT); // 横に引き伸ばす
-	p.transform.scale.y = Easing::Lerp(p.initScale.y, p.initScale.y * 0.4f, easeT); // 縦に潰す
+	p.transform.scale_.x = Easing::Lerp(p.initScale.x, p.initScale.x * 1.4f, easeT); // 横に引き伸ばす
+	p.transform.scale_.y = Easing::Lerp(p.initScale.y, p.initScale.y * 0.4f, easeT); // 縦に潰す
 }
