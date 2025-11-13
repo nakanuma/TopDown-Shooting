@@ -1,4 +1,4 @@
-﻿#include "GamePlayScene.h"
+#include "GamePlayScene.h"
 #include "DirectXBase.h"
 #include "ImguiWrapper.h"
 #include "RTVManager.h"
@@ -28,26 +28,26 @@ void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{ 0.0f, 50.0f, -55.0f }, Float3{ std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f }, 0.45f);
-	Camera::Set(camera.get()); // 現在のカメラをセット
+	camera_ = std::make_unique<Camera>(Float3{ 0.0f, 50.0f, -55.0f }, Float3{ std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f }, 0.45f);
+	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
-	spriteCommon = std::make_unique<SpriteCommon>();
-	spriteCommon->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_->Initialize(DirectXBase::GetInstance());
 
 	// TextureManagerの初期化
 	TextureManager::Initialize(dxBase->GetDevice(), SRVManager::GetInstance());
 
 	// SoundManagerの初期化
-	soundManager = std::make_unique<SoundManager>();
-	soundManager->Initialize();
+	soundManager_ = std::make_unique<SoundManager>();
+	soundManager_->Initialize();
 
 	// Inputの初期化
-	input = Input::GetInstance();
+	input_ = Input::GetInstance();
 
 	// LightManagerの初期化
-	lightManager = LightManager::GetInstance();
-	lightManager->Initialize();
+	lightManager_ = LightManager::GetInstance();
+	lightManager_->Initialize();
 
 	///
 	///	↓ ゲームシーン用
@@ -94,7 +94,7 @@ void GamePlayScene::Initialize() {
 
 	// 追従カメラ生成
 	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize(camera->GetCurrent()->transform.translate); // 初期オフセット
+	followCamera_->Initialize(camera_->GetCurrent()->transform_.translate_); // 初期オフセット
 	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
 
 	// ポストエフェクト管理
@@ -104,15 +104,15 @@ void GamePlayScene::Initialize() {
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
-	gameStartSequence_->Initialize(spriteCommon.get());
+	gameStartSequence_->Initialize(spriteCommon_.get());
 
 	// ゲームオーバー時の演出制御クラス
 	gameOverSequence_ = std::make_unique<GameOverSequence>();
-	gameOverSequence_->Initialize(spriteCommon.get());
+	gameOverSequence_->Initialize(spriteCommon_.get());
 	gameOverSequence_->SetPlayer(player_.get());
 
 	// トランジション
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
 	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
 
 	// ウェイポイント初期化
@@ -142,7 +142,7 @@ void GamePlayScene::Update() {
 			// 追従カメラの更新
 			followCamera_->Update();
 			// 追従カメラ + カメラシェイクを現在カメラに適用
-			camera->transform.translate = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+			camera_->transform_.translate_ = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 		}
 	}
 
@@ -186,14 +186,14 @@ void GamePlayScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
-	lightManager->TransferContantBuffer();
+	lightManager_->TransferContantBuffer();
 	// ポストエフェクト用の定数バッファを設定
 	postEffectManager_->TransfarConstantBuffer();
 	// LightCameraの定数バッファを送信
@@ -270,7 +270,7 @@ void GamePlayScene::Draw() {
 	///
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-	spriteCommon->PreDraw();
+	spriteCommon_->PreDraw();
 
 	///
 	/// ↓ ここからスプライトの描画コマンド
@@ -325,12 +325,12 @@ void GamePlayScene::Debug() {
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.1f);
-	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
-	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager->directionalLightCB_.data_->direction.x, 0.01f);
-	lightManager->directionalLightCB_.data_->direction = Float3::Normalize(lightManager->directionalLightCB_.data_->direction);
-	ImGui::DragFloat("DirectionalLight : intensity", &lightManager->directionalLightCB_.data_->intensity, 0.01f);
+	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager_->directionalLightCB_.data_->direction.x, 0.01f);
+	lightManager_->directionalLightCB_.data_->direction = Float3::Normalize(lightManager_->directionalLightCB_.data_->direction);
+	ImGui::DragFloat("DirectionalLight : intensity", &lightManager_->directionalLightCB_.data_->intensity, 0.01f);
 
 	if (ImGui::Button("TITLE")) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");

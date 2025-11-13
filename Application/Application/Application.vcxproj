@@ -170,6 +170,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)engine\2D;$(SolutionDir)engine\3D;$(SolutionDir)engine\Input;$(SolutionDir)externals\assimp\include;$(SolutionDir)engine\Particle;$(SolutionDir)engine\Sound;$(SolutionDir)engine\Game;$(SolutionDir)engine\Scene;$(SolutionDir)application\Scene;$(SolutionDir)application\GlobalVariables;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>/source-charset:utf-8 /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -193,6 +194,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/source-charset:utf-8 /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>

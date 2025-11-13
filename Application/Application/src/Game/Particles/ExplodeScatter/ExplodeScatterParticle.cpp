@@ -1,4 +1,4 @@
-﻿#include "ExplodeScatterParticle.h"
+#include "ExplodeScatterParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -7,8 +7,8 @@
 ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
@@ -21,11 +21,11 @@ ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& 
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate = {0.0f, 0.0f, 0.0f};
+	p.transform.rotate_ = {0.0f, 0.0f, 0.0f};
 	// スケール
-	p.transform.scale = rand->RandomValue({0.2f, 0.2f, 0.2f}, {0.4f, 0.4f, 0.4f});
+	p.transform.scale_ = rand->RandomValue({0.2f, 0.2f, 0.2f}, {0.4f, 0.4f, 0.4f});
 	// 速度ベクトル
 	p.velocity = rand->RandomValue({-12.0f, 0.0f, -12.0f}, {12.0f, 8.0f, 12.0f});
 	// 色
@@ -35,7 +35,7 @@ ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& 
 	// 生存時間
 	p.lifeTime = rand->RandomValue(0.8f, 1.2f);
 	// 初期スケール
-	p.initScale = p.transform.scale;
+	p.initScale = p.transform.scale_;
 	// 回転速度
 	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
 
@@ -53,14 +53,14 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	Float3 gravity = {0.0f, -9.8f, 0.0f};
 	p.velocity += gravity * dt;
 
-	p.transform.translate += p.velocity * dt;
+	p.transform.translate_ += p.velocity * dt;
 
 	///
 	///	回転
 	///
 
 	float damping = Easing::EaseOutQuad(1.0f - t);
-	p.transform.rotate += p.rotationSpeed * damping * dt;
+	p.transform.rotate_ += p.rotationSpeed * damping * dt;
 
 	///
 	///	縮小
@@ -68,7 +68,7 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	if (t > 0.8f) {                       // 4/5に到達したら
 		float localT = (t - 0.8f) / 0.2f; // 0~1に正規化
 		float easeT = Easing::EaseInQuad(localT);
-		p.transform.scale = p.initScale * (1.0f - easeT);
+		p.transform.scale_ = p.initScale * (1.0f - easeT);
 	}
 
 	///

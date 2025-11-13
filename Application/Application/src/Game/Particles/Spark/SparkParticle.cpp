@@ -1,4 +1,4 @@
-﻿#include "SparkParticle.h"
+#include "SparkParticle.h"
 
 // Engine
 #include <Engine/Math/Easing.h>
@@ -7,8 +7,8 @@
 SparkParticle::SparkParticle(ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
@@ -21,9 +21,9 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置
-	p.transform.translate = pos;
+	p.transform.translate_ = pos;
 	// スケール
-	p.transform.scale = {0.04f, 0.04f, 0.8f};
+	p.transform.scale_ = {0.04f, 0.04f, 0.8f};
 	// 速度ベクトル
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f; // 引数で受け取った方向と逆向きにする
 	float diff = 0.9f;
@@ -33,7 +33,7 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	Float3 dir = Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	p.transform.rotate = {-pitch, -yaw, 0.0f};
+	p.transform.rotate_ = {-pitch, -yaw, 0.0f};
 	// 色
 	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
 	// 生存時間
@@ -41,7 +41,7 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
-	p.initScale = p.transform.scale;
+	p.initScale = p.transform.scale_;
 
 	return p;
 }
@@ -55,11 +55,11 @@ void SparkParticle::UpdateParticle(SparkParticleData& p, float dt) {
 
 	// 移動
 	float moveFactor = Easing::EaseOutQuart(1.0f - t);
-	p.transform.translate += (p.velocity * moveFactor * dt);
+	p.transform.translate_ += (p.velocity * moveFactor * dt);
 
 	// 縮小
 	float easeT = Easing::EaseInQuad(t);
-	p.transform.scale.z = p.initScale.z * (1.0f - easeT);
+	p.transform.scale_.z = p.initScale.z * (1.0f - easeT);
 
 	// 色
 	Float4 color;

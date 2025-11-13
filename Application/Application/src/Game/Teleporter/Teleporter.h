@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // C++ Includes
@@ -71,7 +71,7 @@ public:
 	/// 位置の取得を行います。
 	/// </summary>
 	/// <returns>現在位置（Float3）</returns>
-	const Float3& GetTranslate() const { return object_->transform_.translate; }
+	const Float3& GetTranslate() const { return object_->transform_.translate_; }
 
 private:
 	// =========================================================

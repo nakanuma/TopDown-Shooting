@@ -1,4 +1,4 @@
-﻿#include "EnemyBullet.h"
+#include "EnemyBullet.h"
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -19,21 +19,21 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	// ---------------------------------------------------------
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
-	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = { kRadius, kRadius, kRadius };
+	objectBullet_->transform_.translate_ = position;
+	objectBullet_->transform_.scale_ = { kRadius, kRadius, kRadius };
 
 	// 進行方向から向きを計算して回転を設定
 	Float3 dir = Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	objectBullet_->transform_.rotate = {pitch, yaw, 0.0f};
+	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
 
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
 	auto sphere = std::make_unique<SphereCollider>();
 	sphere->SetTag("EnemyBullet");
-	sphere->SetFollowTarget(&objectBullet_->transform_.translate);
+	sphere->SetFollowTarget(&objectBullet_->transform_.translate_);
 	sphere->SetRadius(kRadius);
 	sphere->SetOwner(this);
 
@@ -52,12 +52,12 @@ void EnemyBullet::Update() {
 	// ---------------------------------------------------------
 	// 位置更新
 	// ---------------------------------------------------------
-	objectBullet_->transform_.translate += velocity_;
+	objectBullet_->transform_.translate_ += velocity_;
 
 	// ---------------------------------------------------------
 	// 前フレーム位置履歴の更新（トレイル用）
 	// ---------------------------------------------------------
-	trailPoints_.push_back(objectBullet_->transform_.translate);
+	trailPoints_.push_back(objectBullet_->transform_.translate_);
 	// 履歴数の上限を超えたら古い要素を削除して一定数に保つ
 	if (trailPoints_.size() > kMaxTrailPoints) {
 		trailPoints_.pop_front();

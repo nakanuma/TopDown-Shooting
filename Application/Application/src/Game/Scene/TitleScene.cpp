@@ -1,4 +1,4 @@
-﻿#include "TitleScene.h"
+#include "TitleScene.h"
 
 // C++
 #include <numbers>
@@ -22,26 +22,26 @@ void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera = std::make_unique<Camera>(Float3{ 0.0f, 30.0f, -50.0f }, Float3{ 0.5f, 0.0f, 0.0f }, 0.45f);
-	Camera::Set(camera.get()); // 現在のカメラをセット
+	camera_ = std::make_unique<Camera>(Float3{ 0.0f, 30.0f, -50.0f }, Float3{ 0.5f, 0.0f, 0.0f }, 0.45f);
+	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
-	spriteCommon = std::make_unique<SpriteCommon>();
-	spriteCommon->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_->Initialize(DirectXBase::GetInstance());
 
 	// TextureManagerの初期化
 	TextureManager::Initialize(dxBase->GetDevice(), SRVManager::GetInstance());
 
 	// SoundManagerの初期化
-	soundManager = std::make_unique<SoundManager>();
-	soundManager->Initialize();
+	soundManager_ = std::make_unique<SoundManager>();
+	soundManager_->Initialize();
 
 	// Inputの初期化
-	input = Input::GetInstance();
+	input_ = Input::GetInstance();
 
 	// LightManagerの初期化
-	lightManager = LightManager::GetInstance();
-	lightManager->Initialize();
+	lightManager_ = LightManager::GetInstance();
+	lightManager_->Initialize();
 
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();
@@ -54,13 +54,13 @@ void TitleScene::Initialize() {
 	// タイトル
 	uint32_t textureTitle = TextureManager::Load("UI/title.png");
 	spriteTitle_ = std::make_unique<Sprite>();
-	spriteTitle_->Initialize(spriteCommon.get(), textureTitle);
+	spriteTitle_->Initialize(spriteCommon_.get(), textureTitle);
 	spriteTitle_->SetPosition({ 640.0f, 140.0f });
 	spriteTitle_->SetAnchorPoint({ 0.5f, 0.5f });
 
 	uint32_t textureStart = TextureManager::Load("UI/startButton.png");
 	spriteStartButton_ = std::make_unique<Sprite>();
-	spriteStartButton_->Initialize(spriteCommon.get(), textureStart);
+	spriteStartButton_->Initialize(spriteCommon_.get(), textureStart);
 	spriteStartButton_->SetPosition({ 640.0f, 580.0f });
 	spriteStartButton_->SetAnchorPoint({ 0.5f, 0.5f });
 
@@ -87,8 +87,8 @@ void TitleScene::Initialize() {
 	///	トランジション
 	///
 
-	SplitBlockTransition::GetInstance()->Initialize(spriteCommon.get());
-	FadeTransition::GetInstance()->Initialize(spriteCommon.get());
+	SplitBlockTransition::GetInstance()->Initialize(spriteCommon_.get());
+	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
 	FadeTransition::GetInstance()->StartFadeIn(0.5f, 0.25f);
 
 	///
@@ -110,7 +110,7 @@ void TitleScene::Update() {
 	UpdateOrbitCamera({ 0.0f, 0.0f, 0.0f }, 50.0f, 30.0f, 0.25f);
 
 	// 左クリック入力でゲームシーンへ移行
-	if (input->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
+	if (input_->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
 		SplitBlockTransition::GetInstance()->StartClose(
 			1.0f,
 			[]() {
@@ -195,14 +195,14 @@ void TitleScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
-	lightManager->TransferContantBuffer();
+	lightManager_->TransferContantBuffer();
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
 
@@ -256,7 +256,7 @@ void TitleScene::Draw() {
 	///
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-	spriteCommon->PreDraw();
+	spriteCommon_->PreDraw();
 
 	///
 	/// ↓ ここからスプライトの描画コマンド
@@ -291,8 +291,8 @@ void TitleScene::Draw() {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
-	ImGui::DragFloat3("camera.translate", &camera->transform.translate.x, 0.01f);
-	ImGui::DragFloat3("camera.rotate", &camera->transform.rotate.x, 0.01f);
+	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
 	ImGui::Separator();
 
@@ -315,11 +315,11 @@ void TitleScene::UpdateOrbitCamera(const Float3& target, float radius, float hei
 
 	// 新しいカメラ位置を円運動で計算
 	Float3 cameraPos = { std::cosf(angle) * radius, height, std::sinf(angle) * radius };
-	camera->transform.translate = cameraPos;
+	camera_->transform_.translate_ = cameraPos;
 
 	// ターゲットを向くように回転を計算
 	Float3 forward = Float3::Normalize(target - cameraPos);
 
-	camera->transform.rotate.y = std::atan2f(forward.x, forward.z);
-	camera->transform.rotate.x = std::asinf(-forward.y);
+	camera_->transform_.rotate_.y = std::atan2f(forward.x, forward.z);
+	camera_->transform_.rotate_.x = std::asinf(-forward.y);
 }

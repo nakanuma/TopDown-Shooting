@@ -1,4 +1,4 @@
-﻿#include "GroundWarning.h"
+#include "GroundWarning.h"
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -12,8 +12,8 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
-	objectBullet_->transform_.translate = position;
-	objectBullet_->transform_.scale = {kRadius, kRadius, kRadius };
+	objectBullet_->transform_.translate_ = position;
+	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius };
 	objectBullet_->materialCB_.data_->color = {1.0f, 1.0f, 1.0f, 0.5f};
 
 	// ---------------------------------------------------------
@@ -21,7 +21,7 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	auto sphere = std::make_unique<SphereCollider>();
 	sphere->SetTag("GroundWarning");
-	sphere->SetFollowTarget(&objectBullet_->transform_.translate);
+	sphere->SetFollowTarget(&objectBullet_->transform_.translate_);
 	sphere->SetRadius(kRadius);
 	sphere->SetOwner(this);
 
@@ -58,8 +58,8 @@ void GroundWarning::Update() {
 	if (!colliderEnabled_ && elapsedTime_ >= kHitDelay) {
 		colliderEnabled_ = true;                                                                                        // コライダーを有効化
 		Float3 offset = {0.0f, 1.5f, 0.0f};                                                                             // 少し上から発生させるためのオフセット
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate + offset, 15);   // 煙パーティクル
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate + offset, 25); // 飛散パーティクル
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, 15);   // 煙パーティクル
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, 25); // 飛散パーティクル
 	}
 
 	// ---------------------------------------------------------

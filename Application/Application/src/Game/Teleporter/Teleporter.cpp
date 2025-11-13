@@ -1,4 +1,4 @@
-﻿#include "Teleporter.h"
+#include "Teleporter.h"
 
 // Application
 #include <src/Game/Player/Player.h>
@@ -10,7 +10,7 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
-	object_->transform_.translate = position;
+	object_->transform_.translate_ = position;
 	object_->materialCB_.data_->color = {1.0f, 0.0f, 0.0f, 1.0f};
 
 	///
@@ -19,7 +19,7 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("Teleporter");
-	aabb->SetFollowTarget(&object_->transform_.translate);
+	aabb->SetFollowTarget(&object_->transform_.translate_);
 	aabb->SetSize(colliderSize_);
 	aabb->SetOwner(this);
 

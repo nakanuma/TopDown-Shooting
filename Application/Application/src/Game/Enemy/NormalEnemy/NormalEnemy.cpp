@@ -1,4 +1,4 @@
-﻿#include "NormalEnemy.h"
+#include "NormalEnemy.h"
 
 // C++
 #include <Windows.h>
@@ -42,9 +42,9 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
-	objectEnemy_->transform_.translate = position;
-	objectEnemy_->transform_.scale = {1.0f, 1.0f, 1.0f};
-	objectEnemy_->transform_.rotate = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->transform_.translate_ = position;
+	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
+	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 
 	///
 	///	コライダー生成
@@ -54,7 +54,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("NormalEnemy");
-	aabb->SetFollowTarget(&objectEnemy_->transform_.translate);
+	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
 	aabb->SetSize(colliderSize_);
 	aabb->SetOwner(this);
 
@@ -170,7 +170,7 @@ void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
 void NormalEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
-	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate);
+	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
 	// 上にずらす分のオフセット
 	const float kOffsetHPBar = 90.0f;
 
@@ -248,8 +248,8 @@ void NormalEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45));
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135));
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
@@ -267,7 +267,7 @@ void NormalEnemy::OnCollision(Collider* other) {
 			// 押し戻しベクトル取得
 			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 			// 位置を補正
-			objectEnemy_->transform_.translate += pushVec;
+			objectEnemy_->transform_.translate_ += pushVec;
 
 			// コライダーも更新しておく
 			Float3 currentMin = myAABB->GetMin();
@@ -316,18 +316,18 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 	if (path.size() > 2) {
 		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * 0.5f;
 	}
-	Float3 dir = Float3::Normalize(targetPos - objectEnemy_->transform_.translate);
+	Float3 dir = Float3::Normalize(targetPos - objectEnemy_->transform_.translate_);
 	dir.y = 0.0f;
 	dir = Float3::Normalize(dir);
 
 	// 移動
-	objectEnemy_->transform_.translate += dir * speed * TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.translate_ += dir * speed * TimeManager::GetInstance()->GetDeltaTime();
 
 	// 向き補間
 	Float3 lookDir = dir;
 
 	float turnSpeed = 5.0f;
-	float currentYaw = objectEnemy_->transform_.rotate.y;
+	float currentYaw = objectEnemy_->transform_.rotate_.y;
 	float targetYaw = std::atan2(lookDir.x, lookDir.z);
 
 	// -π ~ πに正規化
@@ -339,7 +339,7 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 
 	float newYaw = currentYaw + deltaYaw * turnSpeed * TimeManager::GetInstance()->GetDeltaTime();
 
-	objectEnemy_->transform_.rotate.y = newYaw;
+	objectEnemy_->transform_.rotate_.y = newYaw;
 }
 
 bool NormalEnemy::IsPlayerInSight() {
@@ -349,7 +349,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	if(targetPlayer_->IsDead())
 		return false;
 
-	Float3 enemyPos = this->objectEnemy_->transform_.translate;
+	Float3 enemyPos = this->objectEnemy_->transform_.translate_;
 	Float3 playerPos = targetPlayer_->GetTranslate();
 	Float3 toPlayer = playerPos - enemyPos;
 
@@ -370,7 +370,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	toPlayer = Float3::Normalize(toPlayer);
 
 	// 前方向ベクトル（Y軸回転のみで考慮）
-	Float3 forward = {std::sinf(objectEnemy_->transform_.rotate.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate.y)};
+	Float3 forward = {std::sinf(objectEnemy_->transform_.rotate_.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate_.y)};
 
 	forward = Float3::Normalize(forward);
 
@@ -414,10 +414,10 @@ void NormalEnemy::DrawDebugSight() {
 		color = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
 
-	Float3 center = objectEnemy_->transform_.translate;
+	Float3 center = objectEnemy_->transform_.translate_;
 
 	// 前方向ベクトル（Y軸回転のみで考慮）
-	Float3 forward = {std::sinf(objectEnemy_->transform_.rotate.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate.y)};
+	Float3 forward = {std::sinf(objectEnemy_->transform_.rotate_.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate_.y)};
 	forward = Float3::Normalize(forward);
 
 	// 左端の方向ベクトル
@@ -462,7 +462,7 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		std::vector<Waypoint*> candidates;
 		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
 			float distFromSpawn = Float3::Length(wp->GetPosition() - spawnPosition_);                       // スポーン地点からウェイポイントまでの距離
-			float distFromCurrent = Float3::Length(wp->GetPosition() - objectEnemy_->transform_.translate); // 現在地点からウェイポイントまでの距離
+			float distFromCurrent = Float3::Length(wp->GetPosition() - objectEnemy_->transform_.translate_); // 現在地点からウェイポイントまでの距離
 
 			// スポーン地点から一定範囲内にあるかつ、現在位置から一定距離離れたウェイポイントのみを収集
 			if (distFromSpawn <= patrolRange_ && distFromCurrent >= minPatrolRange_) {
@@ -481,7 +481,7 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		///
 	} else {
 		// 経路探索
-		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
 		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, currentTargetWP_);
 		if (!path.empty()) {
 			// 移動
@@ -489,7 +489,7 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 
 			// 目標に到達したらターゲットをクリア
 			Float3 targetPos = currentTargetWP_->GetPosition();
-			if (Float3::Length(targetPos - objectEnemy_->transform_.translate) < 3.0f) {
+			if (Float3::Length(targetPos - objectEnemy_->transform_.translate_) < 3.0f) {
 				currentTargetWP_ = nullptr;
 
 				status = BehaviorStatus::Success; // 成功
@@ -510,7 +510,7 @@ BehaviorStatus NormalEnemy::RandomRotate() {
 	}
 
 	// 回転処理
-	objectEnemy_->transform_.rotate.y += rotateDirection_ * TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.rotate_.y += rotateDirection_ * TimeManager::GetInstance()->GetDeltaTime();
 
 	// タイマー減少
 	rotateTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
@@ -527,10 +527,10 @@ BehaviorStatus NormalEnemy::RandomRotate() {
 
 BehaviorStatus NormalEnemy::FacePlayer() {
 	// プレイヤーへの方向ベクトルからY軸回転角度の計算
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸回転を適用
-	objectEnemy_->transform_.rotate.y = targetAngle;
+	objectEnemy_->transform_.rotate_.y = targetAngle;
 
 	return BehaviorStatus::Success;
 }
@@ -572,7 +572,7 @@ BehaviorStatus NormalEnemy::Shoot() {
 	}
 
 	// 弾の発射処理
-	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate;
+	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 拡散角をランダムに設定
 	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
 	direction.x += randSpread;
@@ -580,7 +580,7 @@ BehaviorStatus NormalEnemy::Shoot() {
 	direction = Float3::Normalize(direction);
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
+	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// カウント更新
@@ -606,7 +606,7 @@ BehaviorStatus NormalEnemy::MoveToPlayer() {
 		return BehaviorStatus::Failure;
 
 	// 経路探索でプレイヤーに移動
-	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate);
+	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
 	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
 
 	if (!start || !goal)

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -57,11 +57,11 @@ private:
 	// =========================================================
 
 	// ----- System -----
-	std::unique_ptr<Camera> camera = nullptr;				/* 3Dカメラクラス */
-	std::unique_ptr<SpriteCommon> spriteCommon = nullptr;	/* スプライト共通処理クラス */
-	std::unique_ptr<SoundManager> soundManager = nullptr;	/* サウンド管理クラス */
-	Input* input = nullptr;									/* 入力管理クラス */
-	LightManager* lightManager = nullptr;					/* 各ライト管理クラス */
+	std::unique_ptr<Camera> camera_ = nullptr;				/* 3Dカメラクラス */
+	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr;	/* スプライト共通処理クラス */
+	std::unique_ptr<SoundManager> soundManager_ = nullptr;	/* サウンド管理クラス */
+	Input* input_ = nullptr;								/* 入力管理クラス */
+	LightManager* lightManager_ = nullptr;					/* 各ライト管理クラス */
 
 	// ----- Sprite -----
 	/// Todo : 適切なクラスへの整理

@@ -1,4 +1,4 @@
-﻿#include "WallCollapseParticle.h"
+#include "WallCollapseParticle.h"
 
 // Engine
 #include <RandomGenerator.h>
@@ -8,8 +8,8 @@ WallCollapseParticle::WallCollapseParticle(ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
-	object_.gTransformationMatrices.numMaxInstance_ = kMaxParticles;
-	object_.gTransformationMatrices.Create();
+	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
+	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
@@ -29,12 +29,12 @@ WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos,
 		rand->RandomValue(-spawnRange.y, spawnRange.y),
 		rand->RandomValue(-spawnRange.z, spawnRange.z),
 	};
-	p.transform.translate = pos + offset;
+	p.transform.translate_ = pos + offset;
 	// 回転
-	p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// スケール
 	float scale = rand->RandomValue(0.2f, 0.8f);
-	p.transform.scale = {scale, scale, scale};
+	p.transform.scale_ = {scale, scale, scale};
 	// 速度ベクトル
 	Float3 dir = offset;
 	dir += rand->RandomValue({-0.01f, 0.0f, -0.01f}, {0.01f, 0.3f, 0.01f}); // 中心から外側へ向かうオフセット
@@ -60,5 +60,5 @@ void WallCollapseParticle::UpdateParticle(WallCollapseParticleData& p, float dt)
 	// 速度更新
 	p.velocity += gravity * dt;
 	// 位置更新
-	p.transform.translate += p.velocity * dt;
+	p.transform.translate_ += p.velocity * dt;
 }

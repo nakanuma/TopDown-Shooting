@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -58,7 +58,7 @@ public:
 	/// 弾の現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	const Float3& GetTranslate() const { return objectBullet_->transform_.translate; }
+	const Float3& GetTranslate() const { return objectBullet_->transform_.translate_; }
 
 	/// <summary>
 	/// 死亡したかどうかを取得します。
@@ -82,4 +82,4 @@ protected:
 	float speed_ = 0.0f;							/* 移動速度 */
 	Float3 velocity_ = {0.0f, 0.0f, 0.0f};			/* 速度ベクトル */
 	bool isDead_ = false;							/* 死亡フラグ */
-};
+}; 
