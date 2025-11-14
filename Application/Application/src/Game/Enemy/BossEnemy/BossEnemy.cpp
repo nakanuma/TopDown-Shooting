@@ -84,7 +84,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 400;
+	currentHP_ = 40;
 	maxHP_ = currentHP_;
 
 	// ターゲットの設定
@@ -135,6 +135,20 @@ void BossEnemy::Update() {
 	spriteHPBackground_->Update();
 	// HPバー（前景）更新
 	spriteHPForeground_->Update();
+
+	///
+	///	死亡演出更新
+	///		
+	
+	if(isDying_){
+		// タイマー加算
+		dyingTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+
+		// 死亡演出時間の終了で死亡（インスタンス削除）
+		if(dyingTimer_ >= kDyingDuration){
+			isDead_ = true;
+		}
+	}
 }
 
 void BossEnemy::Draw() {
@@ -145,6 +159,8 @@ void BossEnemy::Draw() {
 void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
 void BossEnemy::DrawUI() {
+	if (isDying_) return; // 死亡演出中はスキップ
+
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
@@ -169,38 +185,14 @@ void BossEnemy::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("BossEnemy");
 
-	if (ImGui::Button("Active")) {
-		isActive_ = true;
-	}
-	if (ImGui::Button("Dying")) {
-		currentHP_ = 10;
-	}
-
-	ImGui::Separator();
-
-	if (ImGui::Button("FireHomingMissile")) {
-		FireHomingMissile();
-	}
-	if (ImGui::Button("GroundWarningAttack")) {
-		GroundWarningAttack();
-	}
-
 	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate_.x, 0.01f);
 	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate_.x, 0.01f);
 	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale_.x, 0.01f);
 
-	ImGui::End();
+	ImGui::Separator();
 
-	ImGui::Begin("BehaviorTree_BossEnemy");
-	// BTエディター描画
-	btEditor_->Draw();
-
-	if (ImGui::Button("SAVE")) {
-		btEditor_->Save("bossEnemy.json");
-	}
-	if (ImGui::Button("LOAD")) {
-		btEditor_->Load("bossEnemy.json");
-	}
+	ImGui::Checkbox("isDying", &isDying_);
+	ImGui::Text("%.2f", dyingTimer_);
 
 	ImGui::End();
 #endif
@@ -226,17 +218,16 @@ void BossEnemy::OnCollision(Collider* other) {
 		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
 
 		// HPが0になったら死亡させる
-		if (currentHP_ <= 0) {
-			isDead_ = true;
+		if (currentHP_ <= 0 && !isDying_) {
+			isDying_ = true; // 死亡演出の開始
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
-
-			// 死亡したらリザルトへ以降（todo : 死亡演出から遷移予定なので仮。あとで削除）
-			SceneManager::GetInstance()->ChangeScene("RESULT");
 		}
 	}
 }
 
 void BossEnemy::FacePlayer() {
+	if (isDying_) return; // 死亡演出中はスキップ
+
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 方向ベクトルからY軸回転角度を計算
@@ -246,8 +237,8 @@ void BossEnemy::FacePlayer() {
 }
 
 void BossEnemy::MoveTowardPlayer() {
-	if (targetPlayer_->IsDead())
-		return;
+	if (isDying_) return; // 死亡演出中はスキップ
+	if (targetPlayer_->IsDead()) return; // プレイヤーが死亡していたらスキップ
 
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
@@ -259,6 +250,8 @@ void BossEnemy::MoveTowardPlayer() {
 }
 
 void BossEnemy::FireHomingMissile() {
+	if (isDying_) return; // 死亡演出中はスキップ
+
 	// 発射方向
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	direction = Float3::Normalize(direction);
@@ -271,6 +264,8 @@ void BossEnemy::FireHomingMissile() {
 }
 
 void BossEnemy::GroundWarningAttack() {
+	if (isDying_) return; // 死亡演出中はスキップ
+
 	Float3 playerPos = targetPlayer_->GetTranslate();
 
 	// 弾の生成と追加

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -57,5 +57,5 @@ private:
 	std::unordered_map<std::string, std::string> tagModelMap_{};				/* タグとモデルデータキーのマップ */
 
 	// ----- Parameters -----
-	const float kActiveDistance = 75.0f;										/* 障害物の有効化距離 */
+	const float kActiveDistance = 50.0f;										/* 障害物の有効化距離 */
 };

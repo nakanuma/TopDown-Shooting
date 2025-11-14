@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -98,7 +98,11 @@ private:
 	const Float2 kHPBarPosition = {640.0f, 25.0f};				/* HPバーの位置 */
 	const Float2 kHPBarSizeBoss = {640.0f, 50.0f};				/* HPバーのサイズ */
 
-	float moveSpeed_ = 3.0f;/* 移動速度 */
+	float moveSpeed_ = 3.0f;									/* 移動速度 */
+
+	bool isDying_ = false;										/* 死亡演出中フラグ */
+	float dyingTimer_ = 0.0f;									/* 死亡演出中経過時間 */
+	const float kDyingDuration = 3.0f;							/* 死亡演出時間 */
 
 	// ----- BehaviorTree -----
 	std::unique_ptr<BehaviorTree<BossEnemy>> behaviorTree_;		/* BehaviorTree */
