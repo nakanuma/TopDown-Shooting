@@ -30,6 +30,7 @@
 #include <src/Game/Teleporter/TeleporterManager.h>
 #include <src/Game/Sequence/GameStartSequence.h>
 #include <src/Game/Sequence/GameOverSequence.h>
+#include <src/Game/Sequence/GameClearSequence.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -93,4 +94,5 @@ private:
 	uint32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
 	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
 	std::unique_ptr<GameOverSequence> gameOverSequence_;	/* ゲームオーバー時の演出制御クラス */
+	std::unique_ptr<GameClearSequence> gameClearSequence_;	/* ゲームクリア時の演出制御クラス */
 };

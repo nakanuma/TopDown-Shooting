@@ -59,6 +59,16 @@ public:
 	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Collider* other) override;
 
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
+	/// <summary>
+	/// 死亡中フラグを取得します。
+	/// </summary>
+	/// <returns>死亡中フラグ</returns>
+	bool IsDying() const { return isDying_; }
+
 private:
 	// =========================================================
 	// Internal Methods

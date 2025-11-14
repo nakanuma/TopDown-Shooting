@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -97,7 +97,7 @@ private:
 
 private:
     /// <summary>
-    /// 演出のフェーズを表す構造体
+    /// 演出のフェーズ
     /// </summary>
     enum class Phase {
         None,                                                       /* 初期状態 */
@@ -108,6 +108,10 @@ private:
         BackToTitleText,                                            /* "クリックでタイトルへ"文字スプライトの表示 */
         Finish,                                                     /* 終了 */
     };
+
+    // =========================================================
+    // Member Variables
+    // =========================================================
 
     // ----- Parameters -----
     Phase phase_ = Phase::None;                                     /* 現在フェーズ */

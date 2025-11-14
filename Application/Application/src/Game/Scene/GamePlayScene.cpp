@@ -86,7 +86,7 @@ void GamePlayScene::Initialize() {
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
 	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
-	
+
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -111,6 +111,10 @@ void GamePlayScene::Initialize() {
 	gameOverSequence_->Initialize(spriteCommon_.get());
 	gameOverSequence_->SetPlayer(player_.get());
 
+	// ゲームクリア時の演出制御クラス
+	gameClearSequence_ = std::make_unique<GameClearSequence>();
+	gameClearSequence_->Initialize();
+
 	// トランジション
 	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
 	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
@@ -134,8 +138,10 @@ void GamePlayScene::Update() {
 	// ゲームスタート時演出の更新
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
-
-		// 演出が終了したら追従カメラを有効化
+	// ゲームクリア時演出の更新
+	} else if (gameClearSequence_->IsControllingCamera()) {
+		gameClearSequence_->Update();
+	// 通常ゲーム時のカメラ制御更新
 	} else {
 		// プレイヤーが生きている間のみ
 		if (!player_->IsDead()) {
@@ -145,6 +151,13 @@ void GamePlayScene::Update() {
 			camera_->transform_.translate_ = followCamera_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 		}
 	}
+
+	// ボスが死亡した瞬間にゲームクリア演出を開始
+	if(enemyManager_->IsBossDying() && !gameClearSequence_->IsActive()){
+		gameClearSequence_->Start();
+	}
+
+	// ----------------------------------------------------------------------
 
 	// カメラシェイクの更新
 	CameraShake::GetInstance()->Update();
@@ -167,6 +180,10 @@ void GamePlayScene::Update() {
 	WaypointManager::GetInstance()->Update();
 	// ゲームオーバー時演出の更新
 	gameOverSequence_->Update();
+	// ゲームクリア時演出の更新（カメラ制御していない間も更新を続ける）
+	if(!gameClearSequence_->IsControllingCamera()){
+		gameClearSequence_->Update();
+	}
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -303,9 +320,8 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-	/*CollisionManager::GetInstance()->Debug();*/
 
-	gameStartSequence_->Debug();
+	gameClearSequence_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する
