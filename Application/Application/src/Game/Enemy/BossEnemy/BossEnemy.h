@@ -112,7 +112,7 @@ private:
 
 	bool isDying_ = false;										/* 死亡演出中フラグ */
 	float dyingTimer_ = 0.0f;									/* 死亡演出中経過時間 */
-	const float kDyingDuration = 3.0f;							/* 死亡演出時間 */
+	const float kDyingDuration = 7.0f;							/* 死亡演出時間 */
 
 	// ----- BehaviorTree -----
 	std::unique_ptr<BehaviorTree<BossEnemy>> behaviorTree_;		/* BehaviorTree */

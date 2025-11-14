@@ -58,10 +58,10 @@ public:
 	// =========================================================
 
 	/// <summary>
-	/// ボスが死亡中かどうかを取得します。
+	/// ボスを取得します。
 	/// </summary>
-	/// <returns></returns>
-	bool IsBossDying() const;
+	/// <returns>ボスのポインタ</returns>
+	BossEnemy* GetBoss() const;
 
 private:
 	// =========================================================

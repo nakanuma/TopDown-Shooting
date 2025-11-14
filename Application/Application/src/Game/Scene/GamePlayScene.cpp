@@ -114,6 +114,7 @@ void GamePlayScene::Initialize() {
 	// ゲームクリア時の演出制御クラス
 	gameClearSequence_ = std::make_unique<GameClearSequence>();
 	gameClearSequence_->Initialize();
+	gameClearSequence_->SetBoss(enemyManager_->GetBoss());
 
 	// トランジション
 	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
@@ -138,10 +139,10 @@ void GamePlayScene::Update() {
 	// ゲームスタート時演出の更新
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
-	// ゲームクリア時演出の更新
+		// ゲームクリア時演出の更新
 	} else if (gameClearSequence_->IsControllingCamera()) {
 		gameClearSequence_->Update();
-	// 通常ゲーム時のカメラ制御更新
+		// 通常ゲーム時のカメラ制御更新
 	} else {
 		// プレイヤーが生きている間のみ
 		if (!player_->IsDead()) {
@@ -153,8 +154,11 @@ void GamePlayScene::Update() {
 	}
 
 	// ボスが死亡した瞬間にゲームクリア演出を開始
-	if(enemyManager_->IsBossDying() && !gameClearSequence_->IsActive()){
-		gameClearSequence_->Start();
+	auto boss = enemyManager_->GetBoss();
+	if (boss != nullptr) {
+		if (boss->IsDying() && !gameClearSequence_->IsActive()) {
+			gameClearSequence_->Start();
+		}
 	}
 
 	// ----------------------------------------------------------------------
@@ -181,7 +185,7 @@ void GamePlayScene::Update() {
 	// ゲームオーバー時演出の更新
 	gameOverSequence_->Update();
 	// ゲームクリア時演出の更新（カメラ制御していない間も更新を続ける）
-	if(!gameClearSequence_->IsControllingCamera()){
+	if (!gameClearSequence_->IsControllingCamera()) {
 		gameClearSequence_->Update();
 	}
 

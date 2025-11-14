@@ -141,16 +141,14 @@ void EnemyManager::Debug() {
 #endif
 }
 
-bool EnemyManager::IsBossDying() const
+BossEnemy* EnemyManager::GetBoss() const
 {
 	// 全ての敵の中からボスを探す
 	for (const auto& enemy : enemies_) {
 		if (BossEnemy* boss = dynamic_cast<BossEnemy*>(enemy.get())) {
 			// 死亡中かどうかを返す
-			return boss->IsDying();
+			return boss;
 		}
 	}
-
-	// 見つからなければfalse
-	return false;
+	return nullptr;
 }

@@ -7,6 +7,11 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
+#include <src/Game/Enemy/BossEnemy/BossEnemy.h>
+
 // =========================================================
 // ゲームクリア時の演出を制御するクラス
 // =========================================================
@@ -59,6 +64,12 @@ public:
     /// <returns>終了したかどうか</returns>
     bool IsFinished() const { return phase_ == Phase::Finish; }
 
+    /// <summary>
+    /// ボスのセットを行います。
+    /// </summary>
+    /// <param name="boss"></param>
+    void SetBoss(BossEnemy* boss) { boss_ = boss; }
+
 private:
     // =========================================================
     // Internal Methods
@@ -91,5 +102,17 @@ private:
 
     Float3 savedCameraPos_;                                         /* 演出開始時のカメラ位置を保存 */
     Float3 savedCameraRot_;                                         /* 演出開始時のカメラ回転を保存 */
+
+    BossEnemy* boss_ = nullptr;                                     /* ボスのポインタ */
+
+    const float kCameraRotateDuration = 5.0f;                       /* カメラ回転にかける時間 */
+    const float kCameraDistance = 40.0f;                            /* ボスからのカメラ距離 */
+
+    const float kCameraRotZOffset = -0.13f;                         /* カメラ回転のZ軸オフセット */
+
+    const float kCameraHeightStart = 6.0f;                          /* カメラ回転時の開始時高さ */
+    const float kCameraHeightEnd = 2.0f;                            /* カメラ回転時の終了時高さ */
+
+    const float kExplodeDuration = 3.0f;                            /* 爆発フェーズにかける時間 */
 };
 
