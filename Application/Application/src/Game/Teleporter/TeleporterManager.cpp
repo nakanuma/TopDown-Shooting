@@ -1,4 +1,4 @@
-﻿#include "TeleporterManager.h"
+#include "TeleporterManager.h"
 
 // Engine
 #include <ImguiWrapper.h>
@@ -16,6 +16,19 @@ void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& dat
 			teleporter->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("Teleporter"));
 			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
+
+			// ペアIDが"GOAL"の場合は特別扱い
+			if (data.pairID == "GOAL") {
+				// コールバック関数を設定
+				teleporter->SetOnGoalCallback([this]() {
+					if (goalCallback_) {
+						goalCallback_();
+					}
+					});
+
+				// 初期状態では無効化しておく
+				teleporter->SetActive(false);
+			}
 
 			teleporters_.emplace_back(std::move(teleporter));
 		}
@@ -75,4 +88,15 @@ void TeleporterManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+void TeleporterManager::EnableGoalTeleporter()
+{
+	// ゴールテレポーターを探索
+	for (auto& teleporter : teleporters_) {
+		if (teleporter->GetPairID() == "GOAL") {
+			// 有効化する
+			teleporter->SetActive(true);
+		}
+	}
 }

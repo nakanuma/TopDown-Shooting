@@ -11,7 +11,7 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
 	object_->transform_.translate_ = position;
-	object_->materialCB_.data_->color = {1.0f, 0.0f, 0.0f, 1.0f};
+	object_->materialCB_.data_->color = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 	///
 	///	コライダー生成
@@ -56,21 +56,33 @@ void Teleporter::OnCollision(Collider* other) {
 	if (other->GetTag() == "Player") {
 		Player* player = static_cast<Player*>(other->GetOwner());
 
-		// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
-		if (pair_ && pair_->isActive_) {
-			player->SetTranslate({
-			    pair_->GetTranslate().x,
-			    player->GetTranslate().y,
-			    pair_->GetTranslate().z,
-			});
+		// このテレポーターがゴールの場合
+		if (IsGoal() && isActive_) {
+			// コールバック関数を呼び出す
+			if(onGoalCallback_){
+				onGoalCallback_();
+			}
+			// 無効化状態にする
+			isActive_ = false;
 
-			// 使用したテレポーターは無効化する
-			this->isActive_ = false;
-			pair_->isActive_ = false;
+		// 通常テレポーターの場合
+		} else {
+			// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
+			if (pair_ && pair_->isActive_) {
+				player->SetTranslate({
+					pair_->GetTranslate().x,
+					player->GetTranslate().y,
+					pair_->GetTranslate().z,
+					});
 
-			// デバッグ用に使用したテレポーターは青くする（後で消す）
-			this->object_->materialCB_.data_->color = {0.0f, 0.0f, 1.0f, 1.0f};
-			pair_->object_->materialCB_.data_->color = {0.0f, 0.0f, 1.0f, 1.0f};
+				// 使用したテレポーターは無効化する
+				this->isActive_ = false;
+				pair_->isActive_ = false;
+
+				// デバッグ用に使用したテレポーターは青くする（後で消す）
+				this->object_->materialCB_.data_->color = { 0.0f, 0.0f, 1.0f, 1.0f };
+				pair_->object_->materialCB_.data_->color = { 0.0f, 0.0f, 1.0f, 1.0f };
+			}
 		}
 	}
 }

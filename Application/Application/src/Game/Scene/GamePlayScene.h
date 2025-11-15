@@ -68,6 +68,16 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// リザルトシーンへの遷移を行います。
+	/// </summary>
+	void TransitionToResult();
+
+private:
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
@@ -95,4 +105,6 @@ private:
 	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
 	std::unique_ptr<GameOverSequence> gameOverSequence_;	/* ゲームオーバー時の演出制御クラス */
 	std::unique_ptr<GameClearSequence> gameClearSequence_;	/* ゲームクリア時の演出制御クラス */
+
+	bool isTransitioning_ = false;							/* リザルトシーンへの遷移中かどうか */
 };

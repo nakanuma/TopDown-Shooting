@@ -86,6 +86,7 @@ void GamePlayScene::Initialize() {
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
 	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
+	teleporterManager_->SetGoalCallback([this](){ TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
@@ -159,6 +160,11 @@ void GamePlayScene::Update() {
 		if (boss->IsDying() && !gameClearSequence_->IsActive()) {
 			gameClearSequence_->Start();
 		}
+	}
+
+	// ゲームクリア演出が終了したらゴールテレポーターを有効化する
+	if(gameClearSequence_->IsFinished()){
+		teleporterManager_->EnableGoalTeleporter();
 	}
 
 	// ----------------------------------------------------------------------
@@ -365,4 +371,21 @@ void GamePlayScene::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+void GamePlayScene::TransitionToResult()
+{
+	// 既に遷移中ならスキップ
+	if(isTransitioning_) return;
+
+	// 1度のみ呼び出されるようフラグを立てる
+	isTransitioning_ = true;
+
+	// フェードアウトしてリザルトシーンへ
+	FadeTransition::GetInstance()->StartFadeOut(
+		0.5f,
+		[]() {
+			SceneManager::GetInstance()->ChangeScene("RESULT");
+		},
+		0.25f);
 }
