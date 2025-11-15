@@ -113,7 +113,7 @@ void GamePlayScene::Initialize() {
 
 	// ゲームクリア時の演出制御クラス
 	gameClearSequence_ = std::make_unique<GameClearSequence>();
-	gameClearSequence_->Initialize();
+	gameClearSequence_->Initialize(spriteCommon_.get());
 	gameClearSequence_->SetBoss(enemyManager_->GetBoss());
 
 	// トランジション
@@ -305,12 +305,16 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawUI();
 		// スタート演出が終了したらゲーム用UI表示
 	} else {
-		// プレイヤーUI描画
-		player_->DrawUI();
+		// プレイヤーUI描画（クリア演出のカメラ制御時は非表示になるように）
+		if (!gameClearSequence_->IsControllingCamera()) {
+			player_->DrawUI();
+		}
 	}
 
 	// ゲームオーバー時のUI描画
 	gameOverSequence_->DrawUI();
+	// ゲームクリア時のUI描画
+	gameClearSequence_->DrawUI();
 	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
 	FadeTransition::GetInstance()->Draw();

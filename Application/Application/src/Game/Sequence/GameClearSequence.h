@@ -25,7 +25,7 @@ public:
     /// <summary>
     /// 初期化処理を行います。
     /// </summary>
-    void Initialize();
+    void Initialize(SpriteCommon* spriteCommon);
 
     /// <summary>
     /// ゲームクリア演出を開始します。
@@ -36,6 +36,11 @@ public:
     /// 毎フレーム更新処理を行います。
     /// </summary>
     void Update();
+
+    /// <summary>
+    /// UIの描画処理を行います。
+    /// </summary>
+    void DrawUI();
 
     /// <summary>
     /// デバッグ用の描画処理を行います。
@@ -80,6 +85,11 @@ private:
     /// </summary>
     void UpdateRotate();
 
+    /// <summary>
+    /// 爆発とクリア文字演出時の更新処理を行います。
+    /// </summary>
+    void UpdateExplodeAndText();
+
 private:
     /// <summary>
     /// 演出のフェーズ
@@ -87,8 +97,7 @@ private:
     enum class Phase {
         None,                                                       /* 初期状態 */
         Rotate,                                                     /* カメラ回転（ボス中心に） */
-        Explode,                                                    /* 爆発演出 */
-        ClearText,                                                  /* クリア文字 */
+        ExplodeAndText,                                             /* 爆発とクリア時文字 */
         Finish,                                                     /* 終了状態 */
     };
 
@@ -114,5 +123,11 @@ private:
     const float kCameraHeightEnd = 2.0f;                            /* カメラ回転時の終了時高さ */
 
     const float kExplodeDuration = 3.0f;                            /* 爆発フェーズにかける時間 */
+
+    Float2 savedClearTextSize_;                                     /* クリア文字スプライトの初期サイズを保存 */
+
+    // -----Sprite-----
+    std::unique_ptr<Sprite> spriteBackGround_;                      /* 黒い背景スプライト */
+    std::unique_ptr<Sprite> spriteClearText_;                       /* クリア時文字 */
 };
 
