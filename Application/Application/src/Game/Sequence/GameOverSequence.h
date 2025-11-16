@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -97,7 +97,7 @@ private:
 
 private:
     /// <summary>
-    /// 演出のフェーズを表す構造体
+    /// 演出のフェーズ
     /// </summary>
     enum class Phase {
         None,                                                       /* 初期状態 */
@@ -108,6 +108,10 @@ private:
         BackToTitleText,                                            /* "クリックでタイトルへ"文字スプライトの表示 */
         Finish,                                                     /* 終了 */
     };
+
+    // =========================================================
+    // Member Variables
+    // =========================================================
 
     // ----- Parameters -----
     Phase phase_ = Phase::None;                                     /* 現在フェーズ */
@@ -128,7 +132,7 @@ private:
     const Float2 kDiedTextStartPos = {640.0f, -160.0f};             /* "YOU DIED"文字スプライトの初期位置 */
     const Float2 kDiedTextEndPos = {640.0f, 160.0f};                /* "YOU DIED"文字スプライトの最終位置 */
 
-    const float kBackToTitleTextDuration = 0.5f;                    /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
+    const float kBackToTitleTextDuration = 0.35f;                   /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
     Float2 backToTitleTextStartSize_ = {0.0f, 0.0f};                /* "クリックでタイトルへ"文字スプライトの初期サイズ */
     Float2 backToTitleTextEndSize_;                                 /* "クリックでタイトルへ"文字スプライトの最終サイズ */
     const Float2 kBackToTitleTextPos = { 640.0f, 540.0f };          /* "クリックでタイトルへ"文字スプライトの位置 */

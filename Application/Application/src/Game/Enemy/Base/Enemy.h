@@ -84,6 +84,12 @@ public:
 	const Float3& GetTranslate() const { return objectEnemy_->transform_.translate_; }
 
 	/// <summary>
+	/// 敵の回転を取得します。
+	/// </summary>
+	/// <returns>現在の回転（Float3）</returns>
+	const Float3& GetRotate() const { return objectEnemy_->transform_.rotate_; }
+
+	/// <summary>
 	/// 敵の現在HPを取得します。
 	/// </summary>
 	/// <returns>現在のHP</returns>
