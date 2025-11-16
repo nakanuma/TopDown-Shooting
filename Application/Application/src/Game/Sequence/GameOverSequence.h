@@ -132,7 +132,7 @@ private:
     const Float2 kDiedTextStartPos = {640.0f, -160.0f};             /* "YOU DIED"文字スプライトの初期位置 */
     const Float2 kDiedTextEndPos = {640.0f, 160.0f};                /* "YOU DIED"文字スプライトの最終位置 */
 
-    const float kBackToTitleTextDuration = 0.5f;                    /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
+    const float kBackToTitleTextDuration = 0.35f;                   /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
     Float2 backToTitleTextStartSize_ = {0.0f, 0.0f};                /* "クリックでタイトルへ"文字スプライトの初期サイズ */
     Float2 backToTitleTextEndSize_;                                 /* "クリックでタイトルへ"文字スプライトの最終サイズ */
     const Float2 kBackToTitleTextPos = { 640.0f, 540.0f };          /* "クリックでタイトルへ"文字スプライトの位置 */

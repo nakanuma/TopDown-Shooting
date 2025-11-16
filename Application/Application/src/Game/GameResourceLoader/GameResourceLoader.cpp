@@ -1,4 +1,4 @@
-﻿#include "GameResourceLoader.h"
+#include "GameResourceLoader.h"
 
 // Engine
 #include <ModelManager.h>
@@ -20,6 +20,7 @@
 #include <src/Game/Particles/DeathCrossParticle/DeathCrossParticle.h>
 #include <src/Game/Particles/ShellEjection/ShellEjectionParticle.h>
 #include <src/Game/Particles/MuzzleFlash/MuzzleFlashParticle.h>
+#include <src/Game/Particles/BossFragments/BossFragmentsParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -287,4 +288,8 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// マズルフラッシュパーティクル
 	auto muzzleFlashParticle = std::make_unique<MuzzleFlashParticle>(ModelManager::GetInstance()->GetModel("MuzzleFlash"));
 	ParticleEffectManager::GetInstance()->Register("muzzleFlash", std::move(muzzleFlashParticle));
+
+	// ボスの破片パーティクル
+	auto bossFragmentsParticle = std::make_unique<BossFragmentsParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("bossFragments", std::move(bossFragmentsParticle));
 }

@@ -6,6 +6,8 @@
 #include <Camera.h>
 #include <Easing.h>
 #include <Window/MyWindow.h>
+#include <ParticleEffect/ParticleEffectManager.h>
+#include <RandomGenerator.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -17,13 +19,13 @@ void GameClearSequence::Initialize(SpriteCommon* spriteCommon) {
 	uint32_t textureWhite = TextureManager::Load("white.png");
 	spriteBackGround_ = std::make_unique<Sprite>();
 	spriteBackGround_->Initialize(spriteCommon, textureWhite);
-	spriteBackGround_->SetSize({static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())}); // 画面サイズに合わせる
-	spriteBackGround_->SetColor({0.0f, 0.0f, 0.0f, 0.0f});
+	spriteBackGround_->SetSize({ static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight()) }); // 画面サイズに合わせる
+	spriteBackGround_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 
 	uint32_t textureClearText = TextureManager::Load("UI/clearText.png");
 	spriteClearText_ = std::make_unique<Sprite>();
 	spriteClearText_->Initialize(spriteCommon, textureClearText);
-	spriteClearText_->SetAnchorPoint({0.5f, 0.5f});
+	spriteClearText_->SetAnchorPoint({ 0.5f, 0.5f });
 	spriteClearText_->SetPosition({ static_cast<float>(Window::GetWidth() / 2.0f), static_cast<float>(Window::GetHeight() / 2.0f) }); // 画面中央
 	savedClearTextSize_ = spriteClearText_->GetSize(); // 初期サイズを保存
 }
@@ -39,6 +41,11 @@ void GameClearSequence::Start()
 
 	// カメラシェイクを開始（カメラ回転 + 爆発フェーズまで）
 	CameraShake::GetInstance()->StartShake(kCameraRotateDuration + kExplodeDuration, 0.4f);
+
+	// ボスの最終位置を保存
+	if(boss_){
+		lastBossPosition_ = boss_->GetTranslate();
+	}
 }
 
 void GameClearSequence::Update() {
@@ -69,7 +76,7 @@ void GameClearSequence::DrawUI() {
 	// ゲームクリア演出が行われていない間はスキップ
 	if (!IsActive()) return;
 	// 爆発とクリア文字演出時のみ描画するよう制限
-	if(phase_ != Phase::ExplodeAndText) return;
+	if (phase_ != Phase::ExplodeAndText) return;
 
 	spriteBackGround_->Draw();
 	spriteClearText_->Draw();
@@ -96,7 +103,11 @@ void GameClearSequence::Debug() {
 #endif
 }
 
-void GameClearSequence::UpdateRotate(){
+void GameClearSequence::UpdateRotate() {
+	///
+	///	カメラ回転更新
+	/// 
+
 	// 回転の進行度
 	float t = std::clamp(timer_ / kCameraRotateDuration, 0.0f, 1.0f);
 
@@ -138,6 +149,22 @@ void GameClearSequence::UpdateRotate(){
 	Camera::GetCurrent()->transform_.translate_ = cameraPos + CameraShake::GetInstance()->GetOffset(); // カメラシェイクも加算
 	Camera::GetCurrent()->transform_.rotate_ = cameraRot;
 
+	///
+	///	パーティクル発生
+	/// 
+
+	// タイマーの加算
+	particleEmitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+
+	if (particleEmitTimer_ >= kExplodeEmitInterval) {
+		Float3 offset = RandomGenerator::GetInstance()->RandomValue({ -10.0f, -3.0f, -10.0f }, { 10.0f, 2.0f, 10.0f });
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", lastBossPosition_ + offset, 15);   // 煙パーティクル発生
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", lastBossPosition_ + offset, 5); // 爆発飛散パーティクル発生
+
+		// パーティクル発生タイマーのリセット
+		particleEmitTimer_ = 0.0f;
+	}
+
 	// 回転終了で次のフェーズへ
 	if (timer_ > kCameraRotateDuration) {
 		timer_ = 0.0f;
@@ -151,6 +178,21 @@ void GameClearSequence::UpdateRotate(){
 
 void GameClearSequence::UpdateExplodeAndText() {
 	///
+	///	パーティクル発生
+	/// 
+
+	// タイマーの加算
+	particleEmitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+
+	if (particleEmitTimer_ >= kExplodeEmitInterval) {
+		Float3 offset = RandomGenerator::GetInstance()->RandomValue({ -10.0f, -3.0f, -10.0f }, { 10.0f, 2.0f, 10.0f });
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", lastBossPosition_ + offset, 15);   // 煙パーティクル発生
+
+		// パーティクル発生タイマーのリセット
+		particleEmitTimer_ = 0.0f;
+	}
+
+	///
 	/// 背景スプライトの更新
 	/// 
 
@@ -161,16 +203,16 @@ void GameClearSequence::UpdateExplodeAndText() {
 
 	// 現在のアルファ値
 	float currentAlpha = 0.0f;
-	
+
 	// フェードイン状態
-	if(timer_ < kFadeDuration){
+	if (timer_ < kFadeDuration) {
 		// 進行度の計算
 		float t = std::clamp(timer_ / kFadeDuration, 0.0f, 1.0f);
 		// 0.0fから最大Alpha値まで増加
 		currentAlpha = Easing::Lerp(0.0f, kMaxAlpha, t);
 
-	// フェードアウト状態
-	} else if (timer_ > kExplodeDuration - kFadeDuration){
+		// フェードアウト状態
+	} else if (timer_ > kExplodeDuration - kFadeDuration) {
 		// フェードアウト開始からの時間
 		float fadeOutTimer = timer_ - (kExplodeDuration - kFadeDuration);
 		// 進行度の計算
@@ -178,7 +220,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 		// 最大Alpha値から0.0fまで減少
 		currentAlpha = Easing::Lerp(kMaxAlpha, 0.0f, t);
 
-	// 中間状態
+		// 中間状態
 	} else {
 		// 最大Alpha値を維持
 		currentAlpha = kMaxAlpha;
@@ -205,7 +247,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 	Float4 currentTextColor = spriteClearText_->GetColor();
 
 	// フェードイン状態（サイズ変更アニメーションのみ）
-	if(timer_ <= kTextFadeDuration){
+	if (timer_ <= kTextFadeDuration) {
 		// 進行度の計算
 		float t = std::clamp(timer_ / kTextFadeDuration, 0.0f, 1.0f);
 		// 1.2倍から等倍へサイズ変更
@@ -216,8 +258,8 @@ void GameClearSequence::UpdateExplodeAndText() {
 
 		// サイズを適用
 		spriteClearText_->SetSize(currentSize);
-	// フェードアウト状態（Alpha値変更とスライド移動）
-	} else if (timer_ >= kExplodeDuration - kTextFadeDuration){
+		// フェードアウト状態（Alpha値変更とスライド移動）
+	} else if (timer_ >= kExplodeDuration - kTextFadeDuration) {
 		// フェードアウト開始からの時間
 		float fadeOutTimer = timer_ - (kExplodeDuration - kTextFadeDuration);
 		// 進行度の計算
@@ -228,8 +270,8 @@ void GameClearSequence::UpdateExplodeAndText() {
 
 		// スライド移動のY座標を補間して適用
 		float currentY = Easing::Lerp(basePos.y, basePos.y - kSlideDistance, t);
-		spriteClearText_->SetPosition({basePos.x, currentY});
-	} 
+		spriteClearText_->SetPosition({ basePos.x, currentY });
+	}
 	// スプライトにAlphaを設定
 	spriteClearText_->SetColor(currentTextColor);
 

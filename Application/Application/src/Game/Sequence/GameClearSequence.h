@@ -107,12 +107,16 @@ private:
 
     // ----- Parameters -----
     Phase phase_ = Phase::None;                                     /* 現在フェーズ */
-    float timer_ = 0.0f;                                            /* タイマー */
+    float timer_ = 0.0f;                                            /* 全体のタイマー */
+
+    float particleEmitTimer_;                                       /* パーティクル発生用タイマー */
+    const float kExplodeEmitInterval = 0.2f;                        /* 爆発パーティクル発生頻度 */
 
     Float3 savedCameraPos_;                                         /* 演出開始時のカメラ位置を保存 */
     Float3 savedCameraRot_;                                         /* 演出開始時のカメラ回転を保存 */
 
     BossEnemy* boss_ = nullptr;                                     /* ボスのポインタ */
+    Float3 lastBossPosition_;                                       /* ボスの最終位置を保存 */
 
     const float kCameraRotateDuration = 5.0f;                       /* カメラ回転にかける時間 */
     const float kCameraDistance = 40.0f;                            /* ボスからのカメラ距離 */

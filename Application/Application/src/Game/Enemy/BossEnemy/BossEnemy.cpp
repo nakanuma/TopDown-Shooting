@@ -146,6 +146,13 @@ void BossEnemy::Update() {
 
 		// 死亡演出時間の終了で死亡（インスタンス削除）
 		if(dyingTimer_ >= kDyingDuration){
+			// パーティクル発生
+			for(size_t i = 0; i < 20; i++){
+				Float3 offset = RandomGenerator::GetInstance()->RandomValue({ -6.0f, -5.0f, -6.0f }, { 6.0f, 5.0f, 6.0f });
+				ParticleEffectManager::GetInstance()->Emit("explodeSmoke", GetTranslate() + offset, 30); // 煙パーティクル発生
+			}
+			ParticleEffectManager::GetInstance()->Emit("bossFragments", GetTranslate(), 150); // 破片パーティクル発生
+
 			isDead_ = true;
 		}
 	}
