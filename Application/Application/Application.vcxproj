@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp" />
+    <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp" />
     <ClCompile Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.cpp" />
     <ClCompile Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.cpp" />
     <ClCompile Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.cpp" />
@@ -63,6 +65,8 @@
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\BossFragments\BossFragmentsParticle.h" />
+    <ClInclude Include="src\Game\Sequence\GameClearSequence.h" />
     <ClInclude Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.h" />
     <ClInclude Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.h" />
     <ClInclude Include="src\Game\Particles\DeathCrossParticle\DeathCrossParticle.h" />

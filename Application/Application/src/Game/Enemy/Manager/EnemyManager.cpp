@@ -1,4 +1,4 @@
-﻿#include "EnemyManager.h"
+#include "EnemyManager.h"
 
 // Externals
 #include <ImguiWrapper.h>
@@ -100,8 +100,6 @@ void EnemyManager::Debug() {
 		/* BossEnemy（一旦ここでデバッグ表示） */
 		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
 			bossEnemy->Debug();
-		} else if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
-			normalEnemy->Debug();
 		}
 
 		std::string label = "Enemy[" + std::to_string(i) + "]";
@@ -141,4 +139,16 @@ void EnemyManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+BossEnemy* EnemyManager::GetBoss() const
+{
+	// 全ての敵の中からボスを探す
+	for (const auto& enemy : enemies_) {
+		if (BossEnemy* boss = dynamic_cast<BossEnemy*>(enemy.get())) {
+			// 死亡中かどうかを返す
+			return boss;
+		}
+	}
+	return nullptr;
 }

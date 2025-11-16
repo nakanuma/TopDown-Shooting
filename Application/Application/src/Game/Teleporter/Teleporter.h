@@ -68,10 +68,34 @@ public:
 	void SetPair(Teleporter* other) { pair_ = other; }
 
 	/// <summary>
+	/// 有効化状態を設定します。
+	/// </summary>
+	/// <param name="active">有効化状態</param>
+	void SetActive(bool active) { isActive_ = active; }
+
+	/// <summary>
+	/// 有効化状態を取得します。
+	/// </summary>
+	/// <returns>有効化状態</returns>
+	bool IsActive() const { return isActive_; }
+
+	/// <summary>
+	/// このテレポーターがゴールかどうかを判定します。
+	/// </summary>
+	/// <returns>ゴールテレポーターかどうか</returns>
+	bool IsGoal() const { return pairID_ == "GOAL"; }
+
+	/// <summary>
 	/// 位置の取得を行います。
 	/// </summary>
 	/// <returns>現在位置（Float3）</returns>
 	const Float3& GetTranslate() const { return object_->transform_.translate_; }
+
+	/// <summary>
+	/// ゴール時のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback">ゴール時のコールバック関数</param>
+	void SetOnGoalCallback(std::function<void()> callback) { onGoalCallback_ = callback; }
 
 private:
 	// =========================================================
@@ -84,14 +108,17 @@ private:
 	// =========================================================
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> object_;				/* テレポーターオブジェクト */
+	std::unique_ptr<Object3D> object_;					/* テレポーターオブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;			/* コライダー */
-	Float3 colliderSize_ = {3.0f, 0.5f, 3.0f};		/* コライダーサイズ */
+	std::unique_ptr<Collider> collider_;				/* コライダー */
+	Float3 colliderSize_ = {3.0f, 0.5f, 3.0f};			/* コライダーサイズ */
 
 	// ----- Parameters -----
-	std::string pairID_;							/* 固有ID */
-	Teleporter* pair_ = nullptr;					/* ペアのテレポーターのポインタ */
-	bool isActive_ = false;							/* 使用可能フラグ */
+	std::string pairID_;								/* 固有ID */
+	Teleporter* pair_ = nullptr;						/* ペアのテレポーターのポインタ */
+	bool isActive_ = false;								/* 使用可能フラグ */
+
+	// ----- Others -----
+	std::function<void()> onGoalCallback_ = nullptr;	/* ゴール時のコールバック関数 */
 };

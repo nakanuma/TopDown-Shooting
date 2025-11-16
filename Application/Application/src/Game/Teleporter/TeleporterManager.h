@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Application Includes
@@ -36,6 +36,21 @@ public:
 	/// </summary>
 	void Debug();
 
+	/// <summary>
+	/// ゴールテレポーターを有効化します。
+	/// </summary>
+	void EnableGoalTeleporter();
+
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
+	/// <summary>
+	/// ゴール時のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback">ゴール時のコールバック関数</param>
+	void SetGoalCallback(std::function<void()> callback) { goalCallback_ = callback; }
+
 private:
 	// =========================================================
 	// Member Variables
@@ -43,4 +58,7 @@ private:
 
 	// ----- Container -----
 	std::vector<std::unique_ptr<Teleporter>> teleporters_;	/* テレポーター全てを格納したコンテナ */
+
+	// ----- Others -----
+	std::function<void()> goalCallback_ = nullptr;			/* ゴール時のコールバック関数 */
 };
