@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -87,45 +87,52 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kColliderSize = {1.0f, 2.0f, 1.0f};               /* コライダーサイズ */
+	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
+	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
+	static constexpr float kHPBarOffsetY = 90.0f;                             /* HPバーのY軸オフセット */
+	static constexpr float kReloadBarOffsetY = 60.0f;                         /* リロード表示のY軸オフセット */
+
+	static constexpr int32_t kInitialHP = 40;    /* 初期HP */
+	static constexpr float kSearchRange = 20.0f; /* プレイヤー発見距離 */
+
+	static constexpr float kMinWaitTime = 1.5f;    /* 索敵中に次の回転を行うまでの最小待機時間（秒） */
+	static constexpr float kMaxWaitTime = 2.0f;    /* 索敵中に次の回転を行うまでの最大待機時間（秒） */
+	static constexpr float kMinRotateTime = 0.8f;  /* 索敵時の最小回転時間（秒） */
+	static constexpr float kMaxRotateTime = 2.0f;  /* 索敵時の最大回転時間（秒） */
+	static constexpr float kRotationSpeed = 0.01f; /* 索敵時の回転速度 */
+
+	static constexpr float kBulletSpreadAngle = 0.1f; /* 弾の拡散角 */
+	static constexpr float kShotInterval = 0.3f;      /* 射撃間隔 */
+	static constexpr int32_t kMaxBullet = 5;          /* リロードするまでに撃てる弾数（1マガジン） */
+	static constexpr float kReloadTime = 1.5f;        /* リロード所要時間 */
+
+	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
+	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
+	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
-	// ----- Search -----
-	float searchRange_ = 20.0f;									/* プレイヤーを発見できる距離 */
-	bool isPlayerVisible_ = false;								/* プレイヤー発見フラグ */
-
-	enum class SearchState {									/* 索敵時の状態を表す列挙体 */
-		Rotate,													/* 回転中 */
-		Wait,													/* 待機中 */
+	enum class SearchState {			/* 索敵時の状態を表す列挙体 */
+		Rotate,							/* 回転中 */
+		Wait,							/* 待機中 */
 	};
-	SearchState searchState_ = SearchState::Wait;				/* 現在の索敵状態 */
+	SearchState searchState_ = SearchState::Wait; /* 現在の索敵状態 */
 
-	float searchStateTimer_ = 0.0f;								/* 索敵時タイマー */
-	
-	float waitDuration_ = 0.0f;									/* 待機時の経過時間 */
-	const float kMinWaitTime = 1.5f;							/* 最小経過時間 */
-	const float kMaxWaitTime = 2.0f;							/* 最大経過時間 */
+	bool isPlayerVisible_ = false;      /* プレイヤー発見フラグ */
+	float searchStateTimer_ = 0.0f;     /* 索敵時タイマー */
+	float waitDuration_ = 0.0f;         /* 索敵中待機時の経過時間 */
+	float searchRotateDuration_ = 0.0f; /* 回転時の経過時間 */
+	float isRotatingRight_ = true;      /* 回転方向 : true（右回り）false（左回り） */
 
-	float searchRotateDuration_ = 0.0f;							/* 回転時の経過時間 */
-	const float kMinRotateTime = 0.8f;							/* 最小回転時間 */
-	const float kMaxRotateTime = 2.0f;							/* 最大回転時間 */
-	
-	float rotationSpeed_ = 0.01f;								/* 回転速度 */
-	float isRotatingRight_ = true;								/* 回転方向 : true（右回り）false（左回り） */
+	float nextShotInterval_ = 0.0f; /* 攻撃間隔タイマー */
+	int32_t bulletRemaining_ = 5;   /* 残弾数 */
+	bool isReloading_ = false;      /* リロード中フラグ */
+	float reloadTimer_ = 0.0f;      /* リロード中タイマー */
 
-	// ----- Attack -----
-	float bulletSpreadAngle_ = 0.1f;							/* 弾の拡散角 */
-
-	float nextShotInterval_ = 0.0f;								/* 攻撃間隔タイマー */
-	const float kShotInterval = 0.3f;							/* 攻撃間隔 */
-
-	int32_t bulletRemaining_ = 5;								/* 残弾数 */
-	const int32_t kMaxBullet = 5;								/* 一度に撃てる弾の上限数 */
-
-	bool isReloading_ = false;									/* リロード中フラグ */
-	const float kReloadTime = 1.5f;								/* リロード所要時間 */
-	float reloadTimer_ = 0.0f;									/* リロード中タイマー */
-
-	// ----- BehaviorTree -----
-	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_;	/* behaviorTree */
+	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_; /* behaviorTree */
 };

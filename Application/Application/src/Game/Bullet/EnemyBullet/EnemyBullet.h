@@ -55,16 +55,21 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kRadius = 0.2f;      /* 弾の半径 */
+	static constexpr float kMaxLifeTime = 1.0f; /* 生存時間（秒）*/
+	static constexpr int32_t kDamage = 5;       /* 攻撃力 */
+	static constexpr float kSpeed = 1.8f;       /* 弾速 */
+
+	static constexpr size_t kMaxTrailPoints = 10;                       /* 保持する履歴数 */
+	static constexpr float kTrailLineWidth = 0.5f;                      /* トレイル線の幅 */
+	static constexpr Float4 kTrailHeadColor = {1.0f, 1.0f, 1.0f, 1.0f}; /* トレイル線の先頭色 */
+	static constexpr Float4 kTrailTailColor = {1.0f, 1.0f, 1.0f, 0.0f}; /* トレイル線の末尾色 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Parameters -----
-	const float kRadius = 0.2f;					/* 弾の半径 */
-
-	float elapsedTime_ = 0.0f;					/* 経過時間 */
-	const float kMaxLifeTime = 1.0f;			/* 生存時間（秒） */
-
-	// ----- Trail -----
-	std::deque<Float3> trailPoints_{};			/* 過去フレームの位置を保持 */
-	const size_t kMaxTrailPoints = 10;			/* 保持する履歴数 */
+	float elapsedTime_ = 0.0f;         /* 経過時間 */
+	std::deque<Float3> trailPoints_{}; /* 過去フレームの位置を保持 */
 };

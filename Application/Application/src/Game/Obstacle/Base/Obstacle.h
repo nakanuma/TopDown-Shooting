@@ -68,16 +68,23 @@ public:
 	/// コライダーの有効化状態を設定します。
 	/// </summary>
 	/// <param name="active">有効化状態</param>
-	void SetActiveCollider(bool active) { if (collider_) collider_->SetActive(active); }
+	void SetActiveCollider(bool active) {
+		if (collider_)
+			collider_->SetActive(active);
+	}
 
 protected:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kEnvironmentStrength = 0.1f;        /* 環境マップの強度 */
+	static constexpr float kHorizontalRotationAngle = -90.0f;  /* 横向き配置確認用の回転角度（度） */
+	static constexpr float kRotationTolerance = 0.01f;         /* 回転角度の判定許容誤差 */
+	static constexpr float kHorizontalAdjustmentAngle = 90.0f; /* 横向き時に設定する回転角度（度） */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Object -----
-	std::unique_ptr<Object3D> object_;				/* 障害物オブジェクト */
-
-	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;			/* コライダー */
+	std::unique_ptr<Object3D> object_;   /* 障害物オブジェクト */
+	std::unique_ptr<Collider> collider_; /* コライダー */
 };

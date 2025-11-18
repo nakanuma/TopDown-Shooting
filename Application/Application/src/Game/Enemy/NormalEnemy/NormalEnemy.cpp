@@ -11,9 +11,9 @@
 #include <Collider/CollisionManager.h>
 #include <DirectXBase.h>
 #include <Engine/3D/LineDrawer.h>
+#include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <Engine/Util/RandomGenerator.h>
 #include <Engine/Util/TimeManager.h>
-#include <Engine/ParticleEffect/ParticleEffectManager.h>
 
 // Application
 #include <src/Game/Bullet/Base/Bullet.h>
@@ -43,19 +43,16 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 
 	///
 	///	コライダー生成
 	///
 
-	colliderSize_ = { 1.0f, 2.0f, 1.0f };
-
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("NormalEnemy");
 	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
-	aabb->SetSize(colliderSize_);
+	aabb->SetSize(kColliderSize);
 	aabb->SetOwner(this);
 
 	collider_ = std::move(aabb);
@@ -72,21 +69,20 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f}); // 黒
+	spriteHPBackground_->SetColor(kHPBarBackgroundColor);
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({0.0f, 1.0f, 0.5f, 1.0f}); // 緑
+	spriteHPForeground_->SetColor(kHPBarForegroundColor);
 
 	// リロード表示
 	uint32_t textureReload = TextureManager::Load("white.png");
 	spriteReload_ = std::make_unique<Sprite>();
 	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
 	spriteReload_->SetSize(kReloadSize);
-	spriteReload_->SetColor({1.0f, 1.0f, 1.0f, 1.0f});
 
 	///
 	///	パラメーター設定
@@ -95,7 +91,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 40;
+	currentHP_ = kInitialHP;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
 
 	targetPlayer_ = player;
@@ -108,10 +104,6 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	///	調整パラメーター登録
 	///
 
-#ifdef USE_IMGUI
-	RegisterParam("searchRadius", &searchRadius_, 0.0f, 100.0f, 0.01f);
-	RegisterParam("searchFovDeg", &searchFovDeg_, 0.0f, 360.0f, 1.00f);
-#endif
 	SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
 	InitConfig();                                  // 初回読み込み
 
@@ -171,9 +163,6 @@ void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 void NormalEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
-	// 上にずらす分のオフセット
-	const float kOffsetHPBar = 90.0f;
-
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
@@ -184,7 +173,7 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPBackground_->SetPosition({
 	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-	    screenPosition.y - kOffsetHPBar         // オフセット分上にずらす
+	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
 	});
 	spriteHPBackground_->Draw();
 
@@ -199,7 +188,7 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPForeground_->SetPosition({
 	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-	    screenPosition.y - kOffsetHPBar         // オフセット分上にずらす
+	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
 	});
 	spriteHPForeground_->Draw();
 
@@ -207,8 +196,6 @@ void NormalEnemy::DrawUI() {
 	///	リロード表示
 	///
 
-	// 上にずらすオフセット
-	const float kOffsetReload = 60.0f;
 	// リロード進捗率
 	float reloadProgress = 1.0f - (reloadTimer_ / kReloadTime);
 	// リロード時間に応じてサイズ変更
@@ -216,7 +203,7 @@ void NormalEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteReload_->SetPosition(
 	    {screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
-	     screenPosition.y - kOffsetReload});
+	     screenPosition.y - kReloadBarOffsetY});
 
 	// リロード時のみ描画
 	if (isReloading_ && reloadTimer_ < kReloadTime) {
@@ -248,8 +235,8 @@ void NormalEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45));
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle1));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle2));
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
@@ -314,7 +301,7 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 	// 2個先の位置を補間した座標を目標にする
 	Float3 targetPos = nextWP->GetPosition();
 	if (path.size() > 2) {
-		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * 0.5f;
+		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * kPathInterpolation;
 	}
 	Float3 dir = Float3::Normalize(targetPos - objectEnemy_->transform_.translate_);
 	dir.y = 0.0f;
@@ -326,7 +313,6 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 	// 向き補間
 	Float3 lookDir = dir;
 
-	float turnSpeed = 5.0f;
 	float currentYaw = objectEnemy_->transform_.rotate_.y;
 	float targetYaw = std::atan2(lookDir.x, lookDir.z);
 
@@ -337,7 +323,7 @@ void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed)
 	while (deltaYaw < -PIf)
 		deltaYaw += 2.0f * PIf;
 
-	float newYaw = currentYaw + deltaYaw * turnSpeed * TimeManager::GetInstance()->GetDeltaTime();
+	float newYaw = currentYaw + deltaYaw * kTurnSpeed * TimeManager::GetInstance()->GetDeltaTime();
 
 	objectEnemy_->transform_.rotate_.y = newYaw;
 }
@@ -346,7 +332,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	if (!targetPlayer_)
 		return false;
 
-	if(targetPlayer_->IsDead())
+	if (targetPlayer_->IsDead())
 		return false;
 
 	Float3 enemyPos = this->objectEnemy_->transform_.translate_;
@@ -359,7 +345,7 @@ bool NormalEnemy::IsPlayerInSight() {
 
 	float distance = Float3::Length(toPlayer);
 	// Playerが範囲外ならfalse
-	if (distance > searchRadius_) {
+	if (distance > kSearchRadius) {
 		return false;
 	}
 
@@ -382,7 +368,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	float angleDeg = angleRad * 180.0f / PIf;
 
 	// 扇形角度チェック
-	if (angleDeg > (searchFovDeg_ * 0.5f)) {
+	if (angleDeg > (kSearchFovDeg * 0.5f)) {
 		return false;
 	}
 
@@ -403,15 +389,12 @@ bool NormalEnemy::IsPlayerInSight() {
 }
 
 void NormalEnemy::DrawDebugSight() {
-	// 分割数
-	const uint32_t segments = 16;
-
 	// 視界にプレイヤーがいれば赤色に
 	Float4 color;
 	if (IsPlayerInSight()) {
-		color = {1.0f, 0.0f, 0.0f, 1.0f};
+		color = kDebugSightColorDetect;
 	} else {
-		color = {1.0f, 1.0f, 1.0f, 1.0f};
+		color = kDebugSightColorNormal;
 	}
 
 	Float3 center = objectEnemy_->transform_.translate_;
@@ -421,22 +404,22 @@ void NormalEnemy::DrawDebugSight() {
 	forward = Float3::Normalize(forward);
 
 	// 左端の方向ベクトル
-	float halfFovRad = (searchFovDeg_ * 0.5f) * PIf / 180.0f;
+	float halfFovRad = (kSearchFovDeg * 0.5f) * PIf / 180.0f;
 	float baseAngle = std::atan2f(forward.z, forward.x);
 
 	float startAngle = baseAngle - halfFovRad;
 	float endAngle = baseAngle + halfFovRad;
 
 	// 扇形を分割して線を描画
-	Float3 firstPoint = {center.x + std::cosf(startAngle) * searchRadius_, center.y, center.z + std::sinf(startAngle) * searchRadius_};
+	Float3 firstPoint = {center.x + std::cosf(startAngle) * kSearchRadius, center.y, center.z + std::sinf(startAngle) * kSearchRadius};
 
 	Float3 prevPoint = firstPoint;
 
-	for (uint32_t i = 1; i <= segments; i++) {
-		float t = static_cast<float>(i) / segments;
+	for (uint32_t i = 1; i <= kDebugSightSegments; i++) {
+		float t = static_cast<float>(i) / kDebugSightSegments;
 		float angle = startAngle + (endAngle - startAngle) * t;
 
-		Float3 nextPoint = {center.x + std::cosf(angle) * searchRadius_, center.y, center.z + std::sinf(angle) * searchRadius_};
+		Float3 nextPoint = {center.x + std::cosf(angle) * kSearchRadius, center.y, center.z + std::sinf(angle) * kSearchRadius};
 
 		// 円弧の線分
 		LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
@@ -461,11 +444,11 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		// 移動先ウェイポイント候補
 		std::vector<Waypoint*> candidates;
 		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
-			float distFromSpawn = Float3::Length(wp->GetPosition() - spawnPosition_);                       // スポーン地点からウェイポイントまでの距離
+			float distFromSpawn = Float3::Length(wp->GetPosition() - spawnPosition_);                        // スポーン地点からウェイポイントまでの距離
 			float distFromCurrent = Float3::Length(wp->GetPosition() - objectEnemy_->transform_.translate_); // 現在地点からウェイポイントまでの距離
 
 			// スポーン地点から一定範囲内にあるかつ、現在位置から一定距離離れたウェイポイントのみを収集
-			if (distFromSpawn <= patrolRange_ && distFromCurrent >= minPatrolRange_) {
+			if (distFromSpawn <= kPatrolRange && distFromCurrent >= kMinPatrolRange) {
 				candidates.push_back(wp.get());
 			}
 		}
@@ -485,11 +468,11 @@ BehaviorStatus NormalEnemy::RandomPatrol() {
 		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, currentTargetWP_);
 		if (!path.empty()) {
 			// 移動
-			MoveAlongPath(path, patrolMoveSpeed_);
+			MoveAlongPath(path, kPatrolMoveSpeed);
 
 			// 目標に到達したらターゲットをクリア
 			Float3 targetPos = currentTargetWP_->GetPosition();
-			if (Float3::Length(targetPos - objectEnemy_->transform_.translate_) < 3.0f) {
+			if (Float3::Length(targetPos - objectEnemy_->transform_.translate_) < kWaypointReachDistance) {
 				currentTargetWP_ = nullptr;
 
 				status = BehaviorStatus::Success; // 成功
@@ -506,7 +489,7 @@ BehaviorStatus NormalEnemy::RandomRotate() {
 		rotateDirection_ = RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
 
 		// 回転時間をランダムに決める
-		rotateTimer_ = RandomGenerator::GetInstance()->RandomValue(1.0f, 2.0f);
+		rotateTimer_ = RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
 	}
 
 	// 回転処理
@@ -574,7 +557,7 @@ BehaviorStatus NormalEnemy::Shoot() {
 	// 弾の発射処理
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 拡散角をランダムに設定
-	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
+	float randSpread = RandomGenerator::GetInstance()->RandomValue(-kBulletSpreadAngle, kBulletSpreadAngle);
 	direction.x += randSpread;
 	direction.z += randSpread;
 	direction = Float3::Normalize(direction);
@@ -613,7 +596,7 @@ BehaviorStatus NormalEnemy::MoveToPlayer() {
 		return BehaviorStatus::Failure;
 
 	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
-	MoveAlongPath(path, speed_);
+	MoveAlongPath(path, kMoveSpeed);
 
 	return BehaviorStatus::Running;
 }
@@ -624,13 +607,13 @@ void NormalEnemy::BuildBehaviorTree() {
 	///
 
 	// 移動前待機
-	auto waitBeforePatrol = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+	auto waitBeforePatrol = std::make_unique<WaitNode<NormalEnemy>>(kWaitBeforePatrol, kWaitBeforePatrol, "wait");
 
 	// ランダム移動
 	auto randomPatrol = std::make_unique<ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomPatrol(); }, "randomPatrol");
 
 	// 回転前待機
-	auto waitBeforeRotate = std::make_unique<WaitNode<NormalEnemy>>(1.0f, 1.0f, "");
+	auto waitBeforeRotate = std::make_unique<WaitNode<NormalEnemy>>(kWaitBeforeRotate, kWaitBeforeRotate, "wait");
 
 	// ランダム回転
 	auto randomRotate = std::make_unique<ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomRotate(); }, "randomRotate");

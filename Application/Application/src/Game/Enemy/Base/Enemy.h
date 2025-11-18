@@ -97,35 +97,35 @@ public:
 
 protected:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float2 kHPBarSize = {100.0f, 20.0f};  /* HPバーのサイズ */
+	static constexpr Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
-	// ----- System -----	
-	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	// ----- System -----
+	std::unique_ptr<SpriteCommon> spriteCommon_; /* スプライト共通処理 */
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> objectEnemy_;					/* 敵オブジェクト */
+	std::unique_ptr<Object3D> objectEnemy_; /* 敵オブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;					/* コライダー */
-	Float3 colliderSize_;									/* コライダーサイズ */
+	std::unique_ptr<Collider> collider_; /* コライダー */
 
 	// ----- Sprite -----
-	/// (Todo : 敵用のUIクラスに分ける )
-	const Float2 kHPBarSize = {100.0f, 20.0f};				/* HPバーのサイズ */
-	std::unique_ptr<Sprite> spriteHPBackground_;			/* HPバー後景スプライト */
-	std::unique_ptr<Sprite> spriteHPForeground_;			/* HPバー前景スプライト */
-
-	const Float2 kReloadSize = {100.0f, 10.0f};				/* リロード表示スプライトのサイズ */
-
-	std::unique_ptr<Sprite> spriteReload_;					/* リロード表示スプライト */
+	std::unique_ptr<Sprite> spriteHPBackground_; /* HPバー後景スプライト */
+	std::unique_ptr<Sprite> spriteHPForeground_; /* HPバー前景スプライト */
+	std::unique_ptr<Sprite> spriteReload_;       /* リロード表示スプライト */
 
 	// ----- Parameters -----
-	bool isActive_ = false;									/* 有効化フラグ */
-	bool isDead_ = false;									/* 死亡フラグ */
+	bool isActive_ = false; /* 有効化フラグ */
+	bool isDead_ = false;   /* 死亡フラグ */
 
-	int32_t maxHP_ = 0;										/* 最大HP */
-	int32_t currentHP_ = 0;									/* 現在HP */
+	int32_t maxHP_ = 0;     /* 最大HP */
+	int32_t currentHP_ = 0; /* 現在HP */
 
-	Player* targetPlayer_ = nullptr;						/* プレイヤーのポインタ */
+	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
 };

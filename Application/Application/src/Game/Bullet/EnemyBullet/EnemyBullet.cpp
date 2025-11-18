@@ -20,7 +20,7 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
-	objectBullet_->transform_.scale_ = { kRadius, kRadius, kRadius };
+	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius};
 
 	// 進行方向から向きを計算して回転を設定
 	Float3 dir = Float3::Normalize(direciton);
@@ -43,8 +43,8 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	// ---------------------------------------------------------
 	// パラメーター設定
 	// ---------------------------------------------------------
-	damage_ = 5;                    // 攻撃力
-	speed_ = 1.8f;                  // 弾速
+	damage_ = kDamage;              // 攻撃力
+	speed_ = kSpeed;                // 弾速
 	velocity_ = direciton * speed_; // 速度ベクトル
 }
 
@@ -115,10 +115,6 @@ void EnemyBullet::OnCollision(Collider* other) {
 }
 
 void EnemyBullet::DrawTrail() {
-	// 先頭と末尾の色
-	Float4 headColor = {1.0f, 1.0f, 1.0f, 1.0f};
-	Float4 tailColor = {1.0f, 1.0f, 1.0f, 0.0f};
-
 	// [0]と[1], [1]と[2]... といったように全てのポイントを繋ぐ線を作る
 	for (size_t i = 1; i < trailPoints_.size(); ++i) {
 		// 線分の位置に応じた割合を計算
@@ -126,10 +122,10 @@ void EnemyBullet::DrawTrail() {
 		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1);
 
 		// 線の両端の色を補間
-		Float4 c0 = Float4::Lerp(tailColor, headColor, t0); // この線分での末尾の色
-		Float4 c1 = Float4::Lerp(tailColor, headColor, t1); // この線分での先頭の色
+		Float4 c0 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t0); // この線分での末尾の色
+		Float4 c1 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t1); // この線分での先頭の色
 
 		// トレイル線の登録
-		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], 0.5f, c1, c0);
+		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], kTrailLineWidth, c1, c0);
 	}
 }

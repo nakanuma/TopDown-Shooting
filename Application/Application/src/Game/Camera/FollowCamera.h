@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -43,12 +43,16 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kCursorInfluence = 0.2f; /* カーソル補正の影響度 */
+	static constexpr float kFollowSpeed = 0.75f;    /* カメラの追従速度 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Parameters -----
-	const Float3* targetTranslate_ = nullptr;			/* 追従対象の座標 */
-	Float3 offset_ = { 0.0f, 0.0f, 0.0f };				/* カメラに加えるオフセット */
-	Float3 currentPos_ = { 0.0f, 0.0f, 0.0f };			/* 現在のカメラ位置 */
-	Float3 cursorOffset_ = { 0.0f, 0.0f, 0.0f };		/* カーソル補正分のオフセット */
+	const Float3* targetTranslate_ = nullptr;  /* 追従対象の座標 */
+	Float3 offset_ = {0.0f, 0.0f, 0.0f};       /* カメラに加えるオフセット */
+	Float3 currentPos_ = {0.0f, 0.0f, 0.0f};   /* 現在のカメラ位置 */
+	Float3 cursorOffset_ = {0.0f, 0.0f, 0.0f}; /* カーソル補正分のオフセット */
 };

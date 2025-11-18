@@ -9,14 +9,14 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	object_->model_ = model;
 	object_->transform_.translate_ = position;
 	object_->materialCB_.data_->useEnvironmentMap = true;
-	object_->materialCB_.data_->environmentStrength = 0.1f;
+	object_->materialCB_.data_->environmentStrength = kEnvironmentStrength;
 
 	Float3 size = colliderSize;
 
 	// 横向き配置かどうかを判定
-	if (std::abs(rotate.z - DegToRad(-90.0f)) < 0.01f) { // Blender上で横向き（-90度）になっているか確認
+	if (std::abs(rotate.z - DegToRad(kHorizontalRotationAngle)) < kRotationTolerance) { // Blender上で横向き（-90度）になっているか確認
 		// オブジェクトを横向きにする
-		object_->transform_.rotate_.y -= DegToRad(90.0f);
+		object_->transform_.rotate_.y -= DegToRad(kHorizontalAdjustmentAngle);
 
 		// コライダーのxとzを入れ替え
 		std::swap(size.x, size.z);
@@ -25,10 +25,6 @@ void Obstacle::Initialize(const Float3& position, const Float3& scale, const Flo
 	///
 	///	コライダー生成
 	///
-
-	collider_ = std::make_unique<AABBCollider>();
-	collider_->SetTag("Obstacle");
-	collider_->SetOwner(this);
 
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("Obstacle");

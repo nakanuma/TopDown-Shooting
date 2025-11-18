@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Application Includes
@@ -57,15 +57,25 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kMaxLifeTime = 5.0f; /* 生存時間（秒） */
+	static constexpr int32_t kDamage = 20;		/* 攻撃力 */
+	static constexpr float kSpeed = 0.3f;       /* 弾速 */
+	static constexpr float kTurnSpeed = 0.06f;  /* 旋回速度 */
+
+	static constexpr Float3 kMissileScale = {0.5f, 0.5f, 0.5f};       /* オブジェクトのスケール */
+	static constexpr Float4 kMissileColor = {0.5f, 0.5f, 0.5f, 1.0f}; /* オブジェクトの色 */
+	static constexpr Float3 kColliderSize = {0.5f, 0.5f, 2.5f};       /* コライダーサイズ */
+
+	static constexpr float kSmokeOffsetDistance = -3.0f; /* ミサイル煙パーティクルのオフセット距離 */
+	static constexpr int32_t kMissileSmokeCount = 1;     /* ミサイル煙パーティクルの発生数 */
+	static constexpr int32_t kExplodeSmokeCount = 15;    /* 煙パーティクルの発生数 */
+	static constexpr int32_t kExplodeScatterCount = 25;  /* 飛散パーティクルの発生数 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Parameters -----
-	const Float3 kColliderSize = {0.5f, 0.5f, 2.5f};		/* コライダーサイズ */
-
-	float elapsedTime_ = 0.0f;								/* 経過時間 */
-	const float kMaxLifeTime = 5.0f;						/* 生存時間（秒） */
-	const float kTurnSpeed = 0.06f;							/* 旋回速度 */
-
-	Player* targetPlayer_ = nullptr;						/* プレイヤーのポインタ */
+	float elapsedTime_ = 0.0f;       /* 経過時間 */
+	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
 };

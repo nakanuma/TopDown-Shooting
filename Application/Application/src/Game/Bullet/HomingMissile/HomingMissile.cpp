@@ -5,6 +5,7 @@
 // ---------------------------------------------------------
 #include <Collider/CollisionManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <TimeManager.h>
 
 // ---------------------------------------------------------
 // Application Includes
@@ -18,8 +19,8 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
-	objectBullet_->transform_.scale_ = {0.5f, 0.5f, 0.5f};
-	objectBullet_->materialCB_.data_->color = {0.5f, 0.5f, 0.5f, 1.0f};
+	objectBullet_->transform_.scale_ = kMissileScale;
+	objectBullet_->materialCB_.data_->color = kMissileColor;
 
 	// 進行方向から向きを計算して回転を設定
 	Float3 dir = Float3::Normalize(direciton);
@@ -30,7 +31,7 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
-	
+
 	auto obb = std::make_unique<OBBCollider>();
 	obb->SetTag("HomingMissile");
 	obb->SetFollowTarget(&objectBullet_->transform_.translate_);
@@ -44,8 +45,8 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	// パラメーター設定
 	// ---------------------------------------------------------
-	damage_ = 20;                   // 攻撃力
-	speed_ = 0.3f;                  // 弾速
+	damage_ = kDamage;              // 攻撃力
+	speed_ = kSpeed;                // 弾速
 	velocity_ = direciton * speed_; // 速度ベクトル
 }
 
@@ -81,20 +82,20 @@ void HomingMissile::Update() {
 	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
 
 	// パーティクル発生（後方から出るよう調整）
-	float offsetDistance = -3.0f;
-	Float3 offset = newDir * offsetDistance;
-	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate_ + offset, 1);
+	Float3 offset = newDir * kSmokeOffsetDistance;
+	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate_ + offset, kMissileSmokeCount);
 
 	// ---------------------------------------------------------
 	// 寿命更新
 	// ---------------------------------------------------------
-	elapsedTime_ += 1.0f / 60.0f;
+	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, kExplodeSmokeCount);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, kExplodeScatterCount);
 
 		// 死亡させる
 		isDead_ = true;
@@ -117,16 +118,16 @@ void HomingMissile::Draw() {
 }
 
 void HomingMissile::OnCollision(Collider* other) {
-	Float3 bulletPos = this->objectBullet_->transform_.translate_;
+	Float3 bulletPos = this->GetTranslate();
 
 	// ---------------------------------------------------------
 	// プレイヤーとの衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Player") {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
 
 		// 死亡させる
 		isDead_ = true;
@@ -139,9 +140,9 @@ void HomingMissile::OnCollision(Collider* other) {
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Obstacle") {
 		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, 15);
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
 		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, 25);
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
 
 		// 死亡させる
 		isDead_ = true;
