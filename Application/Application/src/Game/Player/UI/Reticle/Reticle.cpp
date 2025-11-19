@@ -1,4 +1,4 @@
-﻿#include "Reticle.h"
+#include "Reticle.h"
 
 // C++
 #include <algorithm>
@@ -18,8 +18,8 @@ void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	uint32_t textureTarget = TextureManager::Load("UI/crosshair.png");
 	spriteCrosshair_ = std::make_unique<Sprite>();
 	spriteCrosshair_->Initialize(spriteCommon, textureTarget);
-	spriteCrosshair_->SetAnchorPoint({ 0.5f, 0.5f });
-	spriteCrosshair_->SetSize({ 64.0f, 64.0f });
+	spriteCrosshair_->SetAnchorPoint(kAnchorPoint);
+	spriteCrosshair_->SetSize(kInitialSize);
 }
 
 void Reticle::Update() {

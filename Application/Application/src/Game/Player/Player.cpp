@@ -51,14 +51,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_ = std::make_unique<AnimatedModelInstance>();
 	objectPlayer_->Initialize(walkData_);
 	objectPlayer_->GetTranslate() = data.translate;
-	objectPlayer_->SetPlayBackSpeed(1.5f);
+	objectPlayer_->SetPlayBackSpeed(kAnimationPlaybackSpeed);
 
 	// 銃オブジェクト生成
 	objectGun_ = std::make_unique<Object3D>();
 	objectGun_->model_ = &ModelManager::GetInstance()->GetModel("Gun");
-	objectGun_->materialCB_.data_->color = {0.0f, 0.0f, 0.0f, 1.0f};
+	objectGun_->materialCB_.data_->color = kGunColor;
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
-	objectGun_->materialCB_.data_->environmentStrength = 0.2f;
+	objectGun_->materialCB_.data_->environmentStrength = kGunEnvironmentStrength;
 
 
 	///
@@ -93,10 +93,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	調整パラメーター登録
 	///
 
-#ifdef USE_IMGUI
-	RegisterParam("speed", &speed_, 0.0f, 10.0f, 0.01f);
-	RegisterParam("fireCooldown", &fireCooldown_, 0.0f, 5.0f, 0.01f);
-#endif
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 	InitConfig(); // 初回読み込み
 }
@@ -127,8 +123,8 @@ void Player::Update(bool operable) {
 		isDead_ = true;
 
 		// 死亡したフレームのみパーティクルを発生
-		if(!wasDead){
-			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), 30);
+		if (!wasDead) {
+			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), kBloodSplatterCount);
 		}
 	}
 
@@ -149,12 +145,10 @@ void Player::Update(bool operable) {
 	// 銃オブジェクト更新
 	Float3 playerPos = objectPlayer_->GetTranslate();
 	Float3 playerRot = objectPlayer_->GetRotate();
-	Float3 forward = {sinf(playerRot.y), 0.0f, cosf(playerRot.y)}; // 前方向ベクトル
-	Float3 right = {cosf(playerRot.y), 0.0f, -sinf(playerRot.y)}; // 右方向ベクトル
+	Float3 forward = { sinf(playerRot.y), 0.0f, cosf(playerRot.y) }; // 前方向ベクトル
+	Float3 right = { cosf(playerRot.y), 0.0f, -sinf(playerRot.y) }; // 右方向ベクトル
 
-	const float gunForwardOffset = 1.1f; // 前方方向へのオフセット
-	const float gunRightOffset = 0.3f; // 右方向のオフセット
-	objectGun_->transform_.translate_ = playerPos + (forward * gunForwardOffset) + (right * gunRightOffset);
+	objectGun_->transform_.translate_ = playerPos + (forward * kGunForwardOffset) + (right * kGunRightOffset);
 	objectGun_->transform_.rotate_ = playerRot;
 
 	objectGun_->UpdateMatrix();
@@ -169,7 +163,7 @@ void Player::Update(bool operable) {
 
 void Player::Draw() {
 	// 死亡したら描画スキップ
-	if(isDead_) return;
+	if (isDead_) return;
 
 	objectPlayer_->Draw();
 	objectGun_->Draw();
@@ -192,7 +186,7 @@ void Player::DrawGunShadow()
 
 void Player::DrawUI() {
 	// 死亡状態ならスキップ
-	if(IsDead()) return;
+	if (IsDead()) return;
 
 	ui_->Draw();
 }
@@ -202,7 +196,7 @@ void Player::OnCollision(Collider* other) {
 	/// vs NormalEnemy
 	///
 	if (other->GetTag() == "NormalEnemy") {
-		
+
 	}
 
 	///
@@ -294,8 +288,6 @@ void Player::Debug() {
 	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);
 	ImGui::EndDisabled();
 
-	ImGui::DragFloat("Speed", &speed_, 0.01f);
-
 	ImGui::DragInt("HP", &currentHP_);
 
 	ImGui::Text("dashCooldown : %.2f", dashCooldownTimer_);
@@ -335,13 +327,13 @@ void Player::HandleMove() {
 
 	// キー入力で速度ベクトル加算
 	if (input_->PushKey(DIK_W))
-		velocity_.z += 1.0f;
+		velocity_.z += kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_S))
-		velocity_.z -= 1.0f;
+		velocity_.z -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_A))
-		velocity_.x -= 1.0f;
+		velocity_.x -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_D))
-		velocity_.x += 1.0f;
+		velocity_.x += kVelocityNormalizeAdditive;
 
 	// 移動しているか
 	isMoving_ = (velocity_.x != 0.0f || velocity_.z != 0.0f);
@@ -377,7 +369,7 @@ void Player::HandleMove() {
 	}
 
 	// 速度を更新
-	float currentSpeed = speed_;
+	float currentSpeed = kMoveSpeed;
 	if (isDashing_) {
 		currentSpeed *= kDashSpeedMultiplier; // ダッシュ中は速度に倍率をかける
 	}
@@ -407,8 +399,8 @@ void Player::HandleShooting() {
 		// 少しだけ方向をブレさせる
 		float blurAmount = kMaxRandomAngle;
 
-		if (Float3::Length(velocity_) > 0.01f) {
-			blurAmount *= 3.0f; // プレイヤーが動いていたらブレの幅を増やす
+		if (Float3::Length(velocity_) > kVelocityThreshold) {
+			blurAmount *= kShootingBlurMultiplier; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
 		float blurDist = RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
@@ -425,11 +417,10 @@ void Player::HandleShooting() {
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, 1, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
-		
+		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
+
 		Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
-		const float forwardOffset = 1.4f; // 前方方向へのオフセット
-		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * forwardOffset), 6); // マズルフラッシュ
+		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
 	}
 }
 
@@ -444,14 +435,14 @@ void Player::HandleOverHeat()
 	// オーバーヒートしていない場合の処理
 	if (!isOverheated_ && isFiring_) {
 		// オーバーヒート処理
-		overheatTime_ += overheatGainPerSecond_ * TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ += kOverheatGainPerSecond * TimeManager::GetInstance()->GetDeltaTime();
 		if (overheatTime_ >= kOverheatLimit) {
 			overheatTime_ = kOverheatLimit;
 			isOverheated_ = true;
 		}
 
 		// 射撃処理
-		if (fireTimer_ >= fireCooldown_) {
+		if (fireTimer_ >= kFireCooldown) {
 			HandleShooting();
 			fireTimer_ = 0.0f;
 		}
@@ -459,7 +450,7 @@ void Player::HandleOverHeat()
 		// オーバーヒート中の処理
 	} else {
 		// 冷却処理（撃っていない間 or オーバーヒート中）
-		overheatTime_ -= overheatRecoverySpeed_ * TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ -= kOverheatRecoverySpeed * TimeManager::GetInstance()->GetDeltaTime();
 		overheatTime_ = std::max(overheatTime_, 0.0f);
 
 		// 冷却時間完了でオーバーヒート解除

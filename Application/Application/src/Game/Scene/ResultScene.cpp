@@ -19,7 +19,7 @@ void ResultScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera_ = std::make_unique<Camera>(Float3{0.0f, 30.0f, -50.0f}, Float3{0.5f, 0.0f, 0.0f}, 0.45f);
+	camera_ = std::make_unique<Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
 	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -48,22 +48,22 @@ void ResultScene::Initialize() {
 	uint32_t textureBackGround = TextureManager::Load("white.png");
 	spriteBackGround_ = std::make_unique<Sprite>();
 	spriteBackGround_->Initialize(spriteCommon_.get(), textureBackGround);
-	spriteBackGround_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
-	spriteBackGround_->SetSize({1280.0f, 720.0f});
+	spriteBackGround_->SetColor(kBackgroundColor);
+	spriteBackGround_->SetSize(kBackgroundSize);
 
 	// タイトルボタン
 	uint32_t textureTitleButton = TextureManager::Load("UI/titleButton.png");
 	spriteTitleButton_ = std::make_unique<Sprite>();
 	spriteTitleButton_->Initialize(spriteCommon_.get(), textureTitleButton);
-	spriteTitleButton_->SetPosition({640.0f, 620.0f});
-	spriteTitleButton_->SetAnchorPoint({0.5f, 0.5f});
+	spriteTitleButton_->SetPosition(kTitleButtonPosition);
+	spriteTitleButton_->SetAnchorPoint(kAnchorPoint);
 
 	// 戦績
 	uint32_t textureRecord = TextureManager::Load("UI/record.png");
 	spriteRecord_ = std::make_unique<Sprite>();
 	spriteRecord_->Initialize(spriteCommon_.get(), textureRecord);
-	spriteRecord_->SetPosition({640.0f, 260.0f});
-	spriteRecord_->SetAnchorPoint({0.5f, 0.5f});
+	spriteRecord_->SetPosition(kRecordPosition);
+	spriteRecord_->SetAnchorPoint(kAnchorPoint);
 
 	// 合計ダメージ
 	spriteTotalDamage_ = std::make_unique<NumberSprite>();
@@ -73,17 +73,17 @@ void ResultScene::Initialize() {
 	spriteDefeated_->Initialize(static_cast<float>(ResultStats::GetInstance()->GetDefeated()));
 	// 命中率
 	spriteHitRate_ = std::make_unique<NumberSprite>();
-	spriteHitRate_->Initialize(ResultStats::GetInstance()->GetHitRate(), 2);
+	spriteHitRate_->Initialize(ResultStats::GetInstance()->GetHitRate(), kDecimalPlaces);
 	// クリアタイム
 	spriteClearTime_ = std::make_unique<NumberSprite>();
-	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), 2);
+	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), kDecimalPlaces);
 
 	///
 	///	フェード
 	///
 
 	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
-	FadeTransition::GetInstance()->StartFadeIn(1.0f);
+	FadeTransition::GetInstance()->StartFadeIn(kFadeInDuration);
 
 	///
 	///	その他
@@ -97,7 +97,7 @@ void ResultScene::Finalize() {}
 
 void ResultScene::Update() {
 	if (input_->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(1.0f, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, 0.2f);
+		FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
 		ResultStats::GetInstance()->Clear();   // 戦績をクリア
 		BulletManager::GetInstance()->Clear(); // 弾リストをクリア
 	}
@@ -110,10 +110,10 @@ void ResultScene::Update() {
 	spriteTitleButton_->Update();
 	spriteRecord_->Update();
 
-	spriteTotalDamage_->Update({640.0f, 130.0f});
-	spriteDefeated_->Update({640.0f, 260.0f});
-	spriteHitRate_->Update({650.0f, 390.0f});
-	spriteClearTime_->Update({650.0f, 520.0f});
+	spriteTotalDamage_->Update(kTotalDamatePosition);
+	spriteDefeated_->Update(kDefeatedPosition);
+	spriteHitRate_->Update(kHitRatePosition);
+	spriteClearTime_->Update(kClearTimePosition);
 }
 
 void ResultScene::Draw() {
@@ -123,7 +123,7 @@ void ResultScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap_.heap_.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();

@@ -78,6 +78,24 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kInitialCameraPosition = { 0.0f, 50.0f, -55.0f };							/* 初期カメラ位置 */
+	static constexpr Float3 kInitialCameraRotation = { PIf / 4.0f, 0.0f, 0.0f };						/* 初期カメラ回転角 */
+	static constexpr float kCameraFovY = 0.45f;															/* カメラの視野角 */
+
+	static constexpr float kSplitBlockOpenDuration = 0.5f;	/* 分割ブロックトランジション開始時の演出時間 */
+	static constexpr float kSplitBlockOpenDelay = 1.0f;		/* 分割ブロックトランジション開始時の遅延時間 */
+
+	static constexpr float kFadeOutDuration = 0.5f;	/* フェードアウトの演出時間 */
+	static constexpr float kFadeOutDelay = 0.25f;	/* フェードアウト開始前の遅延時間 */
+
+	static constexpr Float3 kDirectionalLightDirection = { 0.367f, -0.653f, -0.662f };	/* 平行光源の方向 */
+	static constexpr float kDirectionalLightIntensity = 1.0f;							/* 平行光源の強度 */
+
+	static constexpr Float3 kShadowBoundingBoxExtents = { 30.0f, 10.0f, 30.0f };	/* シャドウマップ用AABBの範囲 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 

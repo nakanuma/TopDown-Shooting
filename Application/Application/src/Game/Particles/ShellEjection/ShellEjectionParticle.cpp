@@ -28,21 +28,21 @@ ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& po
 	// 回転
 	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// スケール（縦長の形状）
-	p.transform.scale_ = { 0.1f, 0.1f, 0.25f };
+	p.transform.scale_ = kInitialScale;
 	// 速度ベクトル
-	Float3 rightDir = {cosf(angle), 0.0f, -sinf(angle)};
-	Float3 upDir = {0.0f, 1.0f, 0.0f};
-	p.velocity = 
-		rightDir * rand->RandomValue(5.0f, 7.5f) + // 右方向
-		upDir * rand->RandomValue(8.0f, 10.0f); // 上方向
+	Float3 rightDir = { cosf(angle), 0.0f, -sinf(angle) };
+	Float3 upDir = { 0.0f, 1.0f, 0.0f };
+	p.velocity =
+		rightDir * rand->RandomValue(kMinRightSpeed, kMaxRightSpeed) + // 右方向
+		upDir * rand->RandomValue(kMinUpSpeed, kMaxUpSpeed); // 上方向
 	// 色
-	p.color = { 0.4f, 0.4f, 0.0f, 1.0f };
+	p.color = kInitialColor;
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 生存時間
-	p.lifeTime = 1.0f;
+	p.lifeTime = kLifeTime;
 	// 回転速度
-	p.rotationSpeed = rand->RandomValue({ -5.0f, -5.0f, -5.0f }, { 5.0f, 5.0f, 5.0f });
+	p.rotationSpeed = rand->RandomValue(kMinRotationSpeed, kMaxRotationSpeed);
 
 	return p;
 }
@@ -50,9 +50,6 @@ ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& po
 void ShellEjectionParticle::UpdateParticle(ShellEjectionParticleData& p, float dt)
 {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
-
-	// 重力加速度
-	const float kGravity = -50.0f;
 
 	// 速度更新
 	p.velocity.y += kGravity * dt;

@@ -11,7 +11,7 @@ SmokeParticle::SmokeParticle(ModelManager::ModelData& model) {
 	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
-	isBillboard_ = {false, false, false};
+	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
 	blendMode_ = BlendMode::Normal;
 }
@@ -21,26 +21,26 @@ SmokeParticleData SmokeParticle::CreateParticle(const Float3& pos, const Float3&
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置（Yにオフセットを加える）
-	Float3 offset = rand->RandomValue({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
+	Float3 offset = rand->RandomValue({ 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 	p.transform.translate_ = pos + offset;
 	// 回転
-	p.transform.rotate_ = {0.0f, 0.0f, 0.0f};
+	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// スケール
-	p.transform.scale_ = {0.25f, 0.25f, 0.25f};
+	p.transform.scale_ = kInitialScale;
 	// 速度ベクトル
-	p.velocity = rand->RandomValue({-1.0f, -5.0f, -1.0f}, {1.0f, 5.0f, 1.0f});
+	p.velocity = rand->RandomValue(kMinVelocity, kMaxVelocity);
 	// 色
-	p.color = {1.0f, 1.0f, 0.0f, 1.0f};
+	p.color = kInitialColor;
 	// 生存時間
-	p.lifeTime = rand->RandomValue(2.0f, 3.0f);
+	p.lifeTime = rand->RandomValue(kMinLifeTime, kMaxLifeTime);
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
 	p.initScale = p.transform.scale_;
 	// 上昇速度
-	p.ascendSpeed = rand->RandomValue(4.0f, 12.0f);
+	p.ascendSpeed = rand->RandomValue(kMinAscendSpeed, kMaxAscendSpeed);
 	// 回転速度
-	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
+	p.rotationSpeed = rand->RandomValue(kMinRotationSpeed, kMaxRotationSpeed);
 
 	return p;
 }
@@ -55,13 +55,13 @@ void SmokeParticle::UpdateParticle(SmokeParticleData& p, float dt) {
 
 	// 横方向の速度を減衰
 	float horizontalDamping = Easing::EaseInQuad(1.0f - t);
-	Float3 horizontalVelocity = {p.velocity.x * horizontalDamping, 0.0f, p.velocity.z * horizontalDamping};
+	Float3 horizontalVelocity = { p.velocity.x * horizontalDamping, 0.0f, p.velocity.z * horizontalDamping };
 
 	// 上昇速度を徐々に増加
 	float verticalVelocity = p.ascendSpeed * t;
 
 	// 速度を合成
-	Float3 currentVelocity = horizontalVelocity + Float3{0.0f, verticalVelocity, 0.0f};
+	Float3 currentVelocity = horizontalVelocity + Float3{ 0.0f, verticalVelocity, 0.0f };
 
 	p.transform.translate_ += currentVelocity * dt;
 
@@ -79,33 +79,33 @@ void SmokeParticle::UpdateParticle(SmokeParticleData& p, float dt) {
 	float startScale = p.initScale.x;
 	float endScale = 1.0f;
 	float scale = Easing::EaseInQuad(t) * (endScale - startScale) + startScale;
-	p.transform.scale_ = {scale, scale, scale};
+	p.transform.scale_ = { scale, scale, scale };
 
 	///
 	///	色の変更
 	///
 
 	Float4 color;
-	if (t < 0.25f) {
+	if (t < kColorPhase1End) {
 		// 黄->赤（0~0.25）
-		float localT = t / 0.25f; // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 1.0f, localT);
-		color.y = Easing::Lerp(1.0f, 0.0f, localT);
-		color.z = Easing::Lerp(0.0f, 0.0f, localT);
+		float localT = t / kColorPhase1Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorYellow.x, kColorRed.x, localT);
+		color.y = Easing::Lerp(kColorYellow.y, kColorRed.y, localT);
+		color.z = Easing::Lerp(kColorYellow.z, kColorRed.z, localT);
 		color.w = 1.0f;
-	} else if (t < 0.5f) {
+	} else if (t < kColorPhase2End) {
 		// 赤->灰（0.25~0.5）
-		float localT = (t - 0.25f) / 0.25f; // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 0.1f, localT);
-		color.y = Easing::Lerp(0.0f, 0.1f, localT);
-		color.z = Easing::Lerp(0.0f, 0.1f, localT);
+		float localT = (t - kColorPhase1End) / kColorPhase2Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorRed.x, kColorGray.x, localT);
+		color.y = Easing::Lerp(kColorRed.y, kColorGray.y, localT);
+		color.z = Easing::Lerp(kColorRed.z, kColorGray.z, localT);
 		color.w = 1.0f;
 	} else {
 		// 0.5以降は灰で固定
-		float localT = (t - 0.5f) / 0.5f;
-		color.x = 0.1f;
-		color.y = 0.1f;
-		color.z = 0.1f;
+		float localT = (t - kColorPhase2End) / kColorPhase3Duration;
+		color.x = kColorGray.x;
+		color.y = kColorGray.y;
+		color.z = kColorGray.z;
 		// 透明化
 		color.w = 1.0f - localT;
 	}

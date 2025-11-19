@@ -22,7 +22,7 @@ void TitleScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera_ = std::make_unique<Camera>(Float3{ 0.0f, 30.0f, -50.0f }, Float3{ 0.5f, 0.0f, 0.0f }, 0.45f);
+	camera_ = std::make_unique<Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
 	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -55,14 +55,14 @@ void TitleScene::Initialize() {
 	uint32_t textureTitle = TextureManager::Load("UI/title.png");
 	spriteTitle_ = std::make_unique<Sprite>();
 	spriteTitle_->Initialize(spriteCommon_.get(), textureTitle);
-	spriteTitle_->SetPosition({ 640.0f, 140.0f });
-	spriteTitle_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteTitle_->SetPosition(kTitlePosition);
+	spriteTitle_->SetAnchorPoint(kAnchorPoint);
 
 	uint32_t textureStart = TextureManager::Load("UI/startButton.png");
 	spriteStartButton_ = std::make_unique<Sprite>();
 	spriteStartButton_->Initialize(spriteCommon_.get(), textureStart);
-	spriteStartButton_->SetPosition({ 640.0f, 580.0f });
-	spriteStartButton_->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteStartButton_->SetPosition(kStartButtonPosition);
+	spriteStartButton_->SetAnchorPoint(kAnchorPoint);
 
 	///
 	///	オブジェクト
@@ -89,7 +89,7 @@ void TitleScene::Initialize() {
 
 	SplitBlockTransition::GetInstance()->Initialize(spriteCommon_.get());
 	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
-	FadeTransition::GetInstance()->StartFadeIn(0.5f, 0.25f);
+	FadeTransition::GetInstance()->StartFadeIn(kFadeInDuration, kFadeInDelay);
 
 	///
 	///	その他
@@ -99,25 +99,25 @@ void TitleScene::Initialize() {
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 
 	// 平行光源の初期値設定
-	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
-	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 0.4f;
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
+	LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
 }
 
 void TitleScene::Finalize() {}
 
 void TitleScene::Update() {
 	// 中心を向きながらカメラ回転
-	UpdateOrbitCamera({ 0.0f, 0.0f, 0.0f }, 50.0f, 30.0f, 0.25f);
+	UpdateOrbitCamera(kCameraTargetPosition, kOrbitCameraRadius, kOrbitCameraHeight, kOrbitCameraSpeed);
 
 	// 左クリック入力でゲームシーンへ移行
 	if (input_->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
 		SplitBlockTransition::GetInstance()->StartClose(
-			1.0f,
+			kSplitBlockCloseDuration,
 			[]() {
 				SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 				ParticleEffectManager::GetInstance()->Clear();
 			},
-			0.5f);
+			kSplitBlockCloseDelay);
 	}
 
 	///
@@ -141,17 +141,16 @@ void TitleScene::Update() {
 	// タイトルの上下移動
 	static float floatTimer = 0.0f;
 	floatTimer += TimeManager::GetInstance()->GetDeltaTime();
-	float floatAmount = sinf(floatTimer * 1.2f) * 4.0f;
-	Float3 basePos = { 640.0f, 140.0f };
-	spriteTitle_->SetPosition({ basePos.x, basePos.y + floatAmount });
+	float floatAmount = sinf(floatTimer * kTitleFloatSpeed) * kTitleFloatAmplitude;
+	spriteTitle_->SetPosition({ kTitleBasePosition.x, kTitleBasePosition.y + floatAmount });
 
 	spriteStartButton_->Update();
 
 	// スタートボタンを点滅
 	static float blinkTimer = 0.0f;
 	blinkTimer += TimeManager::GetInstance()->GetDeltaTime();
-	float alpha = (sinf(blinkTimer * 4.0f) + 1.0f) / 2.0f;
-	spriteStartButton_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+	float alpha = (sinf(blinkTimer * kStartButtonBlinkSpeed) + kStartButtonBlinkOffset) / kStartButtonBlinkScale;
+	spriteStartButton_->SetColor({ kStartButtonBaseColor.x, kStartButtonBaseColor.y, kStartButtonBaseColor.z, alpha });
 
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
@@ -165,12 +164,12 @@ void TitleScene::Update() {
 	///
 
 	// タンク煙
-	static int smokeCounter = 0;
+	static int32_t smokeCounter = 0;
 	smokeCounter++;
-	if (smokeCounter % 5 == 0) {
-		ParticleEffectManager::GetInstance()->Emit("smoke", { 12.0f, 4.0f, -12.0f }, 1);
-		ParticleEffectManager::GetInstance()->Emit("smoke", { -14.0f, 4.0f, 12.0f }, 1);
-		ParticleEffectManager::GetInstance()->Emit("smoke", { 34.0f, 4.0f, 8.0f }, 1);
+	if (smokeCounter % kSmokeEmitInterval == 0) {
+		ParticleEffectManager::GetInstance()->Emit("smoke", kSmokePosition1, kSmokeEmitCount);
+		ParticleEffectManager::GetInstance()->Emit("smoke", kSmokePosition2, kSmokeEmitCount);
+		ParticleEffectManager::GetInstance()->Emit("smoke", kSmokePosition3, kSmokeEmitCount);
 	}
 
 	// タンク火花
@@ -178,12 +177,12 @@ void TitleScene::Update() {
 	static int nextSparkInterval = 0;
 	sparkCounter++;
 	if (sparkCounter >= nextSparkInterval) {
-		ParticleEffectManager::GetInstance()->Emit("spark", { 25.0f, 4.0f, 16.0f }, 5, { 1.0f, 0.0f, 0.0f });
-		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 3.0f, 11.0f }, 5, { -1.0f, 0.0f, 0.0f });
-		ParticleEffectManager::GetInstance()->Emit("spark", { -31.0f, 4.0f, -26.0f }, 5, { -1.0f, 0.0f, 0.0f });
+		ParticleEffectManager::GetInstance()->Emit("spark", kSparkPosition1, kSparkEmitCount, kSparkDirection1);
+		ParticleEffectManager::GetInstance()->Emit("spark", kSparkPosition2, kSparkEmitCount, kSparkDirection2);
+		ParticleEffectManager::GetInstance()->Emit("spark", kSparkPosition3, kSparkEmitCount, kSparkDirection3);
 
 		// 次の間隔をランダムに設定
-		nextSparkInterval = RandomGenerator::GetInstance()->RandomValue(20, 50);
+		nextSparkInterval = RandomGenerator::GetInstance()->RandomValue(kMinSparkInterval, kMaxSparkInterval);
 		sparkCounter = 0;
 	}
 }
@@ -218,7 +217,7 @@ void TitleScene::Draw() {
 
 	// BBを生成してライトカメラの行列更新（あとで整理）
 	LightCamera::BoundingBox sceneBB;
-	sceneBB.SetCenterExtents({ 0.0f, 0.0f, 0.0f }, { 30.0f, 10.0f, 30.0f });
+	sceneBB.SetCenterExtents({ 0.0f, 0.0f, 0.0f }, kShadowBoundingBoxExtents);
 	LightCamera::GetInstance()->UpdateViewProjection(sceneBB);
 
 	// シャドウマップ描画開始

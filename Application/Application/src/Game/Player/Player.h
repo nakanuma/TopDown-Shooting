@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -138,6 +138,40 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
+	static constexpr int32_t kMaxHP = 100;							/* 最大HP */
+
+	static constexpr float kMoveSpeed = 0.25f;				/* 移動速度 */
+	static constexpr float kDashDuration = 0.2f;			/* ダッシュ継続時間 */
+	static constexpr float kDashCoolDown = 1.5f;			/* ダッシュのクールタイム時間 */
+	static constexpr float kDashSpeedMultiplier = 3.0f;		/* ダッシュ速度倍率 */
+
+	static constexpr float kFireCooldown = 0.15f;			/* 連射速度 */
+	static constexpr float kMaxRandomAngle = 0.02f;			/* 射撃ブレ角 */
+	static constexpr float kOverheatLimit = 3.0f;			/* オーバーヒートになる秒数 */
+	static constexpr float kOverheatGainPerSecond = 1.0f;	/* オーバーヒート加熱速度（1秒あたり） */
+	static constexpr float kOverheatRecoverySpeed = 1.6f;	/* オーバーヒート冷却速度（1秒あたり） */
+
+	static constexpr float kAnimationPlaybackSpeed = 1.5f; /* アニメーション再生速度 */
+
+	static constexpr Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;			/* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;				/* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;					/* 銃の右方向位置オフセット */
+
+	static constexpr float kVelocityNormalizeAdditive = 1.0f;	/* 速度正規化用の加算値 */
+	static constexpr float kVelocityThreshold = 0.01f;			/* 速度判定のしきい値 */
+
+	static constexpr float kShootingBlurMultiplier = 3.0f;	/* 移動時の射撃ブレ倍率 */
+
+	static constexpr int32_t kShellEjectionCount = 1;			/* 薬莢排出パーティクル発生数 */
+	static constexpr int32_t kBloodSplatterCount = 30;			/* 血飛沫パーティクル発生数 */
+	static constexpr int32_t kMuzzleFlashCount = 6;				/* マズルフラッシュパーティクル発生数 */
+	static constexpr float kMuzzleFlashForwardOffset = 1.4f;	/* マズルフラッシュ発生位置の前方オフセット */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
@@ -154,41 +188,27 @@ private:
 
 	// ----- Collision -----
 	std::unique_ptr<Collider> collider_;					/* コライダー */
-	const Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };		/* コライダーサイズ */
 
 	// ----- UI -----
 	std::unique_ptr<PlayerUIManager> ui_;					/* UIマネージャー */
 
 	// ----- Parameters -----
 	Float3 velocity_ = { 0.0f, 0.0f, 0.0f };				/* 速度ベクトル */
-	float speed_ = 0.25f;									/* 移動速度 */
 	bool isMoving_ = false;									/* 移動中フラグ */
-
-	const int32_t kMaxHP = 100;								/* 最大HP */
 	int32_t currentHP_ = 0;									/* 現在HP */
 
 	bool isDead_ = false;									/* 死亡フラグ */
 
 	// ----- Dash -----
 	bool isDashing_ = false;								/* ダッシュ中フラグ */
-	const float kDashDuration = 0.2f;						/* ダッシュ継続時間 */
 	float dashTimer_ = 0.0f;								/* ダッシュタイマー */
-
-	const float kDashCoolDown = 1.5f;						/* ダッシュのクールタイム時間 */
 	float dashCooldownTimer_ = 0.0f;						/* ダッシュのクールダウンタイマー */
-
-	const float kDashSpeedMultiplier = 3.0f;				/* ダッシュ速度倍率 */
 
 	// ----- Shooting -----
 	bool isFiring_ = false;									/* 射撃中フラグ */
-	float fireCooldown_ = 0.15f;							/* 連射速度 */
 	float fireTimer_ = 0.0f;								/* 射撃タイマー */
-	const float kMaxRandomAngle = 0.02f;					/* 射撃ブレ角 */
 
 	// ----- Overheat -----
 	float overheatTime_ = 0.0f;								/* オーバーヒートタイマー */
-	const float kOverheatLimit = 3.0f;						/* オーバーヒートになる秒数 */
-	float overheatGainPerSecond_ = 1.0f;					/* オーバーヒート加熱速度（1秒あたり） */
-	float overheatRecoverySpeed_ = 1.6f;					/* オーバーヒート冷却速度（1秒あたり） */
 	bool isOverheated_ = false;								/* オーバーヒート中フラグ */
 };
