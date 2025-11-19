@@ -93,7 +93,7 @@ TAG_INFO = {
     "TELEPORTER": {
         "name": "Teleporter",
         "model": "Models/Teleporter/teleporter.obj",
-        "location": (0, 0, 1),
+        "location": (0, 0, 0),
         "colliderSize": (3.0, 3.0, 1.0), 
     }
 }

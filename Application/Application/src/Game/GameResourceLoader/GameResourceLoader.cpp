@@ -220,7 +220,7 @@ void GameResourceLoader::LoadAllModelData() {
 	ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Teleporter",
 		"Object/Teleporter/teleporter.obj",
-		"white.png"
+		"Object/teleporter.png"
 	);
 
 	// 銃

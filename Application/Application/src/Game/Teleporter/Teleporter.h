@@ -40,6 +40,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// シャドウマップ用の描画処理を行います。
+	/// </summary>
+	void DrawShadow();
+
+	/// <summary>
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
@@ -112,7 +117,7 @@ private:
 
 	// ----- Collision -----
 	std::unique_ptr<Collider> collider_;				/* コライダー */
-	Float3 colliderSize_ = {3.0f, 0.5f, 3.0f};			/* コライダーサイズ */
+	const float kRadius = 4.0f;							/* 半径 */
 
 	// ----- Parameters -----
 	std::string pairID_;								/* 固有ID */

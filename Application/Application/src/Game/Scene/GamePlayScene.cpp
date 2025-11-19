@@ -255,6 +255,7 @@ void GamePlayScene::Draw() {
 	player_->DrawGunShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
+	teleporterManager_->DrawShadow();
 
 	//----------------------------------//
 

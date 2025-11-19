@@ -63,6 +63,13 @@ void TeleporterManager::Draw() {
 	}
 }
 
+void TeleporterManager::DrawShadow() {
+	// 全てのテレポーターを描画
+	for (auto& teleporter : teleporters_) {
+		teleporter->DrawShadow();
+	}
+}
+
 void TeleporterManager::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("TeleporterManager");
