@@ -25,19 +25,19 @@ ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& 
 	// 回転
 	p.transform.rotate_ = {0.0f, 0.0f, 0.0f};
 	// スケール
-	p.transform.scale_ = rand->RandomValue({0.2f, 0.2f, 0.2f}, {0.4f, 0.4f, 0.4f});
+	p.transform.scale_ = rand->RandomValue(kMinScale, kMaxScale);
 	// 速度ベクトル
-	p.velocity = rand->RandomValue({-12.0f, 0.0f, -12.0f}, {12.0f, 8.0f, 12.0f});
+	p.velocity = rand->RandomValue(kMinVelocity, kMaxVelocity);
 	// 色
-	p.color = {1.0f, 1.0f, 0.0f, 1.0f};
+	p.color = kInitialColor;
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 生存時間
-	p.lifeTime = rand->RandomValue(0.8f, 1.2f);
+	p.lifeTime = rand->RandomValue(kMinLifeTime, kMaxLifeTime);
 	// 初期スケール
 	p.initScale = p.transform.scale_;
 	// 回転速度
-	p.rotationSpeed = rand->RandomValue({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f});
+	p.rotationSpeed = rand->RandomValue(kMinRotationSpeed, kMaxRotationSpeed);
 
 	return p;
 }
@@ -50,8 +50,7 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	///
 
 	// 重力の影響を受ける
-	Float3 gravity = {0.0f, -9.8f, 0.0f};
-	p.velocity += gravity * dt;
+	p.velocity += kGravity * dt;
 
 	p.transform.translate_ += p.velocity * dt;
 
@@ -65,8 +64,8 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	///
 	///	縮小
 	///
-	if (t > 0.8f) {                       // 4/5に到達したら
-		float localT = (t - 0.8f) / 0.2f; // 0~1に正規化
+	if (t > kShrinkStartThreshold) {                                  // 4/5に到達したら
+		float localT = (t - kShrinkStartThreshold) / kShrinkDuration; // 0~1に正規化
 		float easeT = Easing::EaseInQuad(localT);
 		p.transform.scale_ = p.initScale * (1.0f - easeT);
 	}
@@ -75,9 +74,9 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	///	色変更
 	///
 
-	if (t > 0.5f) {
+	if (t > kColorChangeStartThreshold) {
 		// 黄->橙
-		float localT = (t - 0.5f) / 0.5f; // 0~1に正規化
-		p.color.y = Easing::Lerp(1.0f, 0.5f, localT);
+		float localT = (t - kColorChangeStartThreshold) / kColorChangeDuration; // 0~1に正規化
+		p.color.y = Easing::Lerp(kGreenStart, kGreenEnd, localT);
 	}
 }

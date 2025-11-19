@@ -28,13 +28,13 @@ RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const
 	// 速度ベクトル
 	p.velocity = {0.0f, 0.0f, 0.0f};
 	// 色
-	p.color = {1.0f, 0.0f, 0.0f, 1.0f};
+	p.color = kInitialColor;
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 生存時間
-	p.lifeTime = 1.0f;
+	p.lifeTime = kLifeTime;
 	// 目標スケール
-	p.targetScale = {5.0f, 5.0f, 5.0f}; // 地面警告攻撃の弾と同じサイズ
+	p.targetScale = kTargetScale; // 地面警告攻撃の弾と同じサイズ
 	return p;
 }
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #pragma once
 
@@ -13,21 +13,20 @@
 /// パーティクルデータ
 /// </summary>
 struct MuzzleFlashParticleData {
-	Transform transform;				/* 位置 */
-	Float3 velocity;					/* 速度ベクトル */
-	Float4 color;						/* 色 */
-	float lifeTime;						/* 生存時間 */
-	float currentTime;					/* 経過時間 */
+	Transform transform; /* 位置 */
+	Float3 velocity;     /* 速度ベクトル */
+	Float4 color;        /* 色 */
+	float lifeTime;      /* 生存時間 */
+	float currentTime;   /* 経過時間 */
 
-	Float3 initScale;					/* 初期スケール */
+	Float3 initScale; /* 初期スケール */
 };
 
 // =========================================================
 // マズルフラッシュパーティクルクラス
 // 射撃時に銃からに発生
 // =========================================================
-class MuzzleFlashParticle : public BaseParticleEffect<MuzzleFlashParticleData>
-{
+class MuzzleFlashParticle : public BaseParticleEffect<MuzzleFlashParticleData> {
 public:
 	// =========================================================
 	// Public Methods
@@ -59,5 +58,19 @@ protected:
 	/// <param name="p">パーティクルデータ</param>
 	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(MuzzleFlashParticleData& p, float dt) override;
-};
 
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kMinScaleX = 0.4f;                         /* 最小Xスケール */
+	static constexpr float kMaxScaleX = 0.5f;                         /* 最大Xスケール */
+	static constexpr float kMinScaleY = 0.8f;                         /* 最小Yスケール */
+	static constexpr float kMaxScaleY = 1.0f;                         /* 最大Yスケール */
+	static constexpr float kInitialScaleZ = 1.0f;                     /* 初期Zスケール */
+	static constexpr Float4 kInitialColor = {1.0f, 0.5f, 0.2f, 1.0f}; /* 初期色 */
+	static constexpr float kLifeTime = 0.05f;                         /* 生存時間（秒） */
+
+	static constexpr float kScaleXMultipiler = 1.4f; /* X方向の拡大倍率 */
+	static constexpr float kScaleYMultiplier = 0.4f; /* Y方向の縮小倍率 */
+};
