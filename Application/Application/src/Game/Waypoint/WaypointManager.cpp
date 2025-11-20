@@ -1,4 +1,4 @@
-﻿#include "WaypointManager.h"
+#include "WaypointManager.h"
 
 // C++
 #include <algorithm>
@@ -19,15 +19,12 @@ void WaypointManager::Initialize() {
 
 	uint32_t waypointID = 0; // カウント
 
-	// 左下と右上を指定
-	Float3 bottomLeft = {0.0f, 2.0f, 0.0f};
-	Float3 topRight = {70.0f, 2.0f, 120.0f};
 	// 分割数（隣接ノードの距離に合わせる）
-	float spacing = maxDistance_;
+	float spacing = kMaxDistance;
 
 	// 縦横のサイズを計算
-	uint32_t numX = static_cast<uint32_t>(std::floor((topRight.x - bottomLeft.x) / spacing)) + 1;
-	uint32_t numZ = static_cast<uint32_t>(std::floor((topRight.z - bottomLeft.z) / spacing)) + 1;
+	uint32_t numX = static_cast<uint32_t>(std::floor((kTopRight.x - kBottomLeft.x) / spacing)) + 1;
+	uint32_t numZ = static_cast<uint32_t>(std::floor((kTopRight.z - kBottomLeft.z) / spacing)) + 1;
 
 	// 生成時の衝突判定を行うコライダータグ
 	std::unordered_set<std::string> checkTags = {"Obstacle"};
@@ -35,12 +32,12 @@ void WaypointManager::Initialize() {
 	for (uint32_t x = 0; x < numX; ++x) {
 		for (uint32_t z = 0; z < numZ; ++z) {
 			Float3 pos;
-			pos.x = bottomLeft.x + x * spacing;
+			pos.x = kBottomLeft.x + x * spacing;
 			pos.y = 1.0;
-			pos.z = bottomLeft.z + z * spacing;
+			pos.z = kBottomLeft.z + z * spacing;
 
 			// 衝突していたら生成スキップ
-			if (CollisionManager::GetInstance()->CheckSphereCollisionWithTag(pos, waypointRadius_, checkTags)) {
+			if (CollisionManager::GetInstance()->CheckSphereCollisionWithTag(pos, kWaypointRadius, checkTags)) {
 				continue;
 			}
 
@@ -129,7 +126,7 @@ void WaypointManager::ComputeNeighbors() {
 			Float3 dir = wpB->GetPosition() - wpA->GetPosition();
 			float dist = Float3::Length(dir);
 			// 離れすぎていたらスキップ
-			if (dist > maxDistance_) {
+			if (dist > kMaxDistance) {
 				continue;
 			}
 

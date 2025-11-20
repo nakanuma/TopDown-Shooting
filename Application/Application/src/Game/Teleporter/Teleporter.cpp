@@ -12,7 +12,7 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 	object_->model_ = model;
 	object_->transform_.translate_ = position;
 	object_->materialCB_.data_->useEnvironmentMap = true;
-	object_->materialCB_.data_->environmentStrength = 0.1f;
+	object_->materialCB_.data_->environmentStrength = kEnvironmentStrength;
 
 	///
 	///	コライダー生成
@@ -53,7 +53,7 @@ void Teleporter::Draw() {
 	object_->Draw();
 }
 
-void Teleporter::DrawShadow(){
+void Teleporter::DrawShadow() {
 	// シャドウマップ描画
 	object_->DrawShadow();
 }
@@ -66,21 +66,21 @@ void Teleporter::OnCollision(Collider* other) {
 		// このテレポーターがゴールの場合
 		if (IsGoal() && isActive_) {
 			// コールバック関数を呼び出す
-			if(onGoalCallback_){
+			if (onGoalCallback_) {
 				onGoalCallback_();
 			}
 			// 無効化状態にする
 			isActive_ = false;
 
-		// 通常テレポーターの場合
+			// 通常テレポーターの場合
 		} else {
 			// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
 			if (pair_ && pair_->isActive_) {
 				player->SetTranslate({
-					pair_->GetTranslate().x,
-					player->GetTranslate().y,
-					pair_->GetTranslate().z,
-					});
+				    pair_->GetTranslate().x,
+				    player->GetTranslate().y,
+				    pair_->GetTranslate().z,
+				});
 
 				// 使用したテレポーターは無効化する
 				this->isActive_ = false;

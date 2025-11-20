@@ -109,21 +109,26 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kRadius = 4.0f;              /* 半径 */
+	static constexpr float kEnvironmentStrength = 0.1f; /* 環境マップの強度 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> object_;					/* テレポーターオブジェクト */
+	std::unique_ptr<Object3D> object_; /* テレポーターオブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;				/* コライダー */
-	const float kRadius = 4.0f;							/* 半径 */
+	std::unique_ptr<Collider> collider_; /* コライダー */
 
 	// ----- Parameters -----
-	std::string pairID_;								/* 固有ID */
-	Teleporter* pair_ = nullptr;						/* ペアのテレポーターのポインタ */
-	bool isActive_ = false;								/* 使用可能フラグ */
+	std::string pairID_;         /* 固有ID */
+	Teleporter* pair_ = nullptr; /* ペアのテレポーターのポインタ */
+	bool isActive_ = false;      /* 使用可能フラグ */
 
 	// ----- Others -----
-	std::function<void()> onGoalCallback_ = nullptr;	/* ゴール時のコールバック関数 */
+	std::function<void()> onGoalCallback_ = nullptr; /* ゴール時のコールバック関数 */
 };

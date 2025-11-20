@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -32,4 +32,10 @@ public:
 	/// </summary>
 	/// <returns>カーソル領域内判定フラグ</returns>
 	static bool IsInsideClientCursor();
+
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kBlink = 0.0001f; /* 微小な値 */
 };
