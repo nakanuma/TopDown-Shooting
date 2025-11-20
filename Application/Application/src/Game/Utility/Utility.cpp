@@ -1,4 +1,4 @@
-﻿#include "Utility.h"
+#include "Utility.h"
 
 // Engine
 #include <Camera.h>
@@ -18,10 +18,7 @@ Float3 Utility::WorldToScreen(Float3 worldPosition) {
 
 Float3 Utility::CalculateCursorPosition() {
 	// マウス位置の取得
-	Float2 mousePos = {
-		static_cast<float>(Input::GetInstance()->GetMousePosition().x), 
-		static_cast<float>(Input::GetInstance()->GetMousePosition().y)
-	};
+	Float2 mousePos = {static_cast<float>(Input::GetInstance()->GetMousePosition().x), static_cast<float>(Input::GetInstance()->GetMousePosition().y)};
 
 	// 画面サイズ取得
 	float screenWidth = static_cast<float>(Window::GetWidth());
@@ -49,7 +46,7 @@ Float3 Utility::CalculateCursorPosition() {
 	Float3 rayOrigin = {worldNear.x, worldNear.y, worldNear.z};
 	Float3 rayDir = Float3::Normalize({worldFar.x - worldNear.x, worldFar.y - worldNear.y, worldFar.z - worldNear.z});
 
-	if (std::abs(rayDir.y) > 0.0001f) {
+	if (std::abs(rayDir.y) > kBlink) {
 		float t = -rayOrigin.y / rayDir.y;
 
 		Float3 hitPos = {rayOrigin.x + rayDir.x * t, 1.0f, rayOrigin.z + rayDir.z * t};

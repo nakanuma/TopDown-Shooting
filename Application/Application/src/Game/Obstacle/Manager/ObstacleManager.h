@@ -48,14 +48,13 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	const float kActiveDistance = 75.0f; /* 障害物の有効化距離 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Container -----
-	std::vector<std::unique_ptr<Obstacle>> obstacles_;							/* 全ての障害物を格納したコンテナ*/
-
-	std::unordered_map<std::string, std::string> tagModelMap_{};				/* タグとモデルデータキーのマップ */
-
-	// ----- Parameters -----
-	const float kActiveDistance = 75.0f;										/* 障害物の有効化距離 */
+	std::vector<std::unique_ptr<Obstacle>> obstacles_;           /* 全ての障害物を格納したコンテナ*/
+	std::unordered_map<std::string, std::string> tagModelMap_{}; /* タグとモデルデータキーのマップ */
 };

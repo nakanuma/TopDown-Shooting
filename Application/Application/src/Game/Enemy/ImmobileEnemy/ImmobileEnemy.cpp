@@ -32,19 +32,16 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 
 	///
 	///	コライダー生成
 	///
 
-	colliderSize_ = {1.0f, 2.0f, 1.0f};
-
 	auto aabb = std::make_unique<AABBCollider>();
 	aabb->SetTag("ImmobileEnemy");
 	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
-	aabb->SetSize(colliderSize_);
+	aabb->SetSize(kColliderSize);
 	aabb->SetOwner(this);
 
 	collider_ = std::move(aabb);
@@ -61,21 +58,20 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	spriteHPBackground_ = std::make_unique<Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f}); // 黒
+	spriteHPBackground_->SetColor(kHPBarBackgroundColor);
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("white.png");
 	spriteHPForeground_ = std::make_unique<Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor({0.0f, 1.0f, 0.5f, 1.0f}); // 緑
+	spriteHPForeground_->SetColor(kHPBarForegroundColor);
 
 	// リロード表示
 	uint32_t textureReload = TextureManager::Load("white.png");
 	spriteReload_ = std::make_unique<Sprite>();
 	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
 	spriteReload_->SetSize(kReloadSize);
-	spriteReload_->SetColor({1.0f, 1.0f, 1.0f, 1.0f}); // 白
 
 	///
 	///	パラメーター設定
@@ -84,7 +80,7 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 40;
+	currentHP_ = kInitialHP;
 	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定
 
 	///
@@ -140,9 +136,6 @@ void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 void ImmobileEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
 	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
-	// 上にずらす分のオフセット
-	const float kOffsetHPBar = 90.0f;
-
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
@@ -153,7 +146,7 @@ void ImmobileEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPBackground_->SetPosition({
 	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-	    screenPosition.y - kOffsetHPBar         // オフセット分上にずらす
+	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
 	});
 	spriteHPBackground_->Draw();
 
@@ -168,16 +161,13 @@ void ImmobileEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteHPForeground_->SetPosition({
 	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-	    screenPosition.y - kOffsetHPBar         // オフセット分上にずらす
+	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
 	});
 	spriteHPForeground_->Draw();
 
 	///
 	///	リロード表示
 	///
-
-	// 上にずらす分のオフセット
-	const float kOffsetReload = 60.0f;
 
 	// リロード時間割合
 	float reloadRatio = reloadTimer_ / kReloadTime;
@@ -188,7 +178,7 @@ void ImmobileEnemy::DrawUI() {
 	// スクリーン座標をセット
 	spriteReload_->SetPosition(
 	    {screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
-	     screenPosition.y - kOffsetReload});
+	     screenPosition.y - kReloadBarOffsetY});
 
 	// リロード時のみ描画
 	if (isReloading_) {
@@ -216,8 +206,8 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(45)); // クロス片側
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, 3, { 0.0f, 0.0f, 0.0f }, DegToRad(135)); // クロス片側
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle1)); // クロス片側
+			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle2)); // クロス片側
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
@@ -241,7 +231,7 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	const float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
 
 	// プレイヤーが索敵範囲外の場合にはfalse
-	if (distanceToPlayer > searchRange_) {
+	if (distanceToPlayer > kSearchRange) {
 		isPlayerVisible_ = false;
 		return false;
 	}
@@ -276,7 +266,7 @@ void ImmobileEnemy::SearchMotion() {
 		}
 
 		// 設定された方向への回転
-		float rotateSpeed = (isRotatingRight_ ? 1.0f : -1.0f) * rotationSpeed_;
+		float rotateSpeed = (isRotatingRight_ ? 1.0f : -1.0f) * kRotationSpeed;
 		objectEnemy_->transform_.rotate_.y += rotateSpeed;
 
 		// 回転時間完了で待機状態へ移行
@@ -320,7 +310,7 @@ void ImmobileEnemy::Shoot() {
 	// 発射方向
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 拡散をランダムに設定
-	float randSpread = RandomGenerator::GetInstance()->RandomValue(-bulletSpreadAngle_, bulletSpreadAngle_);
+	float randSpread = RandomGenerator::GetInstance()->RandomValue(-kBulletSpreadAngle, kBulletSpreadAngle);
 	direction.x += randSpread;
 	direction.z += randSpread;
 	direction = Float3::Normalize(direction);

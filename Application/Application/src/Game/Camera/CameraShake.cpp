@@ -1,11 +1,11 @@
-﻿#include "CameraShake.h"
+#include "CameraShake.h"
 
 // C++
 #include <random>
 
 // Engine
-#include <TimeManager.h>
 #include <RandomGenerator.h>
+#include <TimeManager.h>
 
 CameraShake* CameraShake::GetInstance() {
 	static CameraShake instance;
@@ -19,7 +19,7 @@ void CameraShake::Update() {
 		if (elapsedTime_ >= duration_) {
 			isShaking_ = false;
 			offset_ = Float3(0.0f, 0.0f, 0.0f); // オフセットのリセット
-		// シェイク中
+			// シェイク中
 		} else {
 			ApplyShake();
 		}
@@ -39,9 +39,6 @@ void CameraShake::ApplyShake() {
 	float currentIntensity = intensity_ * (remainingTime / duration_);
 
 	// 現在の強度に基づいてオフセットをランダムに設定
-	Float3 dis = RandomGenerator::GetInstance()->RandomValue(
-		{-currentIntensity, -currentIntensity, -currentIntensity},
-		{currentIntensity, currentIntensity, currentIntensity}
-	);
+	Float3 dis = RandomGenerator::GetInstance()->RandomValue({-currentIntensity, -currentIntensity, -currentIntensity}, {currentIntensity, currentIntensity, currentIntensity});
 	offset_ = Float3(dis.x, dis.y, dis.z);
 }

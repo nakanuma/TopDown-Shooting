@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -52,11 +52,9 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Parameters -----
-	float duration_ = 0.0f;					/* カメラシェイク継続時間 */
-	float intensity_ = 0.0f;				/* 揺れの強さ */
-	float elapsedTime_ = 0.0f;				/* 経過時間 */
-	bool isShaking_ = false;				/* シェイク中フラグ */
-	Float3 offset_ = {0.0f, 0.0f, 0.0f};	/* カメラに加えるオフセット */
+	float duration_ = 0.0f;              /* カメラシェイク継続時間 */
+	float intensity_ = 0.0f;             /* 揺れの強さ */
+	float elapsedTime_ = 0.0f;           /* 経過時間 */
+	bool isShaking_ = false;             /* シェイク中フラグ */
+	Float3 offset_ = {0.0f, 0.0f, 0.0f}; /* カメラに加えるオフセット */
 };

@@ -23,7 +23,7 @@ WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos,
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置（壊れる壁の範囲内に生成されるようランダムなオフセットを加える）
-	Float3 spawnRange = {11.5f, 2.5f, 0.5f};
+	Float3 spawnRange = kSpawnRange;
 	Float3 offset = {
 		rand->RandomValue(-spawnRange.x, spawnRange.x),
 		rand->RandomValue(-spawnRange.y, spawnRange.y),
@@ -33,18 +33,18 @@ WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos,
 	// 回転
 	p.transform.rotate_ = { 0.0f, 0.0f, 0.0f };
 	// スケール
-	float scale = rand->RandomValue(0.2f, 0.8f);
-	p.transform.scale_ = {scale, scale, scale};
+	float scale = rand->RandomValue(kMinScale, kMaxScale);
+	p.transform.scale_ = { scale, scale, scale };
 	// 速度ベクトル
 	Float3 dir = offset;
-	dir += rand->RandomValue({-0.01f, 0.0f, -0.01f}, {0.01f, 0.3f, 0.01f}); // 中心から外側へ向かうオフセット
+	dir += rand->RandomValue(kMinVelocity, kMaxVelocity); // 中心から外側へ向かうオフセット
 	dir = Float3::Normalize(dir);
-	float speed = rand->RandomValue(15.0f, 35.0f);
+	float speed = rand->RandomValue(kMinSpeed, kMaxSpeed);
 	p.velocity = dir * speed;
 	// 色
-	p.color = { 0.53f, 0.53f, 0.53f, 1.0f };
+	p.color = kInitialColor;
 	// 生存時間
-	p.lifeTime = rand->RandomValue(2.0f, 3.0f);
+	p.lifeTime = rand->RandomValue(kMinLifeTime, kMaxLifeTime);
 	// 経過時間
 	p.currentTime = 0.0f;
 
@@ -55,10 +55,8 @@ void WallCollapseParticle::UpdateParticle(WallCollapseParticleData& p, float dt)
 {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
-	// 重力
-	const Float3 gravity = {0.0f, -9.8f, 0.0f};
 	// 速度更新
-	p.velocity += gravity * dt;
+	p.velocity += kGravity * dt;
 	// 位置更新
 	p.transform.translate_ += p.velocity * dt;
 }

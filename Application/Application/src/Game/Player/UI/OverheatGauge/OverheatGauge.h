@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -39,9 +39,25 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float2 kAnchorPoint = { 0.5f, 0.5f };			/* アンカーポイント（中心） */
+	static constexpr Float2 kInitialPosition = { 640.0f, 360.0f };	/* 初期位置 */
+
+	static constexpr float kColorPhase1End = 0.25f;			/* 色変更フェーズ1終了（緑->黄） */
+	static constexpr float kColorPhase2End = 0.5f;			/* 色変更フェーズ2終了（黄->橙） */
+	static constexpr float kColorPhase3End = 0.75f;			/* 色変更フェーズ3終了（橙->赤） */
+	static constexpr float kColorPhase1Duration = 0.25f;	/* 色変更フェーズ1の期間 */
+	static constexpr float kColorPhase2Duration = 0.25f;	/* 色変更フェーズ2の期間 */
+	static constexpr float kColorPhase3Duration = 0.25f;	/* 色変更フェーズ3の期間 */
+
+	static constexpr Float3 kColorGreen = { 0.5f, 1.0f, 0.0f };		/* 緑色 */
+	static constexpr Float3 kColorYellow = { 1.0f, 1.0f, 0.0f };	/* 黄色 */
+	static constexpr Float3 kColorOrange = { 1.0f, 0.5f, 0.0f };	/* 橙色 */
+	static constexpr Float3 kColorRed = { 1.0f, 0.0f, 0.0f };		/* 赤色 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Sprite -----
-	std::unique_ptr<Sprite> sprite_;		/* ゲージ用スプライト */
+	std::unique_ptr<Sprite> sprite_; /* ゲージ用スプライト */
 };

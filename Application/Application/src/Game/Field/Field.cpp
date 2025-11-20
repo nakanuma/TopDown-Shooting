@@ -3,38 +3,16 @@
 // C++
 #include <numbers>
 
-// externals
-#include <ImguiWrapper.h>
-
 void Field::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	objectFloor_ = std::make_unique<Object3D>();
 	objectFloor_->model_ = &ModelManager::GetInstance()->GetModel("Plane");
-	objectFloor_->transform_.rotate_ = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f};
-	objectFloor_->transform_.scale_ = {500.0f, 500.0f, 1.0f};
-	objectFloor_->materialCB_.data_->color = {0.157f, 0.204f, 0.308f, 1.0f};
+	objectFloor_->transform_.rotate_ = {-std::numbers::pi_v<float> / 2.0f, 0.0f, 0.0f}; // 上を向ける
+	objectFloor_->transform_.scale_ = kScale;
+	objectFloor_->materialCB_.data_->color = kColor;
 }
 
 void Field::Update() { objectFloor_->UpdateMatrix(); }
 
 void Field::Draw() { objectFloor_->Draw(); }
-
-void Field::Debug() {
-#ifdef _DEBUG
-	ImGui::Begin("Field");
-
-	/* Translate */
-	ImGui::Text("Translate");
-
-	ImGui::DragFloat3("translate", &objectFloor_->transform_.translate_.x, 0.01f);
-
-	ImGui::DragFloat3("rotate", &objectFloor_->transform_.rotate_.x, 0.01f);
-
-	ImGui::DragFloat3("scale", &objectFloor_->transform_.scale_.x, 0.01f);
-
-	/*  */
-
-	ImGui::End();
-#endif
-}

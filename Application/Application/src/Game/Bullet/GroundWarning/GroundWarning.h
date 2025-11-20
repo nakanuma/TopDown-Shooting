@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Application Includes
@@ -46,16 +46,20 @@ private:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kRadius = 5.0f;      /* 弾の半径 */
+	static constexpr float kMaxLifeTime = 1.0f; /* 生存時間（秒） */
+	static constexpr int32_t kDamage = 20;		/* 攻撃力 */
+	static constexpr float kHitDelay = 0.8f;    /* 衝突判定が有効化されるまでの遅延時間 */
+
+	static constexpr Float3 kParticleOffset = {0.0f, 1.5f, 0.0f}; /* パーティクル発生位置のオフセット */
+	static constexpr int32_t kExplodeSmokeCount = 15;             /* 煙パーティクルの発生数 */
+	static constexpr int32_t kExplodeScatterCount = 25;           /* 飛散パーティクルの発生数 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Parameters -----
-	const float kRadius = 5.0f;					/* 弾の半径 */
-
-	const float kHitDelay = 0.8f;				/* 衝突判定を有効化するまでの遅延時間 */
-	bool colliderEnabled_ = false;				/* コライダー有効化フラグ */
-
-	float elapsedTime_ = 0.0f;					/* 経過時間 */
-	const float kMaxLifeTime = 1.0f;			/* 生存時間（秒） */
+	float elapsedTime_ = 0.0f;     /* 経過時間 */
+	bool colliderEnabled_ = false; /* コライダー有効化フラグ */
 };
-

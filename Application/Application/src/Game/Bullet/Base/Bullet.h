@@ -15,7 +15,7 @@ public:
 	// =========================================================
 	// Public Methods
 	// =========================================================
-	
+
 	/// <summary>
 	/// 弾の初期化処理を行います。
 	/// </summary>
@@ -42,7 +42,10 @@ public:
 	/// <summary>
 	/// 破棄を行います。
 	/// </summary>
-	void OnDestroy() { if (collider_) CollisionManager::GetInstance()->Unregister(collider_.get()); }
+	void OnDestroy() {
+		if (collider_)
+			CollisionManager::GetInstance()->Unregister(collider_.get());
+	}
 
 	// =========================================================
 	// Getter / Setter
@@ -72,14 +75,14 @@ protected:
 	// =========================================================
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> objectBullet_;		/* 弾オブジェクト */
+	std::unique_ptr<Object3D> objectBullet_; /* 弾オブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;			/* コライダー */
+	std::unique_ptr<Collider> collider_; /* コライダー */
 
 	// ----- Parameters -----
-	int32_t damage_ = 0;							/* 弾の攻撃力 */
-	float speed_ = 0.0f;							/* 移動速度 */
-	Float3 velocity_ = {0.0f, 0.0f, 0.0f};			/* 速度ベクトル */
-	bool isDead_ = false;							/* 死亡フラグ */
-}; 
+	int32_t damage_ = 0;                   /* 弾の攻撃力 */
+	float speed_ = 0.0f;                   /* 移動速度 */
+	Float3 velocity_ = {0.0f, 0.0f, 0.0f}; /* 速度ベクトル */
+	bool isDead_ = false;                  /* 死亡フラグ */
+};

@@ -1,4 +1,4 @@
-﻿#include "FollowCamera.h"
+#include "FollowCamera.h"
 
 // Application
 #include <src/Game/Utility/Utility.h>
@@ -13,7 +13,7 @@ void FollowCamera::Update() {
 	Float3 targetPos = *targetTranslate_ + offset_;
 
 	// カーソルがクライアント領域内にある場合のみ補正を行う
-	if(Utility::IsInsideClientCursor()){
+	if (Utility::IsInsideClientCursor()) {
 		// カーソルのワールド座標を取得
 		Float3 cursorPos = Utility::CalculateCursorPosition();
 
@@ -21,15 +21,14 @@ void FollowCamera::Update() {
 		cursorOffset_ = cursorPos - *targetTranslate_;
 
 		// カメラ補正の強さ（小さくしてカメラが少しだけ動くように）
-		float influence = 0.2f;
-		cursorOffset_ *= influence;
+		cursorOffset_ *= kCursorInfluence;
 	}
 
 	// 最終的なターゲット位置にカーソル補正を加える
 	targetPos += cursorOffset_;
 
 	// なめらかに追従
-	currentPos_ = Float3::Lerp(currentPos_, targetPos, 0.75f);
+	currentPos_ = Float3::Lerp(currentPos_, targetPos, kFollowSpeed);
 }
 
 void FollowCamera::SetTarget(const Float3* translate) {

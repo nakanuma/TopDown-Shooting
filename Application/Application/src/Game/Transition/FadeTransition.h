@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // C++ Includes
@@ -22,9 +22,9 @@ public:
 	/// フェード処理の状態を表す列挙体
 	/// </summary>
 	enum class State {
-		None,				/* 未実行 */
-		FadeIn,				/* フェードイン */
-		FadeOut,			/* フェードアウト */
+		None,    /* 未実行 */
+		FadeIn,  /* フェードイン */
+		FadeOut, /* フェードアウト */
 	};
 
 public:
@@ -81,23 +81,28 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float4 kColorBlack = {0.0f, 0.0f, 0.0f, 1.0f}; /* 黒色 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- Parameters -----
-	State state_ = State::None;						/* 現在のフェード状態 */
-	float alpha_ = 0.0f;							/* 現在のアルファ値 */
-	float duration_ = 0.0f;							/* フェード所要時間 */
-	float timer_ = 0.0f;							/* フェードタイマー */
+	State state_ = State::None; /* 現在のフェード状態 */
+	float alpha_ = 0.0f;        /* 現在のアルファ値 */
+	float duration_ = 0.0f;     /* フェード所要時間 */
+	float timer_ = 0.0f;        /* フェードタイマー */
 
-	float delayBeforeFadeIn_ = 0.0f;				/* フェードイン開始前の待機時間 */
+	float delayBeforeFadeIn_ = 0.0f; /* フェードイン開始前の待機時間 */
 
-	float delayAfterFadeOutComplete_ = 0.0f;		/* フェードアウト完了後の待機時間 */
-	float delayTimerAfterFadeOut_ = 0.0f;			/* フェードアウト完了してからの待機タイマー */
+	float delayAfterFadeOutComplete_ = 0.0f; /* フェードアウト完了後の待機時間 */
+	float delayTimerAfterFadeOut_ = 0.0f;    /* フェードアウト完了してからの待機タイマー */
 
 	// ----- Sprite -----
-	std::unique_ptr<Sprite> sprite_;				/* スプライト */
+	std::unique_ptr<Sprite> sprite_; /* スプライト */
 
 	// ----- Others -----
-	std::function<void()> onFadeComplete_;			/* フェード完了後のコールバック関数 */
+	std::function<void()> onFadeComplete_; /* フェード完了後のコールバック関数 */
 };

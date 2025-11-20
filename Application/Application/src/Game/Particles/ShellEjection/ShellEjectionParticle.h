@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -57,4 +57,20 @@ protected:
 	/// <param name="p">パーティクルデータ</param>
 	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(ShellEjectionParticleData& p, float dt) override;
+
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kInitialScale = { 0.1f, 0.1f, 0.25f };			/* 初期スケール */
+	static constexpr float kMinRightSpeed = 5.0f;							/* 最小右方向速度 */
+	static constexpr float kMaxRightSpeed = 7.5f;							/* 最大右方向速度 */
+	static constexpr float kMinUpSpeed = 8.0f;								/* 最小上方向速度 */
+	static constexpr float kMaxUpSpeed = 10.0f;								/* 最大上方向速度 */
+	static constexpr Float4 kInitialColor = { 0.4f, 0.4f, 0.0f, 1.0f };		/* 初期色 */
+	static constexpr float kLifeTime = 1.0f;								/* 生存時間（秒） */
+	static constexpr Float3 kMinRotationSpeed = { -5.0f, -5.0f, -5.0f };	/* 最小回転速度 */
+	static constexpr Float3 kMaxRotationSpeed = { 5.0f, 5.0f, 5.0f };		/* 最大回転速度 */
+
+	static constexpr float kGravity = -50.0f;	/* 重力加速度 */
 };

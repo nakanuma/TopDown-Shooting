@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -46,11 +46,8 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- System -----
 	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
 
-	// ----- UI -----
 	std::unique_ptr<Reticle> reticle_;						/* レティクル */
 	std::unique_ptr<HPBar> hpBar_;							/* HPバー */
 	std::unique_ptr<OverheatGauge> overheatGauge_;			/* オーバーヒートゲージ */

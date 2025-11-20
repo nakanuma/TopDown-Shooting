@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -31,17 +31,27 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float2 kDigitSize = {32.0f, 32.0f}; /* 1文字のサイズ */
+	static constexpr Float2 kAnchorPoint = {0.5f, 0.5f}; /* アンカーポイント（中心） */
+
+	static constexpr uint32_t kDecimalPointIndex = 10;     /* 小数点のテクスチャインデックス */
+	static constexpr float kDecimalPointWidthRatio = 0.2f; /* 小数点の幅比率 */
+	static constexpr float kDigitOneWidthRatio = 0.4f;     /* 数字1の幅比率 */
+	static constexpr float kDefaultDigitWidthRatio = 0.8f; /* デフォルトの数字幅比率 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- System -----
-	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	std::unique_ptr<SpriteCommon> spriteCommon_; /* スプライト共通処理 */
 
 	// ----- Parameters -----
-	Float2 digitSize_{ 32.0f, 32.0f };						/* 1文字のサイズ */
-	uint32_t digitCount_ = 0;								/* 桁数 */
-	std::vector<uint32_t> digitValues_{};					/* 各桁の数字 */
+	uint32_t digitCount_ = 0;             /* 桁数 */
+	std::vector<uint32_t> digitValues_{}; /* 各桁の数字 */
 
 	// ----- Container -----
-	std::vector<std::unique_ptr<Sprite>> digits_{};			/* スプライトを格納するコンテナ */
+	std::vector<std::unique_ptr<Sprite>> digits_{}; /* スプライトを格納するコンテナ */
 };

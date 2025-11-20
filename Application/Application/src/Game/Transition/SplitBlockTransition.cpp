@@ -1,4 +1,4 @@
-﻿#include "SplitBlockTransition.h"
+#include "SplitBlockTransition.h"
 
 // Engine
 #include <Easing.h>
@@ -35,7 +35,7 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.top = std::make_unique<Sprite>();
 		block.bottom = std::make_unique<Sprite>();
 
-		block.top->Initialize(spriteCommon_.get(), topRect); // 上側のテクスチャを割り当て
+		block.top->Initialize(spriteCommon_.get(), topRect);       // 上側のテクスチャを割り当て
 		block.bottom->Initialize(spriteCommon_.get(), bottomRect); // 下側のテクスチャを割り当て
 
 		block.top->SetSize({blockWidth, blockHeight});
@@ -44,8 +44,8 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 		block.top->SetPosition({i * blockWidth, -blockHeight});
 		block.bottom->SetPosition({i * blockWidth, screenHeight});
 
-		// 遅延時間をランダムに設定
-		block.delay = i * 0.05f;
+		// 遅延時間を設定
+		block.delay = i * kOpenBlockDelay;
 		block.progress = 0.0f;
 
 		blocks_.emplace_back(std::move(block));

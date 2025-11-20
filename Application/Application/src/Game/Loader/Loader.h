@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // C++ Includes
@@ -55,9 +55,19 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr size_t kBlenderIndexX = 0;
+	static constexpr size_t kBlenderIndexY = 1;
+	static constexpr size_t kBlenderIndexZ = 2;
+
+	static constexpr Float3 kDefaultLocation = {0.0f, 0.0f, 0.0f}; /* 位置のデフォルト値 */
+	static constexpr Float3 kDefaultRotation = {0.0f, 0.0f, 0.0f}; /* 回転のデフォルト値 */
+	static constexpr Float3 kDefaultScale = {1.0f, 1.0f, 1.0f};    /* スケールのデフォルト値 */
+	static constexpr Float3 kDefaultColliderSize = {1.0f, 1.0f, 1.0f};/* コライダーサイズのデフォルト値 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- Container -----
 	std::vector<TransformData> datas_;		/* 全データのコンテナ */
 };

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -11,13 +11,13 @@
 /// パーティクルデータ
 /// </summary>
 struct RedCircleParticleData {
-	Transform transform;		/* 位置 */
-	Float3 velocity;			/* 速度ベクトル */
-	Float4 color;				/* 色 */
-	float lifeTime;				/* 生存時間 */
-	float currentTime;			/* 経過時間 */
+	Transform transform; /* 位置 */
+	Float3 velocity;     /* 速度ベクトル */
+	Float4 color;        /* 色 */
+	float lifeTime;      /* 生存時間 */
+	float currentTime;   /* 経過時間 */
 
-	Float3 targetScale;			/* 目標スケール */
+	Float3 targetScale; /* 目標スケール */
 };
 
 // =========================================================
@@ -56,4 +56,12 @@ protected:
 	/// <param name="p">パーティクルデータ</param>
 	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(RedCircleParticleData& p, float dt) override;
+
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float4 kInitialColor = {1.0f, 0.0f, 0.0f, 1.0f}; /* 初期色（赤） */
+	static constexpr float kLifeTime = 1.0f;                          /* 生存時間（秒） */
+	static constexpr Float3 kTargetScale = {5.0f, 5.0f, 5.0f};        /* 目標スケール */
 };

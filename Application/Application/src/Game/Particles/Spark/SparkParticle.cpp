@@ -11,7 +11,7 @@ SparkParticle::SparkParticle(ModelManager::ModelData& model) {
 	object_.gTransformationMatrices_.Create();
 
 	// ビルボード適用設定
-	isBillboard_ = {false, false, false};
+	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
 	blendMode_ = BlendMode::Normal;
 }
@@ -23,21 +23,20 @@ SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3&
 	// 位置
 	p.transform.translate_ = pos;
 	// スケール
-	p.transform.scale_ = {0.04f, 0.04f, 0.8f};
+	p.transform.scale_ = kInitialScale;
 	// 速度ベクトル
 	Float3 baseDir = Float3::Normalize(velocity) * -1.0f; // 引数で受け取った方向と逆向きにする
-	float diff = 0.9f;
-	Float3 randDir = rand->RandomValue({-diff, 0.0f, -diff}, {diff, 0.0f, diff}); // 方向をバラつかせるためのオフセット
-	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(16.0f, 24.0f);
+	Float3 randDir = rand->RandomValue({ -kDirectionSpread, 0.0f, -kDirectionSpread }, { kDirectionSpread, 0.0f, kDirectionSpread }); // 方向をバラつかせるためのオフセット
+	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(kMinSpeed, kMaxSpeed);
 	// 回転（進行方向を向くように）
 	Float3 dir = Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
-	p.transform.rotate_ = {-pitch, -yaw, 0.0f};
+	p.transform.rotate_ = { -pitch, -yaw, 0.0f };
 	// 色
-	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	p.color = kInitialColor;
 	// 生存時間
-	p.lifeTime = rand->RandomValue(0.3f, 0.5f);
+	p.lifeTime = rand->RandomValue(kMinLifeTime, kMaxLifeTime);
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
@@ -50,8 +49,7 @@ void SparkParticle::UpdateParticle(SparkParticleData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 重力加速度を加える
-	const Float3 gravity = {0.0f, -9.8f, 0.0f};
-	p.velocity += gravity * dt;
+	p.velocity += kGravity * dt;
 
 	// 移動
 	float moveFactor = Easing::EaseOutQuart(1.0f - t);
@@ -63,18 +61,18 @@ void SparkParticle::UpdateParticle(SparkParticleData& p, float dt) {
 
 	// 色
 	Float4 color;
-	if (t < 0.5f) {
+	if (t < kColorPhase1End) {
 		// 前半 : 白->橙
-		float localT = t / 0.5f; // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 1.0f, localT);
-		color.y = Easing::Lerp(1.0f, 0.5f, localT);
-		color.z = Easing::Lerp(1.0f, 0.0f, localT);
+		float localT = t / kColorPhase1Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorWhite.x, kColorOrange.x, localT);
+		color.y = Easing::Lerp(kColorWhite.y, kColorOrange.y, localT);
+		color.z = Easing::Lerp(kColorWhite.z, kColorOrange.z, localT);
 	} else {
 		// 後半 : 橙->赤
-		float localT = (t - 0.5f) / 0.5f; // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 1.0f, localT);
-		color.y = Easing::Lerp(0.5f, 0.0f, localT);
-		color.z = Easing::Lerp(0.0f, 0.0f, localT);
+		float localT = (t - kColorPhase1End) / kColorPhase2Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorOrange.x, kColorRed.x, localT);
+		color.y = Easing::Lerp(kColorOrange.y, kColorRed.y, localT);
+		color.z = Easing::Lerp(kColorOrange.z, kColorRed.z, localT);
 	}
 	color.w = 1.0f;
 

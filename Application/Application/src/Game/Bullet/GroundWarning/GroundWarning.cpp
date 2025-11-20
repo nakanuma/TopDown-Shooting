@@ -13,8 +13,7 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	objectBullet_ = std::make_unique<Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
-	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius };
-	objectBullet_->materialCB_.data_->color = {1.0f, 1.0f, 1.0f, 0.5f};
+	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius};
 
 	// ---------------------------------------------------------
 	// コライダー生成・登録
@@ -31,7 +30,7 @@ void GroundWarning::Initialize(const Float3& position, const Float3& direciton, 
 	// ---------------------------------------------------------
 	// パラメーター設定
 	// ---------------------------------------------------------
-	damage_ = 20;                   // 攻撃力
+	damage_ = kDamage;              // 攻撃力
 	speed_ = 0.0f;                  // 弾速
 	velocity_ = {0.0f, 0.0f, 0.0f}; // 速度ベクトル
 }
@@ -56,10 +55,9 @@ void GroundWarning::Update() {
 
 	// 遅延時間分だけ経過したらコライダーを有効化 + パーティクル発生
 	if (!colliderEnabled_ && elapsedTime_ >= kHitDelay) {
-		colliderEnabled_ = true;                                                                                        // コライダーを有効化
-		Float3 offset = {0.0f, 1.5f, 0.0f};                                                                             // 少し上から発生させるためのオフセット
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, 15);   // 煙パーティクル
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, 25); // 飛散パーティクル
+		colliderEnabled_ = true;                                                                                              // コライダーを有効化
+		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", GetTranslate() + kParticleOffset, kExplodeSmokeCount);     // 煙パーティクル
+		ParticleEffectManager::GetInstance()->Emit("explodeScatter", GetTranslate() + kParticleOffset, kExplodeScatterCount); // 飛散パーティクル
 	}
 
 	// ---------------------------------------------------------
@@ -67,7 +65,8 @@ void GroundWarning::Update() {
 	// ---------------------------------------------------------
 
 	// コライダー有効化時のみ更新
-	if (colliderEnabled_) collider_->Update();
+	if (colliderEnabled_)
+		collider_->Update();
 	// オブジェクト更新
 	objectBullet_->UpdateMatrix();
 }

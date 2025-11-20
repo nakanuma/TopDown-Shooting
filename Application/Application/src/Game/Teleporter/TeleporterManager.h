@@ -32,6 +32,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// シャドウマップ用の描画処理を行います。
+	/// </summary>
+	void DrawShadow();
+
+	/// <summary>
 	/// デバッグ用の描画処理を行います。
 	/// </summary>
 	void Debug();

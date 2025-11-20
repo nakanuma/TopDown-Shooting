@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -11,11 +11,11 @@
 /// パーティクルデータ
 /// </summary>
 struct DeathCrossParticleData {
-	Transform transform;		/* 位置 */
-	Float3 velocity;			/* 速度ベクトル */
-	Float4 color;				/* 色 */
-	float lifeTime;				/* 生存時間 */
-	float currentTime;			/* 経過時間 */
+	Transform transform; /* 位置 */
+	Float3 velocity;     /* 速度ベクトル */
+	Float4 color;        /* 色 */
+	float lifeTime;      /* 生存時間 */
+	float currentTime;   /* 経過時間 */
 };
 
 // =========================================================
@@ -54,4 +54,15 @@ protected:
 	/// <param name="p">パーティクルデータ</param>
 	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(DeathCrossParticleData& p, float dt) override;
+
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kInitialScale = {3.5f, 3.5f, 1.0f};        /* 初期スケール */
+	static constexpr Float4 kInitialColor = {0.5f, 0.1f, 0.05f, 1.0f}; /* 初期色 */
+	static constexpr float kLifeTime = 0.75f;                          /* 生存時間 */
+
+	static constexpr float kEndScaleY = 0.4f;      /* 最終Yスケール */
+	static constexpr float kScaleDuration = 0.25f; /* スケール変更の時間 */
 };

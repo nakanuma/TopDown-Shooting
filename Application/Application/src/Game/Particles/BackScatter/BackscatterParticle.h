@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -11,12 +11,12 @@
 /// パーティクルデータ
 /// </summary>
 struct BackscatterParticleData {
-	Transform transform;	/* 位置 */
-	Float3 velocity;		/* 速度ベクトル */
-	Float4 color;			/* 色 */
-	float lifeTime;			/* 生存時間 */
-	float currentTime;		/* 経過時間 */
-	Float3 initScale;		/* 初期スケール */
+	Transform transform; /* 位置 */
+	Float3 velocity;     /* 速度ベクトル */
+	Float4 color;        /* 色 */
+	float lifeTime;      /* 生存時間 */
+	float currentTime;   /* 経過時間 */
+	Float3 initScale;    /* 初期スケール */
 };
 
 // =========================================================
@@ -55,4 +55,21 @@ protected:
 	/// <param name="p">パーティクルデータ</param>
 	/// <param name="dt">デルタタイム</param>
 	void UpdateParticle(BackscatterParticleData& p, float dt) override;
+
+private:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kScale = {0.06f, 0.06f, 0.6f};            /* スケール */
+	static constexpr float kDirectionSpread = 0.4f;                   /* 方向のバラつき */
+	static constexpr float kMinSpeed = 12.0f;                         /* 最小スピード */
+	static constexpr float kMaxSpeed = 24.0f;                         /* 最大スピード */
+	static constexpr Float4 kInitialColor = {1.0f, 1.0f, 1.0f, 1.0f}; /* 初期色（白） */
+	static constexpr float kMinLifeTime = 0.3f;                       /* 最小生存時間（秒） */
+	static constexpr float kMaxLifeTime = 0.5f;                       /* 最大生存時間（秒） */
+
+	static constexpr float kColorTransitionPoint = 0.5f;             /* 色遷移の境界点（0~1） */
+	static constexpr Float4 kColorWhite = {1.0f, 1.0f, 1.0f, 1.0f};  /* 白色 */
+	static constexpr Float4 kColorOrange = {1.0f, 0.5f, 0.0f, 1.0f}; /* 橙色 */
+	static constexpr Float4 kColorRed = {1.0f, 0.0f, 0.0f, 1.0f};    /* 赤色 */
 };

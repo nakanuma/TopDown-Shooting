@@ -53,6 +53,28 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr Float3 kInitialCameraPosition = { 0.0f, 30.0f, -50.0f };	/* 初期カメラ位置 */
+	static constexpr Float3 kInitialCameraRotation = { 0.5f, 0.0f, 0.0f };		/* 初期カメラ回転角 */
+	static constexpr float kCameraFovY = 0.45f;									/* カメラの視野角 */
+
+	static constexpr Float4 kBackgroundColor = { 0.5f, 0.5f, 0.5f, 1.0f };	/* 背景の色 */
+	static constexpr Float2 kBackgroundSize = { 1280.0f, 720.0f };			/* 背景サイズ */
+	static constexpr Float2 kTitleButtonPosition = { 640.0f, 620.0f };		/* タイトルボタン位置 */
+	static constexpr Float2 kRecordPosition = { 640.0f, 260.0f };			/* 戦績位置 */
+	static constexpr Float2 kAnchorPoint = { 0.5f, 0.5f };					/* アンカーポイント（中心） */
+	static constexpr uint32_t kDecimalPlaces = 2;							/* 戦績表示での桁数 */
+	static constexpr Float2 kTotalDamatePosition = { 640.0f, 130.0f };		/* 合計ダメージの位置 */
+	static constexpr Float2 kDefeatedPosition = { 640.0f, 260.0f };			/* 撃破数の位置 */
+	static constexpr Float2 kHitRatePosition = { 650.0f, 390.0f };			/* 命中率の位置 */
+	static constexpr Float2 kClearTimePosition = { 650.0f, 520.0f };		/* クリア時間の位置 */
+
+	static constexpr float kFadeInDuration = 1.0f;	/* フェードインの演出時間 */
+	static constexpr float kFadeOutDuration = 1.0f;	/* フェードアウトの演出時間 */
+	static constexpr float kFadeOutDelay = 0.2f;	/* フェードアウトの遅延時間 */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
 

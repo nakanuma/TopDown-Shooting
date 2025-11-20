@@ -1,4 +1,4 @@
-﻿#include "NumberSprite.h"
+#include "NumberSprite.h"
 
 // C++
 #include <iomanip>
@@ -36,7 +36,7 @@ void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
 		if (c >= '0' && c <= '9')
 			index = c - '0'; // 0~9の値だった場合には'0'のASCIIコードを引いて数値を格納
 		else if (c == '.')
-			index = 10; // 小数点だった場合には10を指定（連番テクスチャの最後に配置しているため）
+			index = kDecimalPointIndex; // 小数点だった場合には10を指定（連番テクスチャの最後に配置しているため）
 		else
 			continue;
 
@@ -44,9 +44,9 @@ void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
 
 		digits_[i] = std::make_unique<Sprite>();
 		digits_[i]->Initialize(spriteCommon_.get(), texture);
-		digits_[i]->SetSize(digitSize_);
-		digits_[i]->SetTextureSize(digitSize_);
-		digits_[i]->SetAnchorPoint({0.5f, 0.5f});
+		digits_[i]->SetSize(kDigitSize);
+		digits_[i]->SetTextureSize(kDigitSize);
+		digits_[i]->SetAnchorPoint(kAnchorPoint);
 	}
 }
 
@@ -57,12 +57,12 @@ void NumberSprite::Update(Float2 position) {
 	// 全体幅を計算
 	float totalWidth = 0.0f;
 	for (uint32_t i = 0; i < digitCount_; i++) {
-		if (digitValues_[i] == 10)
-			totalWidth += digitSize_.x * 0.2f; // 小数点ならかなり幅を狭める
+		if (digitValues_[i] == kDecimalPointIndex)
+			totalWidth += kDigitSize.x * kDecimalPointWidthRatio; // 小数点ならかなり幅を狭める
 		else if (digitValues_[i] == 1)
-			totalWidth += digitSize_.x * 0.4f; // 1なら少し幅を狭める
+			totalWidth += kDigitSize.x * kDigitOneWidthRatio; // 1なら少し幅を狭める
 		else
-			totalWidth += digitSize_.x; // それ以外は同じ幅
+			totalWidth += kDigitSize.x; // それ以外は同じ幅
 	}
 
 	// 中心位置を計算
@@ -72,16 +72,16 @@ void NumberSprite::Update(Float2 position) {
 	float offsetX = 0.0f;
 	for (uint32_t i = 0; i < digitCount_; i++) {
 		float width;
-		if (digitValues_[i] == 10)
-			width = digitSize_.x * 0.2f; // 小数点ならかなり幅を狭める
+		if (digitValues_[i] == kDecimalPointIndex)
+			width = kDigitSize.x * kDecimalPointWidthRatio; // 小数点ならかなり幅を狭める
 		else if (digitValues_[i] == 1)
-			width = digitSize_.x * 0.4f; // 1なら少し幅を狭める
+			width = kDigitSize.x * kDigitOneWidthRatio; // 1なら少し幅を狭める
 		else
-			width = digitSize_.x * 0.8f; // それ以外は同じ幅
+			width = kDigitSize.x * kDefaultDigitWidthRatio; // それ以外は同じ幅
 
 		Float2 digitPos = startPos + Float2{offsetX + width / 2.0f, 0.0f}; // アンカーポイントが中心のため補正
 
-		digits_[i]->SetTextureLeftTop({digitValues_[i] * digitSize_.x, 0.0f}); // 連番テクスチャから表示する数字を抽出
+		digits_[i]->SetTextureLeftTop({digitValues_[i] * kDigitSize.x, 0.0f}); // 連番テクスチャから表示する数字を抽出
 		digits_[i]->SetPosition(digitPos);
 		digits_[i]->Update();
 

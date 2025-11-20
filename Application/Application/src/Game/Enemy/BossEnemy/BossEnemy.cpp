@@ -33,21 +33,18 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	objectEnemy_ = std::make_unique<Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.scale_ = {1.0f, 1.0f, 1.0f};
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->color = {0.2f, 0.2f, 0.2f, 1.0f};
+	objectEnemy_->materialCB_.data_->color = kBossColor;
 
 	///
 	///	コライダー生成
 	///
 
-	colliderSize_ = { 5.2f, 3.0f, 5.2f };
-
 	auto obb = std::make_unique<OBBCollider>();
 	obb->SetTag("BossEnemy");
 	obb->SetFollowTarget(&objectEnemy_->transform_.translate_);
 	obb->SetFollowRotation(&objectEnemy_->transform_.rotate_);
-	obb->SetSize(colliderSize_);
+	obb->SetSize(kColliderSize);
 	obb->SetOwner(this);
 
 	collider_ = std::move(obb);
@@ -65,7 +62,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSizeBoss);
 	spriteHPBackground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
-	spriteHPBackground_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});                                            // 黒
+	spriteHPBackground_->SetColor(kHPBarBackgroundColor);
 
 	// HPバー（前景）
 	uint32_t textureHPForeground = TextureManager::Load("white.png");
@@ -73,7 +70,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSizeBoss);
 	spriteHPForeground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
-	spriteHPForeground_->SetColor({1.0f, 0.0f, 0.0f, 1.0f});                                            // 赤
+	spriteHPForeground_->SetColor(kHPBarForegroundColor);
 
 	///
 	///	パラメーター設定
@@ -84,7 +81,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	isDead_ = false;
 
 	// HPの設定
-	currentHP_ = 40;
+	currentHP_ = kInitialHP;
 	maxHP_ = currentHP_;
 
 	// ターゲットの設定
@@ -138,20 +135,20 @@ void BossEnemy::Update() {
 
 	///
 	///	死亡演出更新
-	///		
-	
-	if(isDying_){
+	///
+
+	if (isDying_) {
 		// タイマー加算
 		dyingTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 
 		// 死亡演出時間の終了で死亡（インスタンス削除）
-		if(dyingTimer_ >= kDyingDuration){
+		if (dyingTimer_ >= kDyingDuration) {
 			// パーティクル発生
-			for(size_t i = 0; i < 20; i++){
-				Float3 offset = RandomGenerator::GetInstance()->RandomValue({ -6.0f, -5.0f, -6.0f }, { 6.0f, 5.0f, 6.0f });
-				ParticleEffectManager::GetInstance()->Emit("explodeSmoke", GetTranslate() + offset, 30); // 煙パーティクル発生
+			for (size_t i = 0; i < kDyingEmitCount; i++) {
+				Float3 offset = RandomGenerator::GetInstance()->RandomValue(kExplodeSmokeOffsetMin, kExplodeSmokeOffsetMax);
+				ParticleEffectManager::GetInstance()->Emit("explodeSmoke", GetTranslate() + offset, kExplodeSmokeCount); // 煙パーティクル発生
 			}
-			ParticleEffectManager::GetInstance()->Emit("bossFragments", GetTranslate(), 150); // 破片パーティクル発生
+			ParticleEffectManager::GetInstance()->Emit("bossFragments", GetTranslate(), kBossFragmentsCount); // 破片パーティクル発生
 
 			isDead_ = true;
 		}
@@ -166,7 +163,8 @@ void BossEnemy::Draw() {
 void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
 void BossEnemy::DrawUI() {
-	if (isDying_) return; // 死亡演出中はスキップ
+	if (isDying_)
+		return; // 死亡演出中はスキップ
 
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
@@ -192,9 +190,9 @@ void BossEnemy::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("BossEnemy");
 
-	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate_.x, 0.01f);
-	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate_.x, 0.01f);
-	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale_.x, 0.01f);
+	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate_.x);
+	ImGui::DragFloat3("rotate", &objectEnemy_->transform_.rotate_.x);
+	ImGui::DragFloat3("scale", &objectEnemy_->transform_.scale_.x);
 
 	ImGui::Separator();
 
@@ -226,14 +224,15 @@ void BossEnemy::OnCollision(Collider* other) {
 
 		// HPが0になったら死亡させる
 		if (currentHP_ <= 0 && !isDying_) {
-			isDying_ = true; // 死亡演出の開始
+			isDying_ = true;                           // 死亡演出の開始
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
 	}
 }
 
 void BossEnemy::FacePlayer() {
-	if (isDying_) return; // 死亡演出中はスキップ
+	if (isDying_)
+		return; // 死亡演出中はスキップ
 
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
@@ -244,8 +243,10 @@ void BossEnemy::FacePlayer() {
 }
 
 void BossEnemy::MoveTowardPlayer() {
-	if (isDying_) return; // 死亡演出中はスキップ
-	if (targetPlayer_->IsDead()) return; // プレイヤーが死亡していたらスキップ
+	if (isDying_)
+		return; // 死亡演出中はスキップ
+	if (targetPlayer_->IsDead())
+		return; // プレイヤーが死亡していたらスキップ
 
 	// プレイヤーへの方向ベクトル
 	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
@@ -253,11 +254,12 @@ void BossEnemy::MoveTowardPlayer() {
 	toPlayer = Float3::Normalize(toPlayer);
 
 	// 移動処理
-	objectEnemy_->transform_.translate_ += toPlayer * moveSpeed_ * TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.translate_ += toPlayer * kMoveSpeed * TimeManager::GetInstance()->GetDeltaTime();
 }
 
 void BossEnemy::FireHomingMissile() {
-	if (isDying_) return; // 死亡演出中はスキップ
+	if (isDying_)
+		return; // 死亡演出中はスキップ
 
 	// 発射方向
 	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
@@ -271,7 +273,8 @@ void BossEnemy::FireHomingMissile() {
 }
 
 void BossEnemy::GroundWarningAttack() {
-	if (isDying_) return; // 死亡演出中はスキップ
+	if (isDying_)
+		return; // 死亡演出中はスキップ
 
 	Float3 playerPos = targetPlayer_->GetTranslate();
 
@@ -281,7 +284,7 @@ void BossEnemy::GroundWarningAttack() {
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 赤い円エフェクト発生
-	ParticleEffectManager::GetInstance()->Emit("redCircle", {playerPos.x, 0.1f, playerPos.z}, 1);
+	ParticleEffectManager::GetInstance()->Emit("redCircle", playerPos + kRedCircleOffset, kRedCircleCount);
 }
 
 void BossEnemy::BuildBehaviorTree() {
@@ -312,11 +315,11 @@ void BossEnemy::BuildBehaviorTree() {
 	///	攻撃系（並列のもう一方）
 	///
 
-	auto wait = std::make_unique<WaitNode<BossEnemy>>(3.0f, 6.0f, "3.0f ~ 6.0f"); // 次の攻撃まで待機
+	auto wait = std::make_unique<WaitNode<BossEnemy>>(kWaitAttackTimeMin, kWaitAttackTimeMax, "wait"); // 次の攻撃まで待機
 
 	auto randAttack = std::make_unique<ActionNode<BossEnemy>>(
 	    [](BossEnemy* enemy, float dt) -> BehaviorStatus {
-		    if (rand() % 2 == 0) {
+		    if (RandomGenerator::GetInstance()->RandomValueBool()) {
 			    enemy->FireHomingMissile();
 		    } else {
 			    enemy->GroundWarningAttack();

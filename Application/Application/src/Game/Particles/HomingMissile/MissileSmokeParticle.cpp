@@ -22,18 +22,18 @@ MissileSmokeParticleData MissileSmokeParticle::CreateParticle(const Float3& pos,
 	auto rand = RandomGenerator::GetInstance();
 
 	// 位置（オフセットを加える）
-	Float3 offset = rand->RandomValue({-0.4f, -0.4f, -0.4f}, {0.4f, 0.4f, 0.4f});
+	Float3 offset = rand->RandomValue(kMinOffset, kMaxOffset);
 	p.transform.translate_ = pos + offset;
 	// 回転
 	p.transform.rotate_ = rand->RandomValue({0.0f, 0.0f, 0.0f}, {PIf * 2.0f, PIf * 2.0f, PIf * 2.0f});
 	// スケール
-	p.transform.scale_ = {0.2f, 0.2f, 0.2f};
+	p.transform.scale_ = kInitialScale;
 	// 速度ベクトル
-	p.velocity = rand->RandomValue({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
+	p.velocity = rand->RandomValue(kMinVelocity, kMaxVelocity);
 	// 色
-	p.color = {1.0f, 1.0f, 1.0f, 1.0f};
+	p.color = kInitialColor;
 	// 生存時間
-	p.lifeTime = 0.8f;
+	p.lifeTime = kLifeTime;
 	// 経過時間
 	p.currentTime = 0.0f;
 	// 初期スケール
@@ -49,32 +49,32 @@ void MissileSmokeParticle::UpdateParticle(MissileSmokeParticleData& p, float dt)
 	p.transform.translate_ += (p.velocity * dt);
 
 	// 縮小
-	if (t > 0.8f) {                       // 4/5に到達したら
-		float localT = (t - 0.8f) / 0.2f; // 0~1に正規化
+	if (t > kShrinkStartThreshold) {                                  // 4/5に到達したら
+		float localT = (t - kShrinkStartThreshold) / kShrinkDuration; // 0~1に正規化
 		float easeT = Easing::EaseInQuad(localT);
 		p.transform.scale_ = p.initScale * (1.0f - easeT);
 	}
 
 	// 色
 	Float4 color;
-	if (t < 1.0f / 3.0f) {
+	if (t < kColorPhase1End) {
 		// 白->橙
-		float localT = t / (1.0f / 3.0f); // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 1.0f, localT);
-		color.y = Easing::Lerp(1.0f, 0.5f, localT);
-		color.z = Easing::Lerp(1.0f, 0.0f, localT);
-	} else if (t < 2.0f / 3.0f) {
+		float localT = t / kColorPhase1Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorWhite.x, kColorOrange.x, localT);
+		color.y = Easing::Lerp(kColorWhite.y, kColorOrange.y, localT);
+		color.z = Easing::Lerp(kColorWhite.z, kColorOrange.z, localT);
+	} else if (t < kColorPhase2End) {
 		// 橙->赤
-		float localT = (t - 1.0f / 3.0f) / (1.0f / 3.0f); // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 1.0f, localT);
-		color.y = Easing::Lerp(0.5f, 0.0f, localT);
-		color.z = Easing::Lerp(0.0f, 0.0f, localT);
+		float localT = (t - kColorPhase1Duration) / kColorPhase2Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorOrange.x, kColorRed.x, localT);
+		color.y = Easing::Lerp(kColorOrange.y, kColorRed.y, localT);
+		color.z = Easing::Lerp(kColorOrange.z, kColorRed.z, localT);
 	} else {
 		// 赤->黒
-		float localT = (t - 2.0f / 3.0f) / (1.0f / 3.0f); // 0~1に正規化
-		color.x = Easing::Lerp(1.0f, 0.0f, localT);
-		color.y = Easing::Lerp(0.0f, 0.0f, localT);
-		color.z = Easing::Lerp(0.0f, 0.0f, localT);
+		float localT = (t - kColorPhase2End) / kColorPhase3Duration; // 0~1に正規化
+		color.x = Easing::Lerp(kColorRed.x, kColorBlack.x, localT);
+		color.y = Easing::Lerp(kColorRed.y, kColorBlack.y, localT);
+		color.z = Easing::Lerp(kColorRed.z, kColorBlack.z, localT);
 	}
 	color.w = 1.0f;
 

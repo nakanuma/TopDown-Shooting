@@ -11,19 +11,20 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 	object_ = std::make_unique<Object3D>();
 	object_->model_ = model;
 	object_->transform_.translate_ = position;
-	object_->materialCB_.data_->color = { 1.0f, 0.0f, 0.0f, 1.0f };
+	object_->materialCB_.data_->useEnvironmentMap = true;
+	object_->materialCB_.data_->environmentStrength = kEnvironmentStrength;
 
 	///
 	///	コライダー生成
 	///
 
-	auto aabb = std::make_unique<AABBCollider>();
-	aabb->SetTag("Teleporter");
-	aabb->SetFollowTarget(&object_->transform_.translate_);
-	aabb->SetSize(colliderSize_);
-	aabb->SetOwner(this);
+	auto sphere = std::make_unique<SphereCollider>();
+	sphere->SetTag("Teleporter");
+	sphere->SetFollowTarget(&object_->transform_.translate_);
+	sphere->SetRadius(kRadius);
+	sphere->SetOwner(this);
 
-	collider_ = std::move(aabb);
+	collider_ = std::move(sphere);
 	CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
@@ -44,11 +45,17 @@ void Teleporter::Update() {
 	///
 
 	object_->UpdateMatrix();
+	object_->UpdateShadowMatrix();
 }
 
 void Teleporter::Draw() {
 	// オブジェクト描画
 	object_->Draw();
+}
+
+void Teleporter::DrawShadow() {
+	// シャドウマップ描画
+	object_->DrawShadow();
 }
 
 void Teleporter::OnCollision(Collider* other) {
@@ -59,29 +66,25 @@ void Teleporter::OnCollision(Collider* other) {
 		// このテレポーターがゴールの場合
 		if (IsGoal() && isActive_) {
 			// コールバック関数を呼び出す
-			if(onGoalCallback_){
+			if (onGoalCallback_) {
 				onGoalCallback_();
 			}
 			// 無効化状態にする
 			isActive_ = false;
 
-		// 通常テレポーターの場合
+			// 通常テレポーターの場合
 		} else {
 			// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
 			if (pair_ && pair_->isActive_) {
 				player->SetTranslate({
-					pair_->GetTranslate().x,
-					player->GetTranslate().y,
-					pair_->GetTranslate().z,
-					});
+				    pair_->GetTranslate().x,
+				    player->GetTranslate().y,
+				    pair_->GetTranslate().z,
+				});
 
 				// 使用したテレポーターは無効化する
 				this->isActive_ = false;
 				pair_->isActive_ = false;
-
-				// デバッグ用に使用したテレポーターは青くする（後で消す）
-				this->object_->materialCB_.data_->color = { 0.0f, 0.0f, 1.0f, 1.0f };
-				pair_->object_->materialCB_.data_->color = { 0.0f, 0.0f, 1.0f, 1.0f };
 			}
 		}
 	}

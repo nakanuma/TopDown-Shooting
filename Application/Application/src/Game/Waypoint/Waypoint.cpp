@@ -8,8 +8,8 @@ Waypoint::Waypoint(const std::string& name, const Float3& pos, ModelManager::Mod
 	// 球オブジェクト生成
 	objectSphere_ = std::make_unique<Object3D>();
 	objectSphere_->transform_.translate_ = pos;
-	objectSphere_->transform_.scale_ = {0.25f, 0.25f, 0.25f};
-	objectSphere_->materialCB_.data_->color = {1.0f, 1.0f, 0.0f, 1.0f};
+	objectSphere_->transform_.scale_ = kInitialScale;
+	objectSphere_->materialCB_.data_->color = kColorYellow;
 	objectSphere_->model_ = model;
 }
 
@@ -17,9 +17,9 @@ void Waypoint::Update() { objectSphere_->UpdateMatrix(); }
 
 void Waypoint::Draw() {
 	if (isSelected_) {
-		objectSphere_->materialCB_.data_->color = {0.0f, 1.0f, 1.0f, 1.0f}; // 水色
+		objectSphere_->materialCB_.data_->color = kColorLightBlue; // 水色
 	} else {
-		objectSphere_->materialCB_.data_->color = {1.0f, 1.0f, 0.0f, 1.0f}; // 黄色
+		objectSphere_->materialCB_.data_->color = kColorYellow; // 黄色
 	}
 
 	objectSphere_->Draw();

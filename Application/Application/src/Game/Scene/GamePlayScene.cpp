@@ -28,7 +28,7 @@ void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera_ = std::make_unique<Camera>(Float3{ 0.0f, 50.0f, -55.0f }, Float3{ std::numbers::pi_v<float> / 4.0f, 0.0f, 0.0f }, 0.45f);
+	camera_ = std::make_unique<Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
 	Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
@@ -86,7 +86,7 @@ void GamePlayScene::Initialize() {
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
 	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
-	teleporterManager_->SetGoalCallback([this](){ TransitionToResult(); }); // ゴール時のコールバック関数を設定
+	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
@@ -119,7 +119,7 @@ void GamePlayScene::Initialize() {
 
 	// トランジション
 	FadeTransition::GetInstance()->Initialize(spriteCommon_.get());
-	SplitBlockTransition::GetInstance()->StartOpen(0.5f, 1.0f);
+	SplitBlockTransition::GetInstance()->StartOpen(kSplitBlockOpenDuration, kSplitBlockOpenDelay);
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
@@ -130,8 +130,8 @@ void GamePlayScene::Initialize() {
 	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
 
 	// 平行光源の初期値設定
-	LightManager::GetInstance()->directionalLightCB_.data_->direction = { 0.367f, -0.653f, -0.662f };
-	LightManager::GetInstance()->directionalLightCB_.data_->intensity = 1.0f;
+	LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
+	LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
 }
 
 void GamePlayScene::Finalize() {}
@@ -163,7 +163,7 @@ void GamePlayScene::Update() {
 	}
 
 	// ゲームクリア演出が終了したらゴールテレポーターを有効化する
-	if(gameClearSequence_->IsFinished()){
+	if (gameClearSequence_->IsFinished()) {
 		teleporterManager_->EnableGoalTeleporter();
 	}
 
@@ -238,7 +238,7 @@ void GamePlayScene::Draw() {
 
 	// プレイヤー中心のBBを生成してライトカメラの行列更新（あとで整理）
 	LightCamera::BoundingBox playerCenterBB;
-	playerCenterBB.SetCenterExtents(player_->GetTranslate(), { 30.0f, 10.0f, 30.0f });
+	playerCenterBB.SetCenterExtents(player_->GetTranslate(), kShadowBoundingBoxExtents);
 	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB);
 
 	// シャドウマップ描画開始
@@ -255,6 +255,7 @@ void GamePlayScene::Draw() {
 	player_->DrawGunShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
+	teleporterManager_->DrawShadow();
 
 	//----------------------------------//
 
@@ -351,7 +352,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("bossFragments", { 155.0f, 2.5f, 25.0f }, 100);
+
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
@@ -376,16 +377,16 @@ void GamePlayScene::Debug() {
 void GamePlayScene::TransitionToResult()
 {
 	// 既に遷移中ならスキップ
-	if(isTransitioning_) return;
+	if (isTransitioning_) return;
 
 	// 1度のみ呼び出されるようフラグを立てる
 	isTransitioning_ = true;
 
 	// フェードアウトしてリザルトシーンへ
 	FadeTransition::GetInstance()->StartFadeOut(
-		0.5f,
+		kFadeOutDuration,
 		[]() {
 			SceneManager::GetInstance()->ChangeScene("RESULT");
 		},
-		0.25f);
+		kFadeOutDelay);
 }

@@ -1,4 +1,4 @@
-﻿#define NOMINMAX
+#define NOMINMAX
 #include "FadeTransition.h"
 
 // C++
@@ -22,7 +22,7 @@ void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(spriteCommon, textureWhite);
 	sprite_->SetSize(windowSize);
-	sprite_->SetColor({0.0f, 0.0f, 0.0f, 1.0f});
+	sprite_->SetColor(kColorBlack);
 }
 
 void FadeTransition::StartFadeIn(float duration, float delayBeforeStart) {
@@ -73,7 +73,7 @@ void FadeTransition::Update() {
 		if (t >= 1.0f) {
 			state_ = State::None;
 		}
-	// フェードアウト
+		// フェードアウト
 	} else if (state_ == State::FadeOut) {
 		timer_ += dt;
 		// Alpha値更新処理
@@ -116,6 +116,6 @@ void FadeTransition::Draw() {
 	if (state_ == State::None && alpha_ <= 0.0f)
 		return;
 
-	sprite_->SetColor({0.0f, 0.0f, 0.0f, alpha_});
+	sprite_->SetColor({kColorBlack.x, kColorBlack.y, kColorBlack.z, alpha_});
 	sprite_->Draw();
 }

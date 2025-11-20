@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // Engine Includes
@@ -18,7 +18,7 @@
 struct NodeRecord {
 	Waypoint* wp;         /* このノードのウェイポイント */
 	Waypoint* cameFrom;   /* このノードに到達する直前のノード（親） */
-	float costSoFar;      /* スタートからこのノードまでにかかったコスト（g値） */ 
+	float costSoFar;      /* スタートからこのノードまでにかかったコスト（g値） */
 	float estimatedTotal; /* このノードを通った場合の推定総コスト（f値 = g値 + h値） */
 
 	/// <summary>
@@ -45,7 +45,7 @@ public:
 	static WaypointManager* GetInstance();
 
 	/// <summary>
-	///	ウェイポイントの初期化処理を行います。 
+	///	ウェイポイントの初期化処理を行います。
 	/// </summary>
 	void Initialize();
 
@@ -92,13 +92,16 @@ public:
 
 private:
 	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr float kMaxDistance = 4.0f;     /* 隣接ノードの最大距離 */
+	static constexpr float kWaypointRadius = 0.25f; /* ウェイポイントの生成時衝突判定に使用する半径 */
+
+	static constexpr Float3 kBottomLeft = {0.0f, 2.0f, 0.0f};  /* ウェイポイント生成左下位置 */
+	static constexpr Float3 kTopRight = {70.0f, 2.0f, 120.0f}; /* ウェイポイント生成右上位置 */
+
+	// =========================================================
 	// Internal Methods
 	// =========================================================
-
-	// ----- Continer -----
-	std::vector<std::unique_ptr<Waypoint>> waypoints_;		/* 全てのウェイポイントを格納するコンテナ */
-
-	// ----- Parameters -----
-	float maxDistance_ = 4.0f;								/* 隣接ノードの最大距離 */
-	const float waypointRadius_ = 0.25f;					/* ウェイポイントの生成時衝突判定に使用する半径 */
+	std::vector<std::unique_ptr<Waypoint>> waypoints_; /* 全てのウェイポイントを格納するコンテナ */
 };
