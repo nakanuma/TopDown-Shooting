@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp" />
     <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp" />
     <ClCompile Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.cpp" />
@@ -63,8 +64,10 @@
     <ClCompile Include="src\Game\Teleporter\TeleporterManager.cpp" />
     <ClCompile Include="src\Game\Scene\SceneFactory.cpp" />
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
+    <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\BloodScatter\BloodScatterParticle.h" />
     <ClInclude Include="src\Game\Particles\BossFragments\BossFragmentsParticle.h" />
     <ClInclude Include="src\Game\Sequence\GameClearSequence.h" />
     <ClInclude Include="src\Game\Particles\MuzzleFlash\MuzzleFlashParticle.h" />
@@ -119,6 +122,7 @@
     <ClInclude Include="src\Game\Teleporter\TeleporterManager.h" />
     <ClInclude Include="src\Game\Scene\SceneFactory.h" />
     <ClInclude Include="src\Game\Particles\WallCollapse\WallCollapseParticle.h" />
+    <ClInclude Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

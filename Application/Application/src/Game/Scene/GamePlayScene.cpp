@@ -352,7 +352,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-
+		ParticleEffectManager::GetInstance()->Emit("teleporterRing", {156.0f, 2.0f, 20.0f}, 1);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);

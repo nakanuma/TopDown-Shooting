@@ -69,10 +69,11 @@ private:
 
 	static constexpr float kRaycastThreshold = 0.5f; /* レイキャスト判定の閾値 */
 
-	static constexpr int32_t kBloodSplatterCount = 2; /* 血飛沫パーティクルの発生数 */
-	static constexpr int32_t kBloodSmokeCount = 5;    /* 血煙パーティクルの発生数 */
-	static constexpr int32_t kBackscatterCount = 4;   /* 後方飛散パーティクルの発生数 */
-	static constexpr int32_t kImpactSmokeCount = 7;   /* 衝撃煙パーティクルの発生数 */
+	static constexpr int32_t kBloodSplatterCount = 2;	/* 血飛沫パーティクルの発生数 */
+	static constexpr int32_t kBloodSmokeCount = 5;		/* 血煙パーティクルの発生数 */
+	static constexpr int32_t kBackscatterCount = 4;		/* 後方飛散パーティクルの発生数 */
+	static constexpr int32_t kImpactSmokeCount = 7;		/* 衝撃煙パーティクルの発生数 */
+	static constexpr int32_t kBloodScatterCount = 2;	/* 後方血飛散パーティクルの発生数 */
 
 	// =========================================================
 	// Member Variables

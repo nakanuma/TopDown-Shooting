@@ -134,9 +134,10 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// 通常敵との衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "NormalEnemy") {
-		// ヒットエフェクト
+		// ヒット時パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", bulletPos, kBloodSplatterCount);
 		ParticleEffectManager::GetInstance()->Emit("bloodSmoke", bulletPos, kBloodSmokeCount, velocity_);
+		ParticleEffectManager::GetInstance()->Emit("bloodScatter", bulletPos, kBloodScatterCount, velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -146,9 +147,10 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// 固定敵との衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "ImmobileEnemy") {
-		// ヒットエフェクト
+		// ヒット時パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("bloodSplatter", bulletPos, kBloodSplatterCount);
 		ParticleEffectManager::GetInstance()->Emit("bloodSmoke", bulletPos, kBloodSmokeCount, velocity_);
+		ParticleEffectManager::GetInstance()->Emit("bloodScatter", bulletPos, kBloodScatterCount, velocity_);
 
 		// 死亡させる
 		isDead_ = true;
@@ -158,7 +160,7 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// ボスとの衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "BossEnemy") {
-		// ヒットエフェクト
+		// ヒット時パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, kBackscatterCount, velocity_);
 		ParticleEffectManager::GetInstance()->Emit("impactSmoke", bulletPos, kImpactSmokeCount, velocity_);
 
@@ -170,7 +172,7 @@ void PlayerBullet::OnCollision(Collider* other) {
 	// 障害物との衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Obstacle") {
-		// ヒットエフェクト
+		// ヒット時パーティクル発生
 		ParticleEffectManager::GetInstance()->Emit("backscatter", bulletPos, kBackscatterCount, velocity_);
 		ParticleEffectManager::GetInstance()->Emit("impactSmoke", bulletPos, kImpactSmokeCount, velocity_);
 
