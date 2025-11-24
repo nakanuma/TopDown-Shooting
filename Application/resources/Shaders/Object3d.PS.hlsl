@@ -9,8 +9,11 @@ struct Material {
     float32_t shininess;
     float32_t environmentStrength;
     float32_t2 padding2;
+    float32_t3 emissiveColor;
+    float32_t emissiveIntensity;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
+
 
 struct DirectionalLight
 {
@@ -20,11 +23,13 @@ struct DirectionalLight
 };
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 
+
 struct Camera
 {
     float32_t3 worldPosition;
 };
 ConstantBuffer<Camera> gCamera : register(b2);
+
 
 struct PointLight
 {
@@ -35,6 +40,7 @@ struct PointLight
     float decay; 
 };
 ConstantBuffer<PointLight> gPointLight : register(b3);
+
 
 struct SpotLight
 {
@@ -48,15 +54,37 @@ struct SpotLight
     float32_t cosFalloffStart; // Falloff開始の角度
     uint32_t isActive;
 };
-
 static const int kMaxLight = 64;
 
 struct SpotLights
 {
     SpotLight spotLights[kMaxLight];
 };
-
 ConstantBuffer<SpotLights> gSpotLight : register(b4);
+
+
+struct EmissiveLight
+{
+    float32_t4 color;
+    float32_t3 position;
+    float32_t intensity;
+    float32_t radius;
+    float32_t decay;
+    uint32_t isActive;
+    float32_t padding;
+};
+
+static const int kMaxEmissiveLight = 16;
+
+struct EmissiveLights
+{
+    EmissiveLight emissiveLights[kMaxEmissiveLight];
+    int32_t numActiveLights;
+    float32_t3 padding;
+};
+
+ConstantBuffer<EmissiveLights> gEmissiveLight : register(b8);
+
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
@@ -208,6 +236,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
         }
         
         diffuseSpotLight *= gMaterial.color.rgb * textureColor.rgb;
+
             
         // 鏡面反射
         //float32_t3 halfVector_spot = normalize(-spotLightDirectionOnSurface + toEye);
@@ -216,12 +245,54 @@ PixelShaderOutput main(VertexShaderOutput input) {
         //float32_t3 specularSpotLight =
         //gSpotLight.color.rgb * gSpotLight.intensity * specularPow_spot * float32_t3(1.0f, 1.0f, 1.0f) * attenuatuinFactor * falloffFactor;
         
+        ///
+        /// EmissiveLight
+        ///
+        
+        float32_t3 diffuseEmissiveLight = float3(0.0f, 0.0f, 0.0f);
+        
+        for (int i = 0; i < gEmissiveLight.numActiveLights; i++)
+        {
+            // 無効化状態ならスキップ
+            if (gEmissiveLight.emissiveLights[i].isActive == 0)
+            {
+                continue;
+            }
+            
+            // ライト方向を計算
+            float32_t3 emissiveLightDir = gEmissiveLight.emissiveLights[i].position - input.worldPosition;
+            float32_t emissiveDistance = length(emissiveLightDir);
+            
+            // 影響範囲外なら計算スキップ
+            if (emissiveDistance > gEmissiveLight.emissiveLights[i].radius)
+            {
+                continue;
+            }
+            
+            emissiveLightDir = normalize(emissiveLightDir);
+            
+            // 距離減衰を計算
+            float32_t attenuation = pow(saturate(1.0f - (emissiveDistance / gEmissiveLight.emissiveLights[i].radius)), gEmissiveLight.emissiveLights[i].decay);
+            
+            // 拡散反射を計算
+            float NdotL_emissive = dot(normalize(input.normal), emissiveLightDir);
+            float lambert_emissive = max(NdotL_emissive, 0.0f);
+            
+            // ライトの寄与を加算
+            diffuseEmissiveLight +=
+            gEmissiveLight.emissiveLights[i].color.rgb * 
+            gEmissiveLight.emissiveLights[i].intensity * 
+            lambert_emissive * 
+            attenuation;
+        }
+        
+        diffuseEmissiveLight *= gMaterial.color.rgb * textureColor.rgb;
         
         ///
         /// EnvironmentMap
         ///
         
-        float32_t3 environmentContribution = float3(0.0f, 0.0f, 0.0f);
+            float32_t3 environmentContribution = float3(0.0f, 0.0f, 0.0f);
         
         if (gMaterial.useEnvironmentMap != 0)
         {
@@ -233,20 +304,40 @@ PixelShaderOutput main(VertexShaderOutput input) {
         }
         
         
-        // ライティングテスト用
-        // 拡散反射+鏡面反射
+        // ライティング結果を合成
         output.color.rgb =
         diffuseDirectionalLight + // DirectionalLight
         diffusePointLight + specularPointLight + // PointLight
         diffuseSpotLight + // SpotLight
-        
+        diffuseEmissiveLight + // EmissiveLight
         environmentContribution; // EnvironmentMap
-        ;
+        
+        ///
+        /// Emissive
+        ///
+        
+        // エミッシブを加算
+        if (gMaterial.emissiveIntensity > 0.0f)
+        {
+            output.color.rgb += gMaterial.emissiveColor * gMaterial.emissiveIntensity;
+        }
        
         // アルファは今まで通り
         output.color.a = gMaterial.color.a * textureColor.a;
+        
+    // ライティング無効時
     } else {
         output.color = gMaterial.color * textureColor;
+        
+        // ライティング無効時でもエミッシブは適用
+        output.color.rgb += gMaterial.emissiveColor * gMaterial.emissiveIntensity;
     }
+    
+    // 最終的なアルファ値チェック
+    if (output.color.a == 0.0f)
+    {
+        discard;
+    }
+    
     return output;
 }
