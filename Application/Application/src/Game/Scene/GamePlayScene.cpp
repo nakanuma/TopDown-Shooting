@@ -88,6 +88,10 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
+	// 発光オブジェクト生成
+	emissiveObject_ = std::make_unique<EmissiveObject>();
+	emissiveObject_->Initialize();
+
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -137,6 +141,11 @@ void GamePlayScene::Initialize() {
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
+	// エミッシブライトをクリア
+	LightManager::GetInstance()->ClearEmissiveLights();
+
+	// ----------------------------------------------------------------------
+
 	// ゲームスタート時演出の更新
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
@@ -183,6 +192,8 @@ void GamePlayScene::Update() {
 	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
+	// 発光オブジェクト更新
+	emissiveObject_->Update();
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
 	FadeTransition::GetInstance()->Update();
@@ -289,6 +300,7 @@ void GamePlayScene::Draw() {
 	enemyManager_->Draw();
 	obstacleManager_->Draw(player_->GetTranslate());
 	teleporterManager_->Draw();
+	emissiveObject_->Draw();
 	BulletManager::GetInstance()->Draw();
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
@@ -337,6 +349,8 @@ void GamePlayScene::Draw() {
 	player_->Debug();
 
 	gameClearSequence_->Debug();
+
+	emissiveObject_->Debug();
 
 #endif
 	// ImGuiの内部コマンドを生成する

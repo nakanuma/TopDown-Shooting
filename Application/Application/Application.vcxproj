@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp" />
     <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp" />
     <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\EmissiveObject\EmissiveObject.h" />
     <ClInclude Include="src\Game\Particles\BloodScatter\BloodScatterParticle.h" />
     <ClInclude Include="src\Game\Particles\BossFragments\BossFragmentsParticle.h" />
     <ClInclude Include="src\Game\Sequence\GameClearSequence.h" />
