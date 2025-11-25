@@ -29,5 +29,8 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Object3D> object_;
+	std::unique_ptr<Object3D> objectRectangleLight_;
+	std::unique_ptr<Object3D> objectDiskLight_;
+	std::unique_ptr<Object3D> objectTubeLight_;
+	std::unique_ptr<Object3D> objectSphereLight_;
 };
