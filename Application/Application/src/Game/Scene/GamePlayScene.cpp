@@ -355,6 +355,8 @@ void GamePlayScene::Draw() {
 
 	emissiveObject_->Debug();
 
+	lightManager_->DrawDebug();
+
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());

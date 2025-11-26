@@ -25,7 +25,7 @@ void EmissiveObject::Initialize(){
 	objectTubeLight_ = std::make_unique<Object3D>();
 	objectTubeLight_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
 	objectTubeLight_->transform_.translate_ = {36.0f, 2.0f, -40.0f};
-	objectTubeLight_->transform_.scale_ = {6.0f, 0.2f, 0.2f};
+	objectTubeLight_->transform_.scale_ = {3.0f, 0.2f, 0.2f};
 	objectTubeLight_->SetEmissiveAsAreaLight(Float3{0.0f, 0.0f, 1.0f}, 2.0f, 10.0f, LightManager::AreaLightType::Tube);
 
 	// Sphere
