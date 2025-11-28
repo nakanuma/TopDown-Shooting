@@ -327,6 +327,8 @@ void GamePlayScene::Draw() {
 
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
+
+	postEffectManager_->RestoreDepthBufferState();
 #pragma endregion
 
 	/// =========================================================
