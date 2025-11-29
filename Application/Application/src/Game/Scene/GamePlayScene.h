@@ -31,7 +31,6 @@
 #include <src/Game/Sequence/GameStartSequence.h>
 #include <src/Game/Sequence/GameOverSequence.h>
 #include <src/Game/Sequence/GameClearSequence.h>
-#include <src/Game/EmissiveObject/EmissiveObject.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -116,7 +115,6 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_;			/* 敵管理クラス */
 	std::unique_ptr<ObstacleManager> obstacleManager_;		/* 障害物管理クラス */
 	std::unique_ptr<TeleporterManager> teleporterManager_;	/* テレポーター管理クラス */
-	std::unique_ptr<EmissiveObject> emissiveObject_;		/* 発光オブジェクト */
 
 	// ----- Others -----
 	std::unique_ptr<FollowCamera> followCamera_;			/* 追従カメラ管理クラス */

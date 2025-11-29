@@ -111,11 +111,11 @@ private:
 	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
 	static constexpr Float4 kHPBarForegroundColor = {1.0f, 0.0f, 0.0f, 1.0f}; /* HPバー前景色 */
 
-	static constexpr int32_t kInitialHP = 200;        /* 初期HP */
+	static constexpr int32_t kInitialHP = 300;        /* 初期HP */
 	static constexpr float kMoveSpeed = 3.0f;         /* 移動速度 */
 	static constexpr float kDyingDuration = 7.0f;     /* 死亡演出時間 */
-	static constexpr float kWaitAttackTimeMin = 3.0f; /* 攻撃間隔の最小値 */
-	static constexpr float kWaitAttackTimeMax = 6.0f; /* 攻撃間隔の最大値 */
+	static constexpr float kWaitAttackTimeMin = 2.0f; /* 攻撃間隔の最小値 */
+	static constexpr float kWaitAttackTimeMax = 4.0f; /* 攻撃間隔の最大値 */
 
 	static constexpr size_t kDyingEmitCount = 20;                           /* 死亡時パーティクルの発生回数 */
 	static constexpr Float3 kExplodeSmokeOffsetMin = {-6.0f, -5.0f, -6.0f}; /* 死亡時煙パーティクルの最小オフセット */

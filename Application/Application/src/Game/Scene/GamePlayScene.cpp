@@ -88,10 +88,6 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
-	// 発光オブジェクト生成
-	emissiveObject_ = std::make_unique<EmissiveObject>();
-	emissiveObject_->Initialize();
-
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -105,7 +101,7 @@ void GamePlayScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(PostEffectType::None);
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
@@ -192,8 +188,6 @@ void GamePlayScene::Update() {
 	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
-	// 発光オブジェクト更新
-	emissiveObject_->Update();
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
 	FadeTransition::GetInstance()->Update();
@@ -308,27 +302,11 @@ void GamePlayScene::Draw() {
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 
-	// -----------------------------------------------
-	postEffectManager_->EndMainScene();
-#pragma endregion メインシーン描画終了（エフェクトを適用してバックバッファに合成）
-
-
-#pragma region Bloom適用（発光オブジェクトのみ）
-	postEffectManager_->BeginBloom();
-
-	emissiveObject_->Draw();
-
-	postEffectManager_->EndBloom();
-#pragma endregion
-
-
-#pragma region バックバッファへの直接描画
-	postEffectManager_->RestoreBackBuffer(true);
-
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
 
-	postEffectManager_->RestoreDepthBufferState();
+	// -----------------------------------------------
+	postEffectManager_->EndMainScene();
 #pragma endregion
 
 	/// =========================================================
@@ -376,12 +354,9 @@ void GamePlayScene::Draw() {
 
 	gameClearSequence_->Debug();
 
-	emissiveObject_->Debug();
-
 	lightManager_->DrawDebug();
 
 	ImGuiUtil::ImageWindow("mainSceneRT", postEffectManager_->mainSceneRT_);
-
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
