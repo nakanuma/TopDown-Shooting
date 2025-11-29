@@ -21,8 +21,8 @@
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Transition/SplitBlockTransition.h>
-#include <src/Game/Waypoint/WaypointManager.h>
 #include <src/Game/Utility/Utility.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 void GamePlayScene::Initialize() {
 	DirectXBase* dxBase = DirectXBase::GetInstance();
@@ -85,7 +85,7 @@ void GamePlayScene::Initialize() {
 
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
-	teleporterManager_->Initialize(loader_->GetAllDatas()); // ローダーから取得したデータを使用
+	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
 	// 弾リストのクリア
@@ -96,12 +96,12 @@ void GamePlayScene::Initialize() {
 	// 追従カメラ生成
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize(camera_->GetCurrent()->transform_.translate_); // 初期オフセット
-	followCamera_->SetTarget(&player_->GetTranslate());                   // プレイヤーを追従対象にセット
+	followCamera_->SetTarget(&player_->GetTranslate());                      // プレイヤーを追従対象にセット
 
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(PostEffectType::None);
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
@@ -137,6 +137,11 @@ void GamePlayScene::Initialize() {
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
+	LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
+	LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
+
+	// ----------------------------------------------------------------------
+
 	// ゲームスタート時演出の更新
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Update();
@@ -213,7 +218,7 @@ void GamePlayScene::Draw() {
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap_.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	ImguiWrapper::NewFrame();
@@ -230,7 +235,7 @@ void GamePlayScene::Draw() {
 	SkyBoxManager::GetInstance()->Draw();
 
 	// ---------------------------------------------------------
-	// シャドウマップ描画処理開始
+	// シャドウマップ描画前処理
 	// ---------------------------------------------------------
 
 	// ライトカメラの更新
@@ -244,8 +249,9 @@ void GamePlayScene::Draw() {
 	// シャドウマップ描画開始
 	ShadowMapManager::GetInstance()->BeginShadowPass(shadowMapHandle_);
 
-	// 通常オブジェクト描画
-	//----------------------------------//
+	/// =========================================================
+	/// ↓ ここから通常モデルのシャドウマップ描画
+	/// =========================================================
 
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
@@ -257,26 +263,31 @@ void GamePlayScene::Draw() {
 	enemyManager_->DrawShadow();
 	teleporterManager_->DrawShadow();
 
-	//----------------------------------//
+	/// =========================================================
+	/// ↑ ここまで通常モデルのシャドウマップ描画
+	/// =========================================================
 
-	// アニメーションモデル用PSOをセット
+	// スキニングモデル用PSOをセット
 	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
 
-	// アニメーションモデル描画
-	//----------------------------------//
+	/// =========================================================
+	/// ↓ ここからスキニングモデルのシャドウマップ描画
+	/// =========================================================
 
 	player_->DrawShadow();
 
-	//----------------------------------//
+	/// =========================================================
+	/// ↑ ここまでスキニングモデルのシャドウマップ描画
+	/// =========================================================
 
 	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
-	// ---------------------------------------------------------
-	// シャドウマップ描画処理終了
-	// ---------------------------------------------------------
 
-	///
-	///	通常オブジェクト描画処理
-	///
+	/// =========================================================
+	/// ↓ ここから3Dオブジェクト描画
+	/// =========================================================
+#pragma region メインシーンの3Dオブジェクトのレンダリングを開始
+	postEffectManager_->BeginMainScene();
+	// -----------------------------------------------
 
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
@@ -290,19 +301,24 @@ void GamePlayScene::Draw() {
 	obstacleManager_->Draw(player_->GetTranslate());
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
+
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
 
-	///
-	///	↑ ここまで3Dオブジェクトの描画コマンド
-	///
+	// -----------------------------------------------
+	postEffectManager_->EndMainScene();
+#pragma endregion
+
+	/// =========================================================
+	/// ↑ ここまで3Dオブジェクト描画
+	/// =========================================================
 
 	// Spriteの描画準備。全ての描画に共通のグラフィックスコマンドを積む
 	spriteCommon_->PreDraw();
 
-	///
-	/// ↓ ここからスプライトの描画コマンド
-	///
+	/// =========================================================
+	/// ↓ ここからスプライト描画
+	/// =========================================================
 
 	// 敵UI描画
 	enemyManager_->DrawUI();
@@ -326,9 +342,9 @@ void GamePlayScene::Draw() {
 	SplitBlockTransition::GetInstance()->Draw();
 	FadeTransition::GetInstance()->Draw();
 
-	///
-	/// ↑ ここまでスプライトの描画コマンド
-	///
+	/// =========================================================
+	/// ↑ ここまでスプライト描画
+	/// =========================================================
 
 #ifdef _DEBUG
 	// デバッグ表示
@@ -338,6 +354,9 @@ void GamePlayScene::Draw() {
 
 	gameClearSequence_->Debug();
 
+	lightManager_->DrawDebug();
+
+	ImGuiUtil::ImageWindow("mainSceneRT", postEffectManager_->mainSceneRT_);
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
@@ -352,7 +371,7 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("Emit")) {
-
+		ParticleEffectManager::GetInstance()->Emit("teleporterRing", {156.0f, 2.0f, 20.0f}, 1);
 	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
@@ -374,19 +393,14 @@ void GamePlayScene::Debug() {
 #endif
 }
 
-void GamePlayScene::TransitionToResult()
-{
+void GamePlayScene::TransitionToResult() {
 	// 既に遷移中ならスキップ
-	if (isTransitioning_) return;
+	if (isTransitioning_)
+		return;
 
 	// 1度のみ呼び出されるようフラグを立てる
 	isTransitioning_ = true;
 
 	// フェードアウトしてリザルトシーンへ
-	FadeTransition::GetInstance()->StartFadeOut(
-		kFadeOutDuration,
-		[]() {
-			SceneManager::GetInstance()->ChangeScene("RESULT");
-		},
-		kFadeOutDelay);
+	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { SceneManager::GetInstance()->ChangeScene("RESULT"); }, kFadeOutDelay);
 }

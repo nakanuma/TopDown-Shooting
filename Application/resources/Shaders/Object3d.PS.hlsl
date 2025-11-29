@@ -9,8 +9,11 @@ struct Material {
     float32_t shininess;
     float32_t environmentStrength;
     float32_t2 padding2;
+    float32_t3 emissiveColor;
+    float32_t emissiveIntensity;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
+
 
 struct DirectionalLight
 {
@@ -20,11 +23,13 @@ struct DirectionalLight
 };
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 
+
 struct Camera
 {
     float32_t3 worldPosition;
 };
 ConstantBuffer<Camera> gCamera : register(b2);
+
 
 struct PointLight
 {
@@ -35,6 +40,7 @@ struct PointLight
     float decay; 
 };
 ConstantBuffer<PointLight> gPointLight : register(b3);
+
 
 struct SpotLight
 {
@@ -48,15 +54,263 @@ struct SpotLight
     float32_t cosFalloffStart; // Falloff開始の角度
     uint32_t isActive;
 };
-
 static const int kMaxLight = 64;
 
 struct SpotLights
 {
     SpotLight spotLights[kMaxLight];
 };
-
 ConstantBuffer<SpotLights> gSpotLight : register(b4);
+
+
+struct EmissiveLight
+{
+    float32_t4 color;
+    float32_t3 position;
+    float32_t intensity;
+    float32_t radius;
+    float32_t decay;
+    uint32_t isActive;
+    float32_t padding;
+};
+
+static const int kMaxEmissiveLight = 16;
+
+struct EmissiveLights
+{
+    EmissiveLight emissiveLights[kMaxEmissiveLight];
+    int32_t numActiveLights;
+    float32_t3 padding;
+};
+
+ConstantBuffer<EmissiveLights> gEmissiveLight : register(b8);
+
+
+struct AreaLight
+{
+    float32_t4 color;
+    float32_t3 position;
+    float32_t intensity;
+    float32_t3 right;
+    float32_t width;
+    float32_t3 up;
+    float32_t height;
+    float32_t3 normal;
+    float32_t range;
+    uint32_t isActive;
+    uint32_t lightType; // 0.RectAngle, 1.Disk, 2.Tube, 3.Sphere
+    float32_t2 padding;
+};
+
+static const int kMaxAreaLight = 16;
+
+struct AreaLights
+{
+    AreaLight areaLights[kMaxAreaLight];
+    int32_t numActiveLights;
+    float32_t3 padding;
+};
+
+ConstantBuffer<AreaLights> gAreaLight : register(b9);
+
+// 矩形エリアライトの照明計算
+float3 CalculateRectangleLight(AreaLight light, float3 worldPos, float3 normal)
+{
+    // ライト平面への投影
+    float3 toLight = light.position - worldPos;
+    float distToPlane = dot(toLight, light.normal);
+    
+    // 裏面チェック
+    if (distToPlane < 0.0f)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+    // ライト平面上の投影点
+    float3 projectedPoint = worldPos + light.normal * distToPlane;
+    
+    // ライトのローカル座標系での位置
+    float3 localPos = projectedPoint - light.position;
+    float u = dot(localPos, light.right);
+    float v = dot(localPos, light.up);
+    
+    // ライトの境界内にクランプ
+    float halfWidth = light.width * 0.5f;
+    float halfheight = light.height * 0.5f;
+    u = clamp(u, -halfWidth, halfWidth);
+    v = clamp(v, -halfheight, halfheight);
+    
+    // 最も近いライト表面上の点
+    float3 nearestPoint = light.position + light.right * u + light.up * v;
+    
+    // ライト方向と距離
+    float3 L = nearestPoint - worldPos;
+    float distance = length(L);
+    
+    // 影響範囲外チェック
+    if (distance > light.range)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
+    L = normalize(L);
+    
+    // 距離減衰（二乗減衰）
+    float attenuation = saturate(1.0f - (distance / light.range));
+    attenuation *= attenuation;
+    
+    // ランバート拡散反射
+    float NdotL = max(dot(normal, L), 0.0f);
+
+    // エリアサイズによる補正
+    float area = light.width * light.height;
+    float areaFactor = area / (distance * distance + 1.0f);
+    areaFactor = min(areaFactor * 0.5f, 1.0f);
+    
+    return light.color.rgb * light.intensity * NdotL * attenuation * (1.0f + areaFactor);
+}
+
+// 線分ライトの照明計算
+float3 CalculateTubeLight(AreaLight light, float3 worldPos, float3 normal)
+{
+    // チューブの両端点
+    float halfWidth = light.width * 0.5f;
+    float3 L0 = light.position - light.right * halfWidth;
+    float3 L1 = light.position + light.right * halfWidth;
+    
+    // 線分上の最近傍点を求める
+    float3 L01 = L1 - L0;
+    float3 L0P = worldPos - L0;
+    float t = dot(L0P, L01) / dot(L01, L01);
+    t = saturate(t);
+    
+    float3 closestPoint = L0 + L01 * t;
+    
+    // ライト方向と距離
+    float3 L = closestPoint - worldPos;
+    float distance = length(L);
+    
+    // 影響範囲外チェック
+    if (distance > light.range)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
+    L = normalize(L);
+    
+    // 距離減衰
+    float attenuation = saturate(1.0f - (distance / light.range));
+    attenuation *= attenuation;
+    
+    // ランバート拡散反射
+    float NdotL = max(dot(normal, L), 0.0f);
+    
+    // チューブの長さによる補正
+    float lengthFactor = light.width / (distance * 2.0f + 1.0f);
+    lengthFactor = min(lengthFactor, 1.0f);
+    
+    return light.color.rgb * light.intensity * NdotL * attenuation * (1.0f + lengthFactor * 0.5f);
+
+}
+
+// 円盤ライトの照明計算
+float3 CalculateDiskLight(AreaLight light, float3 worldPos, float3 normal)
+{
+    // ライト平面への投影
+    float3 toLight = light.position - worldPos;
+    float distToPlane = dot(toLight, light.normal);
+    
+    // 裏面チェック
+    if (distToPlane < 0.0f)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
+    // ライト平面上の投影点
+    float3 projectedPoint = worldPos + light.normal * distToPlane;
+    float3 localPos = projectedPoint - light.position;
+    
+    // 円盤の半径
+    float radius = light.width * 0.5f;
+    float distFromCenter = length(localPos);
+    
+    // 円盤の範囲内にクランプ
+    if (distFromCenter > radius)
+    {
+        localPos = normalize(localPos) * radius;
+    }
+    
+    float3 nearestPoint = light.position + localPos;
+    
+    // ライト方向と距離
+    float3 L = nearestPoint - worldPos;
+    float distance = length(L);
+    
+    // 影響範囲外チェック
+    if (distance > light.range)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
+    L = normalize(L);
+
+    // 距離減衰
+    float attenuation = saturate(1.0f - (distance / light.range));
+    attenuation *= attenuation;
+    
+    // ランパート拡散反射
+    float NdotL = max(dot(normal, L), 0.0f);
+
+    // 円盤の面積による補正
+    float area = 3.14159 * radius * radius;
+    float areaFactor = area / (distance * distance + 1.0f);
+    areaFactor = min(areaFactor * 0.5f, 1.0f);
+    
+    return light.color.rgb * light.intensity * NdotL * attenuation * (1.0f + areaFactor);
+}
+
+// 球形ライト照明計算
+float3 CalculateSphereLight(AreaLight light, float3 worldPos, float3 normal)
+{
+    float3 L = light.position - worldPos;
+    float distance = length(L);
+    
+    // 影響範囲外チェック
+    if (distance > light.range)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
+    L = normalize(L);
+    
+    // 距離減衰
+    float attenuation = saturate(1.0f - (distance / light.range));
+    attenuation *= attenuation;
+    
+    // ランバート拡散反射
+    float NdotL = max(dot(normal, L), 0.0f);
+    
+    return light.color.rgb * light.intensity * NdotL * attenuation;
+}
+
+// エリアライトの総合計算
+float3 CaluculateAreaLight(AreaLight light, float3 worldPos, float3 normal)
+{
+    switch (light.lightType)
+    {
+        case 0:
+            return CalculateRectangleLight(light, worldPos, normal);
+        case 1:
+            return CalculateDiskLight(light, worldPos, normal);
+        case 2:
+            return CalculateTubeLight(light, worldPos, normal);
+        case 3:
+            return CalculateSphereLight(light, worldPos, normal);
+        default:
+            return float3(0.0f, 0.0f, 0.0f);
+    }
+}
+
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
@@ -208,6 +462,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
         }
         
         diffuseSpotLight *= gMaterial.color.rgb * textureColor.rgb;
+
             
         // 鏡面反射
         //float32_t3 halfVector_spot = normalize(-spotLightDirectionOnSurface + toEye);
@@ -216,6 +471,70 @@ PixelShaderOutput main(VertexShaderOutput input) {
         //float32_t3 specularSpotLight =
         //gSpotLight.color.rgb * gSpotLight.intensity * specularPow_spot * float32_t3(1.0f, 1.0f, 1.0f) * attenuatuinFactor * falloffFactor;
         
+        ///
+        /// EmissiveLight
+        ///
+        
+        float32_t3 diffuseEmissiveLight = float3(0.0f, 0.0f, 0.0f);
+        
+        for (int i = 0; i < gEmissiveLight.numActiveLights; i++)
+        {
+            // 無効化状態ならスキップ
+            if (gEmissiveLight.emissiveLights[i].isActive == 0)
+            {
+                continue;
+            }
+            
+            // ライト方向を計算
+            float32_t3 emissiveLightDir = gEmissiveLight.emissiveLights[i].position - input.worldPosition;
+            float32_t emissiveDistance = length(emissiveLightDir);
+            
+            // 影響範囲外なら計算スキップ
+            if (emissiveDistance > gEmissiveLight.emissiveLights[i].radius)
+            {
+                continue;
+            }
+            
+            emissiveLightDir = normalize(emissiveLightDir);
+            
+            // 距離減衰を計算
+            float32_t attenuation = pow(saturate(1.0f - (emissiveDistance / gEmissiveLight.emissiveLights[i].radius)), gEmissiveLight.emissiveLights[i].decay);
+            
+            // 拡散反射を計算
+            float NdotL_emissive = dot(normalize(input.normal), emissiveLightDir);
+            float lambert_emissive = max(NdotL_emissive, 0.0f);
+            
+            // ライトの寄与を加算
+            diffuseEmissiveLight +=
+            gEmissiveLight.emissiveLights[i].color.rgb * 
+            gEmissiveLight.emissiveLights[i].intensity * 
+            lambert_emissive * 
+            attenuation;
+        }
+        
+        diffuseEmissiveLight *= gMaterial.color.rgb * textureColor.rgb;
+        
+        ///
+        /// AreaLight
+        ///
+        
+        float32_t3 diffuseAreaLight = float3(0.0f, 0.0f, 0.0f);
+        
+        for (int i = 0; i < gAreaLight.numActiveLights; i++)
+        {
+            // 無効化状態ならスキップ
+            if (gAreaLight.areaLights[i].isActive == 0)
+            {
+                continue;
+            }
+            
+            // エリアライトの照明計算
+            float3 areaContribution = CaluculateAreaLight(gAreaLight.areaLights[i], input.worldPosition, normalize(input.normal));
+            
+            diffuseAreaLight += areaContribution;
+        }
+        
+        diffuseAreaLight *= gMaterial.color.rgb * textureColor.rgb;
         
         ///
         /// EnvironmentMap
@@ -232,21 +551,41 @@ PixelShaderOutput main(VertexShaderOutput input) {
             environmentContribution = environmentColor.rgb * gMaterial.environmentStrength;
         }
         
-        
-        // ライティングテスト用
-        // 拡散反射+鏡面反射
+        // ライティング結果を合成
         output.color.rgb =
         diffuseDirectionalLight + // DirectionalLight
         diffusePointLight + specularPointLight + // PointLight
         diffuseSpotLight + // SpotLight
-        
+        diffuseEmissiveLight + // EmissiveLight
+        diffuseAreaLight +
         environmentContribution; // EnvironmentMap
-        ;
+        
+        ///
+        /// Emissive
+        ///
+        
+        // エミッシブを加算
+        if (gMaterial.emissiveIntensity > 0.0f)
+        {
+            output.color.rgb += gMaterial.emissiveColor * gMaterial.emissiveIntensity;
+        }
        
         // アルファは今まで通り
         output.color.a = gMaterial.color.a * textureColor.a;
+        
+    // ライティング無効時
     } else {
         output.color = gMaterial.color * textureColor;
+        
+        // ライティング無効時でもエミッシブは適用
+        output.color.rgb += gMaterial.emissiveColor * gMaterial.emissiveIntensity;
     }
+    
+    // 最終的なアルファ値チェック
+    if (output.color.a == 0.0f)
+    {
+        discard;
+    }
+    
     return output;
 }

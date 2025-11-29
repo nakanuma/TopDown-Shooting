@@ -114,12 +114,16 @@ private:
 	static constexpr float kRadius = 4.0f;              /* 半径 */
 	static constexpr float kEnvironmentStrength = 0.1f; /* 環境マップの強度 */
 
+	static constexpr float kParticleEmitInterval = 0.75f;				/* パーティクル発生頻度（秒） */
+	static constexpr uint32_t kRingParticleCount = 1;					/* パーティクル発生数 */
+	static constexpr Float3 kParticleEmitOffset = {0.0f, 0.25f, 0.0f};	/* パーティクル発生のオフセット */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> object_; /* テレポーターオブジェクト */
+	std::unique_ptr<Object3D> object_;			/* テレポーターオブジェクト */
 
 	// ----- Collision -----
 	std::unique_ptr<Collider> collider_; /* コライダー */
@@ -130,5 +134,6 @@ private:
 	bool isActive_ = false;      /* 使用可能フラグ */
 
 	// ----- Others -----
-	std::function<void()> onGoalCallback_ = nullptr; /* ゴール時のコールバック関数 */
+	std::function<void()> onGoalCallback_ = nullptr;	/* ゴール時のコールバック関数 */
+	float emitTimer_;									/* パーティクル発生タイマー */
 };

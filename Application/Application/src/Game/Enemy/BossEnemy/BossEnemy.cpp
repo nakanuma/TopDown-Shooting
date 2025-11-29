@@ -15,6 +15,7 @@
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Camera/CameraShake.h>
 
 void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
 	///

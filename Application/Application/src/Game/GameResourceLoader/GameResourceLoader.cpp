@@ -21,6 +21,8 @@
 #include <src/Game/Particles/ShellEjection/ShellEjectionParticle.h>
 #include <src/Game/Particles/MuzzleFlash/MuzzleFlashParticle.h>
 #include <src/Game/Particles/BossFragments/BossFragmentsParticle.h>
+#include <src/Game/Particles/BloodScatter/BloodScatterParticle.h>
+#include <src/Game/Particles/TeleporterRing/TeleporterRingParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -201,8 +203,15 @@ void GameResourceLoader::LoadAllModelData() {
 	// 銃のマズルフラッシュ用の板
 	ModelManager::GetInstance()->LoadAndRegisterModel(
 		"MuzzleFlash",
-		"Primitive/Plane/planeAlign.obj",
+		"Primitive/Plane/planeAlign.obj",	/* 中心位置をずらした板モデル */
 		"Effect/muzzle.png"
+	);
+
+	// テレポーター用のリング
+	ModelManager::GetInstance()->LoadAndRegisterModel(
+		"TeleporterRing",
+		"Primitive/Torus/torus.obj",
+		"white.png"
 	);
 
 	// ---------------------------------------------------------
@@ -292,4 +301,12 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	// ボスの破片パーティクル
 	auto bossFragmentsParticle = std::make_unique<BossFragmentsParticle>(ModelManager::GetInstance()->GetModel("Cube"));
 	ParticleEffectManager::GetInstance()->Register("bossFragments", std::move(bossFragmentsParticle));
+
+	// 血が飛散するパーティクル
+	auto bloodScatterParticle = std::make_unique<BloodScatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
+	ParticleEffectManager::GetInstance()->Register("bloodScatter", std::move(bloodScatterParticle));
+
+	// テレポーターリングパーティクル
+	auto teleporterRingParticle = std::make_unique<TeleporterRingParticle>(ModelManager::GetInstance()->GetModel("TeleporterRing"));
+	ParticleEffectManager::GetInstance()->Register("teleporterRing", std::move(teleporterRingParticle));
 }

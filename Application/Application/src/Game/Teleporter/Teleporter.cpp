@@ -3,6 +3,10 @@
 // Application
 #include <src/Game/Player/Player.h>
 
+// Engine
+#include <TimeManager.h>
+#include <ParticleEffect/ParticleEffectManager.h>
+
 void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
@@ -46,6 +50,19 @@ void Teleporter::Update() {
 
 	object_->UpdateMatrix();
 	object_->UpdateShadowMatrix();
+
+	///
+	///	パーティクル発生処理
+	/// 
+
+	if (isActive_) {
+		emitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		if (emitTimer_ >= kParticleEmitInterval) {
+			// 発生間隔分を減算
+			emitTimer_ -= kParticleEmitInterval;
+			ParticleEffectManager::GetInstance()->Emit("teleporterRing", GetTranslate() + kParticleEmitOffset, kRingParticleCount);
+		}
+	}
 }
 
 void Teleporter::Draw() {
@@ -77,10 +94,10 @@ void Teleporter::OnCollision(Collider* other) {
 			// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
 			if (pair_ && pair_->isActive_) {
 				player->SetTranslate({
-				    pair_->GetTranslate().x,
-				    player->GetTranslate().y,
-				    pair_->GetTranslate().z,
-				});
+					pair_->GetTranslate().x,
+					player->GetTranslate().y,
+					pair_->GetTranslate().z,
+					});
 
 				// 使用したテレポーターは無効化する
 				this->isActive_ = false;
