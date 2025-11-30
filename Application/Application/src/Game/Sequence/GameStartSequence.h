@@ -121,7 +121,7 @@ private:
 	float lerpT_ = 0.0f;      /* 補間用タイマー */
 	bool isFinished_ = false; /* 終了フラグ */
 
-	bool isDebugSkip_ = false;	/* デバッグスキップ用フラグ */
+	bool isDebugSkip_ = true;	/* デバッグスキップ用フラグ */
 
 	// ----- Objects -----
 	std::unique_ptr<Object3D> objectCrumblingWall_; /* 壊れそうな壁オブジェクト */
