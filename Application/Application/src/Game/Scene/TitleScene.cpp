@@ -43,6 +43,11 @@ void TitleScene::Initialize() {
 	lightManager_ = LightManager::GetInstance();
 	lightManager_->Initialize();
 
+	// ポストエフェクト管理
+	postEffectManager_ = std::make_unique<PostEffectManager>();
+	postEffectManager_->Initialize();
+	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();
 	loader_->LoadFromFile("resources/Stages/title.json");
@@ -202,6 +207,8 @@ void TitleScene::Draw() {
 	Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager_->TransferContantBuffer();
+	// ポストエフェクト用の定数バッファを設定
+	postEffectManager_->TransfarConstantBuffer();
 	// LightCameraの定数バッファを送信
 	LightCamera::GetInstance()->TransferConstantBuffer();
 
@@ -247,7 +254,6 @@ void TitleScene::Draw() {
 
 	field_->Draw();
 	obstacleManager_->Draw({ 0.0f, 0.0f, 0.0f });
-
 	ParticleEffectManager::GetInstance()->Draw();
 
 	///

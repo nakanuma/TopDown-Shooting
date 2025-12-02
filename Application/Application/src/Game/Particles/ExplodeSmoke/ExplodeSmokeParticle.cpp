@@ -16,7 +16,7 @@ ExplodeSmokeParticle::ExplodeSmokeParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+ExplodeSmokeParticleData ExplodeSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	ExplodeSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 	

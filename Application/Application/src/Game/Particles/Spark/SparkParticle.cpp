@@ -16,7 +16,7 @@ SparkParticle::SparkParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+SparkParticleData SparkParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	SparkParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

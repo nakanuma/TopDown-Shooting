@@ -16,7 +16,7 @@ ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	ExplodeScatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

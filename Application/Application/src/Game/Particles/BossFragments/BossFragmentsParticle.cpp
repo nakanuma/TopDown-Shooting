@@ -16,7 +16,7 @@ BossFragmentsParticle::BossFragmentsParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-BossFragmentsParticleData BossFragmentsParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+BossFragmentsParticleData BossFragmentsParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	BossFragmentsParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

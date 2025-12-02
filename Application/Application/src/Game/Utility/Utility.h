@@ -19,7 +19,7 @@ public:
 	/// </summary>
 	/// <param name="worldPosition">ワールド座標</param>
 	/// <returns>スクリーン座標</returns>
-	static Float3 WorldToScreen(Float3 worldPosition);
+	static Float3 WorldToScreen(const Float3& worldPosition);
 
 	/// <summary>
 	/// カーソル位置のワールド座標を取得します。

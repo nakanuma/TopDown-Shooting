@@ -49,7 +49,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	ExplodeScatterParticleData CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) override;
+	ExplodeScatterParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。

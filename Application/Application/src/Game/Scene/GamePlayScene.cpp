@@ -300,10 +300,6 @@ void GamePlayScene::Draw() {
 	/// =========================================================
 	/// ↓ ここから3Dオブジェクト描画
 	/// =========================================================
-#pragma region メインシーンの3Dオブジェクトのレンダリングを開始
-	postEffectManager_->BeginMainScene();
-	// -----------------------------------------------
-
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Draw();
@@ -319,28 +315,8 @@ void GamePlayScene::Draw() {
 
 	objectCube_->Draw();
 
-	// -----------------------------------------------
-	postEffectManager_->EndMainScene();
-#pragma endregion
-
-
-#pragma region Bloom適用（発光オブジェクトのみ）
-	postEffectManager_->BeginBloom();
-
-	/*emissiveObject_->Draw();*/
-
-	postEffectManager_->EndBloom();
-#pragma endregion
-
-
-#pragma region バックバッファへの直接描画
-	postEffectManager_->RestoreBackBuffer(true);
-
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
-
-	postEffectManager_->RestoreDepthBufferState();
-#pragma endregion
 
 	/// =========================================================
 	/// ↑ ここまで3Dオブジェクト描画

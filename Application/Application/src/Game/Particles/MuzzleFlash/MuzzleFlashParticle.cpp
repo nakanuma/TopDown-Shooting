@@ -17,7 +17,7 @@ MuzzleFlashParticle::MuzzleFlashParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Add;
 }
 
-MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	MuzzleFlashParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

@@ -16,7 +16,7 @@ BloodSplatterParticle::BloodSplatterParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	BloodSplatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

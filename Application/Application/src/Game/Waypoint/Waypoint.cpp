@@ -2,7 +2,7 @@
 
 Waypoint::Waypoint(const std::string& name, const Float3& pos, ModelManager::ModelData* model) {
 	// 名前と初期位置を受け取る
-	name_ = name;
+	name_ = std::move(name);
 	position_ = pos;
 
 	// 球オブジェクト生成
