@@ -17,7 +17,7 @@ DeathCrossParticle::DeathCrossParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Add;
 }
 
-DeathCrossParticleData DeathCrossParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+DeathCrossParticleData DeathCrossParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	DeathCrossParticleData p;
 
 	// 位置

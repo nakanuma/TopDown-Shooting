@@ -18,7 +18,7 @@ ShellEjectionParticle::ShellEjectionParticle(ModelManager::ModelData& model)
 	blendMode_ = BlendMode::Normal;
 }
 
-ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
+ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
 {
 	ShellEjectionParticleData p;
 	auto rand = RandomGenerator::GetInstance();

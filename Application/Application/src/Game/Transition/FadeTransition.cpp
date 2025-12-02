@@ -43,7 +43,7 @@ void FadeTransition::StartFadeOut(float duration, std::function<void()> onComple
 	timer_ = 0.0f;
 	delayAfterFadeOutComplete_ = delayAfterComplete;
 	delayTimerAfterFadeOut_ = 0.0f;
-	onFadeComplete_ = onComplete;
+	onFadeComplete_ = std::move(onComplete); // コピーを回避
 }
 
 void FadeTransition::Update() {

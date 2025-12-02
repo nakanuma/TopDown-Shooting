@@ -16,7 +16,7 @@ SmokeParticle::SmokeParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-SmokeParticleData SmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+SmokeParticleData SmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	SmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

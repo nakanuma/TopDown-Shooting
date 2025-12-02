@@ -17,7 +17,7 @@ TeleporterRingParticle::TeleporterRingParticle(ModelManager::ModelData& model)
 	blendMode_ = BlendMode::Add;
 }
 
-TeleporterRingParticleData TeleporterRingParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
+TeleporterRingParticleData TeleporterRingParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
 {
 	TeleporterRingParticleData p;
 

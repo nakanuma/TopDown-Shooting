@@ -17,7 +17,7 @@ WallCollapseParticle::WallCollapseParticle(ModelManager::ModelData& model)
 	blendMode_ = BlendMode::Normal;
 }
 
-WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle)
+WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
 {
 	WallCollapseParticleData p;
 	auto rand = RandomGenerator::GetInstance();

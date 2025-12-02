@@ -4,7 +4,7 @@
 #include <Camera.h>
 #include <Engine/Input/Input.h>
 
-Float3 Utility::WorldToScreen(Float3 worldPosition) {
+Float3 Utility::WorldToScreen(const Float3& worldPosition) {
 	// ビュー射影行列を取得
 	Matrix worldViewProjMatrix = Camera::GetCurrent()->GetViewProjectionMatrix();
 	// ワールド->クリップへの座標変換

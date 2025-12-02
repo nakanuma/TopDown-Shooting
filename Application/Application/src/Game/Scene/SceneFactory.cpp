@@ -1,23 +1,32 @@
-﻿#include "SceneFactory.h"
+#include "SceneFactory.h"
 
 #include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/Scene/ResultScene.h>
 #include <src/Game/Scene/TitleScene.h>
 
-BaseScene* SceneFactory::CreateScene(const std::string& sceneName) {
-	// 次のシーンを生成
-	BaseScene* newScene = nullptr;
+SceneFactory* SceneFactory::GetInstance() { 
+	static SceneFactory instance;
+	return &instance;
+}
 
+std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneName) {
 	if (sceneName == "TITLE") {
-		newScene = new TitleScene();
+		auto newScene = std::make_unique<TitleScene>();
 		newScene->Initialize();
+		return newScene;
 	} else if (sceneName == "GAMEPLAY") {
-		newScene = new GamePlayScene();
+		auto newScene = std::make_unique<GamePlayScene>();
 		newScene->Initialize();
+		return newScene;
 	} else if (sceneName == "RESULT") {
-		newScene = new ResultScene();
+		auto newScene = std::make_unique<ResultScene>();
 		newScene->Initialize();
+		return newScene;
 	}
 
-	return newScene;
+	return nullptr;
+}
+
+std::string SceneFactory::GetInitialSceneName() { 
+	return initialSceneName; 
 }

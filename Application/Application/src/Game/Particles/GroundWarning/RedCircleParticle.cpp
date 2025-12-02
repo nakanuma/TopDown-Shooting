@@ -16,7 +16,7 @@ RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	RedCircleParticleData p;
 
 	// 位置

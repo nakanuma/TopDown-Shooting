@@ -129,6 +129,7 @@ private:
 	std::unique_ptr<SoundManager> soundManager_ = nullptr;	/* サウンド管理クラス */
 	Input* input_ = nullptr;								/* 入力管理クラス */
 	LightManager* lightManager_ = nullptr;					/* 各ライト管理クラス */
+	std::unique_ptr<PostEffectManager> postEffectManager_;  /* ポストエフェクト管理クラス */
 
 	// ----- Sprite -----
 	/// Todo : 適切なクラスへの整理

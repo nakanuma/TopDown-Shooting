@@ -16,7 +16,7 @@ BackscatterParticle::BackscatterParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+BackscatterParticleData BackscatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	BackscatterParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

@@ -17,7 +17,7 @@ BloodSmokeParticle::BloodSmokeParticle(ModelManager::ModelData& model) {
 	blendMode_ = BlendMode::Normal;
 }
 
-BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, const float& angle) {
+BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
 	BloodSmokeParticleData p;
 	auto rand = RandomGenerator::GetInstance();
 

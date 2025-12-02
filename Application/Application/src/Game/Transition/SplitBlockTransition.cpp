@@ -71,7 +71,7 @@ void SplitBlockTransition::StartClose(float duration, std::function<void()> onCo
 	timer_ = 0.0f;
 	delayAfterFadeOutComplete_ = delayAfterComplete;
 	delayTimerAfterFadeOut_ = 0.0f;
-	onFadeComplete_ = onComplete;
+	onFadeComplete_ = std::move(onComplete); // コピーを回避
 
 	for (auto& block : blocks_) {
 		block.progress = 0.0f;

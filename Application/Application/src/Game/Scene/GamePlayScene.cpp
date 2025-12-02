@@ -88,6 +88,10 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
+	// 発光オブジェクト生成
+	/*emissiveObject_ = std::make_unique<EmissiveObject>();
+	emissiveObject_->Initialize();*/
+
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -101,7 +105,7 @@ void GamePlayScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(PostEffectType::None);
+	postEffectManager_->SetEffectType(PostEffectType::Vignette);
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
@@ -132,6 +136,10 @@ void GamePlayScene::Initialize() {
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
+
+	objectCube_ = std::make_unique<Object3D>();
+	objectCube_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
+	objectCube_->transform_.translate_ = {30.0f, 1.0f, -30.0f};
 }
 
 void GamePlayScene::Finalize() {}
@@ -188,6 +196,8 @@ void GamePlayScene::Update() {
 	teleporterManager_->Update();
 	// 弾の更新
 	BulletManager::GetInstance()->Update();
+	// 発光オブジェクト更新
+	/*emissiveObject_->Update();*/
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
 	FadeTransition::GetInstance()->Update();
@@ -199,6 +209,9 @@ void GamePlayScene::Update() {
 	if (!gameClearSequence_->IsControllingCamera()) {
 		gameClearSequence_->Update();
 	}
+
+	objectCube_->UpdateMatrix();
+	objectCube_->UpdateShadowMatrix();
 
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
@@ -258,10 +271,12 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawShadow();
 	}
 
-	player_->DrawGunShadow();
+	/*player_->DrawGunShadow();*/
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
 	teleporterManager_->DrawShadow();
+
+	objectCube_->DrawShadow();
 
 	/// =========================================================
 	/// ↑ ここまで通常モデルのシャドウマップ描画
@@ -285,10 +300,6 @@ void GamePlayScene::Draw() {
 	/// =========================================================
 	/// ↓ ここから3Dオブジェクト描画
 	/// =========================================================
-#pragma region メインシーンの3Dオブジェクトのレンダリングを開始
-	postEffectManager_->BeginMainScene();
-	// -----------------------------------------------
-
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Draw();
@@ -302,12 +313,10 @@ void GamePlayScene::Draw() {
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 
+	objectCube_->Draw();
+
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
-
-	// -----------------------------------------------
-	postEffectManager_->EndMainScene();
-#pragma endregion
 
 	/// =========================================================
 	/// ↑ ここまで3Dオブジェクト描画
@@ -356,7 +365,13 @@ void GamePlayScene::Draw() {
 
 	lightManager_->DrawDebug();
 
+	/*emissiveObject_->Debug();*/
+
 	ImGuiUtil::ImageWindow("mainSceneRT", postEffectManager_->mainSceneRT_);
+
+	ImGuiUtil::ImageWindow("bloomExtractRT", postEffectManager_->bloomExtractRT_);
+	ImGuiUtil::ImageWindow("bloomBlurRT", postEffectManager_->bloomBlurRT_);
+	ImGuiUtil::ImageWindow("bloomResultRT", postEffectManager_->bloomResultRT_);
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());
