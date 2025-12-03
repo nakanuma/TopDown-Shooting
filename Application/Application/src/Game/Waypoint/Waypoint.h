@@ -72,9 +72,6 @@ public:
 	/// </summary>
 	/// <returns>隣接ノードのリスト</returns>
 	const std::vector<Waypoint*>& GetNeighbors() const { return neighbors_; }
-
-	bool isSelected_; /* 選択中フラグ */
-
 private:
 	// =========================================================
 	// Constants

@@ -82,6 +82,18 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// トランジション開始時の共通パラメーターを設定します。
+	/// </summary>
+	/// <param name="state">状態</param>
+	/// <param name="duration">アニメーション時間</param>
+	void StartTransitionCommon(State state, float duration);
+
+private:
+	// =========================================================
 	// Constants
 	// =========================================================
 	static constexpr float kOpenBlockDelay = 0.05f; /* 角ブロックごとの開始時遅延時間（秒） */

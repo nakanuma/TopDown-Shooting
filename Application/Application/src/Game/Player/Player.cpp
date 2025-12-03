@@ -124,6 +124,10 @@ void Player::Update(bool operable) {
 
 		// 死亡したフレームのみパーティクルを発生
 		if (!wasDead) {
+			// 死亡時パーティクル発生
+			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle1));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle2));
+
 			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), kBloodSplatterCount);
 		}
 	}

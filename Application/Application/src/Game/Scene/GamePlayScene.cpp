@@ -360,18 +360,6 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-
-	gameClearSequence_->Debug();
-
-	lightManager_->DrawDebug();
-
-	/*emissiveObject_->Debug();*/
-
-	ImGuiUtil::ImageWindow("mainSceneRT", postEffectManager_->mainSceneRT_);
-
-	ImGuiUtil::ImageWindow("bloomExtractRT", postEffectManager_->bloomExtractRT_);
-	ImGuiUtil::ImageWindow("bloomBlurRT", postEffectManager_->bloomBlurRT_);
-	ImGuiUtil::ImageWindow("bloomResultRT", postEffectManager_->bloomResultRT_);
 #endif
 	// ImGuiの内部コマンドを生成する
 	ImguiWrapper::Render(dxBase->GetCommandList());

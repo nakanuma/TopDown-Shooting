@@ -34,10 +34,10 @@ void Loader::LoadFromFile(const std::string& filepath) {
 		auto col = item.value("colliderSize", std::vector<float>{kDefaultColliderSize.x, kDefaultColliderSize.y, kDefaultColliderSize.z});
 
 		// Blender -> Engine への座標変換
-		data.translate = Float3(loc[kBlenderIndexX], loc[kBlenderIndexZ], loc[kBlenderIndexY]); // YとZ入れ替え
+		data.translate = ConvertToEngineCoords(loc);
 		data.rotate = Float3(DegToRad(rot[kBlenderIndexX]), DegToRad(rot[kBlenderIndexY]), DegToRad(rot[kBlenderIndexZ]));
-		data.scale = Float3(scl[kBlenderIndexX], scl[kBlenderIndexZ], scl[kBlenderIndexY]); // YとZ入れ替え
-		data.colliderSize = Float3(col[kBlenderIndexX], col[kBlenderIndexZ], col[kBlenderIndexY]); // YとZ入れ替え
+		data.scale = ConvertToEngineCoords(scl);
+		data.colliderSize = ConvertToEngineCoords(col);
 
 		// ペアID読み込み
 		data.pairID = item.value("pair_id", "");
@@ -56,4 +56,9 @@ Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 
 	assert(false);
 	return TransformData{};
+}
+
+Float3 Loader::ConvertToEngineCoords(const std::vector<float>& blenderVec) { 
+	// YとZを入れ替え
+	return Float3(blenderVec[kBlenderIndexX], blenderVec[kBlenderIndexZ], blenderVec[kBlenderIndexY]); 
 }

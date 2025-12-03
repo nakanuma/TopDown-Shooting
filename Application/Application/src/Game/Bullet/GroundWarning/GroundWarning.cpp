@@ -44,9 +44,7 @@ void GroundWarning::Update() {
 	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
+		FinishLifeCycle();
 	}
 
 	// ---------------------------------------------------------
@@ -78,9 +76,6 @@ void GroundWarning::OnCollision(Collider* other) {
 	// プレイヤーとの衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Player") {
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
+		FinishLifeCycle();
 	}
 }

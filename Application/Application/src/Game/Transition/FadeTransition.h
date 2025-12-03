@@ -81,6 +81,18 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// トランジション開始時の共通パラメーターを設定します。
+	/// </summary>
+	/// <param name="state">状態</param>
+	/// <param name="duration">アニメーション時間</param>
+	void StartTransitionCommon(State state, float initialAlpha, float duration);
+
+private:
+	// =========================================================
 	// Constants
 	// =========================================================
 	static constexpr Float4 kColorBlack = {0.0f, 0.0f, 0.0f, 1.0f}; /* 黒色 */

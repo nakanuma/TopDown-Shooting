@@ -69,8 +69,7 @@ void EnemyBullet::Update() {
 	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
-		isDead_ = true;
-		OnDestroy(); // コライダー破棄
+		FinishLifeCycle();
 	}
 
 	// ---------------------------------------------------------
@@ -82,50 +81,31 @@ void EnemyBullet::Update() {
 
 void EnemyBullet::Draw() {
 	// ---------------------------------------------------------
-	// オブジェクト描画
-	// ---------------------------------------------------------
-	objectBullet_->Draw();
-
-	// ---------------------------------------------------------
 	// トレイル（弾道エフェクト）描画
 	// ---------------------------------------------------------
 	DrawTrail();
 }
 
 void EnemyBullet::OnCollision(Collider* other) {
+	Float3 bulletPos = this->GetTranslate();
+
 	// ---------------------------------------------------------
 	// プレイヤーとの衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Player") {
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
+		// ヒット時パーティクル発生
+		EmitBloodHitParticles(bulletPos, velocity_);
+		// ライフサイクル終了
+		FinishLifeCycle();
 	}
 
 	// ---------------------------------------------------------
 	// 障害物との衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "Obstacle") {
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
-	}
-}
-
-void EnemyBullet::DrawTrail() {
-	// [0]と[1], [1]と[2]... といったように全てのポイントを繋ぐ線を作る
-	for (size_t i = 1; i < trailPoints_.size(); ++i) {
-		// 線分の位置に応じた割合を計算
-		float t0 = static_cast<float>(i - 1) / (trailPoints_.size());
-		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1);
-
-		// 線の両端の色を補間
-		Float4 c0 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t0); // この線分での末尾の色
-		Float4 c1 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t1); // この線分での先頭の色
-
-		// トレイル線の登録
-		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], kTrailLineWidth, c1, c0);
+		// ヒット時パーティクル発生
+		EmitHardHitParticles(bulletPos, velocity_);
+		// ライフサイクル終了
+		FinishLifeCycle();
 	}
 }

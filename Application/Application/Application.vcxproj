@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Bullet\Base\Bullet.cpp" />
     <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp" />
+    <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp" />
     <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp" />
     <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp" />

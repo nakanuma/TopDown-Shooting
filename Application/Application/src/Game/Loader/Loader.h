@@ -55,6 +55,18 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// Blender座標系の3次元ベクトルをEngine座標系に変換します。
+	/// </summary>
+	/// <param name="blenderVec"></param>
+	/// <returns></returns>
+	Float3 ConvertToEngineCoords(const std::vector<float>& blenderVec);
+
+private:
+	// =========================================================
 	// Constants
 	// =========================================================
 	static constexpr size_t kBlenderIndexX = 0;

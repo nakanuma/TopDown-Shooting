@@ -1,4 +1,4 @@
-﻿#include "BulletManager.h"
+#include "BulletManager.h"
 
 BulletManager* BulletManager::GetInstance() {
 	static BulletManager instance;
@@ -19,7 +19,7 @@ void BulletManager::Update() {
 	// 弾の削除処理
 	for (auto& bullet : bullets_) {
 		if (bullet->IsDead()) {
-			bullet->OnDestroy();
+			bullet->FinishLifeCycle();
 		}
 	}
 	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(), [](const std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); }), bullets_.end());
@@ -35,8 +35,7 @@ void BulletManager::Draw() {
 void BulletManager::Clear() {
 	// 全ての弾を削除してリストをクリア
 	for (auto& bullet : bullets_) {
-		bullet->Dead();
-		bullet->OnDestroy();
+		bullet->FinishLifeCycle();
 	}
 	bullets_.clear();
 }

@@ -54,24 +54,11 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	///
 
 	// HPバー（後景）
-	uint32_t textureHPBackground = TextureManager::Load("white.png");
-	spriteHPBackground_ = std::make_unique<Sprite>();
-	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
-	spriteHPBackground_->SetSize(kHPBarSize);
-	spriteHPBackground_->SetColor(kHPBarBackgroundColor);
-
+	SetupHPBarSprite(spriteHPBackground_, kHPBarBackgroundColor);
 	// HPバー（前景）
-	uint32_t textureHPForeground = TextureManager::Load("white.png");
-	spriteHPForeground_ = std::make_unique<Sprite>();
-	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
-	spriteHPForeground_->SetSize(kHPBarSize);
-	spriteHPForeground_->SetColor(kHPBarForegroundColor);
-
+	SetupHPBarSprite(spriteHPForeground_, kHPBarForegroundColor);
 	// リロード表示
-	uint32_t textureReload = TextureManager::Load("white.png");
-	spriteReload_ = std::make_unique<Sprite>();
-	spriteReload_->Initialize(spriteCommon_.get(), textureReload);
-	spriteReload_->SetSize(kReloadSize);
+	SetupReloadSprite(spriteReload_);
 
 	///
 	///	パラメーター設定

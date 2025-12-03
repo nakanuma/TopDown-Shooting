@@ -1,11 +1,6 @@
 #pragma once
 
 // ---------------------------------------------------------
-// C++ Includes
-// ---------------------------------------------------------
-#include <deque>
-
-// ---------------------------------------------------------
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
@@ -45,16 +40,6 @@ public:
 
 private:
 	// =========================================================
-	// Internal Methods
-	// =========================================================
-
-	/// <summary>
-	/// 弾道の描画処理を行います。
-	/// </summary>
-	void DrawTrail();
-
-private:
-	// =========================================================
 	// Constants
 	// =========================================================
 	static constexpr float kRadius = 0.2f;      /* 弾の半径 */
@@ -62,23 +47,10 @@ private:
 	static constexpr int32_t kDamage = 10;      /* 攻撃力 */
 	static constexpr float kSpeed = 4.0f;       /* 弾速 */
 
-	static constexpr size_t kMaxTrailPoints = 10;                          /* 保持する履歴数 */
-	static constexpr float kTrailLineWidth = 0.5f;                         /* トレイル線の幅 */
-	static constexpr Float4 kTrailHeadColor = {1.0f, 1.0f, 0.33f, 1.0f};   /* トレイル線の先頭色 */
-	static constexpr Float4 kTrailTailColor = {1.0f, 0.215f, 0.06f, 0.0f}; /* トレイル線の末尾色 */
-
 	static constexpr float kRaycastThreshold = 0.5f; /* レイキャスト判定の閾値 */
-
-	static constexpr int32_t kBloodSplatterCount = 2;	/* 血飛沫パーティクルの発生数 */
-	static constexpr int32_t kBloodSmokeCount = 5;		/* 血煙パーティクルの発生数 */
-	static constexpr int32_t kBackscatterCount = 4;		/* 後方飛散パーティクルの発生数 */
-	static constexpr int32_t kImpactSmokeCount = 7;		/* 衝撃煙パーティクルの発生数 */
-	static constexpr int32_t kBloodScatterCount = 2;	/* 後方血飛散パーティクルの発生数 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	float elapsedTime_ = 0.0f;         /* 経過時間 */
-	std::deque<Float3> trailPoints_{}; /* 過去フレームの位置を保持 */
 	Float3 prevPosition_;              /* 前フレームの位置 */
 };

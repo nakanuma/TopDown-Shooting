@@ -97,9 +97,30 @@ public:
 
 protected:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// HPバースプライトの生成と共通初期設定を行います。
+	/// </summary>
+	/// <param name="spritePtr"></param>
+	/// <param name="color"></param>
+	void SetupHPBarSprite(std::unique_ptr<Sprite>& spritePtr, const Float4& color);
+
+	/// <summary>
+	/// リロードスプライトの生成と共通初期設定を行います。
+	/// </summary>
+	/// <param name="spritePtr"></param>
+	void SetupReloadSprite(std::unique_ptr<Sprite>& spritePtr);
+
+protected:
+	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float2 kHPBarSize = {100.0f, 20.0f};  /* HPバーのサイズ */
+	static constexpr Float2 kHPBarSize = {100.0f, 20.0f};                     /* HPバーのサイズ */
+	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
+	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
+
 	static constexpr Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
 
 	// =========================================================

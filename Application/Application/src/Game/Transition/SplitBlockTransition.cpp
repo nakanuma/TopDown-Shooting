@@ -54,28 +54,16 @@ void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t split
 
 void SplitBlockTransition::StartOpen(float duration, float delayBeforeStart) {
 	// 各種パラメーターを開始状態に設定
-	state_ = State::Open;
-	duration_ = duration;
-	timer_ = 0.0f;
+	StartTransitionCommon(State::Open, duration);
 	delayBeforeFadeIn_ = delayBeforeStart;
-
-	for (auto& block : blocks_) {
-		block.progress = 0.0f;
-	}
 }
 
 void SplitBlockTransition::StartClose(float duration, std::function<void()> onComplete, float delayAfterComplete) {
 	// 各種パラメーターを開始状態に設定
-	state_ = State::Close;
-	duration_ = duration;
-	timer_ = 0.0f;
+	StartTransitionCommon(State::Close, duration);
 	delayAfterFadeOutComplete_ = delayAfterComplete;
 	delayTimerAfterFadeOut_ = 0.0f;
 	onFadeComplete_ = std::move(onComplete); // コピーを回避
-
-	for (auto& block : blocks_) {
-		block.progress = 0.0f;
-	}
 }
 
 void SplitBlockTransition::Update() {
@@ -161,5 +149,15 @@ void SplitBlockTransition::Draw() {
 
 		block.top->Draw();
 		block.bottom->Draw();
+	}
+}
+
+void SplitBlockTransition::StartTransitionCommon(State state, float duration) { 
+	state_ = state;
+	duration_ = duration;
+	timer_ = 0.0f;
+
+	for (auto& block : blocks_) {
+		block.progress = 0.0f;
 	}
 }

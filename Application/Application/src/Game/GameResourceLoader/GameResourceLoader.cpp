@@ -243,70 +243,37 @@ void GameResourceLoader::LoadAllModelData() {
 void GameResourceLoader::RegisterAllParticleEffect()
 {
 	// 後ろへ飛散するパーティクル
-	auto backScatterParticle = std::make_unique<BackscatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("backscatter", std::move(backScatterParticle));
-
+	RegisterParticle<BackscatterParticle>("backscatter", "Cube");
 	// ミサイルの煙パーティクル
-	auto missileSmokeParticle = std::make_unique<MissileSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("missileSmoke", std::move(missileSmokeParticle));
-
+	RegisterParticle<MissileSmokeParticle>("missileSmoke", "Cube");
 	// 地面警告表示パーティクル
-	auto groundWarningParticle = std::make_unique<RedCircleParticle>(ModelManager::GetInstance()->GetModel("RedCircle"));
-	ParticleEffectManager::GetInstance()->Register("redCircle", std::move(groundWarningParticle));
-
+	RegisterParticle<RedCircleParticle>("redCircle", "RedCircle");
 	// 地面警告攻撃の煙パーティクル
-	auto explodeSmokeParticle = std::make_unique<ExplodeSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("explodeSmoke", std::move(explodeSmokeParticle));
-
+	RegisterParticle<ExplodeSmokeParticle>("explodeSmoke", "Cube");
 	// 地面警告攻撃の飛散パーティクル
-	auto explodeScatterParticle = std::make_unique<ExplodeScatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("explodeScatter", std::move(explodeScatterParticle));
-
+	RegisterParticle<ExplodeScatterParticle>("explodeScatter", "Cube");
 	// 煙パーティクル
-	auto smokeParticle = std::make_unique<SmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("smoke", std::move(smokeParticle));
-
+	RegisterParticle<SmokeParticle>("smoke", "Cube");
 	// 火花パーティクル
-	auto sparkParticle = std::make_unique<SparkParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
-
+	RegisterParticle<SparkParticle>("spark", "Cube");
 	// 壁崩壊パーティクル
-	auto wallCollapseParticle = std::make_unique<WallCollapseParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("wallCollapse", std::move(wallCollapseParticle));
-
+	RegisterParticle<WallCollapseParticle>("wallCollapse", "Cube");
 	// 血が飛び散るパーティクル
-	auto bloodSplatterParticle = std::make_unique<BloodSplatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodSplatter", std::move(bloodSplatterParticle));
-
+	RegisterParticle<BloodSplatterParticle>("bloodSplatter", "Cube");
 	// 弾衝突時の煙パーティクル
-	auto impactSmokeParticle = std::make_unique<ImpactSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("impactSmoke", std::move(impactSmokeParticle));
-
+	RegisterParticle<ImpactSmokeParticle>("impactSmoke", "Cube");
 	// 弾衝突時の血煙パーティクル
-	auto bloodSmokeParticle = std::make_unique<BloodSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodSmoke", std::move(bloodSmokeParticle));
-
+	RegisterParticle<BloodSmokeParticle>("bloodSmoke", "Cube");
 	// 死亡時のクロスパーティクル
-	auto deathCrossParticle = std::make_unique<DeathCrossParticle>(ModelManager::GetInstance()->GetModel("DeathCross"));
-	ParticleEffectManager::GetInstance()->Register("deathCross", std::move(deathCrossParticle));
-
+	RegisterParticle<DeathCrossParticle>("deathCross", "DeathCross");
 	// 薬莢排出パーティクル
-	auto shellEjectionParticle = std::make_unique<ShellEjectionParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("shellEjection", std::move(shellEjectionParticle));
-
+	RegisterParticle<ShellEjectionParticle>("shellEjection", "Cube");
 	// マズルフラッシュパーティクル
-	auto muzzleFlashParticle = std::make_unique<MuzzleFlashParticle>(ModelManager::GetInstance()->GetModel("MuzzleFlash"));
-	ParticleEffectManager::GetInstance()->Register("muzzleFlash", std::move(muzzleFlashParticle));
-
+	RegisterParticle<MuzzleFlashParticle>("muzzleFlash", "MuzzleFlash");
 	// ボスの破片パーティクル
-	auto bossFragmentsParticle = std::make_unique<BossFragmentsParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bossFragments", std::move(bossFragmentsParticle));
-
+	RegisterParticle<BossFragmentsParticle>("bossFragments", "Cube");
 	// 血が飛散するパーティクル
-	auto bloodScatterParticle = std::make_unique<BloodScatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodScatter", std::move(bloodScatterParticle));
-
+	RegisterParticle<BloodScatterParticle>("bloodScatter", "Cube");
 	// テレポーターリングパーティクル
-	auto teleporterRingParticle = std::make_unique<TeleporterRingParticle>(ModelManager::GetInstance()->GetModel("TeleporterRing"));
-	ParticleEffectManager::GetInstance()->Register("teleporterRing", std::move(teleporterRingParticle));
+	RegisterParticle<TeleporterRingParticle>("teleporterRing", "TeleporterRing");
 }

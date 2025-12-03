@@ -90,8 +90,6 @@ private:
 	// Constants
 	// =========================================================
 	static constexpr Float3 kColliderSize = {1.0f, 2.0f, 1.0f};               /* コライダーサイズ */
-	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
-	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
 	static constexpr float kHPBarOffsetY = 90.0f;                             /* HPバーのY軸オフセット */
 	static constexpr float kReloadBarOffsetY = 60.0f;                         /* リロード表示のY軸オフセット */
 

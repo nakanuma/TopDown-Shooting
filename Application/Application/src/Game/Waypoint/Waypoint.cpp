@@ -16,11 +16,5 @@ Waypoint::Waypoint(const std::string& name, const Float3& pos, ModelManager::Mod
 void Waypoint::Update() { objectSphere_->UpdateMatrix(); }
 
 void Waypoint::Draw() {
-	if (isSelected_) {
-		objectSphere_->materialCB_.data_->color = kColorLightBlue; // 水色
-	} else {
-		objectSphere_->materialCB_.data_->color = kColorYellow; // 黄色
-	}
-
 	objectSphere_->Draw();
 }

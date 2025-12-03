@@ -92,15 +92,10 @@ void HomingMissile::Update() {
 
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
-		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_ + offset, kExplodeSmokeCount);
-		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_ + offset, kExplodeScatterCount);
-
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
+		// ヒット時パーティクル発生
+		EmitHitParticles();
+		// ライフサイクル終了
+		FinishLifeCycle();
 	}
 
 	// ---------------------------------------------------------
@@ -118,35 +113,20 @@ void HomingMissile::Draw() {
 }
 
 void HomingMissile::OnCollision(Collider* other) {
-	Float3 bulletPos = this->GetTranslate();
-
 	// ---------------------------------------------------------
-	// プレイヤーとの衝突
+	// プレイヤー・障害物との衝突
 	// ---------------------------------------------------------
-	if (other->GetTag() == "Player") {
-		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
-		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
-
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
+	if (other->GetTag() == "Player" || other->GetTag() == "Obstacle") {
+		// ヒット時パーティクル発生
+		EmitHitParticles();
+		// ライフサイクル終了
+		FinishLifeCycle();
 	}
+}
 
-	// ---------------------------------------------------------
-	// 障害物との衝突
-	// ---------------------------------------------------------
-	if (other->GetTag() == "Obstacle") {
-		// 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
-		// 飛散パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
-
-		// 死亡させる
-		isDead_ = true;
-		// コライダー破棄
-		OnDestroy();
-	}
+void HomingMissile::EmitHitParticles() {
+	// 煙パーティクル発生
+	ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
+	// 飛散パーティクル発生
+	ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
 }

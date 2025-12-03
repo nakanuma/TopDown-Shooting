@@ -82,11 +82,6 @@ void WaypointManager::Debug() {
 
 		std::string label = wp->GetName();
 		if (ImGui::TreeNode(label.c_str())) {
-			// 選択切り替えボタン
-			if (ImGui::Button("Select")) {
-				wp->isSelected_ = !wp->isSelected_;
-			}
-
 			// 位置
 			const Float3& pos = wp->GetPosition();
 			ImGui::Text("Position : (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
@@ -149,15 +144,15 @@ void WaypointManager::ComputeNeighbors() {
 
 Waypoint* WaypointManager::FindClosestWaypoint(const Float3& pos) {
 	Waypoint* closest = nullptr;
-	float minDist = 3.402823466e+38f; // 最初に必ず比較が行われるように安全のためfloatの最大値を入れておく
+	float minDistSq = FLT_MAX; // 最初に必ず比較が行われるように安全のためfloatの最大値を入れておく
 
 	// 全ウェイポイントをループ
 	for (auto& wp : waypoints_) {
 		// 距離を計算
-		float dist = Float3::Length(wp->GetPosition() - pos);
+		float distSq = Float3::LengthSq(wp->GetPosition() - pos);
 		// これまでの最短距離よりも近ければ更新
-		if (dist < minDist) {
-			minDist = dist;
+		if (distSq < minDistSq) {
+			minDistSq = distSq;
 			closest = wp.get();
 		}
 	}
@@ -177,7 +172,7 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 	std::unordered_map<Waypoint*, float> costSoFar;
 
 	// 初期ノードの追加
-	openList.push({start, nullptr, 0.0f, Float3::Length(goal->GetPosition() - start->GetPosition())});
+	openList.push({start, nullptr, 0.0f, Float3::LengthSq(goal->GetPosition() - start->GetPosition())});
 	cameFrom[start] = nullptr;
 	costSoFar[start] = 0.0f;
 
@@ -203,12 +198,12 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 		// 隣接ノードの探索
 		for (auto neighbor : current.wp->GetNeighbors()) {
 			// 開始点から隣接ノードまでの累積コストを計算
-			float newCost = costSoFar[current.wp] + Float3::Length(neighbor->GetPosition() - current.wp->GetPosition());
+			float newCost = costSoFar[current.wp] + Float3::LengthSq(neighbor->GetPosition() - current.wp->GetPosition());
 			// まだ訪れていないノード、またはより安いコストで到達できる場合のみ更新
 			if (costSoFar.find(neighbor) == costSoFar.end() || newCost < costSoFar[neighbor]) {
 				costSoFar[neighbor] = newCost;
 				// priorityを計算してオープンリストに追加
-				float priority = newCost + Float3::Length(neighbor->GetPosition() - goal->GetPosition());
+				float priority = newCost + Float3::LengthSq(neighbor->GetPosition() - goal->GetPosition());
 				openList.push({neighbor, current.wp, newCost, priority});
 				cameFrom[neighbor] = current.wp;
 			}
