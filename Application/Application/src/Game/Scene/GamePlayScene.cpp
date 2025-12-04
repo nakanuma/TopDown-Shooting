@@ -88,10 +88,6 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
-	// 発光オブジェクト生成
-	/*emissiveObject_ = std::make_unique<EmissiveObject>();
-	emissiveObject_->Initialize();*/
-
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -136,10 +132,6 @@ void GamePlayScene::Initialize() {
 	// 平行光源の初期値設定
 	LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
 	LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
-
-	objectCube_ = std::make_unique<Object3D>();
-	objectCube_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
-	objectCube_->transform_.translate_ = {30.0f, 1.0f, -30.0f};
 }
 
 void GamePlayScene::Finalize() {}
@@ -210,9 +202,6 @@ void GamePlayScene::Update() {
 		gameClearSequence_->Update();
 	}
 
-	objectCube_->UpdateMatrix();
-	objectCube_->UpdateShadowMatrix();
-
 	// SkyBox更新
 	SkyBoxManager::GetInstance()->Update();
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
@@ -276,8 +265,6 @@ void GamePlayScene::Draw() {
 	enemyManager_->DrawShadow();
 	teleporterManager_->DrawShadow();
 
-	objectCube_->DrawShadow();
-
 	/// =========================================================
 	/// ↑ ここまで通常モデルのシャドウマップ描画
 	/// =========================================================
@@ -300,6 +287,11 @@ void GamePlayScene::Draw() {
 	/// =========================================================
 	/// ↓ ここから3Dオブジェクト描画
 	/// =========================================================
+	
+#pragma region メインシーンの3Dオブジェクトのレンダリングを開始
+	postEffectManager_->BeginMainScene();
+	// -----------------------------------------------
+
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Draw();
@@ -313,10 +305,20 @@ void GamePlayScene::Draw() {
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 
-	objectCube_->Draw();
+	// -----------------------------------------------
+	postEffectManager_->EndMainScene();
+#pragma endregion
+
+#pragma region バックバッファへの直接描画
+	postEffectManager_->RestoreBackBuffer(true);
+	// -----------------------------------------------
 
 	ParticleEffectManager::GetInstance()->Draw();
 	LineDrawer::GetInstance()->Draw();
+
+	// -----------------------------------------------
+	postEffectManager_->RestoreDepthBufferState();
+#pragma endregion
 
 	/// =========================================================
 	/// ↑ ここまで3Dオブジェクト描画

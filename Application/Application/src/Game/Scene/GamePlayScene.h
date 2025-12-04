@@ -116,7 +116,6 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_;			/* 敵管理クラス */
 	std::unique_ptr<ObstacleManager> obstacleManager_;		/* 障害物管理クラス */
 	std::unique_ptr<TeleporterManager> teleporterManager_;	/* テレポーター管理クラス */
-	/*std::unique_ptr<EmissiveObject> emissiveObject_;*/
 
 	// ----- Others -----
 	std::unique_ptr<FollowCamera> followCamera_;			/* 追従カメラ管理クラス */
@@ -125,8 +124,6 @@ private:
 	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
 	std::unique_ptr<GameOverSequence> gameOverSequence_;	/* ゲームオーバー時の演出制御クラス */
 	std::unique_ptr<GameClearSequence> gameClearSequence_;	/* ゲームクリア時の演出制御クラス */
-
-	std::unique_ptr<Object3D> objectCube_;
 
 	bool isTransitioning_ = false;							/* リザルトシーンへの遷移中かどうか */
 };
