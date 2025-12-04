@@ -322,6 +322,9 @@ TextureCube<float32_t4> gEnvironmentTexture : register(t2);
 Texture2D<float> gShadowMap : register(t3);
 SamplerComparisonState gShadowSampler : register(s1); // 比較サンプラー
 
+static const float kShadowMapTexelSize = 1.0f / 384.0f;
+static const int kNumSamples = 9;
+
 struct LightCameraCB
 {
     float4x4 lightViewProj;
@@ -332,20 +335,42 @@ float SampleShadow(float3 worldPos)
 {
     // ワールド座標->ライト空間座標
     float4 lightSpacePos = mul(float4(worldPos, 1.0f), gLightCameraCB.lightViewProj);
-    
-    float3 projCoords = lightSpacePos.xyz;
+    // 透視除算
+    float3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
     // X,Yを0~1に変換
     projCoords.xy = projCoords.xy * 0.5f + 0.5f;
-    
-    projCoords.y = 1.0f - projCoords.y;
-    
     // Zも同様に0~1へ
     projCoords.z = projCoords.z - 0.001f;
+    // 画面外のチェック
+    if(projCoords.x < 0.0f || projCoords.x > 1.0f || 
+        projCoords.y < 0.0f || projCoords.y > 1.0f || 
+        projCoords.z > 1.0f)
+    {
+        return 1.0f; // 影の外
+    }
+    // Y座標の反転
+    projCoords.y = 1.0f - projCoords.y;
     
-    // SampleCmpLevelZeroでDepth比較
-    float shadow = gShadowMap.SampleCmpLevelZero(gShadowSampler, projCoords.xy, projCoords.z);
+    float shadowFactorSum = 0.0f;
+    // 3x3のサンプリングを行う
+    float2 offset[kNumSamples] =
+    {
+        float2(-1.0f, -1.0f), float2(0.0f, -1.0f), float2(1.0f, -1.0f),
+        float2(-1.0f, 0.0f), float2(0.0f, 0.0f), float2(1.0f, 0.0f),
+        float2(-1.0f, 1.0f), float2(0.0f, 1.0f), float2(1.0f, 1.0f),
+    };
+    // オフセットをテクセルサイズにスケーリング
+    float texelSize = kShadowMapTexelSize;
     
-    return shadow; // 0~1の値
+    for (int i = 0; i < kNumSamples; i++)
+    {
+        // オフセットを適用したテクスチャ座標
+        float2 uvOffset = projCoords.xy + offset[i] * texelSize;
+        // SampleCmpLevelZeroでDepth比較
+        shadowFactorSum += gShadowMap.SampleCmpLevelZero(gShadowSampler, uvOffset, projCoords.z);
+    }
+    
+    return shadowFactorSum / kNumSamples; // 0~1の値
 }
 
 struct PixelShaderOutput {
