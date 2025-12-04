@@ -121,6 +121,8 @@ void Player::Update(bool operable) {
 
 	// 被弾時の発光演出
 	HandleHitBlink();
+	// 被弾時のダメージ演出
+	HandleDamageEffect();
 
 	// HPが0になったら死亡
 	if (currentHP_ <= 0) {
@@ -129,8 +131,8 @@ void Player::Update(bool operable) {
 		// 死亡したフレームのみパーティクルを発生
 		if (!wasDead) {
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle1));
-			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle2));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, DegToRad(kDeathCrossAngle1));
+			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, DegToRad(kDeathCrossAngle2));
 
 			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), kBloodSplatterCount);
 		}
@@ -219,11 +221,19 @@ void Player::OnCollision(Collider* other) {
 		// HPを減らす
 		currentHP_ -= damage;
 
-		// 被弾時の発光演出を開始
-		if(!isDead_){
+		// 被弾時の演出を開始
+		if (!isDead_) {
+			// 発光演出
 			isHitBlink_ = true;
 			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
 			hitBlinkTimer_ = 0.0f;
+
+			// ダメージエフェクト演出
+			if (postEffectManager_->damageVignetteCB_.data_->intensity < kDamageEffectIntensityThreshold) { // 閾値を超えていたら演出を行わない
+				isReceiveDamage_ = true;
+				damageEffectPhase_ = DamageEffectPhase::In;
+				damageEffectTimer_ = 0.0f;
+			}
 		}
 	}
 
@@ -455,7 +465,7 @@ void Player::HandleOverHeat()
 void Player::HandleHitBlink()
 {
 	// 発光演出中でなければスキップ
-	if(!isHitBlink_) return;
+	if (!isHitBlink_) return;
 
 	hitBlinkTimer_ += TimeManager::GetInstance()->GetDeltaTime();
 	float t;
@@ -484,6 +494,52 @@ void Player::HandleHitBlink()
 			hitBlinkTimer_ = 0.0f;
 			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = 0.0f;
 			isHitBlink_ = false;
+		}
+		break;
+	}
+}
+
+void Player::HandleDamageEffect()
+{
+	// ダメージ演出中でなければスキップ
+	if (!isReceiveDamage_) return;
+
+	damageEffectTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	float t;
+
+	switch (damageEffectPhase_)
+	{
+	case DamageEffectPhase::In:
+		if (damageEffectTimer_ < kDamageEffectDurationIn) {
+			t = std::clamp(damageEffectTimer_ / kDamageEffectDurationIn, 0.0f, 1.0f);
+			// ダメージビネットの強度を増加
+			postEffectManager_->damageVignetteCB_.data_->intensity = Easing::EaseInQuad(t);
+		} else {
+			// 終了したら維持フェーズへ
+			damageEffectPhase_ = DamageEffectPhase::Hold;
+			damageEffectTimer_ = 0.0f;
+		}
+		break;
+	case DamageEffectPhase::Hold:
+		// 最大強度で維持しておく
+		postEffectManager_->damageVignetteCB_.data_->intensity = 1.0f;
+
+		// 維持時間に達したら減少フェーズへ
+		if (damageEffectTimer_ > kDamageEffectDurationHold) {
+			damageEffectPhase_ = DamageEffectPhase::Out;
+			damageEffectTimer_ = 0.0f;
+		}
+
+	case DamageEffectPhase::Out:
+		if (damageEffectTimer_ < kDamageEffectDurationOut) {
+			t = std::clamp(damageEffectTimer_ / kDamageEffectDurationOut, 0.0f, 1.0f);
+			// ダメージビネットの強度を減少
+			postEffectManager_->damageVignetteCB_.data_->intensity = 1.0f - Easing::EaseInQuad(t);
+		} else {
+			// 終了したら待機フェーズへ
+			damageEffectPhase_ = DamageEffectPhase::Wait;
+			damageEffectTimer_ = 0.0f;
+			isReceiveDamage_ = false;
 		}
 		break;
 	}

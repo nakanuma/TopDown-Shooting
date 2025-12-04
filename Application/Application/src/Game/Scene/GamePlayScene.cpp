@@ -101,7 +101,9 @@ void GamePlayScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(PostEffectType::DamageVignette);
+
+	player_->SetPostEffectManager(postEffectManager_.get()); // プレイヤーにポストエフェクトマネージャーをセット
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
@@ -375,9 +377,9 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("teleporterRing", {156.0f, 2.0f, 20.0f}, 1);
-	}
+	ImGui::DragFloat("intensity", &postEffectManager_->damageVignetteCB_.data_->intensity, 0.01f);
+	ImGui::DragFloat("radius", &postEffectManager_->damageVignetteCB_.data_->radius, 0.01f);
+	ImGui::DragFloat("softness", &postEffectManager_->damageVignetteCB_.data_->softness, 0.01f);
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);

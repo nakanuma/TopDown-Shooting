@@ -11,6 +11,7 @@
 #include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
 #include <Animation/AnimatedModelInstance.h>
+#include <PostEffectManager.h>
 
 // ---------------------------------------------------------
 // Application Includes
@@ -111,6 +112,12 @@ public:
 	/// <returns>死亡フラグ</returns>
 	bool IsDead() const { return isDead_; }
 
+	/// <summary>
+	/// ポストエフェクトマネージャーをセットします。
+	/// </summary>
+	/// <param name="manager">ポストエフェクトマネージャー</param>
+	void SetPostEffectManager(PostEffectManager* manager) { postEffectManager_ = manager; }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -140,6 +147,11 @@ private:
 	/// 被弾時の発光処理を行います。
 	/// </summary>
 	void HandleHitBlink();
+
+	/// <summary>
+	/// 被弾時のダメージ演出処理を行います。
+	/// </summary>
+	void HandleDamageEffect();
 
 private:
 	// =========================================================
@@ -183,6 +195,11 @@ private:
 	static constexpr float kHitBlinkDuration = 0.05f;				/* 被弾時の発光時間 */
 	static constexpr Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
 
+	static constexpr float kDamageEffectDurationIn = 0.1f;			/* ダメージ演出増加の時間 */
+	static constexpr float kDamageEffectDurationHold = 0.2f;		/* ダメージ演出維持の時間 */
+	static constexpr float kDamageEffectDurationOut = 0.8f;			/* ダメージ演出減少の時間 */
+	static constexpr float kDamageEffectIntensityThreshold = 0.5f;	/* ダメージ演出開始のための閾値 */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================
@@ -190,6 +207,7 @@ private:
 	// ----- System -----
 	Input* input_ = nullptr;								/* 入力管理 */
 	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	PostEffectManager* postEffectManager_;					/* ポストエフェクトマネージャーへの参照 */
 
 	// ----- Object -----
 	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
@@ -235,4 +253,14 @@ private:
 	} hitBlinkPhase_ = HitBlinkPhase::Wait;
 	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
 	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
+
+	// ----- DamageEffect -----
+	enum class DamageEffectPhase{
+		Wait,	// 待機
+		In,		// 増加
+		Hold,	// 維持
+		Out		// 減少
+	} damageEffectPhase_ = DamageEffectPhase::Wait;
+	bool isReceiveDamage_ = false;		/* 被ダメージフラグ */
+	float damageEffectTimer_ = 0.0f;	/* ダメージ演出タイマー */
 };
