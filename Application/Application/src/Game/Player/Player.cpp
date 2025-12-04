@@ -9,6 +9,7 @@
 #include <Engine/Util/TimeManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
+#include <Easing.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -52,6 +53,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectPlayer_->Initialize(walkData_);
 	objectPlayer_->GetTranslate() = data.translate;
 	objectPlayer_->SetPlayBackSpeed(kAnimationPlaybackSpeed);
+	objectPlayer_->object_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	// 銃オブジェクト生成
 	objectGun_ = std::make_unique<Object3D>();
@@ -59,7 +61,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectGun_->materialCB_.data_->color = kGunColor;
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
 	objectGun_->materialCB_.data_->environmentStrength = kGunEnvironmentStrength;
-
 
 	///
 	///	コライダー生成
@@ -117,6 +118,9 @@ void Player::Update(bool operable) {
 
 	// HPが0未満にならないよう制限
 	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+
+	// 被弾時の発光演出
+	HandleHitBlink();
 
 	// HPが0になったら死亡
 	if (currentHP_ <= 0) {
@@ -204,42 +208,23 @@ void Player::OnCollision(Collider* other) {
 	}
 
 	///
-	///	vs EnemyBullet
+	///	vs Bullet
 	///
 
-	if (other->GetTag() == "EnemyBullet") {
-		// EnemyBulletのDamageを取得
+	if (other->GetTag() == "EnemyBullet" || other->GetTag() == "HomingMissile" || other->GetTag() == "GroundWarning") {
+		// 弾のダメージを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
 
 		// HPを減らす
 		currentHP_ -= damage;
-	}
 
-	///
-	///	vs HomingMissile
-	///
-
-	if (other->GetTag() == "HomingMissile") {
-		// HomingMissileのDamageを取得
-		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
-		int32_t damage = bullet->GetDamage();
-
-		// HPを減らす
-		currentHP_ -= damage;
-	}
-
-	///
-	///	vs GroundWarning
-	///
-
-	if (other->GetTag() == "GroundWarning") {
-		// HomingMissileのDamageを取得
-		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
-		int32_t damage = bullet->GetDamage();
-
-		// HPを減らす
-		currentHP_ -= damage;
+		// 被弾時の発光演出を開始
+		if(!isDead_){
+			isHitBlink_ = true;
+			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
+			hitBlinkTimer_ = 0.0f;
+		}
 	}
 
 	///
@@ -268,6 +253,9 @@ void Player::OnCollision(Collider* other) {
 void Player::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("Player");
+
+	ImGui::DragFloat3("emissiveColor", &objectPlayer_->object_->materialCB_.data_->emissiveColor.x, 0.01f);
+	ImGui::DragFloat("emissiveIntensity", &objectPlayer_->object_->materialCB_.data_->emissiveIntensity, 0.01f);
 
 	/* Translate */
 	ImGui::Text("Translate");
@@ -461,5 +449,42 @@ void Player::HandleOverHeat()
 		if (isOverheated_ && overheatTime_ <= 0.0f) {
 			isOverheated_ = false;
 		}
+	}
+}
+
+void Player::HandleHitBlink()
+{
+	// 発光演出中でなければスキップ
+	if(!isHitBlink_) return;
+
+	hitBlinkTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	float t;
+
+	switch (hitBlinkPhase_)
+	{
+	case HitBlinkPhase::BlinkIn:
+		if (hitBlinkTimer_ < kHitBlinkDuration) {
+			t = std::clamp(hitBlinkTimer_ / kHitBlinkDuration, 0.0f, 1.0f);
+			// プレイヤーを発光させる
+			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = Easing::EaseOutQuad(t);
+		} else {
+			// 終了したら次のフェーズへ
+			hitBlinkPhase_ = HitBlinkPhase::BlinkOut;
+			hitBlinkTimer_ = 0.0f;
+		}
+		break;
+	case HitBlinkPhase::BlinkOut:
+		if (hitBlinkTimer_ < kHitBlinkDuration) {
+			t = std::clamp(hitBlinkTimer_ / kHitBlinkDuration, 0.0f, 1.0f);
+			// プレイヤーを減光させる
+			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = 1.0f - Easing::EaseInQuad(t);
+		} else {
+			// 終了したら待機フェーズへ
+			hitBlinkPhase_ = HitBlinkPhase::Wait;
+			hitBlinkTimer_ = 0.0f;
+			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = 0.0f;
+			isHitBlink_ = false;
+		}
+		break;
 	}
 }

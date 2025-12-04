@@ -36,6 +36,7 @@ void BossEnemy::Initialize(const Float3& position, ModelManager::ModelData* mode
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = kBossColor;
+	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
 	///	コライダー生成
@@ -107,6 +108,9 @@ void BossEnemy::Update() {
 
 	objectEnemy_->UpdateMatrix();
 	objectEnemy_->UpdateShadowMatrix();
+
+	// 被弾時の発光演出
+	HandleHitBlink();
 
 	if (!isActive_)
 		return;
@@ -212,6 +216,13 @@ void BossEnemy::OnCollision(Collider* other) {
 		// プレイヤーに攻撃されたら有効化（todo : 登場演出を入れる予定なので仮。あとで削除）
 		if (!isActive_) {
 			isActive_ = true;
+		}
+
+		// 被弾時の発光演出を開始
+		if (!isDying_) {
+			isHitBlink_ = true;
+			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
+			hitBlinkTimer_ = 0.0f;
 		}
 
 		// PlayerBulletのdamageを取得

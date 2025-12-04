@@ -44,6 +44,7 @@ void NormalEnemy::Initialize(const Float3& position, ModelManager::ModelData* mo
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
 	///	コライダー生成
@@ -119,6 +120,9 @@ void NormalEnemy::Update() {
 
 	objectEnemy_->UpdateMatrix();
 	objectEnemy_->UpdateShadowMatrix();
+
+	// 被弾時の発光演出
+	HandleHitBlink();
 
 	///
 	///	ビヘイビアツリーを評価
@@ -206,6 +210,13 @@ void NormalEnemy::OnCollision(Collider* other) {
 		// デバッグでプレイヤー発見状態にする
 		if (!isPlayerDetected_) {
 			isPlayerDetected_ = true;
+		}
+
+		// 被弾時の発光演出を開始
+		if (!isDead_) {
+			isHitBlink_ = true;
+			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
+			hitBlinkTimer_ = 0.0f;
 		}
 
 		// PlayerBulletのdamageを取得

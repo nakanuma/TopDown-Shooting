@@ -113,6 +113,11 @@ protected:
 	/// <param name="spritePtr"></param>
 	void SetupReloadSprite(std::unique_ptr<Sprite>& spritePtr);
 
+	/// <summary>
+	/// 被弾時の発光処理を行います。
+	/// </summary>
+	void HandleHitBlink();
+
 protected:
 	// =========================================================
 	// Constants
@@ -122,6 +127,9 @@ protected:
 	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
 
 	static constexpr Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
+
+	static constexpr float kHitBlinkDuration = 0.05f;				/* 被弾時の発光時間 */
+	static constexpr Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
 
 	// =========================================================
 	// Member Variables
@@ -149,4 +157,16 @@ protected:
 	int32_t currentHP_ = 0; /* 現在HP */
 
 	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
+
+	// ----- HitBlink -----
+	/// <summary>
+	/// 被弾時の発光演出フェーズ
+	/// </summary>
+	enum class HitBlinkPhase {
+		Wait,		// 待機
+		BlinkIn,	// 発光
+		BlinkOut	// 減光
+	} hitBlinkPhase_ = HitBlinkPhase::Wait;
+	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
+	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
 };

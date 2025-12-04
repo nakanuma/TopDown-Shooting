@@ -136,6 +136,11 @@ private:
 	/// </summary>
 	void HandleOverHeat();
 
+	/// <summary>
+	/// 被弾時の発光処理を行います。
+	/// </summary>
+	void HandleHitBlink();
+
 private:
 	// =========================================================
 	// Constants
@@ -174,6 +179,9 @@ private:
 	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
 	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
+
+	static constexpr float kHitBlinkDuration = 0.05f;				/* 被弾時の発光時間 */
+	static constexpr Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
 
 	// =========================================================
 	// Member Variables
@@ -215,4 +223,16 @@ private:
 	// ----- Overheat -----
 	float overheatTime_ = 0.0f;								/* オーバーヒートタイマー */
 	bool isOverheated_ = false;								/* オーバーヒート中フラグ */
+
+	// ----- HitBlink -----
+	/// <summary>
+	/// 被弾時の発光演出フェーズ
+	/// </summary>
+	enum class HitBlinkPhase {
+		Wait,		// 待機
+		BlinkIn,	// 発光
+		BlinkOut	// 減光
+	} hitBlinkPhase_ = HitBlinkPhase::Wait;
+	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
+	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
 };
