@@ -5,7 +5,7 @@
 #include <Engine/Math/MyMath.h>
 #include <Engine/Util/RandomGenerator.h>
 
-DeathCrossParticle::DeathCrossParticle(ModelManager::ModelData& model) {
+DeathCrossParticle::DeathCrossParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -14,10 +14,10 @@ DeathCrossParticle::DeathCrossParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {true, true, true};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Add;
+	blendMode_ = Cygnus::BlendMode::Add;
 }
 
-DeathCrossParticleData DeathCrossParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+DeathCrossParticleData DeathCrossParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	DeathCrossParticleData p;
 
 	// 位置
@@ -47,14 +47,14 @@ void DeathCrossParticle::UpdateParticle(DeathCrossParticleData& p, float dt) {
 
 	// Yスケール
 	float scaleT = std::clamp(p.currentTime / kScaleDuration, 0.0f, 1.0f);
-	float easeT = Easing::EaseOutQuart(scaleT);
+	float easeT = Cygnus::Easing::EaseOutQuart(scaleT);
 
-	p.transform.scale_.y = Easing::Lerp(kInitialScale.y, kEndScaleY, easeT);
+	p.transform.scale_.y = Cygnus::Easing::Lerp(kInitialScale.y, kEndScaleY, easeT);
 
 	///
 	/// 透明化
 	///
 
-	float alpha = 1.0f - Easing::EaseInQuart(t);
+	float alpha = 1.0f - Cygnus::Easing::EaseInQuart(t);
 	p.color.w = alpha;
 }

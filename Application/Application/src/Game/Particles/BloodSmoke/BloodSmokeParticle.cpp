@@ -5,7 +5,7 @@
 #include <Engine/Math/MyMath.h>
 #include <Engine/Util/RandomGenerator.h>
 
-BloodSmokeParticle::BloodSmokeParticle(ModelManager::ModelData& model) {
+BloodSmokeParticle::BloodSmokeParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -14,15 +14,15 @@ BloodSmokeParticle::BloodSmokeParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	BloodSmokeParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置
-	Float3 offset = rand->RandomValue(kPositionOffsetMin, kPositionOffsetMax);
+	Cygnus::Float3 offset = rand->RandomValue(kPositionOffsetMin, kPositionOffsetMax);
 	p.transform.translate_ = pos + offset;
 	// スケール
 	float scale = rand->RandomValue(kMinScale, kMaxScale);
@@ -30,9 +30,9 @@ BloodSmokeParticleData BloodSmokeParticle::CreateParticle(const Float3& pos, con
 	// 回転
 	p.transform.rotate_ = {0.0f, 0.0f, 0.0f};
 	// 速度ベクトル
-	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;                                                                         // 引数で受け取った方向と逆向きにする
-	Float3 randDir = rand->RandomValue({-kDirectionSpread, 0.0f, -kDirectionSpread}, {kDirectionSpread, 0.0f, kDirectionSpread}); // 方向をバラつかせるためのオフセット
-	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(kMinSpeed, kMaxSpeed);
+	Cygnus::Float3 baseDir = Cygnus::Float3::Normalize(velocity) * -1.0f;                                                                         // 引数で受け取った方向と逆向きにする
+	Cygnus::Float3 randDir = rand->RandomValue({-kDirectionSpread, 0.0f, -kDirectionSpread}, {kDirectionSpread, 0.0f, kDirectionSpread}); // 方向をバラつかせるためのオフセット
+	p.velocity = Cygnus::Float3::Normalize(baseDir + randDir) * rand->RandomValue(kMinSpeed, kMaxSpeed);
 	// 色
 	p.color = kInitialColor;
 	// 生存時間
@@ -54,14 +54,14 @@ void BloodSmokeParticle::UpdateParticle(BloodSmokeParticleData& p, float dt) {
 	///	移動
 	///
 
-	float moveFactor = Easing::EaseOutQuad(1.0f - t);
+	float moveFactor = Cygnus::Easing::EaseOutQuad(1.0f - t);
 	p.transform.translate_ += p.velocity * moveFactor * dt;
 
 	///
 	///	回転
 	///
 
-	float damping = Easing::EaseOutQuad(1.0f - t);
+	float damping = Cygnus::Easing::EaseOutQuad(1.0f - t);
 	p.transform.rotate_ += p.rotationSpeed * damping * dt;
 
 	///
@@ -69,13 +69,13 @@ void BloodSmokeParticle::UpdateParticle(BloodSmokeParticleData& p, float dt) {
 	///
 
 	float startScale = p.initScale.x;
-	float scale = Easing::EaseInQuad(t) * (kEndScale - startScale) + startScale;
+	float scale = Cygnus::Easing::EaseInQuad(t) * (kEndScale - startScale) + startScale;
 	p.transform.scale_ = {scale, scale, scale};
 
 	///
 	/// 透明化
 	///
 
-	float alpha = kInitialAlpha - Easing::EaseInQuart(t);
+	float alpha = kInitialAlpha - Cygnus::Easing::EaseInQuart(t);
 	p.color.w = alpha;
 }

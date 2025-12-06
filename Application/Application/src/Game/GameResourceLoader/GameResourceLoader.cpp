@@ -36,7 +36,7 @@ void GameResourceLoader::Initialize() {
 	RegisterAllParticleEffect();
 
 	// SkyBoxの初期化
-	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
+	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 }
 
 void GameResourceLoader::LoadAllModelData() {
@@ -45,21 +45,21 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Plane",
 		"Primitive/Plane/plane.obj",
 		"white.png"
 	);
 
 	// スフィア
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Sphere", 
 		"Primitive/Sphere/sphere.obj", 
 		"white.png"
 	);
 
 	// キューブ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Cube",
 		"Primitive/Cube/cube.obj",
 		"white.png"
@@ -70,13 +70,13 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 弾（プレイヤー・敵共通で使用）
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Bullet", 
 		"Primitive/Cube/cube.obj", 
 		"white.png"
 	);
 	// ミサイル（ボスで使用）
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Missile", 
 		"Bullet/Missile/missile.obj", 
 		"white.png"
@@ -87,19 +87,19 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 通常敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"NormalEnemy", 
 		"Character/Enemy/NormalEnemy/normalEnemy.obj", 
 		"Character/Enemy/NormalEnemy/normalEnemy.png"
 	);
 	// 固定砲台敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ImmobileEnemy", 
 		"Character/Enemy/ImmobileEnemy/immobileEnemy.obj", 
 		"Character/Enemy/ImmobileEnemy/immobileEnemy.png"
 	);
 	// ボス敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"BossEnemy", 
 		"Character/Enemy/BossEnemy/bossEnemy.obj", 
 		"Character/Enemy/BossEnemy/bossEnemy.png"
@@ -110,73 +110,73 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// コンテナ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Container",
 		"Obstacle/Container/container.obj",
 		"Obstacle/container.png"
 	);
 	// フェンス
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Fence",
 		"Obstacle/Fence/fence.obj",
 		"Obstacle/fence.png"
 	);
 	// 壁
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Wall",
 		"Obstacle/Wall/wall.obj",
 		"Obstacle/wall.png"
 	);
 	// レンガのパレット積み
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"BrickPallet",
 		"Obstacle/BrickPallet/brickPallet.obj",
 		"Obstacle/brickPallet.png"
 	);
 	// コンクリートバリア
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ConcreteBarrier",
 		"Obstacle/ConcreteBarrier/concreteBarrier.obj",
 		"Obstacle/concreteBarrier.png"
 	);
 	// ドラム缶
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"DrumCan",
 		"Obstacle/DrumCan/drumCan.obj",
 		"Obstacle/drumCan.png"
 	);
 	// 貯水タンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"WaterTank",
 		"Obstacle/WaterTank/waterTank.obj",
 		"Obstacle/waterTank.png"
 	);
 	// 鉄骨の束
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"SteelBundle",
 		"Obstacle/SteelBundle/steelBundle.obj",
 		"Obstacle/steelBundle.png"
 	);
 	// 縦型タンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"VerticalTank",
 		"Obstacle/VerticalTank/verticalTank.obj",
 		"Obstacle/verticalTank.png"
 	);
 	// ISOタンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ISOTank",
 		"Obstacle/ISOTank/ISOTank.obj",
 		"Obstacle/ISOTank.png"
 	);
 	// IBCコンテナ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"IBCContainer",
 		"Obstacle/IBCContainer/IBCContainer.obj",
 		"Obstacle/IBCContainer.png"
 	);
 	// 壊れそうな壁
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"CrumblingWall",
 		"Obstacle/CrumblingWall/crumblingWall.obj",
 		"Obstacle/crumblingWall.png"
@@ -187,28 +187,28 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 地面警告表示用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"RedCircle",
 		"Primitive/Plane/plane.obj",
 		"Effect/circle.png"
 	);
 
 	// 死亡時のクロスパーティクル用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"DeathCross",
 		"Primitive/Plane/plane.obj",
 		"Effect/glow.png"
 	);
 
 	// 銃のマズルフラッシュ用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"MuzzleFlash",
 		"Primitive/Plane/planeAlign.obj",	/* 中心位置をずらした板モデル */
 		"Effect/muzzle.png"
 	);
 
 	// テレポーター用のリング
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"TeleporterRing",
 		"Primitive/Torus/torus.obj",
 		"white.png"
@@ -219,21 +219,21 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// ダイナマイト
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Dynamite",
 		"Object/Dynamite/dynamite.obj",
 		"Object/dynamite.png"
 	);
 
 	// テレポーター
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Teleporter",
 		"Object/Teleporter/teleporter.obj",
 		"Object/teleporter.png"
 	);
 
 	// 銃
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Gun",
 		"Object/Gun/gun.obj",
 		"white.png"

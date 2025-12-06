@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="spriteCommon">スプライト共通処理クラス</param>
 	/// <param name="splitCount">分割数</param>
-	void Initialize(SpriteCommon* spriteCommon, uint32_t splitCount = 5);
+	void Initialize(Cygnus::SpriteCommon* spriteCommon, uint32_t splitCount = 5);
 
 	/// <summary>
 	/// 開くトランジションを開始します。
@@ -106,10 +106,10 @@ private:
 	/// 1ブロックの情報（上下のスプライト + 進行度）
 	/// </summary>
 	struct Block {
-		std::unique_ptr<Sprite> top;    /* 上側のスプライト */
-		std::unique_ptr<Sprite> bottom; /* 下側のスプライト */
-		float delay;                    /* 開始までの遅延 */
-		float progress;                 /* 0~1の進行度 */
+		std::unique_ptr<Cygnus::Sprite> top;    /* 上側のスプライト */
+		std::unique_ptr<Cygnus::Sprite> bottom; /* 下側のスプライト */
+		float delay;							/* 開始までの遅延 */
+		float progress;							/* 0~1の進行度 */
 	};
 
 	// ----- Parameters -----
@@ -121,8 +121,8 @@ private:
 	float delayAfterFadeOutComplete_ = 0.0f; /* 閉じるトランジション完了後の遅延時間 */
 	float delayTimerAfterFadeOut_ = 0.0f;    /* 閉じるトランジション完了後の遅延時間タイマー */
 
-	std::vector<Block> blocks_;                            /* 分割ブロック */
-	uint32_t splitCount_;                                  /* 分割数 */
-	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr; /* スプライト共通処理クラス */
-	std::function<void()> onFadeComplete_;                 /* 閉じるトランジション完了後のコールバック */
+	std::vector<Block> blocks_;										/* 分割ブロック */
+	uint32_t splitCount_;											/* 分割数 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_ = nullptr;	/* スプライト共通処理クラス */
+	std::function<void()> onFadeComplete_;							/* 閉じるトランジション完了後のコールバック */
 };

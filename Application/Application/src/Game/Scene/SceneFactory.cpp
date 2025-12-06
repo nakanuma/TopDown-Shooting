@@ -9,7 +9,7 @@ SceneFactory* SceneFactory::GetInstance() {
 	return &instance;
 }
 
-std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneName) {
+std::unique_ptr<Cygnus::BaseScene> SceneFactory::CreateScene(const std::string& sceneName) {
 	if (sceneName == "TITLE") {
 		auto newScene = std::make_unique<TitleScene>();
 		newScene->Initialize();

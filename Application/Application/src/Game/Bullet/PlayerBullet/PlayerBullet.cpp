@@ -16,17 +16,17 @@
 // ---------------------------------------------------------
 #include <ImguiWrapper.h>
 
-void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
+void PlayerBullet::Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direciton, Cygnus::ModelManager::ModelData* model) {
 	// ---------------------------------------------------------
 	// オブジェクト生成・初期設定
 	// ---------------------------------------------------------
-	objectBullet_ = std::make_unique<Object3D>();
+	objectBullet_ = std::make_unique<Cygnus::Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
 	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius};
 
 	// 進行方向から向きを計算して回転を設定
-	Float3 dir = Float3::Normalize(direciton);
+	Cygnus::Float3 dir = Cygnus::Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
 	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
@@ -34,14 +34,14 @@ void PlayerBullet::Initialize(const Float3& position, const Float3& direciton, M
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
-	auto sphere = std::make_unique<SphereCollider>();
+	auto sphere = std::make_unique<Cygnus::SphereCollider>();
 	sphere->SetTag("PlayerBullet");
 	sphere->SetFollowTarget(&objectBullet_->transform_.translate_);
 	sphere->SetRadius(kRadius);
 	sphere->SetOwner(this);
 
 	collider_ = std::move(sphere);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	// ---------------------------------------------------------
 	// パラメーター設定
@@ -57,19 +57,19 @@ void PlayerBullet::Update() {
 	// ---------------------------------------------------------
 	// 連続衝突判定（レイキャスト）
 	// ---------------------------------------------------------
-	Float3 currentPos = objectBullet_->transform_.translate_;
-	Float3 nextPos = currentPos + velocity_;
+	Cygnus::Float3 currentPos = objectBullet_->transform_.translate_;
+	Cygnus::Float3 nextPos = currentPos + velocity_;
 
 	// 前の位置から次の位置までの移動距離
-	Float3 movement = nextPos - currentPos;
-	float moveDistance = Float3::Length(movement);
+	Cygnus::Float3 movement = nextPos - currentPos;
+	float moveDistance = Cygnus::Float3::Length(movement);
 
 	// レイキャストで中間の衝突をチェック
 	if (moveDistance > kRadius * kRaycastThreshold) { // 移動距離が半径の半分以上の場合のみチェック
-		Float3 rayDirection = Float3::Normalize(movement);
+		Cygnus::Float3 rayDirection = Cygnus::Float3::Normalize(movement);
 
-		RayCastHit hit;
-		if (CollisionManager::GetInstance()->RayCast(
+		Cygnus::RayCastHit hit;
+		if (Cygnus::CollisionManager::GetInstance()->RayCast(
 		        currentPos, rayDirection,
 		        moveDistance + kRadius, // 弾の半径分を追加
 		        &hit, {"PlayreBullet"}  // 自身は除外する
@@ -106,7 +106,7 @@ void PlayerBullet::Update() {
 	// ---------------------------------------------------------
 	// 寿命更新
 	// ---------------------------------------------------------
-	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+	elapsedTime_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
 		// ライフサイクル終了
@@ -127,8 +127,8 @@ void PlayerBullet::Draw() {
 	DrawTrail();
 }
 
-void PlayerBullet::OnCollision(Collider* other) {
-	Float3 bulletPos = this->GetTranslate();
+void PlayerBullet::OnCollision(Cygnus::Collider* other) {
+	Cygnus::Float3 bulletPos = this->GetTranslate();
 
 	// ---------------------------------------------------------
 	// 血の出る敵との衝突

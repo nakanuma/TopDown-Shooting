@@ -3,19 +3,19 @@
 // Application
 #include <src/Game/Utility/Utility.h>
 
-void FollowCamera::Initialize(const Float3& offset) { offset_ = offset; }
+void FollowCamera::Initialize(const Cygnus::Float3& offset) { offset_ = offset; }
 
 void FollowCamera::Update() {
 	if (!targetTranslate_)
 		return;
 
 	// 追従位置（プレイヤー + オフセット）
-	Float3 targetPos = *targetTranslate_ + offset_;
+	Cygnus::Float3 targetPos = *targetTranslate_ + offset_;
 
 	// カーソルがクライアント領域内にある場合のみ補正を行う
 	if (Utility::IsInsideClientCursor()) {
 		// カーソルのワールド座標を取得
-		Float3 cursorPos = Utility::CalculateCursorPosition();
+		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 
 		// カーソルの方向へ補正
 		cursorOffset_ = cursorPos - *targetTranslate_;
@@ -28,10 +28,10 @@ void FollowCamera::Update() {
 	targetPos += cursorOffset_;
 
 	// なめらかに追従
-	currentPos_ = Float3::Lerp(currentPos_, targetPos, kFollowSpeed);
+	currentPos_ = Cygnus::Float3::Lerp(currentPos_, targetPos, kFollowSpeed);
 }
 
-void FollowCamera::SetTarget(const Float3* translate) {
+void FollowCamera::SetTarget(const Cygnus::Float3* translate) {
 	targetTranslate_ = translate;
 	// カメラ位置がターゲット位置に基づいて更新されるように
 	if (targetTranslate_) {

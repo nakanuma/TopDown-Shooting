@@ -35,7 +35,7 @@ void Loader::LoadFromFile(const std::string& filepath) {
 
 		// Blender -> Engine への座標変換
 		data.translate = ConvertToEngineCoords(loc);
-		data.rotate = Float3(DegToRad(rot[kBlenderIndexX]), DegToRad(rot[kBlenderIndexY]), DegToRad(rot[kBlenderIndexZ]));
+		data.rotate = Cygnus::Float3(Cygnus::DegToRad(rot[kBlenderIndexX]), Cygnus::DegToRad(rot[kBlenderIndexY]), Cygnus::DegToRad(rot[kBlenderIndexZ]));
 		data.scale = ConvertToEngineCoords(scl);
 		data.colliderSize = ConvertToEngineCoords(col);
 
@@ -58,7 +58,7 @@ Loader::TransformData Loader::GetDataByTag(const std::string& tag) const {
 	return TransformData{};
 }
 
-Float3 Loader::ConvertToEngineCoords(const std::vector<float>& blenderVec) { 
+Cygnus::Float3 Loader::ConvertToEngineCoords(const std::vector<float>& blenderVec) {
 	// YとZを入れ替え
-	return Float3(blenderVec[kBlenderIndexX], blenderVec[kBlenderIndexZ], blenderVec[kBlenderIndexY]); 
+	return Cygnus::Float3(blenderVec[kBlenderIndexX], blenderVec[kBlenderIndexZ], blenderVec[kBlenderIndexY]);
 }

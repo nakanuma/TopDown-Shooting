@@ -12,28 +12,28 @@ SplitBlockTransition* SplitBlockTransition::GetInstance() {
 	return &instance;
 }
 
-void SplitBlockTransition::Initialize(SpriteCommon* spriteCommon, uint32_t splitCount) {
-	spriteCommon_ = std::make_unique<SpriteCommon>();
-	spriteCommon_->Initialize(DirectXBase::GetInstance());
+void SplitBlockTransition::Initialize(Cygnus::SpriteCommon* spriteCommon, uint32_t splitCount) {
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
+	spriteCommon_->Initialize(Cygnus::DirectXBase::GetInstance());
 
 	splitCount_ = splitCount;
 	blocks_.clear();
 
 	// 画面サイズ
-	const float screenWidth = static_cast<float>(Window::GetWidth());
-	const float screenHeight = static_cast<float>(Window::GetHeight());
+	const float screenWidth = static_cast<float>(Cygnus::Window::GetWidth());
+	const float screenHeight = static_cast<float>(Cygnus::Window::GetHeight());
 	const float blockWidth = screenWidth / splitCount_;
 	const float blockHeight = screenHeight / 2.0f; // 画面縦サイズの半分
 
-	uint32_t topRect = TextureManager::Load("UI/topRect.png");
-	uint32_t bottomRect = TextureManager::Load("UI/bottomRect.png");
+	uint32_t topRect = Cygnus::TextureManager::Load("UI/topRect.png");
+	uint32_t bottomRect = Cygnus::TextureManager::Load("UI/bottomRect.png");
 
 	// カウント数だけスプライトを生成
 	for (uint32_t i = 0; i < splitCount_; ++i) {
 
 		Block block;
-		block.top = std::make_unique<Sprite>();
-		block.bottom = std::make_unique<Sprite>();
+		block.top = std::make_unique<Cygnus::Sprite>();
+		block.bottom = std::make_unique<Cygnus::Sprite>();
 
 		block.top->Initialize(spriteCommon_.get(), topRect);       // 上側のテクスチャを割り当て
 		block.bottom->Initialize(spriteCommon_.get(), bottomRect); // 下側のテクスチャを割り当て
@@ -70,7 +70,7 @@ void SplitBlockTransition::Update() {
 	if (state_ == State::None)
 		return;
 
-	timer_ += TimeManager::GetInstance()->GetDeltaTime();
+	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// 開くトランジション開始前の遅延時間中はスキップ
 	if (state_ == State::Open && timer_ < delayBeforeFadeIn_) {
@@ -102,7 +102,7 @@ void SplitBlockTransition::Update() {
 	// 全ブロックのアニメーションが完了したら現在の状態を切り替え
 	if (allFinished) {
 		if (state_ == State::Close) {
-			delayTimerAfterFadeOut_ += TimeManager::GetInstance()->GetDeltaTime();
+			delayTimerAfterFadeOut_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 			// 閉じるトランジション完了後の遅延時間が終わったら未実行状態へ
 			if (delayTimerAfterFadeOut_ >= delayAfterFadeOutComplete_) {
 				state_ = State::None;
@@ -119,7 +119,7 @@ void SplitBlockTransition::Draw() {
 	if (state_ == State::None)
 		return;
 
-	const float screenHeight = static_cast<float>(Window::GetHeight());
+	const float screenHeight = static_cast<float>(Cygnus::Window::GetHeight());
 
 	// 全てのブロックを描画
 	for (auto& block : blocks_) {
@@ -133,13 +133,13 @@ void SplitBlockTransition::Draw() {
 
 		// 開く（中央から外側へ）
 		if (state_ == State::Open) {
-			easedT = Easing::EaseInOutExpo(t);
+			easedT = Cygnus::Easing::EaseInOutExpo(t);
 
 			topY = std::round(-block.top->GetSize().y * easedT);
 			bottomY = std::round(screenHeight - block.bottom->GetSize().y * (1.0f - easedT));
 			// 閉じる（外側から中央へ）
 		} else {
-			easedT = Easing::EaseOutBounce(t);
+			easedT = Cygnus::Easing::EaseOutBounce(t);
 
 			topY = std::round(-block.top->GetSize().y * (1.0f - easedT));
 			bottomY = std::round(screenHeight - block.bottom->GetSize().y * easedT);

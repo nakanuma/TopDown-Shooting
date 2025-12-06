@@ -11,18 +11,18 @@
 /// パーティクルデータ
 /// </summary>
 struct TeleporterRingParticleData {
-	Transform transform;		/* 位置 */
-	Float3 velocity;			/* 速度ベクトル */
-	Float4 color;				/* 色 */
-	float lifeTime;				/* 生存時間 */
-	float currentTime;			/* 経過時間 */
+	Cygnus::Transform transform;		/* 位置 */
+	Cygnus::Float3 velocity;			/* 速度ベクトル */
+	Cygnus::Float4 color;				/* 色 */
+	float lifeTime;						/* 生存時間 */
+	float currentTime;					/* 経過時間 */
 };
 
 // =========================================================
 // テレポーターリングパーティクルクラス
 // 有効状態のテレポーターから発生
 // =========================================================
-class TeleporterRingParticle : public BaseParticleEffect<TeleporterRingParticleData>
+class TeleporterRingParticle : public Cygnus::BaseParticleEffect<TeleporterRingParticleData>
 {
 public:
 	// =========================================================
@@ -33,7 +33,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
-	TeleporterRingParticle(ModelManager::ModelData& model);
+	TeleporterRingParticle(Cygnus::ModelManager::ModelData& model);
 
 protected:
 	// =========================================================
@@ -47,7 +47,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	TeleporterRingParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
+	TeleporterRingParticleData CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。
@@ -60,10 +60,10 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kDefaultScale = {4.0f, 4.0f, 4.0f};			/* デフォルトスケール */
-	static constexpr Float3 kDefaultVelocity = {0.0f, 2.5f, 0.0f};		/* デフォルト速度ベクトル */
-	static constexpr Float4 kDefaultColor = {0.0f, 0.5f, 1.0f, 1.0f};	/* デフォルトカラー */
-	static constexpr float kLifeTime = 3.0f;							/* 生存時間 */
-	static constexpr float kInitialAlpha = kDefaultColor.w;				/* 初期アルファ値 */
+	static constexpr Cygnus::Float3 kDefaultScale = {4.0f, 4.0f, 4.0f};			/* デフォルトスケール */
+	static constexpr Cygnus::Float3 kDefaultVelocity = {0.0f, 2.5f, 0.0f};		/* デフォルト速度ベクトル */
+	static constexpr Cygnus::Float4 kDefaultColor = {0.0f, 0.5f, 1.0f, 1.0f};	/* デフォルトカラー */
+	static constexpr float kLifeTime = 3.0f;									/* 生存時間 */
+	static constexpr float kInitialAlpha = kDefaultColor.w;						/* 初期アルファ値 */
 };
 

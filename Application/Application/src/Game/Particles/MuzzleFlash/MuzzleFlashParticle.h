@@ -13,20 +13,20 @@
 /// パーティクルデータ
 /// </summary>
 struct MuzzleFlashParticleData {
-	Transform transform; /* 位置 */
-	Float3 velocity;     /* 速度ベクトル */
-	Float4 color;        /* 色 */
-	float lifeTime;      /* 生存時間 */
-	float currentTime;   /* 経過時間 */
+	Cygnus::Transform transform;	/* 位置 */
+	Cygnus::Float3 velocity;		/* 速度ベクトル */
+	Cygnus::Float4 color;			/* 色 */
+	float lifeTime;					/* 生存時間 */
+	float currentTime;				/* 経過時間 */
 
-	Float3 initScale; /* 初期スケール */
+	Cygnus::Float3 initScale;	/* 初期スケール */
 };
 
 // =========================================================
 // マズルフラッシュパーティクルクラス
 // 射撃時に銃からに発生
 // =========================================================
-class MuzzleFlashParticle : public BaseParticleEffect<MuzzleFlashParticleData> {
+class MuzzleFlashParticle : public Cygnus::BaseParticleEffect<MuzzleFlashParticleData> {
 public:
 	// =========================================================
 	// Public Methods
@@ -36,7 +36,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
-	MuzzleFlashParticle(ModelManager::ModelData& model);
+	MuzzleFlashParticle(Cygnus::ModelManager::ModelData& model);
 
 protected:
 	// =========================================================
@@ -50,7 +50,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	MuzzleFlashParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
+	MuzzleFlashParticleData CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。
@@ -63,13 +63,13 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr float kMinScaleX = 0.4f;                         /* 最小Xスケール */
-	static constexpr float kMaxScaleX = 0.5f;                         /* 最大Xスケール */
-	static constexpr float kMinScaleY = 0.8f;                         /* 最小Yスケール */
-	static constexpr float kMaxScaleY = 1.0f;                         /* 最大Yスケール */
-	static constexpr float kInitialScaleZ = 1.0f;                     /* 初期Zスケール */
-	static constexpr Float4 kInitialColor = {1.0f, 0.5f, 0.2f, 1.0f}; /* 初期色 */
-	static constexpr float kLifeTime = 0.05f;                         /* 生存時間（秒） */
+	static constexpr float kMinScaleX = 0.4f;									/* 最小Xスケール */
+	static constexpr float kMaxScaleX = 0.5f;									/* 最大Xスケール */
+	static constexpr float kMinScaleY = 0.8f;									/* 最小Yスケール */
+	static constexpr float kMaxScaleY = 1.0f;									/* 最大Yスケール */
+	static constexpr float kInitialScaleZ = 1.0f;								/* 初期Zスケール */
+	static constexpr Cygnus::Float4 kInitialColor = {1.0f, 0.5f, 0.2f, 1.0f};	/* 初期色 */
+	static constexpr float kLifeTime = 0.05f;									/* 生存時間（秒） */
 
 	static constexpr float kScaleXMultipiler = 1.4f; /* X方向の拡大倍率 */
 	static constexpr float kScaleYMultiplier = 0.4f; /* Y方向の縮小倍率 */

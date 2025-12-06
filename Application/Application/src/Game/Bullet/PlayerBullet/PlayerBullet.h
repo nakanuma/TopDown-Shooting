@@ -8,7 +8,7 @@
 // =========================================================
 // プレイヤーの通常弾クラス
 // =========================================================
-class PlayerBullet : public Bullet, public ICollisionCallback {
+class PlayerBullet : public Bullet, public Cygnus::ICollisionCallback {
 public:
 	// =========================================================
 	// Public Methods
@@ -20,7 +20,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="direciton">方向</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) override;
+	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direciton, Cygnus::ModelManager::ModelData* model) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -36,7 +36,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 private:
 	// =========================================================
@@ -52,5 +52,5 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	Float3 prevPosition_;              /* 前フレームの位置 */
+	Cygnus::Float3 prevPosition_;              /* 前フレームの位置 */
 };

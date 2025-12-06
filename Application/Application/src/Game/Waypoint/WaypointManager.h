@@ -74,7 +74,7 @@ public:
 	/// </summary>
 	/// <param name="pos">現在位置</param>
 	/// <returns>最も近いウェイポイント</returns>
-	Waypoint* FindClosestWaypoint(const Float3& pos);
+	Waypoint* FindClosestWaypoint(const Cygnus::Float3& pos);
 
 	/// <summary>
 	/// A*アルゴリズムを用いた経路探索を行います。
@@ -97,8 +97,8 @@ private:
 	static constexpr float kMaxDistance = 4.0f;     /* 隣接ノードの最大距離 */
 	static constexpr float kWaypointRadius = 0.25f; /* ウェイポイントの生成時衝突判定に使用する半径 */
 
-	static constexpr Float3 kBottomLeft = {0.0f, 2.0f, 0.0f};  /* ウェイポイント生成左下位置 */
-	static constexpr Float3 kTopRight = {70.0f, 2.0f, 120.0f}; /* ウェイポイント生成右上位置 */
+	static constexpr Cygnus::Float3 kBottomLeft = {0.0f, 2.0f, 0.0f};  /* ウェイポイント生成左下位置 */
+	static constexpr Cygnus::Float3 kTopRight = {70.0f, 2.0f, 120.0f}; /* ウェイポイント生成右上位置 */
 
 	// =========================================================
 	// Internal Methods

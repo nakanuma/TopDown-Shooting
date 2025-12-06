@@ -36,7 +36,7 @@
 // =========================================================
 // ゲームプレイシーンクラス
 // =========================================================
-class GamePlayScene : public BaseScene {
+class GamePlayScene : public Cygnus::BaseScene {
 public:
 	// =========================================================
 	// Public Methods
@@ -81,8 +81,8 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kInitialCameraPosition = { 0.0f, 50.0f, -55.0f };							/* 初期カメラ位置 */
-	static constexpr Float3 kInitialCameraRotation = { PIf / 4.0f, 0.0f, 0.0f };						/* 初期カメラ回転角 */
+	static constexpr Cygnus::Float3 kInitialCameraPosition = { 0.0f, 50.0f, -55.0f };					/* 初期カメラ位置 */
+	static constexpr Cygnus::Float3 kInitialCameraRotation = { Cygnus::PIf / 4.0f, 0.0f, 0.0f };		/* 初期カメラ回転角 */
 	static constexpr float kCameraFovY = 0.45f;															/* カメラの視野角 */
 
 	static constexpr float kSplitBlockOpenDuration = 0.5f;	/* 分割ブロックトランジション開始時の演出時間 */
@@ -91,21 +91,21 @@ private:
 	static constexpr float kFadeOutDuration = 0.5f;	/* フェードアウトの演出時間 */
 	static constexpr float kFadeOutDelay = 0.25f;	/* フェードアウト開始前の遅延時間 */
 
-	static constexpr Float3 kDirectionalLightDirection = { 0.367f, -0.653f, -0.662f };	/* 平行光源の方向 */
-	static constexpr float kDirectionalLightIntensity = 1.0f;							/* 平行光源の強度 */
+	static constexpr Cygnus::Float3 kDirectionalLightDirection = { 0.367f, -0.653f, -0.662f };	/* 平行光源の方向 */
+	static constexpr float kDirectionalLightIntensity = 1.0f;									/* 平行光源の強度 */
 
-	static constexpr Float3 kShadowBoundingBoxExtents = { 30.0f, 10.0f, 30.0f };	/* シャドウマップ用AABBの範囲 */
+	static constexpr Cygnus::Float3 kShadowBoundingBoxExtents = { 30.0f, 10.0f, 30.0f };	/* シャドウマップ用AABBの範囲 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- System -----
-	std::unique_ptr<Camera> camera_ = nullptr;				/* 3Dカメラクラス */
-	std::unique_ptr<SpriteCommon> spriteCommon_ = nullptr;	/* スプライト共通処理 */
-	std::unique_ptr<SoundManager> soundManager_ = nullptr;	/* サウンド管理クラス */
-	Input* input_ = nullptr;								/* 入力管理クラス */
-	LightManager* lightManager_ = nullptr;					/* 各ライト管理クラス */
+	std::unique_ptr<Cygnus::Camera> camera_ = nullptr;						/* 3Dカメラクラス */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_ = nullptr;			/* スプライト共通処理 */
+	std::unique_ptr<Cygnus::SoundManager> soundManager_ = nullptr;			/* サウンド管理クラス */
+	Cygnus::Input* input_ = nullptr;										/* 入力管理クラス */
+	Cygnus::LightManager* lightManager_ = nullptr;							/* 各ライト管理クラス */
 
 	// ----- Loader -----
 	std::unique_ptr<Loader> loader_;						/* ステージデータの管理クラス */
@@ -118,12 +118,12 @@ private:
 	std::unique_ptr<TeleporterManager> teleporterManager_;	/* テレポーター管理クラス */
 
 	// ----- Others -----
-	std::unique_ptr<FollowCamera> followCamera_;			/* 追従カメラ管理クラス */
-	std::unique_ptr<PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
-	uint32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
-	std::unique_ptr<GameStartSequence> gameStartSequence_;  /* ゲームスタート時の演出制御クラス */
-	std::unique_ptr<GameOverSequence> gameOverSequence_;	/* ゲームオーバー時の演出制御クラス */
-	std::unique_ptr<GameClearSequence> gameClearSequence_;	/* ゲームクリア時の演出制御クラス */
+	std::unique_ptr<FollowCamera> followCamera_;					/* 追従カメラ管理クラス */
+	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
+	uint32_t shadowMapHandle_;										/* シャドウマップテクスチャ */
+	std::unique_ptr<GameStartSequence> gameStartSequence_;			/* ゲームスタート時の演出制御クラス */
+	std::unique_ptr<GameOverSequence> gameOverSequence_;			/* ゲームオーバー時の演出制御クラス */
+	std::unique_ptr<GameClearSequence> gameClearSequence_;			/* ゲームクリア時の演出制御クラス */
 
 	bool isTransitioning_ = false;							/* リザルトシーンへの遷移中かどうか */
 };

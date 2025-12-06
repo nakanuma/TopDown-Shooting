@@ -5,7 +5,7 @@
 #include <Engine/Math/MyMath.h>
 #include <Engine/Util/RandomGenerator.h>
 
-ShellEjectionParticle::ShellEjectionParticle(ModelManager::ModelData& model)
+ShellEjectionParticle::ShellEjectionParticle(Cygnus::ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -15,13 +15,13 @@ ShellEjectionParticle::ShellEjectionParticle(ModelManager::ModelData& model)
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
+ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle)
 {
 	ShellEjectionParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置
 	p.transform.translate_ = pos;
@@ -30,8 +30,8 @@ ShellEjectionParticleData ShellEjectionParticle::CreateParticle(const Float3& po
 	// スケール（縦長の形状）
 	p.transform.scale_ = kInitialScale;
 	// 速度ベクトル
-	Float3 rightDir = { cosf(angle), 0.0f, -sinf(angle) };
-	Float3 upDir = { 0.0f, 1.0f, 0.0f };
+	Cygnus::Float3 rightDir = { cosf(angle), 0.0f, -sinf(angle) };
+	Cygnus::Float3 upDir = { 0.0f, 1.0f, 0.0f };
 	p.velocity =
 		rightDir * rand->RandomValue(kMinRightSpeed, kMaxRightSpeed) + // 右方向
 		upDir * rand->RandomValue(kMinUpSpeed, kMaxUpSpeed); // 上方向

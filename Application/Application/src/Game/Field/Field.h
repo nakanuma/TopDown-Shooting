@@ -33,11 +33,11 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kScale = {500.0f, 500.0f, 1.0f}; /* オブジェクトのスケール */
-	static constexpr Float4 kColor = {0.157f, 0.204f, 0.308f, 1.0f}; /* オブジェクトの色 */
+	static constexpr Cygnus::Float3 kScale = {500.0f, 500.0f, 1.0f}; /* オブジェクトのスケール */
+	static constexpr Cygnus::Float4 kColor = {0.157f, 0.204f, 0.308f, 1.0f}; /* オブジェクトの色 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Object3D> objectFloor_;				/* 床オブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectFloor_;				/* 床オブジェクト */
 };

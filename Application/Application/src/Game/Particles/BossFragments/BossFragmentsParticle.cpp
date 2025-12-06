@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-BossFragmentsParticle::BossFragmentsParticle(ModelManager::ModelData& model) {
+BossFragmentsParticle::BossFragmentsParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -13,29 +13,29 @@ BossFragmentsParticle::BossFragmentsParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-BossFragmentsParticleData BossFragmentsParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+BossFragmentsParticleData BossFragmentsParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	BossFragmentsParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置（ボスの範囲内に生成されるようランダムなオフセットを加える）
-	Float3 offset = {
+	Cygnus::Float3 offset = {
 	    rand->RandomValue(-kSpawnRange.x, kSpawnRange.x),
 	    rand->RandomValue(-kSpawnRange.y, kSpawnRange.y),
 	    rand->RandomValue(-kSpawnRange.z, kSpawnRange.z),
 	};
 	p.transform.translate_ = pos + offset;
 	// 回転
-	p.transform.rotate_ = rand->RandomValue({0.0f, 0.0f, 0.0f}, {PIf * 2.0f, PIf * 2.0f, PIf * 2.0f});
+	p.transform.rotate_ = rand->RandomValue({0.0f, 0.0f, 0.0f}, { Cygnus::PIf * 2.0f, Cygnus::PIf * 2.0f, Cygnus::PIf * 2.0f});
 	// スケール
-	Float3 scale = rand->RandomValue(kMinScale, kMaxScale);
+	Cygnus::Float3 scale = rand->RandomValue(kMinScale, kMaxScale);
 	p.transform.scale_ = scale;
 	// 速度ベクトル
-	Float3 dir = offset;
+	Cygnus::Float3 dir = offset;
 	dir += rand->RandomValue(kMinVelocityOffset, kMaxVelocityOffset); // 中心から外側へ向かうオフセット
-	dir = Float3::Normalize(dir);
+	dir = Cygnus::Float3::Normalize(dir);
 	float speed = rand->RandomValue(kMinSpeed, kMaxSpeed);
 	p.velocity = dir * speed;
 	// 色
@@ -63,5 +63,5 @@ void BossFragmentsParticle::UpdateParticle(BossFragmentsParticleData& p, float d
 	// 回転
 	p.transform.rotate_ += p.rotationSpeed * dt;
 	// 縮小
-	p.transform.scale_ = p.initScale * (1.0f - Easing::EaseInExpo(t));
+	p.transform.scale_ = p.initScale * (1.0f - Cygnus::Easing::EaseInExpo(t));
 }

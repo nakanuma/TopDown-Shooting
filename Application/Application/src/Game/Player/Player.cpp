@@ -25,23 +25,23 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	基盤機能
 	///
 
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// 入力
-	input_ = Input::GetInstance();
+	input_ = Cygnus::Input::GetInstance();
 
 	// スプライト基盤
-	spriteCommon_ = std::make_unique<SpriteCommon>();
-	spriteCommon_->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
+	spriteCommon_->Initialize(Cygnus::DirectXBase::GetInstance());
 
 	///
 	///	アニメーションデータ読み込み
 	/// 
 
 	// 前移動
-	walkData_.modelData = ModelManager::LoadModelFile("Character/Player/walk.gltf");
-	walkData_.modelData.material.textureHandle = TextureManager::Load("Character/Player/player.png");
-	walkData_.animation = AnimationLoader::LoadAnimation("resources/Models", "Character/Player/walk.gltf");
+	walkData_.modelData = Cygnus::ModelManager::LoadModelFile("Character/Player/walk.gltf");
+	walkData_.modelData.material.textureHandle = Cygnus::TextureManager::Load("Character/Player/player.png");
+	walkData_.animation = Cygnus::AnimationLoader::LoadAnimation("resources/Models", "Character/Player/walk.gltf");
 	walkData_.skeleton.CreateSkeleton(walkData_.modelData.rootNode);
 
 	///
@@ -49,15 +49,15 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	// プレイヤーオブジェクト生成
-	objectPlayer_ = std::make_unique<AnimatedModelInstance>();
+	objectPlayer_ = std::make_unique<Cygnus::AnimatedModelInstance>();
 	objectPlayer_->Initialize(walkData_);
 	objectPlayer_->GetTranslate() = data.translate;
 	objectPlayer_->SetPlayBackSpeed(kAnimationPlaybackSpeed);
 	objectPlayer_->object_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	// 銃オブジェクト生成
-	objectGun_ = std::make_unique<Object3D>();
-	objectGun_->model_ = &ModelManager::GetInstance()->GetModel("Gun");
+	objectGun_ = std::make_unique<Cygnus::Object3D>();
+	objectGun_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Gun");
 	objectGun_->materialCB_.data_->color = kGunColor;
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
 	objectGun_->materialCB_.data_->environmentStrength = kGunEnvironmentStrength;
@@ -66,14 +66,14 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	コライダー生成
 	///
 
-	auto aabb = std::make_unique<AABBCollider>();
+	auto aabb = std::make_unique<Cygnus::AABBCollider>();
 	aabb->SetTag("Player");
 	aabb->SetFollowTarget(&objectPlayer_->GetTranslate());
 	aabb->SetSize(kColliderSize);
 	aabb->SetOwner(this);
 
 	collider_ = std::move(aabb);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
@@ -131,10 +131,10 @@ void Player::Update(bool operable) {
 		// 死亡したフレームのみパーティクルを発生
 		if (!wasDead) {
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, DegToRad(kDeathCrossAngle1));
-			ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, DegToRad(kDeathCrossAngle2));
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, Cygnus::DegToRad(kDeathCrossAngle1));
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", GetTranslate(), kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, Cygnus::DegToRad(kDeathCrossAngle2));
 
-			ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), kBloodSplatterCount);
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("bloodSplatter", this->GetTranslate(), kBloodSplatterCount);
 		}
 	}
 
@@ -149,14 +149,14 @@ void Player::Update(bool operable) {
 	///
 
 	// プレイヤーオブジェクト更新
-	objectPlayer_->Update(TimeManager::GetInstance()->GetDeltaTime(), isMoving_);
+	objectPlayer_->Update(Cygnus::TimeManager::GetInstance()->GetDeltaTime(), isMoving_);
 	objectPlayer_->object_->UpdateShadowMatrix();
 
 	// 銃オブジェクト更新
-	Float3 playerPos = objectPlayer_->GetTranslate();
-	Float3 playerRot = objectPlayer_->GetRotate();
-	Float3 forward = { sinf(playerRot.y), 0.0f, cosf(playerRot.y) }; // 前方向ベクトル
-	Float3 right = { cosf(playerRot.y), 0.0f, -sinf(playerRot.y) }; // 右方向ベクトル
+	Cygnus::Float3 playerPos = objectPlayer_->GetTranslate();
+	Cygnus::Float3 playerRot = objectPlayer_->GetRotate();
+	Cygnus::Float3 forward = { sinf(playerRot.y), 0.0f, cosf(playerRot.y) }; // 前方向ベクトル
+	Cygnus::Float3 right = { cosf(playerRot.y), 0.0f, -sinf(playerRot.y) }; // 右方向ベクトル
 
 	objectGun_->transform_.translate_ = playerPos + (forward * kGunForwardOffset) + (right * kGunRightOffset);
 	objectGun_->transform_.rotate_ = playerRot;
@@ -201,7 +201,7 @@ void Player::DrawUI() {
 	ui_->Draw();
 }
 
-void Player::OnCollision(Collider* other) {
+void Player::OnCollision(Cygnus::Collider* other) {
 	///
 	/// vs NormalEnemy
 	///
@@ -241,19 +241,19 @@ void Player::OnCollision(Collider* other) {
 	/// vs Obstacle
 	///
 	if (other->GetTag() == "Obstacle") {
-		AABBCollider* myAABB = dynamic_cast<AABBCollider*>(collider_.get());
-		AABBCollider* otherAABB = dynamic_cast<AABBCollider*>(other);
+		Cygnus::AABBCollider* myAABB = dynamic_cast<Cygnus::AABBCollider*>(collider_.get());
+		Cygnus::AABBCollider* otherAABB = dynamic_cast<Cygnus::AABBCollider*>(other);
 
 		// 押し戻し処理
 		if (myAABB && otherAABB) {
 			// 押し戻しベクトル取得
-			Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
+			Cygnus::Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 			// プレイヤー位置を補正
 			objectPlayer_->GetTranslate() += pushVec;
 
 			// コライダーも更新しておく
-			Float3 currentMin = myAABB->GetMin();
-			Float3 currentMax = myAABB->GetMax();
+			Cygnus::Float3 currentMin = myAABB->GetMin();
+			Cygnus::Float3 currentMax = myAABB->GetMax();
 			myAABB->SetMin(currentMin + pushVec);
 			myAABB->SetMax(currentMax + pushVec);
 		}
@@ -312,7 +312,7 @@ void Player::Debug() {
 
 void Player::FaceCursor() {
 	// プレイヤーからカーソルへの方向ベクトル
-	Float3 direction = Utility::CalculateCursorPosition() - objectPlayer_->GetTranslate();
+	Cygnus::Float3 direction = Utility::CalculateCursorPosition() - objectPlayer_->GetTranslate();
 
 	// 方向ベクトルからY軸回転角度を計算
 	float angle = std::atan2(direction.x, direction.z);
@@ -342,7 +342,7 @@ void Player::HandleMove() {
 
 	// 正規化
 	if (isMoving_) {
-		velocity_ = Float3::Normalize(velocity_);
+		velocity_ = Cygnus::Float3::Normalize(velocity_);
 	}
 
 	///
@@ -351,12 +351,12 @@ void Player::HandleMove() {
 
 	// クールタイム更新
 	if (dashCooldownTimer_ > 0.0f) {
-		dashCooldownTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		dashCooldownTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	}
 
 	// ダッシュ中処理
 	if (isDashing_) {
-		dashTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		if (dashTimer_ <= 0.0f) {
 			isDashing_ = false;                 // ダッシュ終了
 			dashCooldownTimer_ = kDashCoolDown; // クールタイムをセット
@@ -389,55 +389,55 @@ void Player::HandleShooting() {
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
 		// カーソル位置の取得
-		Float3 cursorPos = Utility::CalculateCursorPosition();
+		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
-		Float3 playerPos = objectPlayer_->GetTranslate();
+		Cygnus::Float3 playerPos = objectPlayer_->GetTranslate();
 
 		// 発射方向
-		Float3 direction = cursorPos - playerPos;
+		Cygnus::Float3 direction = cursorPos - playerPos;
 		direction.y = 0.0f;
-		direction = Float3::Normalize(direction);
+		direction = Cygnus::Float3::Normalize(direction);
 
 		// 少しだけ方向をブレさせる
 		float blurAmount = kMaxRandomAngle;
 
-		if (Float3::Length(velocity_) > kVelocityThreshold) {
+		if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
 			blurAmount *= kShootingBlurMultiplier; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
-		float blurDist = RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
+		float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
 
 		// Y成分以外のランダムベクトルを加算
 		direction.x += blurDist;
 		direction.z += blurDist;
-		direction = Float3::Normalize(direction); // 再正規化
+		direction = Cygnus::Float3::Normalize(direction); // 再正規化
 
 		// 弾の生成・初期化
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &ModelManager::GetInstance()->GetModel("Bullet"));
+		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
 		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
+		Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
 
-		Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
-		ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
+		Cygnus::Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
+		Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
 	}
 }
 
 void Player::HandleOverHeat()
 {
 	// 左クリック取得
-	isFiring_ = Input::GetInstance()->IsPressMouse(0);
+	isFiring_ = Cygnus::Input::GetInstance()->IsPressMouse(0);
 
 	// 発射タイマーを進める
-	fireTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	fireTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// オーバーヒートしていない場合の処理
 	if (!isOverheated_ && isFiring_) {
 		// オーバーヒート処理
-		overheatTime_ += kOverheatGainPerSecond * TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ += kOverheatGainPerSecond * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		if (overheatTime_ >= kOverheatLimit) {
 			overheatTime_ = kOverheatLimit;
 			isOverheated_ = true;
@@ -452,7 +452,7 @@ void Player::HandleOverHeat()
 		// オーバーヒート中の処理
 	} else {
 		// 冷却処理（撃っていない間 or オーバーヒート中）
-		overheatTime_ -= kOverheatRecoverySpeed * TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ -= kOverheatRecoverySpeed * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		overheatTime_ = std::max(overheatTime_, 0.0f);
 
 		// 冷却時間完了でオーバーヒート解除
@@ -467,7 +467,7 @@ void Player::HandleHitBlink()
 	// 発光演出中でなければスキップ
 	if (!isHitBlink_) return;
 
-	hitBlinkTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	hitBlinkTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	float t;
 
 	switch (hitBlinkPhase_)
@@ -476,7 +476,7 @@ void Player::HandleHitBlink()
 		if (hitBlinkTimer_ < kHitBlinkDuration) {
 			t = std::clamp(hitBlinkTimer_ / kHitBlinkDuration, 0.0f, 1.0f);
 			// プレイヤーを発光させる
-			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = Easing::EaseOutQuad(t);
+			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = Cygnus::Easing::EaseOutQuad(t);
 		} else {
 			// 終了したら次のフェーズへ
 			hitBlinkPhase_ = HitBlinkPhase::BlinkOut;
@@ -487,7 +487,7 @@ void Player::HandleHitBlink()
 		if (hitBlinkTimer_ < kHitBlinkDuration) {
 			t = std::clamp(hitBlinkTimer_ / kHitBlinkDuration, 0.0f, 1.0f);
 			// プレイヤーを減光させる
-			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = 1.0f - Easing::EaseInQuad(t);
+			objectPlayer_->object_->materialCB_.data_->emissiveIntensity = 1.0f - Cygnus::Easing::EaseInQuad(t);
 		} else {
 			// 終了したら待機フェーズへ
 			hitBlinkPhase_ = HitBlinkPhase::Wait;
@@ -504,7 +504,7 @@ void Player::HandleDamageEffect()
 	// ダメージ演出中でなければスキップ
 	if (!isReceiveDamage_) return;
 
-	damageEffectTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	damageEffectTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	float t;
 
 	switch (damageEffectPhase_)
@@ -513,7 +513,7 @@ void Player::HandleDamageEffect()
 		if (damageEffectTimer_ < kDamageEffectDurationIn) {
 			t = std::clamp(damageEffectTimer_ / kDamageEffectDurationIn, 0.0f, 1.0f);
 			// ダメージビネットの強度を増加
-			postEffectManager_->damageVignetteCB_.data_->intensity = Easing::EaseInQuad(t);
+			postEffectManager_->damageVignetteCB_.data_->intensity = Cygnus::Easing::EaseInQuad(t);
 		} else {
 			// 終了したら維持フェーズへ
 			damageEffectPhase_ = DamageEffectPhase::Hold;
@@ -534,7 +534,7 @@ void Player::HandleDamageEffect()
 		if (damageEffectTimer_ < kDamageEffectDurationOut) {
 			t = std::clamp(damageEffectTimer_ / kDamageEffectDurationOut, 0.0f, 1.0f);
 			// ダメージビネットの強度を減少
-			postEffectManager_->damageVignetteCB_.data_->intensity = 1.0f - Easing::EaseInQuad(t);
+			postEffectManager_->damageVignetteCB_.data_->intensity = 1.0f - Cygnus::Easing::EaseInQuad(t);
 		} else {
 			// 終了したら待機フェーズへ
 			damageEffectPhase_ = DamageEffectPhase::Wait;

@@ -12,11 +12,11 @@ void Bullet::DrawTrail() {
 		float t1 = static_cast<float>(i) / (trailPoints_.size() - 1);
 
 		// 線の両端の色を補間
-		Float4 c0 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t0); // この線分での末尾の色
-		Float4 c1 = Float4::Lerp(kTrailTailColor, kTrailHeadColor, t1); // この線分での先頭の色
+		Cygnus::Float4 c0 = Cygnus::Float4::Lerp(kTrailTailColor, kTrailHeadColor, t0); // この線分での末尾の色
+		Cygnus::Float4 c1 = Cygnus::Float4::Lerp(kTrailTailColor, kTrailHeadColor, t1); // この線分での先頭の色
 
 		// トレイル線の登録
-		LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], kTrailLineWidth, c1, c0);
+		Cygnus::LineDrawer::GetInstance()->RegisterTracer(trailPoints_[i - 1], trailPoints_[i], kTrailLineWidth, c1, c0);
 	}
 }
 
@@ -26,22 +26,22 @@ void Bullet::FinishLifeCycle() {
 
 	// コライダー破棄
 	if (collider_) {
-		CollisionManager::GetInstance()->Unregister(collider_.get());
+		Cygnus::CollisionManager::GetInstance()->Unregister(collider_.get());
 	}
 }
 
-void Bullet::EmitBloodHitParticles(const Float3& position, const Float3& velocity) {
+void Bullet::EmitBloodHitParticles(const Cygnus::Float3& position, const Cygnus::Float3& velocity) {
 	// 血飛沫パーティクル
-	ParticleEffectManager::GetInstance()->Emit("bloodSplatter", position, kBloodSplatterCount);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("bloodSplatter", position, kBloodSplatterCount);
 	// 血煙パーティクル
-	ParticleEffectManager::GetInstance()->Emit("bloodSmoke", position, kBloodSmokeCount, velocity);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("bloodSmoke", position, kBloodSmokeCount, velocity);
 	// 後方血飛散パーティクル
-	ParticleEffectManager::GetInstance()->Emit("bloodScatter", position, kBloodScatterCount, velocity);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("bloodScatter", position, kBloodScatterCount, velocity);
 }
 
-void Bullet::EmitHardHitParticles(const Float3& position, const Float3& velocity) {
+void Bullet::EmitHardHitParticles(const Cygnus::Float3& position, const Cygnus::Float3& velocity) {
 	// 後方飛散パーティクル
-	ParticleEffectManager::GetInstance()->Emit("backscatter", position, kBackscatterCount, velocity);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("backscatter", position, kBackscatterCount, velocity);
 	// 衝撃煙パーティクル
-	ParticleEffectManager::GetInstance()->Emit("impactSmoke", position, kImpactSmokeCount, velocity);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("impactSmoke", position, kImpactSmokeCount, velocity);
 }

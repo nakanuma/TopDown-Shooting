@@ -9,7 +9,7 @@
 // 地面警告攻撃クラス
 // ボスの第一形態が使用。弾として扱う
 // =========================================================
-class GroundWarning : public Bullet, public ICollisionCallback {
+class GroundWarning : public Bullet, public Cygnus::ICollisionCallback {
 public:
 	// =========================================================
 	// Public Methods
@@ -21,7 +21,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="direciton">方向</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Float3& position, const Float3& direction, ModelManager::ModelData* model) override;
+	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direction, Cygnus::ModelManager::ModelData* model) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -37,7 +37,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 private:
 	// =========================================================
@@ -53,7 +53,7 @@ private:
 	static constexpr int32_t kDamage = 20;		/* 攻撃力 */
 	static constexpr float kHitDelay = 0.8f;    /* 衝突判定が有効化されるまでの遅延時間 */
 
-	static constexpr Float3 kParticleOffset = {0.0f, 1.5f, 0.0f}; /* パーティクル発生位置のオフセット */
+	static constexpr Cygnus::Float3 kParticleOffset = {0.0f, 1.5f, 0.0f}; /* パーティクル発生位置のオフセット */
 	static constexpr int32_t kExplodeSmokeCount = 15;             /* 煙パーティクルの発生数 */
 	static constexpr int32_t kExplodeScatterCount = 25;           /* 飛散パーティクルの発生数 */
 

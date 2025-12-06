@@ -29,17 +29,17 @@ public:
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
-	void Update(const Float3& playerPos);
+	void Update(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// モデルの描画処理を行います。
 	/// </summary>
-	void Draw(const Float3& playerPos);
+	void Draw(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// シャドウマップ用の描画処理を行います。
 	/// </summary>
-	void DrawShadow(const Float3& playerPos);
+	void DrawShadow(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// デバッグ用の描画処理を行います。

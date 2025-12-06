@@ -12,18 +12,18 @@
 // ---------------------------------------------------------
 #include <src/Game/Player/Player.h>
 
-void HomingMissile::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
+void HomingMissile::Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direciton, Cygnus::ModelManager::ModelData* model) {
 	// ---------------------------------------------------------
 	// オブジェクト生成・初期設定
 	// ---------------------------------------------------------
-	objectBullet_ = std::make_unique<Object3D>();
+	objectBullet_ = std::make_unique<Cygnus::Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
 	objectBullet_->transform_.scale_ = kMissileScale;
 	objectBullet_->materialCB_.data_->color = kMissileColor;
 
 	// 進行方向から向きを計算して回転を設定
-	Float3 dir = Float3::Normalize(direciton);
+	Cygnus::Float3 dir = Cygnus::Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
 	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
@@ -32,7 +32,7 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	// コライダー生成・登録
 	// ---------------------------------------------------------
 
-	auto obb = std::make_unique<OBBCollider>();
+	auto obb = std::make_unique<Cygnus::OBBCollider>();
 	obb->SetTag("HomingMissile");
 	obb->SetFollowTarget(&objectBullet_->transform_.translate_);
 	obb->SetFollowRotation(&objectBullet_->transform_.rotate_);
@@ -40,7 +40,7 @@ void HomingMissile::Initialize(const Float3& position, const Float3& direciton, 
 	obb->SetOwner(this);
 
 	collider_ = std::move(obb);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	// ---------------------------------------------------------
 	// パラメーター設定
@@ -56,15 +56,15 @@ void HomingMissile::Update() {
 	// ---------------------------------------------------------
 
 	// プレイヤー方向
-	Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate_;
-	toTarget = Float3::Normalize(toTarget);
+	Cygnus::Float3 toTarget = targetPlayer_->GetTranslate() - objectBullet_->transform_.translate_;
+	toTarget = Cygnus::Float3::Normalize(toTarget);
 
 	// 現在の移動方向ベクトル
-	Float3 currentDir = Float3::Normalize(velocity_);
+	Cygnus::Float3 currentDir = Cygnus::Float3::Normalize(velocity_);
 
 	// 方向の補間
-	Float3 newDir = Float3::Lerp(currentDir, toTarget, kTurnSpeed);
-	newDir = Float3::Normalize(newDir);
+	Cygnus::Float3 newDir = Cygnus::Float3::Lerp(currentDir, toTarget, kTurnSpeed);
+	newDir = Cygnus::Float3::Normalize(newDir);
 	newDir.y = 0.0f;
 
 	// 補間した方向で速度更新
@@ -82,13 +82,13 @@ void HomingMissile::Update() {
 	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
 
 	// パーティクル発生（後方から出るよう調整）
-	Float3 offset = newDir * kSmokeOffsetDistance;
-	ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate_ + offset, kMissileSmokeCount);
+	Cygnus::Float3 offset = newDir * kSmokeOffsetDistance;
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("missileSmoke", objectBullet_->transform_.translate_ + offset, kMissileSmokeCount);
 
 	// ---------------------------------------------------------
 	// 寿命更新
 	// ---------------------------------------------------------
-	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+	elapsedTime_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
@@ -112,7 +112,7 @@ void HomingMissile::Draw() {
 	objectBullet_->Draw();
 }
 
-void HomingMissile::OnCollision(Collider* other) {
+void HomingMissile::OnCollision(Cygnus::Collider* other) {
 	// ---------------------------------------------------------
 	// プレイヤー・障害物との衝突
 	// ---------------------------------------------------------
@@ -126,7 +126,7 @@ void HomingMissile::OnCollision(Collider* other) {
 
 void HomingMissile::EmitHitParticles() {
 	// 煙パーティクル発生
-	ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectBullet_->transform_.translate_, kExplodeSmokeCount);
 	// 飛散パーティクル発生
-	ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("explodeScatter", objectBullet_->transform_.translate_, kExplodeScatterCount);
 }

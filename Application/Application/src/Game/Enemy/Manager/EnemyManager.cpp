@@ -9,7 +9,7 @@
 #include <src/Game/Player/Player.h>
 
 void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, Player* player) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// プレイヤーのポインタを受け取る
 	player_ = player;
@@ -28,21 +28,21 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, P
 		// 通常敵の生成・初期化
 		if (data.tag == "NORMAL_ENEMY") {
 			auto enemy = std::make_unique<NormalEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
+			enemy->Initialize(data.translate, &Cygnus::ModelManager::GetInstance()->GetModel("NormalEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
 		// 固定敵の生成・初期化
 		if (data.tag == "IMMOBILE_ENEMY") {
 			auto enemy = std::make_unique<ImmobileEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
+			enemy->Initialize(data.translate, &Cygnus::ModelManager::GetInstance()->GetModel("ImmobileEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 
 		// ボスの生成・初期化
 		if (data.tag == "BOSS_ENEMY") {
 			auto enemy = std::make_unique<BossEnemy>();
-			enemy->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
+			enemy->Initialize(data.translate, &Cygnus::ModelManager::GetInstance()->GetModel("BossEnemy"), player_);
 			enemies_.emplace_back(std::move(enemy));
 		}
 	}
@@ -113,7 +113,7 @@ void EnemyManager::Debug() {
 			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
 
 			// 座標の表示
-			const Float3& translate = enemy->GetTranslate();
+			const Cygnus::Float3& translate = enemy->GetTranslate();
 			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
 
 			// HPの表示

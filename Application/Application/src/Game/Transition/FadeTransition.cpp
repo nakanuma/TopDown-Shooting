@@ -14,12 +14,12 @@ FadeTransition* FadeTransition::GetInstance() {
 	return &instance;
 }
 
-void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
-	uint32_t textureWhite = TextureManager::Load("white.png");
-	Float2 windowSize = {static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())};
+void FadeTransition::Initialize(Cygnus::SpriteCommon* spriteCommon) {
+	uint32_t textureWhite = Cygnus::TextureManager::Load("white.png");
+	Cygnus::Float2 windowSize = {static_cast<float>(Cygnus::Window::GetWidth()), static_cast<float>(Cygnus::Window::GetHeight())};
 
 	// スプライト生成
-	sprite_ = std::make_unique<Sprite>();
+	sprite_ = std::make_unique<Cygnus::Sprite>();
 	sprite_->Initialize(spriteCommon, textureWhite);
 	sprite_->SetSize(windowSize);
 	sprite_->SetColor(kColorBlack);
@@ -42,7 +42,7 @@ void FadeTransition::Update() {
 	if (state_ == State::None)
 		return;
 
-	float dt = TimeManager::GetInstance()->GetDeltaTime();
+	float dt = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// フェードイン
 	if (state_ == State::FadeIn) {

@@ -16,18 +16,18 @@
 #include <src/Game/Transition/FadeTransition.h>
 #include <src/Game/Utility/Utility.h>
 
-void GameOverSequence::Initialize(SpriteCommon* spriteCommon) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+void GameOverSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// スプライト生成
-	uint32_t textureYouDied = TextureManager::Load("UI/youDied.png");
-	spriteDiedText_ = std::make_unique<Sprite>();
+	uint32_t textureYouDied = Cygnus::TextureManager::Load("UI/youDied.png");
+	spriteDiedText_ = std::make_unique<Cygnus::Sprite>();
 	spriteDiedText_->Initialize(spriteCommon, textureYouDied);
 	spriteDiedText_->SetAnchorPoint(kAnchorPoint);
 	spriteDiedText_->SetPosition(kDiedTextStartPos);
 
-	uint32_t textureBackToTitle = TextureManager::Load("UI/backToTitle.png");
-	spriteBackToTitleText_ = std::make_unique<Sprite>();
+	uint32_t textureBackToTitle = Cygnus::TextureManager::Load("UI/backToTitle.png");
+	spriteBackToTitleText_ = std::make_unique<Cygnus::Sprite>();
 	spriteBackToTitleText_->Initialize(spriteCommon, textureBackToTitle);
 	spriteBackToTitleText_->SetAnchorPoint(kAnchorPoint);
 	spriteBackToTitleText_->SetPosition(kBackToTitleTextPos);
@@ -35,13 +35,13 @@ void GameOverSequence::Initialize(SpriteCommon* spriteCommon) {
 	spriteBackToTitleText_->SetSize(backToTitleTextStartSize_);  // スプライトを初期サイズにしておく（0, 0）
 }
 
-void GameOverSequence::Start(const Float3& playerPos) {
+void GameOverSequence::Start(const Cygnus::Float3& playerPos) {
 	phase_ = Phase::Intro; // ゲームオーバー演出の開始
 	timer_ = 0.0f;
 	targetPos_ = playerPos; // プレイヤー死亡位置を注視点に
 
-	approachStartPos_ = Camera::GetCurrent()->transform_.translate_;                  // カメラ接近時の開始位置を設定
-	approachEndPos_ = Float3::Lerp(approachStartPos_, targetPos_, kApproachDistance); // どれだけの割合近づくかを設定
+	approachStartPos_ = Cygnus::Camera::GetCurrent()->transform_.translate_;                  // カメラ接近時の開始位置を設定
+	approachEndPos_ = Cygnus::Float3::Lerp(approachStartPos_, targetPos_, kApproachDistance); // どれだけの割合近づくかを設定
 }
 
 void GameOverSequence::Update() {
@@ -55,7 +55,7 @@ void GameOverSequence::Update() {
 		return;
 
 	// タイマー更新
-	timer_ += TimeManager::GetInstance()->GetDeltaTime();
+	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// スプライト更新
 	spriteDiedText_->Update();
@@ -89,8 +89,8 @@ void GameOverSequence::Update() {
 		break;
 	case Phase::Finish:
 		// 左クリック入力でタイトルシーンへ移行
-		if (Input::GetInstance()->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
-			FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
+		if (Cygnus::Input::GetInstance()->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
+			FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
 		}
 		break;
 	}
@@ -145,11 +145,11 @@ void GameOverSequence::Debug() {
 void GameOverSequence::UpdateApproach() {
 	// 進行度の計算
 	float t = std::clamp(timer_ / kApproachDuration, 0.0f, 1.0f);
-	float easeT = Easing::EaseOutQuart(t);
+	float easeT = Cygnus::Easing::EaseOutQuart(t);
 
 	// 開始位置から終了位置までeaseTの割合で補間してカメラ移動
-	Float3 newPos = Float3::Lerp(approachStartPos_, approachEndPos_, easeT);
-	Camera::GetCurrent()->transform_.translate_ = newPos;
+	Cygnus::Float3 newPos = Cygnus::Float3::Lerp(approachStartPos_, approachEndPos_, easeT);
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = newPos;
 
 	// 接近が完了したら次のフェーズへ
 	if (t >= 1.0f) {
@@ -161,25 +161,25 @@ void GameOverSequence::UpdateApproach() {
 void GameOverSequence::UpdateRotate() {
 	// 進行度の計算
 	float t = std::clamp(timer_ / kRotateDuration, 0.0f, 1.0f);
-	float easeT = Easing::EaseOutQuad(t);
+	float easeT = Cygnus::Easing::EaseOutQuad(t);
 
 	// 回転角（90度回転）
-	float angle = DegToRad(kRotateAngle) * easeT;
+	float angle = Cygnus::DegToRad(kRotateAngle) * easeT;
 	// ターゲットを中心にカメラの回転
-	Float3 offset = approachEndPos_ - targetPos_;
+	Cygnus::Float3 offset = approachEndPos_ - targetPos_;
 
 	// Y軸回転の計算を行う
-	Float3 rotateOffset = {offset.x * std::cosf(angle) - offset.z * std::sinf(angle), offset.y, offset.z * std::sinf(angle) + offset.z * std::cosf(angle)};
+	Cygnus::Float3 rotateOffset = {offset.x * std::cosf(angle) - offset.z * std::sinf(angle), offset.y, offset.z * std::sinf(angle) + offset.z * std::cosf(angle)};
 
 	// 新しいカメラ位置を計算
-	Float3 cameraPos = targetPos_ + rotateOffset;
-	Camera::GetCurrent()->transform_.translate_ = cameraPos;
+	Cygnus::Float3 cameraPos = targetPos_ + rotateOffset;
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = cameraPos;
 
 	// ターゲットを向くように回転を計算
-	Float3 forward = Float3::Normalize(targetPos_ - cameraPos);
+	Cygnus::Float3 forward = Cygnus::Float3::Normalize(targetPos_ - cameraPos);
 
-	Camera::GetCurrent()->transform_.rotate_.y = std::atan2f(forward.x, forward.z);
-	Camera::GetCurrent()->transform_.rotate_.x = std::asinf(-forward.y);
+	Cygnus::Camera::GetCurrent()->transform_.rotate_.y = std::atan2f(forward.x, forward.z);
+	Cygnus::Camera::GetCurrent()->transform_.rotate_.x = std::asinf(-forward.y);
 
 	// 回転が完了したら次のフェーズへ
 	if (t >= 1.0f) {
@@ -191,10 +191,10 @@ void GameOverSequence::UpdateRotate() {
 void GameOverSequence::UpdateDiedText() {
 	// 進行度の計算
 	float t = std::clamp(timer_ / kDiedTextDuration, 0.0f, 1.0f);
-	float easeT = Easing::EaseOutQuart(t);
+	float easeT = Cygnus::Easing::EaseOutQuart(t);
 
 	// 新しい位置へ移動
-	Float2 pos = Float2::Lerp(kDiedTextStartPos, kDiedTextEndPos, easeT);
+	Cygnus::Float2 pos = Cygnus::Float2::Lerp(kDiedTextStartPos, kDiedTextEndPos, easeT);
 	spriteDiedText_->SetPosition(pos);
 
 	// 移動が終了したら次のフェーズへ
@@ -207,10 +207,10 @@ void GameOverSequence::UpdateDiedText() {
 void GameOverSequence::UpdateBackToTitleText() {
 	// 進行度の計算
 	float t = std::clamp(timer_ / kBackToTitleTextDuration, 0.0f, 1.0f);
-	float easeT = Easing::EaseOutBounce(t);
+	float easeT = Cygnus::Easing::EaseOutBounce(t);
 
 	// 新しいサイズに更新
-	Float2 size = Float2::Lerp(backToTitleTextStartSize_, backToTitleTextEndSize_, easeT);
+	Cygnus::Float2 size = Cygnus::Float2::Lerp(backToTitleTextStartSize_, backToTitleTextEndSize_, easeT);
 	spriteBackToTitleText_->SetSize(size);
 
 	// 更新が終了したら次のフェーズへ

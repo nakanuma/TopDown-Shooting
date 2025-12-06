@@ -11,32 +11,32 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 
-void GameStartSequence::Initialize(SpriteCommon* spriteCommon) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// 初期カメラを設定
-	Camera::GetCurrent()->transform_.translate_ = kInitCameraPos;
-	Camera::GetCurrent()->transform_.rotate_ = kInitCameraRot;
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = kInitCameraPos;
+	Cygnus::Camera::GetCurrent()->transform_.rotate_ = kInitCameraRot;
 
 	// オブジェクト生成
-	objectCrumblingWall_ = std::make_unique<Object3D>();
-	objectCrumblingWall_->model_ = &ModelManager::GetInstance()->GetModel("CrumblingWall");
+	objectCrumblingWall_ = std::make_unique<Cygnus::Object3D>();
+	objectCrumblingWall_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("CrumblingWall");
 	objectCrumblingWall_->transform_.translate_ = {36.0f, 2.5f, 0.0f}; // 初期位置
 
-	objectDynamite_ = std::make_unique<Object3D>();
-	objectDynamite_->model_ = &ModelManager::GetInstance()->GetModel("Dynamite");
+	objectDynamite_ = std::make_unique<Cygnus::Object3D>();
+	objectDynamite_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Dynamite");
 	objectDynamite_->transform_.translate_ = {36.0f, 2.5f, -1.5f}; // 初期位置
 
 	// スプライト生成
-	uint32_t textureWhite = TextureManager::Load("white.png");
-	spriteTopLetterBox_ = std::make_unique<Sprite>();
+	uint32_t textureWhite = Cygnus::TextureManager::Load("white.png");
+	spriteTopLetterBox_ = std::make_unique<Cygnus::Sprite>();
 	spriteTopLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteTopLetterBox_->SetAnchorPoint({0.5f, 0.5f});
 	spriteTopLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 1.0f});
 	spriteTopLetterBox_->SetSize(kLetterBoxSize);
 	spriteTopLetterBox_->SetPosition(kTopBoxStartPos);
 
-	spriteBottomLetterBox_ = std::make_unique<Sprite>();
+	spriteBottomLetterBox_ = std::make_unique<Cygnus::Sprite>();
 	spriteBottomLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteBottomLetterBox_->SetAnchorPoint({0.5f, 0.5f});
 	spriteBottomLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 1.0f});
@@ -52,7 +52,7 @@ void GameStartSequence::Update() {
 	DebugSkip();
 
 	// タイマー更新
-	timer_ += TimeManager::GetInstance()->GetDeltaTime();
+	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// オブジェクト更新
 	objectCrumblingWall_->UpdateMatrix();
@@ -190,18 +190,18 @@ void GameStartSequence::UpdateExplosion() {
 	// 爆発時に1度のみ行う処理
 	if (!isExplode_) {
 		// パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("wallCollapse", objectCrumblingWall_->transform_.translate_, 200); // 壁崩壊パーティクル
+		Cygnus::ParticleEffectManager::GetInstance()->Emit("wallCollapse", objectCrumblingWall_->transform_.translate_, 200); // 壁崩壊パーティクル
 		for (int i = 0; i < 50; i++) {
-			Float3 offset = RandomGenerator::GetInstance()->RandomValue({-2.0f, -2.5f, 0.0f}, {2.0f, 2.5f, 0.0f});
+			Cygnus::Float3 offset = Cygnus::RandomGenerator::GetInstance()->RandomValue({-2.0f, -2.5f, 0.0f}, {2.0f, 2.5f, 0.0f});
 			// 爆発煙パーティクル
-			ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectDynamite_->transform_.translate_ + offset, 1);
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("explodeSmoke", objectDynamite_->transform_.translate_ + offset, 1);
 		}
 
 		// カメラシェイク
 		CameraShake::GetInstance()->StartShake(1.5f, 1.0f);
 	}
 	// カメラにシェイクオフセットを加算
-	Camera::GetCurrent()->transform_.translate_ = kInitCameraPos + CameraShake::GetInstance()->GetOffset();
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = kInitCameraPos + CameraShake::GetInstance()->GetOffset();
 
 	// 爆発終了したことを知らせる
 	isExplode_ = true;
@@ -216,18 +216,18 @@ void GameStartSequence::UpdateExplosion() {
 void GameStartSequence::UpdateTransition() {
 	// 補間進行
 	const float speed = 0.5f;
-	lerpT_ += TimeManager::GetInstance()->GetDeltaTime() * speed;
+	lerpT_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime() * speed;
 	float t = std::clamp(lerpT_, 0.0f, 1.0f);
 
 	// 線形補間でカメラを移動
-	float easeT = Easing::EaseOutSine(t);
-	Camera::GetCurrent()->transform_.translate_ = Float3::Lerp(kInitCameraPos, kTopdownCameraPos, easeT);
-	Camera::GetCurrent()->transform_.rotate_ = Float3::Lerp(kInitCameraRot, kTopdownCameraRot, easeT);
+	float easeT = Cygnus::Easing::EaseOutSine(t);
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = Cygnus::Float3::Lerp(kInitCameraPos, kTopdownCameraPos, easeT);
+	Cygnus::Camera::GetCurrent()->transform_.rotate_ = Cygnus::Float3::Lerp(kInitCameraRot, kTopdownCameraRot, easeT);
 
 	// 線形補間でレターボックスを上下に移動
-	float boxEase = Easing::EaseOutQuad(t);
-	Float2 topPos = Float2::Lerp(kTopBoxStartPos, kTopBoxEndPos, boxEase);
-	Float2 bottomPos = Float2::Lerp(kBottomBoxStartPos, kBottomBoxEndPos, boxEase);
+	float boxEase = Cygnus::Easing::EaseOutQuad(t);
+	Cygnus::Float2 topPos = Cygnus::Float2::Lerp(kTopBoxStartPos, kTopBoxEndPos, boxEase);
+	Cygnus::Float2 bottomPos = Cygnus::Float2::Lerp(kBottomBoxStartPos, kBottomBoxEndPos, boxEase);
 	spriteTopLetterBox_->SetPosition(topPos);
 	spriteBottomLetterBox_->SetPosition(bottomPos);
 
@@ -241,8 +241,8 @@ void GameStartSequence::UpdateTransition() {
 void GameStartSequence::DebugSkip() {
 	if (isDebugSkip_ && phase_ != Phase::Finish) {
 		// カメラを最終位置に設定
-		Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
-		Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;
+		Cygnus::Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
+		Cygnus::Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;
 
 		// レターボックスを最終位置に設定
 		spriteTopLetterBox_->SetPosition(kTopBoxEndPos);

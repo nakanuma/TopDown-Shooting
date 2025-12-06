@@ -46,8 +46,8 @@ private:
 	/// <param name="modelName">適用モデル名</param>
 	template <typename ParticleClass> 
 	void RegisterParticle(const std::string& particleEffectName, const std::string& modelName) {
-		auto particle = std::make_unique<ParticleClass>(ModelManager::GetInstance()->GetModel(modelName));
-		ParticleEffectManager::GetInstance()->Register(particleEffectName, std::move(particle));
+		auto particle = std::make_unique<ParticleClass>(Cygnus::ModelManager::GetInstance()->GetModel(modelName));
+		Cygnus::ParticleEffectManager::GetInstance()->Register(particleEffectName, std::move(particle));
 	}
 
 private:

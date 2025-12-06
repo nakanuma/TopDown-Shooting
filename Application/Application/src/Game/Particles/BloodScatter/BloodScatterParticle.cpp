@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-BloodScatterParticle::BloodScatterParticle(ModelManager::ModelData& model)
+BloodScatterParticle::BloodScatterParticle(Cygnus::ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -14,24 +14,24 @@ BloodScatterParticle::BloodScatterParticle(ModelManager::ModelData& model)
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-BloodScatterParticleData BloodScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
+BloodScatterParticleData BloodScatterParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle)
 {
 	BloodScatterParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置
 	p.transform.translate_ = pos;
 	// スケール
 	p.transform.scale_ = kScale;
 	// 速度ベクトル
-	Float3 baseDir = Float3::Normalize(velocity) * -1.0f;                                                                         // 引数で受け取った方向と逆向きにする
-	Float3 randDir = rand->RandomValue({ -kDirectionSpread, 0.0f, -kDirectionSpread }, { kDirectionSpread, 0.0f, kDirectionSpread }); // 方向をバラつかせるためのオフセット
-	p.velocity = Float3::Normalize(baseDir + randDir) * rand->RandomValue(kMinSpeed, kMaxSpeed);
+	Cygnus::Float3 baseDir = Cygnus::Float3::Normalize(velocity) * -1.0f;                                                                         // 引数で受け取った方向と逆向きにする
+	Cygnus::Float3 randDir = rand->RandomValue({ -kDirectionSpread, 0.0f, -kDirectionSpread }, { kDirectionSpread, 0.0f, kDirectionSpread }); // 方向をバラつかせるためのオフセット
+	p.velocity = Cygnus::Float3::Normalize(baseDir + randDir) * rand->RandomValue(kMinSpeed, kMaxSpeed);
 	// 回転（進行方向を向くように）
-	Float3 dir = Float3::Normalize(p.velocity);
+	Cygnus::Float3 dir = Cygnus::Float3::Normalize(p.velocity);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
 	p.transform.rotate_ = { -pitch, -yaw, 0.0f };
@@ -52,10 +52,10 @@ void BloodScatterParticle::UpdateParticle(BloodScatterParticleData& p, float dt)
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 移動
-	float moveFactor = Easing::EaseOutQuart(1.0f - t);
+	float moveFactor = Cygnus::Easing::EaseOutQuart(1.0f - t);
 	p.transform.translate_ += (p.velocity * moveFactor * dt);
 
 	// 縮小
-	float easeT = Easing::EaseInQuart(t);
+	float easeT = Cygnus::Easing::EaseInQuart(t);
 	p.transform.scale_.z = p.initScale.z * (1.0f - easeT);
 }

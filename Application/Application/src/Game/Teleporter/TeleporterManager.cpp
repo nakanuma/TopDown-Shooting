@@ -4,7 +4,7 @@
 #include <ImguiWrapper.h>
 
 void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& datas) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	///
 	///	テレポーターの生成
@@ -13,7 +13,7 @@ void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& dat
 	for (const auto& data : datas) {
 		if (data.tag == "TELEPORTER") {
 			auto teleporter = std::make_unique<Teleporter>();
-			teleporter->Initialize(data.translate, &ModelManager::GetInstance()->GetModel("Teleporter"));
+			teleporter->Initialize(data.translate, &Cygnus::ModelManager::GetInstance()->GetModel("Teleporter"));
 			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
 
@@ -82,7 +82,7 @@ void TeleporterManager::Debug() {
 		std::string label = "Teleporter[" + std::to_string(i) + "]";
 		if (ImGui::TreeNode(label.c_str())) {
 			// 位置の表示
-			const Float3& translate = teleporter->GetTranslate();
+			const Cygnus::Float3& translate = teleporter->GetTranslate();
 			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
 
 			// IDの表示

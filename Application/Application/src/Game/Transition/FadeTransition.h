@@ -42,7 +42,7 @@ public:
 	/// フェードの初期化処理を行います。
 	/// </summary>
 	/// <param name="spriteCommon">スプライト共通処理クラス</param>
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(Cygnus::SpriteCommon* spriteCommon);
 
 	/// <summary>
 	/// フェードインを開始します。（暗い画面から徐々に見えるように）
@@ -95,7 +95,7 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float4 kColorBlack = {0.0f, 0.0f, 0.0f, 1.0f}; /* 黒色 */
+	static constexpr Cygnus::Float4 kColorBlack = {0.0f, 0.0f, 0.0f, 1.0f}; /* 黒色 */
 
 	// =========================================================
 	// Member Variables
@@ -113,7 +113,7 @@ private:
 	float delayTimerAfterFadeOut_ = 0.0f;    /* フェードアウト完了してからの待機タイマー */
 
 	// ----- Sprite -----
-	std::unique_ptr<Sprite> sprite_; /* スプライト */
+	std::unique_ptr<Cygnus::Sprite> sprite_; /* スプライト */
 
 	// ----- Others -----
 	std::function<void()> onFadeComplete_; /* フェード完了後のコールバック関数 */

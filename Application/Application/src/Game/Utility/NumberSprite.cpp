@@ -8,14 +8,14 @@
 #include <Engine/Texture/TextureManager.h>
 
 void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// スプライト基盤
-	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
 	spriteCommon_->Initialize(dxBase);
 
 	// テクスチャ読み込み
-	uint32_t texture = TextureManager::Load("UI/number.png");
+	uint32_t texture = Cygnus::TextureManager::Load("UI/number.png");
 
 	// 値を文字列化
 	std::ostringstream oss;
@@ -42,7 +42,7 @@ void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
 
 		digitValues_[i] = index;
 
-		digits_[i] = std::make_unique<Sprite>();
+		digits_[i] = std::make_unique<Cygnus::Sprite>();
 		digits_[i]->Initialize(spriteCommon_.get(), texture);
 		digits_[i]->SetSize(kDigitSize);
 		digits_[i]->SetTextureSize(kDigitSize);
@@ -50,7 +50,7 @@ void NumberSprite::Initialize(float value, uint32_t decimalPlaces) {
 	}
 }
 
-void NumberSprite::Update(Float2 position) {
+void NumberSprite::Update(Cygnus::Float2 position) {
 	if (digitCount_ == 0)
 		return;
 
@@ -66,7 +66,7 @@ void NumberSprite::Update(Float2 position) {
 	}
 
 	// 中心位置を計算
-	Float2 startPos = position - Float2{totalWidth / 2.0f, 0.0f};
+	Cygnus::Float2 startPos = position - Cygnus::Float2{totalWidth / 2.0f, 0.0f};
 
 	// 各文字の位置を決定
 	float offsetX = 0.0f;
@@ -79,7 +79,7 @@ void NumberSprite::Update(Float2 position) {
 		else
 			width = kDigitSize.x * kDefaultDigitWidthRatio; // それ以外は同じ幅
 
-		Float2 digitPos = startPos + Float2{offsetX + width / 2.0f, 0.0f}; // アンカーポイントが中心のため補正
+		Cygnus::Float2 digitPos = startPos + Cygnus::Float2{offsetX + width / 2.0f, 0.0f}; // アンカーポイントが中心のため補正
 
 		digits_[i]->SetTextureLeftTop({digitValues_[i] * kDigitSize.x, 0.0f}); // 連番テクスチャから表示する数字を抽出
 		digits_[i]->SetPosition(digitPos);

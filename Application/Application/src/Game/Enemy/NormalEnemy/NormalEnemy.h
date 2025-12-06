@@ -16,7 +16,7 @@
 // =========================================================
 // 通常の敵クラス
 // =========================================================
-class NormalEnemy : public Enemy, public ICollisionCallback, public Configurator {
+class NormalEnemy : public Enemy, public Cygnus::ICollisionCallback, public Cygnus::Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -28,7 +28,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) override;
+	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -54,7 +54,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 	/// <summary>
 	/// デバッグ用の描画処理を行います。
@@ -89,31 +89,31 @@ private:
 	/// 敵が一定範囲内をランダムに移動します。
 	/// </summary>
 	/// <returns>BehaviorStatus</returns>
-	BehaviorStatus RandomPatrol();
+	Cygnus::BehaviorStatus RandomPatrol();
 
 	/// <summary>
 	/// ランダムに敵の回転を行います。
 	/// </summary>
 	/// <returns>BehaviorStatus</returns>
-	BehaviorStatus RandomRotate();
+	Cygnus::BehaviorStatus RandomRotate();
 
 	/// <summary>
 	/// プレイヤー方向へ敵を回線させます。
 	/// </summary>
 	/// <returns>BehaviorStatus</returns>
-	BehaviorStatus FacePlayer();
+	Cygnus::BehaviorStatus FacePlayer();
 
 	/// <summary>
 	/// 弾の発射処理を行います。
 	/// </summary>
 	/// <returns>BehaviorStatus</returns>
-	BehaviorStatus Shoot();
+	Cygnus::BehaviorStatus Shoot();
 
 	/// <summary>
 	/// 経路探索をしてプレイヤーまで移動します。
 	/// </summary>
 	/// <returns>BehaviorStatus</returns>
-	BehaviorStatus MoveToPlayer();
+	Cygnus::BehaviorStatus MoveToPlayer();
 
 	/// <summary>
 	/// BehaviorTreeの構築を行います。
@@ -124,7 +124,7 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kColliderSize = {1.0f, 2.0f, 1.0f};               /* コライダーサイズ */
+	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f};               /* コライダーサイズ */
 	static constexpr float kHPBarOffsetY = 90.0f;                             /* HPバーのY軸オフセット */
 	static constexpr float kReloadBarOffsetY = 60.0f;                         /* リロード表示のY軸オフセット */
 
@@ -152,9 +152,9 @@ private:
 	static constexpr float kRotateTimeMin = 1.0f;    /* 索敵時の回転最小時間（秒） */
 	static constexpr float kRotateTimeMax = 2.0f;    /* 索敵時の回転最大時間（秒） */
 
-	static constexpr int32_t kDebugSightSegments = 16;                         /* デバッグ視界の分割数 */
-	static constexpr Float4 kDebugSightColorNormal = {1.0f, 1.0f, 1.0f, 1.0f}; /* デバッグ視界色（通常時） */
-	static constexpr Float4 kDebugSightColorDetect = {1.0f, 0.0f, 0.0f, 1.0f}; /* デバッグ視界色（発見時） */
+	static constexpr int32_t kDebugSightSegments = 16;									/* デバッグ視界の分割数 */
+	static constexpr Cygnus::Float4 kDebugSightColorNormal = {1.0f, 1.0f, 1.0f, 1.0f};	/* デバッグ視界色（通常時） */
+	static constexpr Cygnus::Float4 kDebugSightColorDetect = {1.0f, 0.0f, 0.0f, 1.0f};	/* デバッグ視界色（発見時） */
 
 	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
 	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
@@ -163,8 +163,8 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; /* 初期スポーン地点 */
-	Waypoint* currentTargetWP_ = nullptr;       /* 現在の移動目標 */
+	Cygnus::Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; /* 初期スポーン地点 */
+	Waypoint* currentTargetWP_ = nullptr;				/* 現在の移動目標 */
 
 	bool isPlayerDetected_ = false; /* プレイヤー発見フラグ */
 	float rotateTimer_ = 0.0f;      /* 回転時タイマー */
@@ -178,6 +178,6 @@ private:
 	float reloadTimer_ = 0.0f; /* リロード中タイマー */
 	bool isReloading_ = false; /* リロード中フラグ */
 
-	std::unique_ptr<BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
-	std::unique_ptr<BehaviorTreeEditor<NormalEnemy>> btEditor_; /* BehaviorTreeEditor */
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
+	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> btEditor_; /* BehaviorTreeEditor */
 };

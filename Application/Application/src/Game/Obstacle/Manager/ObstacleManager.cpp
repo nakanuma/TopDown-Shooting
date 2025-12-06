@@ -1,10 +1,10 @@
-﻿#include "ObstacleManager.h"
+#include "ObstacleManager.h"
 
 // Externals
 #include <ImguiWrapper.h>
 
 void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// タグに対応したモデルデータキーをマップに保存
 	tagModelMap_ = {
@@ -36,17 +36,17 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas
 		// タグと一致した障害物のモデルを適用して生成
 		if (it != tagModelMap_.end()) {
 			auto obstacle = std::make_unique<Obstacle>();
-			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, &ModelManager::GetInstance()->GetModel(it->second));
+			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, &Cygnus::ModelManager::GetInstance()->GetModel(it->second));
 			obstacles_.emplace_back(std::move(obstacle));
 		}
 	}
 }
 
-void ObstacleManager::Update(const Float3& playerPos) {
+void ObstacleManager::Update(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Float3::LengthSq(diff);
+		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Cygnus::Float3::LengthSq(diff);
 
 		// プレイヤーから一定距離内のみ更新
 		if (distSq <= kActiveDistance * kActiveDistance) {
@@ -58,11 +58,11 @@ void ObstacleManager::Update(const Float3& playerPos) {
 	}
 }
 
-void ObstacleManager::Draw(const Float3& playerPos) {
+void ObstacleManager::Draw(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Float3::LengthSq(diff);
+		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Cygnus::Float3::LengthSq(diff);
 
 		// プレイヤーから一定距離内のみ描画
 		if (distSq <= kActiveDistance * kActiveDistance) {
@@ -71,11 +71,11 @@ void ObstacleManager::Draw(const Float3& playerPos) {
 	}
 }
 
-void ObstacleManager::DrawShadow(const Float3& playerPos) {
+void ObstacleManager::DrawShadow(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Float3::LengthSq(diff);
+		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
+		float distSq = Cygnus::Float3::LengthSq(diff);
 
 		// プレイヤーから一定距離内のみ描画
 		if (distSq <= kActiveDistance * kActiveDistance) {
@@ -104,11 +104,11 @@ void ObstacleManager::Debug() {
 			ImGui::Text("Tag : %s", obstacle->GetTag().c_str());
 
 			// 座標の表示
-			const Float3& translate = obstacle->GetTranslate();
+			const Cygnus::Float3& translate = obstacle->GetTranslate();
 			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
 
 			// スケールの表示
-			const Float3& scale = obstacle->GetScale();
+			const Cygnus::Float3& scale = obstacle->GetScale();
 			ImGui::Text("Scale : (%.2f, %.2f, %.2f)", scale.x, scale.y, scale.z);
 
 			// ここから他の項目追加

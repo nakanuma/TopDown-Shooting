@@ -10,7 +10,7 @@
 // =========================================================
 // 障害物の基底クラス
 // =========================================================
-class Obstacle : public ICollisionCallback {
+class Obstacle : public Cygnus::ICollisionCallback {
 public:
 	/// <summary>
 	/// 障害物の初期化処理を行います。
@@ -20,7 +20,7 @@ public:
 	/// <param name="rotate">回転（Float3）</param>
 	/// <param name="colliderSize">コライダーサイズ（Float3）</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Float3& position, const Float3& scale, const Float3& rotate, const Float3& colliderSize, ModelManager::ModelData* model);
+	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& scale, const Cygnus::Float3& rotate, const Cygnus::Float3& colliderSize, Cygnus::ModelManager::ModelData* model);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -40,7 +40,7 @@ public:
 	/// <summary>
 	/// 破棄を行います。
 	/// </summary>
-	void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
+	void OnDestroy() { Cygnus::CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
 	// =========================================================
 	// Getter / Setter
@@ -56,13 +56,13 @@ public:
 	/// 現在位置の取得を行います。
 	/// </summary>
 	/// <returns>現在位置（Float3）</returns>
-	Float3& GetTranslate() const { return object_->transform_.translate_; }
+	Cygnus::Float3& GetTranslate() const { return object_->transform_.translate_; }
 
 	/// <summary>
 	/// スケールの取得を行います。
 	/// </summary>
 	/// <returns>スケール（Float3）</returns>
-	Float3& GetScale() const { return object_->transform_.scale_; }
+	Cygnus::Float3& GetScale() const { return object_->transform_.scale_; }
 
 	/// <summary>
 	/// コライダーの有効化状態を設定します。
@@ -85,6 +85,6 @@ protected:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Object3D> object_;   /* 障害物オブジェクト */
-	std::unique_ptr<Collider> collider_; /* コライダー */
+	std::unique_ptr<Cygnus::Object3D> object_;   /* 障害物オブジェクト */
+	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
 };

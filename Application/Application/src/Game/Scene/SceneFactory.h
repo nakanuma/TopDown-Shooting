@@ -8,7 +8,7 @@
 // =========================================================
 // このゲーム用のシーン工場
 // =========================================================
-class SceneFactory : public AbstractSceneFactory {
+class SceneFactory : public Cygnus::AbstractSceneFactory {
 public:
 	// =========================================================
 	// Public Methods
@@ -25,7 +25,7 @@ public:
 	/// </summary>
 	/// <param name="sceneName">シーン名</param>
 	/// <returns>生成したシーン</returns>
-	std::unique_ptr<BaseScene> CreateScene(const std::string& sceneName) override;
+	std::unique_ptr<Cygnus::BaseScene> CreateScene(const std::string& sceneName) override;
 
 	/// <summary>
 	/// 初期化時のシーン名を取得します。

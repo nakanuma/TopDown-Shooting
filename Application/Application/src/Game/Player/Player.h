@@ -23,7 +23,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player : public ICollisionCallback, public Configurator {
+class Player : public Cygnus::ICollisionCallback, public Cygnus::Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -70,7 +70,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 	// =========================================================
 	// Getter / Setter
@@ -80,13 +80,13 @@ public:
 	/// プレイヤーの現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	const Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
+	const Cygnus::Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
 
 	/// <summary>
 	/// プレイヤーの位置を設定します。
 	/// </summary>
 	/// <param name="translate">設定する位置（Float3）</param>
-	void SetTranslate(const Float3& translate) { objectPlayer_->GetTranslate() = translate; }
+	void SetTranslate(const Cygnus::Float3& translate) { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
 	/// プレイヤーの現在HPを取得します。
@@ -116,7 +116,7 @@ public:
 	/// ポストエフェクトマネージャーをセットします。
 	/// </summary>
 	/// <param name="manager">ポストエフェクトマネージャー</param>
-	void SetPostEffectManager(PostEffectManager* manager) { postEffectManager_ = manager; }
+	void SetPostEffectManager(Cygnus::PostEffectManager* manager) { postEffectManager_ = manager; }
 
 private:
 	// =========================================================
@@ -157,8 +157,8 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
-	static constexpr int32_t kMaxHP = 100;							/* 最大HP */
+	static constexpr Cygnus::Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
+	static constexpr int32_t kMaxHP = 100;									/* 最大HP */
 
 	static constexpr float kMoveSpeed = 0.25f;				/* 移動速度 */
 	static constexpr float kDashDuration = 0.2f;			/* ダッシュ継続時間 */
@@ -173,10 +173,10 @@ private:
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f; /* アニメーション再生速度 */
 
-	static constexpr Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;			/* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;				/* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;					/* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f;	/* 速度正規化用の加算値 */
 	static constexpr float kVelocityThreshold = 0.01f;			/* 速度判定のしきい値 */
@@ -192,8 +192,8 @@ private:
 	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
-	static constexpr float kHitBlinkDuration = 0.05f;				/* 被弾時の発光時間 */
-	static constexpr Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
+	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
 
 	static constexpr float kDamageEffectDurationIn = 0.1f;			/* ダメージ演出増加の時間 */
 	static constexpr float kDamageEffectDurationHold = 0.2f;		/* ダメージ演出維持の時間 */
@@ -205,25 +205,25 @@ private:
 	// =========================================================
 
 	// ----- System -----
-	Input* input_ = nullptr;								/* 入力管理 */
-	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
-	PostEffectManager* postEffectManager_;					/* ポストエフェクトマネージャーへの参照 */
+	Cygnus::Input* input_ = nullptr;								/* 入力管理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	Cygnus::PostEffectManager* postEffectManager_;					/* ポストエフェクトマネージャーへの参照 */
 
 	// ----- Object -----
-	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	std::unique_ptr<Object3D> objectGun_;					/* 銃オブジェクト */
+	std::unique_ptr<Cygnus::AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectGun_;					/* 銃オブジェクト */
 
 	// ----- Animation -----
-	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
+	Cygnus::AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;					/* コライダー */
+	std::unique_ptr<Cygnus::Collider> collider_;					/* コライダー */
 
 	// ----- UI -----
 	std::unique_ptr<PlayerUIManager> ui_;					/* UIマネージャー */
 
 	// ----- Parameters -----
-	Float3 velocity_ = { 0.0f, 0.0f, 0.0f };				/* 速度ベクトル */
+	Cygnus::Float3 velocity_ = { 0.0f, 0.0f, 0.0f };		/* 速度ベクトル */
 	bool isMoving_ = false;									/* 移動中フラグ */
 	int32_t currentHP_ = 0;									/* 現在HP */
 

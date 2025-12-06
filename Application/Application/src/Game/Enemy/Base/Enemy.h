@@ -34,7 +34,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	virtual void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) = 0;
+	virtual void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) = 0;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -59,7 +59,7 @@ public:
 	/// <summary>
 	/// 破棄を行います。
 	/// </summary>
-	virtual void OnDestroy() { CollisionManager::GetInstance()->Unregister(collider_.get()); }
+	virtual void OnDestroy() { Cygnus::CollisionManager::GetInstance()->Unregister(collider_.get()); }
 
 	// =========================================================
 	// Getter / Setter
@@ -81,13 +81,13 @@ public:
 	/// 敵の現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	const Float3& GetTranslate() const { return objectEnemy_->transform_.translate_; }
+	const Cygnus::Float3& GetTranslate() const { return objectEnemy_->transform_.translate_; }
 
 	/// <summary>
 	/// 敵の回転を取得します。
 	/// </summary>
 	/// <returns>現在の回転（Float3）</returns>
-	const Float3& GetRotate() const { return objectEnemy_->transform_.rotate_; }
+	const Cygnus::Float3& GetRotate() const { return objectEnemy_->transform_.rotate_; }
 
 	/// <summary>
 	/// 敵の現在HPを取得します。
@@ -105,13 +105,13 @@ protected:
 	/// </summary>
 	/// <param name="spritePtr"></param>
 	/// <param name="color"></param>
-	void SetupHPBarSprite(std::unique_ptr<Sprite>& spritePtr, const Float4& color);
+	void SetupHPBarSprite(std::unique_ptr<Cygnus::Sprite>& spritePtr, const Cygnus::Float4& color);
 
 	/// <summary>
 	/// リロードスプライトの生成と共通初期設定を行います。
 	/// </summary>
 	/// <param name="spritePtr"></param>
-	void SetupReloadSprite(std::unique_ptr<Sprite>& spritePtr);
+	void SetupReloadSprite(std::unique_ptr<Cygnus::Sprite>& spritePtr);
 
 	/// <summary>
 	/// 被弾時の発光処理を行います。
@@ -122,32 +122,32 @@ protected:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float2 kHPBarSize = {100.0f, 20.0f};                     /* HPバーのサイズ */
-	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
-	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
+	static constexpr Cygnus::Float2 kHPBarSize = {100.0f, 20.0f};                     /* HPバーのサイズ */
+	static constexpr Cygnus::Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
+	static constexpr Cygnus::Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
 
-	static constexpr Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
+	static constexpr Cygnus::Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
 
-	static constexpr float kHitBlinkDuration = 0.05f;				/* 被弾時の発光時間 */
-	static constexpr Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
+	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- System -----
-	std::unique_ptr<SpriteCommon> spriteCommon_; /* スプライト共通処理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_; /* スプライト共通処理 */
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> objectEnemy_; /* 敵オブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectEnemy_; /* 敵オブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_; /* コライダー */
+	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
 
 	// ----- Sprite -----
-	std::unique_ptr<Sprite> spriteHPBackground_; /* HPバー後景スプライト */
-	std::unique_ptr<Sprite> spriteHPForeground_; /* HPバー前景スプライト */
-	std::unique_ptr<Sprite> spriteReload_;       /* リロード表示スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteHPBackground_; /* HPバー後景スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteHPForeground_; /* HPバー前景スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteReload_;       /* リロード表示スプライト */
 
 	// ----- Parameters -----
 	bool isActive_ = false; /* 有効化フラグ */

@@ -8,7 +8,7 @@
 // =========================================================
 // 敵の通常弾クラス
 // =========================================================
-class EnemyBullet : public Bullet, public ICollisionCallback {
+class EnemyBullet : public Bullet, public Cygnus::ICollisionCallback {
 public:
 	// =========================================================
 	// Public Methods
@@ -20,7 +20,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="direciton">方向</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Float3& position, const Float3& direction, ModelManager::ModelData* model) override;
+	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direction, Cygnus::ModelManager::ModelData* model) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -36,7 +36,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 private:
 	// =========================================================

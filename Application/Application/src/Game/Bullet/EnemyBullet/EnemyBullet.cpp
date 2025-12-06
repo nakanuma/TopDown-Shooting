@@ -13,17 +13,17 @@
 // ---------------------------------------------------------
 #include <ImguiWrapper.h>
 
-void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, ModelManager::ModelData* model) {
+void EnemyBullet::Initialize(const Cygnus::Float3& position, const Cygnus::Float3& direciton, Cygnus::ModelManager::ModelData* model) {
 	// ---------------------------------------------------------
 	// オブジェクト生成・初期設定
 	// ---------------------------------------------------------
-	objectBullet_ = std::make_unique<Object3D>();
+	objectBullet_ = std::make_unique<Cygnus::Object3D>();
 	objectBullet_->model_ = model;
 	objectBullet_->transform_.translate_ = position;
 	objectBullet_->transform_.scale_ = {kRadius, kRadius, kRadius};
 
 	// 進行方向から向きを計算して回転を設定
-	Float3 dir = Float3::Normalize(direciton);
+	Cygnus::Float3 dir = Cygnus::Float3::Normalize(direciton);
 	float yaw = std::atan2(dir.x, dir.z);
 	float pitch = -std::asin(dir.y);
 	objectBullet_->transform_.rotate_ = {pitch, yaw, 0.0f};
@@ -31,14 +31,14 @@ void EnemyBullet::Initialize(const Float3& position, const Float3& direciton, Mo
 	// ---------------------------------------------------------
 	// コライダー生成・登録
 	// ---------------------------------------------------------
-	auto sphere = std::make_unique<SphereCollider>();
+	auto sphere = std::make_unique<Cygnus::SphereCollider>();
 	sphere->SetTag("EnemyBullet");
 	sphere->SetFollowTarget(&objectBullet_->transform_.translate_);
 	sphere->SetRadius(kRadius);
 	sphere->SetOwner(this);
 
 	collider_ = std::move(sphere);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	// ---------------------------------------------------------
 	// パラメーター設定
@@ -66,7 +66,7 @@ void EnemyBullet::Update() {
 	// ---------------------------------------------------------
 	// 寿命更新
 	// ---------------------------------------------------------
-	elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+	elapsedTime_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	// 経過時間が寿命に達したら削除
 	if (elapsedTime_ > kMaxLifeTime) {
 		FinishLifeCycle();
@@ -86,8 +86,8 @@ void EnemyBullet::Draw() {
 	DrawTrail();
 }
 
-void EnemyBullet::OnCollision(Collider* other) {
-	Float3 bulletPos = this->GetTranslate();
+void EnemyBullet::OnCollision(Cygnus::Collider* other) {
+	Cygnus::Float3 bulletPos = this->GetTranslate();
 
 	// ---------------------------------------------------------
 	// プレイヤーとの衝突

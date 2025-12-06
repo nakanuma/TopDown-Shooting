@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// 初期化処理を行います。
 	/// </summary>
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(Cygnus::SpriteCommon* spriteCommon);
 
 	/// <summary>
 	/// ゲームクリア演出を開始します。
@@ -105,21 +105,21 @@ private:
 	// =========================================================
 	static constexpr float kCameraShakeIntensity = 0.4f; /* カメラシェイクの強度 */
 
-	static constexpr float kCameraRotateDuration = 5.0f;         /* カメラ回転にかける時間 */
-	static constexpr float kCameraDistance = 40.0f;              /* ボスからのカメラ距離 */
-	static constexpr float kCameraRotZOffset = -0.13f;           /* カメラ回転のZ軸オフセット */
-	static constexpr float kCameraHeightStart = 6.0f;            /* カメラ回転時の開始時高さ */
-	static constexpr float kCameraHeightEnd = 2.0f;              /* カメラ回転時の終了時高さ */
-	static constexpr float kCameraStartAngleOffset = PIf / 4.0f; /* カメラ回転開始角度オフセット（ボスの正面 + 45度） */
-	static constexpr float kCameraEndAngleOffset = PIf / 4.0f;   /* カメラ回転終了角度オフセット（ボスの正面 - 45度） */
+	static constexpr float kCameraRotateDuration = 5.0f;					/* カメラ回転にかける時間 */
+	static constexpr float kCameraDistance = 40.0f;							/* ボスからのカメラ距離 */
+	static constexpr float kCameraRotZOffset = -0.13f;						/* カメラ回転のZ軸オフセット */
+	static constexpr float kCameraHeightStart = 6.0f;						/* カメラ回転時の開始時高さ */
+	static constexpr float kCameraHeightEnd = 2.0f;							/* カメラ回転時の終了時高さ */
+	static constexpr float kCameraStartAngleOffset = Cygnus::PIf / 4.0f;	/* カメラ回転開始角度オフセット（ボスの正面 + 45度） */
+	static constexpr float kCameraEndAngleOffset = Cygnus::PIf / 4.0f;		/* カメラ回転終了角度オフセット（ボスの正面 - 45度） */
 
 	static constexpr float kExplodeDuration = 3.0f; /* 爆発フェーズにかける時間 */
 
-	static constexpr float kExplodeEmitInterval = 0.2f;                   /* 爆発パーティクル発生頻度 */
-	static constexpr int32_t kExplodeSmokeEmitCount = 15;                 /* 煙パーティクルの発生数 */
-	static constexpr int32_t kExplodeScatterEmitCount = 5;                /* 爆発飛散パーティクル発生数 */
-	static constexpr Float3 kParticleOffsetMin = {-10.0f, -3.0f, -10.0f}; /* パーティクル発生位置オフセット最小値 */
-	static constexpr Float3 kParticleOffsetMax = {10.0f, 2.0f, 10.0f};    /* パーティクル発生位置オフセット最大値 */
+	static constexpr float kExplodeEmitInterval = 0.2f;								/* 爆発パーティクル発生頻度 */
+	static constexpr int32_t kExplodeSmokeEmitCount = 15;							/* 煙パーティクルの発生数 */
+	static constexpr int32_t kExplodeScatterEmitCount = 5;							/* 爆発飛散パーティクル発生数 */
+	static constexpr Cygnus::Float3 kParticleOffsetMin = {-10.0f, -3.0f, -10.0f};	/* パーティクル発生位置オフセット最小値 */
+	static constexpr Cygnus::Float3 kParticleOffsetMax = {10.0f, 2.0f, 10.0f};		/* パーティクル発生位置オフセット最大値 */
 
 	static constexpr float kBackgroundFadeDuration = 1.0f; /* 背景スプライトのフェードにかかる時間 */
 	static constexpr float kBackgroundMaxAlpha = 0.75f;    /* 背景スプライトの最大Alpha値 */
@@ -128,8 +128,8 @@ private:
 	static constexpr float kSlideDistance = 50.0f;                             /* クリア文字スプライトの上へスライドする距離 */
 	static constexpr float kClearTextSizeStartMultiplier = 1.2f;               /* クリア文字スプライトサイズの初期倍率 */
 
-	static constexpr Float4 kInitialBackgroundColor = {0.0f, 0.0f, 0.0f, 0.0f}; /* 背景の色（黒で透明） */
-	static constexpr Float2 kAnchorPoint = {0.5f, 0.5f};                        /* アンカーポイント */
+	static constexpr Cygnus::Float4 kInitialBackgroundColor = {0.0f, 0.0f, 0.0f, 0.0f}; /* 背景の色（黒で透明） */
+	static constexpr Cygnus::Float2 kAnchorPoint = {0.5f, 0.5f};                        /* アンカーポイント */
 
 	// =========================================================
 	// Member Variables
@@ -141,15 +141,15 @@ private:
 
 	float particleEmitTimer_ = 0.0f; /* パーティクル発生用タイマー */
 
-	Float3 savedCameraPos_; /* 演出開始時のカメラ位置を保存 */
-	Float3 savedCameraRot_; /* 演出開始時のカメラ回転を保存 */
+	Cygnus::Float3 savedCameraPos_; /* 演出開始時のカメラ位置を保存 */
+	Cygnus::Float3 savedCameraRot_; /* 演出開始時のカメラ回転を保存 */
 
-	BossEnemy* boss_ = nullptr; /* ボスのポインタ */
-	Float3 lastBossPosition_;   /* ボスの最終位置を保存 */
+	BossEnemy* boss_ = nullptr;			/* ボスのポインタ */
+	Cygnus::Float3 lastBossPosition_;   /* ボスの最終位置を保存 */
 
-	Float2 savedClearTextSize_; /* クリア文字スプライトの初期サイズを保存 */
+	Cygnus::Float2 savedClearTextSize_; /* クリア文字スプライトの初期サイズを保存 */
 
 	// -----Sprite-----
-	std::unique_ptr<Sprite> spriteBackGround_; /* 黒い背景スプライト */
-	std::unique_ptr<Sprite> spriteClearText_;  /* クリア時文字 */
+	std::unique_ptr<Cygnus::Sprite> spriteBackGround_; /* 黒い背景スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteClearText_;  /* クリア時文字 */
 };

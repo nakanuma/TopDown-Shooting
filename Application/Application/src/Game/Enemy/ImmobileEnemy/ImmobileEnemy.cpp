@@ -15,21 +15,21 @@
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Utility/Utility.h>
 
-void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) {
+void ImmobileEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {
 	///
 	///	基盤機能生成
 	///
 
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
-	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
 	spriteCommon_->Initialize(dxBase);
 
 	///
 	/// オブジェクト生成
 	///
 
-	objectEnemy_ = std::make_unique<Object3D>();
+	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
@@ -39,14 +39,14 @@ void ImmobileEnemy::Initialize(const Float3& position, ModelManager::ModelData* 
 	///	コライダー生成
 	///
 
-	auto aabb = std::make_unique<AABBCollider>();
+	auto aabb = std::make_unique<Cygnus::AABBCollider>();
 	aabb->SetTag("ImmobileEnemy");
 	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
 	aabb->SetSize(kColliderSize);
 	aabb->SetOwner(this);
 
 	collider_ = std::move(aabb);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
@@ -101,7 +101,7 @@ void ImmobileEnemy::Update() {
 	///
 
 	if (behaviorTree_) {
-		behaviorTree_->Tick(this, TimeManager::GetInstance()->GetDeltaTime());
+		behaviorTree_->Tick(this, Cygnus::TimeManager::GetInstance()->GetDeltaTime());
 	}
 
 	///
@@ -126,7 +126,7 @@ void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
 void ImmobileEnemy::DrawUI() {
 	// オブジェクトのワールド座標->スクリーン座標に変換
-	Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
+	Cygnus::Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
 	// HP割合
 	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
 
@@ -146,7 +146,7 @@ void ImmobileEnemy::DrawUI() {
 	///
 
 	// 現在HPに応じてサイズ変更
-	Float2 hpBarForegroundSize = {kHPBarSize.x * hpRatio, kHPBarSize.y};
+	Cygnus::Float2 hpBarForegroundSize = {kHPBarSize.x * hpRatio, kHPBarSize.y};
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
 
 	// スクリーン座標をセット
@@ -177,7 +177,7 @@ void ImmobileEnemy::DrawUI() {
 	}
 }
 
-void ImmobileEnemy::OnCollision(Collider* other) {
+void ImmobileEnemy::OnCollision(Cygnus::Collider* other) {
 	///
 	///	vs PlayerBullet
 	///
@@ -204,8 +204,8 @@ void ImmobileEnemy::OnCollision(Collider* other) {
 			isDead_ = true;
 
 			// 死亡時パーティクル発生
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle1)); // クロス片側
-			ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, DegToRad(kDeathCrossAngle2)); // クロス片側
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle1)); // クロス片側
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle2)); // クロス片側
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
 		}
@@ -223,10 +223,10 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	///	プレイヤーとの距離チェック
 	///
 
-	const Float3 playerPos = targetPlayer_->GetTranslate();
-	const Float3 enemyPos = this->objectEnemy_->transform_.translate_;
-	const Float3 direction = Float3::Normalize(playerPos - enemyPos);
-	const float distanceToPlayer = Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
+	const Cygnus::Float3 playerPos = targetPlayer_->GetTranslate();
+	const Cygnus::Float3 enemyPos = this->objectEnemy_->transform_.translate_;
+	const Cygnus::Float3 direction = Cygnus::Float3::Normalize(playerPos - enemyPos);
+	const float distanceToPlayer = Cygnus::Float3::Length(playerPos - enemyPos); // プレイヤーとの距離
 
 	// プレイヤーが索敵範囲外の場合にはfalse
 	if (distanceToPlayer > kSearchRange) {
@@ -238,8 +238,8 @@ bool ImmobileEnemy::IsPlayerInSight() {
 	///	RayCastによる障害物チェック
 	///
 
-	RayCastHit hit{};
-	bool rayCastHit = CollisionManager::GetInstance()->RayCast(enemyPos, direction, distanceToPlayer, &hit);
+	Cygnus::RayCastHit hit{};
+	bool rayCastHit = Cygnus::CollisionManager::GetInstance()->RayCast(enemyPos, direction, distanceToPlayer, &hit);
 	// 障害物が間にある場合
 	if (rayCastHit && hit.hitCollider->GetTag() == "Obstacle") {
 		isPlayerVisible_ = false;
@@ -252,15 +252,15 @@ bool ImmobileEnemy::IsPlayerInSight() {
 }
 
 void ImmobileEnemy::SearchMotion() {
-	searchStateTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+	searchStateTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	switch (searchState_) {
 	// 索敵・回転時
 	case SearchState::Rotate: {
 		// 回転時間・方向をランダムに設定
 		if (searchRotateDuration_ == 0.0f) {
-			searchRotateDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime);
-			isRotatingRight_ = RandomGenerator::GetInstance()->RandomValueBool();
+			searchRotateDuration_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kMinRotateTime, kMaxRotateTime);
+			isRotatingRight_ = Cygnus::RandomGenerator::GetInstance()->RandomValueBool();
 		}
 
 		// 設定された方向への回転
@@ -280,7 +280,7 @@ void ImmobileEnemy::SearchMotion() {
 	case SearchState::Wait: {
 		// 待機時間をランダムに設定
 		if (waitDuration_ == 0.0f) {
-			waitDuration_ = RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime);
+			waitDuration_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kMinWaitTime, kMaxWaitTime);
 		}
 
 		// 待機時間完了で回転状態へ移行
@@ -298,7 +298,7 @@ void ImmobileEnemy::SearchMotion() {
 
 void ImmobileEnemy::FaceToPlayer() {
 	// プレイヤーへの方向ベクトルからY軸回転角度を計算
-	Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
+	Cygnus::Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
 	// Y軸に回転を適用
 	objectEnemy_->transform_.rotate_.y = targetAngle;
@@ -306,16 +306,16 @@ void ImmobileEnemy::FaceToPlayer() {
 
 void ImmobileEnemy::Shoot() {
 	// 発射方向
-	Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
+	Cygnus::Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	// 拡散をランダムに設定
-	float randSpread = RandomGenerator::GetInstance()->RandomValue(-kBulletSpreadAngle, kBulletSpreadAngle);
+	float randSpread = Cygnus::RandomGenerator::GetInstance()->RandomValue(-kBulletSpreadAngle, kBulletSpreadAngle);
 	direction.x += randSpread;
 	direction.z += randSpread;
-	direction = Float3::Normalize(direction);
+	direction = Cygnus::Float3::Normalize(direction);
 
 	// 弾の生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &ModelManager::GetInstance()->GetModel("Bullet"));
+	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// 残弾を減らす
@@ -330,16 +330,16 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///
 
 	// 索敵モーション
-	auto searchMotion = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float dt) -> BehaviorStatus {
+	auto searchMotion = std::make_unique<Cygnus::ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float dt) -> Cygnus::BehaviorStatus {
 		enemy->SearchMotion();
-		return BehaviorStatus::Success; // 常に成功
+		return Cygnus::BehaviorStatus::Success; // 常に成功
 	});
 
 	// 距離・遮蔽チェック
-	auto canSeePlayer = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { return enemy->IsPlayerInSight(); });
+	auto canSeePlayer = std::make_unique<Cygnus::ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool { return enemy->IsPlayerInSight(); });
 
 	// searchSequence構築
-	auto searchSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	auto searchSequence = std::make_unique<Cygnus::SequenceNode<ImmobileEnemy>>();
 	searchSequence->AddChild(std::move(searchMotion)); // 索敵モーション
 	searchSequence->AddChild(std::move(canSeePlayer)); // 距離・遮蔽チェック
 
@@ -348,48 +348,48 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///
 
 	// プレイヤーの方向を向く
-	auto faceToPlayer = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+	auto faceToPlayer = std::make_unique<Cygnus::ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		enemy->FaceToPlayer();
-		return BehaviorStatus::Success;
+		return Cygnus::BehaviorStatus::Success;
 	});
 
 	// リロード必要チェック
-	auto needToReload = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+	auto needToReload = std::make_unique<Cygnus::ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		if (enemy->bulletRemaining_ <= 0 && !enemy->isReloading_) {
 			enemy->isReloading_ = true;
 			enemy->reloadTimer_ = 0.0f;
 		}
-		return BehaviorStatus::Success;
+		return Cygnus::BehaviorStatus::Success;
 	});
 
 	// リロード処理
-	auto doReload = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+	auto doReload = std::make_unique<Cygnus::ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		if (enemy->isReloading_) {
-			enemy->reloadTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+			enemy->reloadTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 			if (enemy->reloadTimer_ >= enemy->kReloadTime) {
 				enemy->isReloading_ = false;
 				enemy->bulletRemaining_ = enemy->kMaxBullet;
 				enemy->reloadTimer_ = 0.0f;
 			}
-			return BehaviorStatus::Running;
+			return Cygnus::BehaviorStatus::Running;
 		}
-		return BehaviorStatus::Success;
+		return Cygnus::BehaviorStatus::Success;
 	});
 
 	// 射撃可能チェック
-	auto canShoot = std::make_unique<ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool {
-		enemy->nextShotInterval_ += TimeManager::GetInstance()->GetDeltaTime();
+	auto canShoot = std::make_unique<Cygnus::ConditionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy) -> bool {
+		enemy->nextShotInterval_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		return enemy->nextShotInterval_ >= enemy->kShotInterval && !enemy->isReloading_;
 	});
 
 	// 射撃
-	auto shoot = std::make_unique<ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
+	auto shoot = std::make_unique<Cygnus::ActionNode<ImmobileEnemy>>([](ImmobileEnemy* enemy, float) {
 		enemy->Shoot();
-		return BehaviorStatus::Success;
+		return Cygnus::BehaviorStatus::Success;
 	});
 
 	// attackSequence構築
-	auto attackSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	auto attackSequence = std::make_unique<Cygnus::SequenceNode<ImmobileEnemy>>();
 	attackSequence->AddChild(std::move(faceToPlayer)); // プレイヤーの方向を向く
 	attackSequence->AddChild(std::move(needToReload)); // リロード必要チェック
 	attackSequence->AddChild(std::move(doReload));     // リロード
@@ -401,7 +401,7 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///
 
 	// rootSequence構築
-	auto rootSequence = std::make_unique<SequenceNode<ImmobileEnemy>>();
+	auto rootSequence = std::make_unique<Cygnus::SequenceNode<ImmobileEnemy>>();
 	rootSequence->AddChild(std::move(searchSequence)); // 索敵シーケンス
 	rootSequence->AddChild(std::move(attackSequence)); // 攻撃シーケンス
 
@@ -410,5 +410,5 @@ void ImmobileEnemy::BuildBehaviorTree() {
 	///
 
 	// ツリー構築
-	behaviorTree_ = std::make_unique<BehaviorTree<ImmobileEnemy>>(std::move(rootSequence));
+	behaviorTree_ = std::make_unique<Cygnus::BehaviorTree<ImmobileEnemy>>(std::move(rootSequence));
 }

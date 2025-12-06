@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model) {
+RedCircleParticle::RedCircleParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -13,16 +13,16 @@ RedCircleParticle::RedCircleParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-RedCircleParticleData RedCircleParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+RedCircleParticleData RedCircleParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	RedCircleParticleData p;
 
 	// 位置
 	p.transform.translate_ = pos;
 	// 回転
-	p.transform.rotate_ = {PIf / 2.0f, 0.0f, 0.0f}; // 仰向けになるように
+	p.transform.rotate_ = { Cygnus::PIf / 2.0f, 0.0f, 0.0f}; // 仰向けになるように
 	// スケール
 	p.transform.scale_ = {0.0f, 0.0f, 0.0f};
 	// 速度ベクトル
@@ -42,6 +42,6 @@ void RedCircleParticle::UpdateParticle(RedCircleParticleData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 拡大
-	float easeT = Easing::EaseOutExpo(t);
+	float easeT = Cygnus::Easing::EaseOutExpo(t);
 	p.transform.scale_ = p.targetScale * easeT;
 }
