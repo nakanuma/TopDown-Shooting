@@ -45,11 +45,8 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas
 void ObstacleManager::Update(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Cygnus::Float3::LengthSq(diff);
-
 		// プレイヤーから一定距離内のみ更新
-		if (distSq <= kActiveDistance * kActiveDistance) {
+		if (IsActiveDistance(obstacle->GetTranslate(), playerPos)) {
 			obstacle->Update();
 			obstacle->SetActiveCollider(true);
 		} else {
@@ -61,11 +58,8 @@ void ObstacleManager::Update(const Cygnus::Float3& playerPos) {
 void ObstacleManager::Draw(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Cygnus::Float3::LengthSq(diff);
-
 		// プレイヤーから一定距離内のみ描画
-		if (distSq <= kActiveDistance * kActiveDistance) {
+		if (IsActiveDistance(obstacle->GetTranslate(), playerPos)) {
 			obstacle->Draw();
 		}
 	}
@@ -74,11 +68,8 @@ void ObstacleManager::Draw(const Cygnus::Float3& playerPos) {
 void ObstacleManager::DrawShadow(const Cygnus::Float3& playerPos) {
 	// 全ての障害物を更新
 	for (auto& obstacle : obstacles_) {
-		Cygnus::Float3 diff = obstacle->GetTranslate() - playerPos;
-		float distSq = Cygnus::Float3::LengthSq(diff);
-
 		// プレイヤーから一定距離内のみ描画
-		if (distSq <= kActiveDistance * kActiveDistance) {
+		if (IsActiveDistance(obstacle->GetTranslate(), playerPos)) {
 			obstacle->DrawShadow();
 		}
 	}
@@ -119,4 +110,17 @@ void ObstacleManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+bool ObstacleManager::IsActiveDistance(const Cygnus::Float3& obstaclePos, const Cygnus::Float3& playerPos) const
+{
+	Cygnus::Float3 diff = obstaclePos - playerPos;
+	float distSq = Cygnus::Float3::LengthSq(diff);
+
+	// 有効化範囲内ならtrueを返す
+	if (distSq <= kActiveDistance * kActiveDistance) {
+		return true;
+	}
+
+	return false;
 }

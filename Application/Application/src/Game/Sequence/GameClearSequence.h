@@ -89,6 +89,12 @@ private:
 	/// </summary>
 	void UpdateExplodeAndText();
 
+	/// <summary>
+	/// クリアシーケンスでのパーティクル発生処理を制御します。
+	/// </summary>
+	/// <param name="isScatterEmit">飛散パーティクルを発生させるか（カメラ回転フェーズではtrue, クリア文字演出時はfalse）</param>
+	void EmitParticle(bool isScatterEmit);
+
 private:
 	/// <summary>
 	/// 演出のフェーズ

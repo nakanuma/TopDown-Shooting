@@ -262,7 +262,7 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawShadow();
 	}
 
-	/*player_->DrawGunShadow();*/
+	player_->DrawGunShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
 	teleporterManager_->DrawShadow();

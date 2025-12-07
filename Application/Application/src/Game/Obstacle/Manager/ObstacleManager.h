@@ -48,6 +48,19 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// 障害物とプレイヤーの距離を計算し、有効化状態を取得します。
+	/// </summary>
+	/// <param name="obstaclePos">障害物の位置</param>
+	/// <param name="playerPos">プレイヤーの位置</param>
+	/// <returns></returns>
+	bool IsActiveDistance(const Cygnus::Float3& obstaclePos, const Cygnus::Float3& playerPos) const;
+
+private:
+	// =========================================================
 	// Constants
 	// =========================================================
 	const float kActiveDistance = 75.0f; /* 障害物の有効化距離 */
