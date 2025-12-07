@@ -6,13 +6,13 @@
 // Application
 #include <src/Game/Player/Player.h>
 
-void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
+void HPBar::Initialize(Cygnus::DirectXBase* dxBase, Cygnus::SpriteCommon* spriteCommon) {
 	///
 	/// HPバー（後景）
 	///
 
-	uint32_t textureHPBackground = TextureManager::Load("white.png");
-	spriteHPBackground_ = std::make_unique<Sprite>();
+	uint32_t textureHPBackground = Cygnus::TextureManager::Load("white.png");
+	spriteHPBackground_ = std::make_unique<Cygnus::Sprite>();
 	spriteHPBackground_->Initialize(spriteCommon, textureHPBackground);
 	spriteHPBackground_->SetSize(kHPBarSize);
 	spriteHPBackground_->SetColor(kHPBackgroundColor);
@@ -21,8 +21,8 @@ void HPBar::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
 	/// HPバー（前景）
 	///
 
-	uint32_t textureHPForeground = TextureManager::Load("white.png");
-	spriteHPForeground_ = std::make_unique<Sprite>();
+	uint32_t textureHPForeground = Cygnus::TextureManager::Load("white.png");
+	spriteHPForeground_ = std::make_unique<Cygnus::Sprite>();
 	spriteHPForeground_->Initialize(spriteCommon, textureHPForeground);
 	spriteHPForeground_->SetSize(kHPBarSize);
 	spriteHPForeground_->SetColor(kHPForegroundColor);
@@ -44,7 +44,7 @@ void HPBar::Update(const Player* player) {
 	float hpRatio = static_cast<float>(player->GetCurrentHP()) / static_cast<float>(player->GetMaxHP()); // HP割合
 
 
-	Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
+	Cygnus::Float2 hpBarForegroundSize = { kHPBarSize.x * hpRatio, kHPBarSize.y };
 	spriteHPForeground_->SetSize(hpBarForegroundSize);
 
 	spriteHPForeground_->SetPosition(kHPBarPosition);

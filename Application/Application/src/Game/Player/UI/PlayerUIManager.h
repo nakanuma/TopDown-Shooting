@@ -46,7 +46,7 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
 
 	std::unique_ptr<Reticle> reticle_;						/* レティクル */
 	std::unique_ptr<HPBar> hpBar_;							/* HPバー */

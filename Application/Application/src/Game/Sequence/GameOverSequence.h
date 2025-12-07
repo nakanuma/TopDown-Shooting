@@ -24,13 +24,13 @@ public:
 	/// <summary>
 	/// 初期化処理を行います。
 	/// </summary>
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(Cygnus::SpriteCommon* spriteCommon);
 
 	/// <summary>
 	/// ゲームオーバー時演出を開始します。
 	/// </summary>
 	/// <param name="playerPos"></param>
-	void Start(const Float3& playerPos);
+	void Start(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// 毎フレーム更新処理を行います。
@@ -117,14 +117,14 @@ private:
 	static constexpr float kRotateDuration = 3.0f;   /* カメラ回転にかかる時間 */
 	static constexpr float kRotateAngle = 90.0f;     /* 回転する角度（度） */
 
-	static constexpr float kDiedTextDuration = 1.0f;               /* "YOU DIED"文字スプライトのアニメーションにかかる時間 */
-	static constexpr Float2 kDiedTextStartPos = {640.0f, -160.0f}; /* "YOU DIED"文字スプライトの初期位置 */
-	static constexpr Float2 kDiedTextEndPos = {640.0f, 160.0f};    /* "YOU DIED"文字スプライトの最終位置 */
+	static constexpr float kDiedTextDuration = 1.0f;						/* "YOU DIED"文字スプライトのアニメーションにかかる時間 */
+	static constexpr Cygnus::Float2 kDiedTextStartPos = {640.0f, -160.0f};	/* "YOU DIED"文字スプライトの初期位置 */
+	static constexpr Cygnus::Float2 kDiedTextEndPos = {640.0f, 160.0f};		/* "YOU DIED"文字スプライトの最終位置 */
 
-	static constexpr float kBackToTitleTextDuration = 0.35f;        /* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
-	static constexpr Float2 kBackToTitleTextPos = {640.0f, 540.0f}; /* "クリックでタイトルへ"文字スプライトの位置 */
+	static constexpr float kBackToTitleTextDuration = 0.35f;				/* "クリックでタイトルへ"文字スプライトのアニメーションにかかる時間 */
+	static constexpr Cygnus::Float2 kBackToTitleTextPos = {640.0f, 540.0f}; /* "クリックでタイトルへ"文字スプライトの位置 */
 
-	static constexpr Float2 kAnchorPoint = {0.5f, 0.5f}; /* アンカーポイント（中心） */
+	static constexpr Cygnus::Float2 kAnchorPoint = {0.5f, 0.5f}; /* アンカーポイント（中心） */
 
 	static constexpr float kFadeOutDuration = 0.5f; /* フェードアウト演出の時間 */
 	static constexpr float kFadeOutDelay = 0.25f;   /* フェードアウト完了までの遅延時間 */
@@ -137,16 +137,16 @@ private:
 	Phase phase_ = Phase::None; /* 現在フェーズ */
 	float timer_ = 0.0f;        /* タイマー */
 
-	Float3 targetPos_;        /* カメラの注視点となる位置（プレイヤー死亡位置） */
-	Float3 approachStartPos_; /* カメラ接近時の開始位置 */
-	Float3 approachEndPos_;   /* カメラ接近時の終了位置 */
+	Cygnus::Float3 targetPos_;        /* カメラの注視点となる位置（プレイヤー死亡位置） */
+	Cygnus::Float3 approachStartPos_; /* カメラ接近時の開始位置 */
+	Cygnus::Float3 approachEndPos_;   /* カメラ接近時の終了位置 */
 
-	Float2 backToTitleTextStartSize_ = {0.0f, 0.0f}; /* "クリックでタイトルへ"文字スプライトの初期サイズ */
-	Float2 backToTitleTextEndSize_;                  /* "クリックでタイトルへ"文字スプライトの最終サイズ */
+	Cygnus::Float2 backToTitleTextStartSize_ = {0.0f, 0.0f}; /* "クリックでタイトルへ"文字スプライトの初期サイズ */
+	Cygnus::Float2 backToTitleTextEndSize_;                  /* "クリックでタイトルへ"文字スプライトの最終サイズ */
 
 	// ----- Sprite -----
-	std::unique_ptr<Sprite> spriteDiedText_;        /* "YOU DIED"文字スプライト */
-	std::unique_ptr<Sprite> spriteBackToTitleText_; /* "クリックでタイトルへ"文字スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteDiedText_;        /* "YOU DIED"文字スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteBackToTitleText_; /* "クリックでタイトルへ"文字スプライト */
 
 	// ----- Others -----
 	Player* player_ = nullptr; /* プレイヤーのポインタ */

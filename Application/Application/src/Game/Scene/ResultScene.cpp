@@ -16,28 +16,28 @@
 #include <src/Game/Transition/FadeTransition.h>
 
 void ResultScene::Initialize() {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera_ = std::make_unique<Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
-	Camera::Set(camera_.get()); // 現在のカメラをセット
+	camera_ = std::make_unique<Cygnus::Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
+	Cygnus::Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
-	spriteCommon_ = std::make_unique<SpriteCommon>();
-	spriteCommon_->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
+	spriteCommon_->Initialize(Cygnus::DirectXBase::GetInstance());
 
 	// TextureManagerの初期化
-	TextureManager::Initialize(dxBase->GetDevice(), SRVManager::GetInstance());
+	Cygnus::TextureManager::Initialize(dxBase->GetDevice(), Cygnus::SRVManager::GetInstance());
 
 	// SoundManagerの初期化
-	soundManager_ = std::make_unique<SoundManager>();
+	soundManager_ = std::make_unique<Cygnus::SoundManager>();
 	soundManager_->Initialize();
 
 	// Inputの初期化
-	input_ = Input::GetInstance();
+	input_ = Cygnus::Input::GetInstance();
 
 	// LightManagerの初期化
-	lightManager_ = LightManager::GetInstance();
+	lightManager_ = Cygnus::LightManager::GetInstance();
 	lightManager_->Initialize();
 
 	///
@@ -45,22 +45,22 @@ void ResultScene::Initialize() {
 	///
 
 	// 背景
-	uint32_t textureBackGround = TextureManager::Load("white.png");
-	spriteBackGround_ = std::make_unique<Sprite>();
+	uint32_t textureBackGround = Cygnus::TextureManager::Load("white.png");
+	spriteBackGround_ = std::make_unique<Cygnus::Sprite>();
 	spriteBackGround_->Initialize(spriteCommon_.get(), textureBackGround);
 	spriteBackGround_->SetColor(kBackgroundColor);
 	spriteBackGround_->SetSize(kBackgroundSize);
 
 	// タイトルボタン
-	uint32_t textureTitleButton = TextureManager::Load("UI/titleButton.png");
-	spriteTitleButton_ = std::make_unique<Sprite>();
+	uint32_t textureTitleButton = Cygnus::TextureManager::Load("UI/titleButton.png");
+	spriteTitleButton_ = std::make_unique<Cygnus::Sprite>();
 	spriteTitleButton_->Initialize(spriteCommon_.get(), textureTitleButton);
 	spriteTitleButton_->SetPosition(kTitleButtonPosition);
 	spriteTitleButton_->SetAnchorPoint(kAnchorPoint);
 
 	// 戦績
-	uint32_t textureRecord = TextureManager::Load("UI/record.png");
-	spriteRecord_ = std::make_unique<Sprite>();
+	uint32_t textureRecord = Cygnus::TextureManager::Load("UI/record.png");
+	spriteRecord_ = std::make_unique<Cygnus::Sprite>();
 	spriteRecord_->Initialize(spriteCommon_.get(), textureRecord);
 	spriteRecord_->SetPosition(kRecordPosition);
 	spriteRecord_->SetAnchorPoint(kAnchorPoint);
@@ -90,14 +90,14 @@ void ResultScene::Initialize() {
 	///
 
 	// シャドウマップ生成
-	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
+	shadowMapHandle_ = Cygnus::ShadowMapManager::GetInstance()->CreateShadowMap(Cygnus::Window::GetWidth(), Cygnus::Window::GetHeight());
 }
 
 void ResultScene::Finalize() {}
 
 void ResultScene::Update() {
 	if (input_->IsTriggerMouse(0) && FadeTransition::GetInstance()->IsFinished()) {
-		FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
+		FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
 		ResultStats::GetInstance()->Clear();   // 戦績をクリア
 		BulletManager::GetInstance()->Clear(); // 弾リストをクリア
 	}
@@ -117,8 +117,8 @@ void ResultScene::Update() {
 }
 
 void ResultScene::Draw() {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
-	SRVManager* srvManager = SRVManager::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
+	Cygnus::SRVManager* srvManager = Cygnus::SRVManager::GetInstance();
 
 	// 描画前処理
 	dxBase->PreDraw();
@@ -126,13 +126,13 @@ void ResultScene::Draw() {
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
-	ImguiWrapper::NewFrame();
+	Cygnus::ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
-	Camera::TransferConstantBuffer();
+	Cygnus::Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager_->TransferContantBuffer();
 	// LightCameraの定数バッファを送信
-	LightCamera::GetInstance()->TransferConstantBuffer();
+	Cygnus::LightCamera::GetInstance()->TransferConstantBuffer();
 
 	///
 	///	↓ ここから3Dオブジェクトの描画コマンド
@@ -174,10 +174,10 @@ void ResultScene::Draw() {
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
 	if (ImGui::Button("TITLE")) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 	if (ImGui::Button("GAMEPLAY")) {
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		Cygnus::SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
 	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.01f);
@@ -190,7 +190,7 @@ void ResultScene::Draw() {
 
 #endif
 	// ImGuiの内部コマンドを生成する
-	ImguiWrapper::Render(dxBase->GetCommandList());
+	Cygnus::ImguiWrapper::Render(dxBase->GetCommandList());
 	// 描画後処理
 	dxBase->PostDraw();
 	// フレーム終了処理

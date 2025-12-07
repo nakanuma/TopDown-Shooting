@@ -12,21 +12,21 @@
 // Application
 #include <src/Game/Camera/CameraShake.h>
 
-void GameClearSequence::Initialize(SpriteCommon* spriteCommon) {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+void GameClearSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// スプライト生成
-	uint32_t textureWhite = TextureManager::Load("white.png");
-	spriteBackGround_ = std::make_unique<Sprite>();
+	uint32_t textureWhite = Cygnus::TextureManager::Load("white.png");
+	spriteBackGround_ = std::make_unique<Cygnus::Sprite>();
 	spriteBackGround_->Initialize(spriteCommon, textureWhite);
-	spriteBackGround_->SetSize({static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())}); // 画面サイズに合わせる
+	spriteBackGround_->SetSize({ static_cast<float>(Cygnus::Window::GetWidth()), static_cast<float>(Cygnus::Window::GetHeight()) }); // 画面サイズに合わせる
 	spriteBackGround_->SetColor(kInitialBackgroundColor);
 
-	uint32_t textureClearText = TextureManager::Load("UI/clearText.png");
-	spriteClearText_ = std::make_unique<Sprite>();
+	uint32_t textureClearText = Cygnus::TextureManager::Load("UI/clearText.png");
+	spriteClearText_ = std::make_unique<Cygnus::Sprite>();
 	spriteClearText_->Initialize(spriteCommon, textureClearText);
 	spriteClearText_->SetAnchorPoint(kAnchorPoint);
-	spriteClearText_->SetPosition({static_cast<float>(Window::GetWidth() / 2.0f), static_cast<float>(Window::GetHeight() / 2.0f)}); // 画面中央
+	spriteClearText_->SetPosition({ static_cast<float>(Cygnus::Window::GetWidth() / 2.0f), static_cast<float>(Cygnus::Window::GetHeight() / 2.0f) }); // 画面中央
 	savedClearTextSize_ = spriteClearText_->GetSize();                                                                              // 初期サイズを保存
 }
 
@@ -35,8 +35,8 @@ void GameClearSequence::Start() {
 	timer_ = 0.0f;
 
 	// 演出開始時のカメラ情報を保存
-	savedCameraPos_ = Camera::GetCurrent()->transform_.translate_;
-	savedCameraRot_ = Camera::GetCurrent()->transform_.rotate_;
+	savedCameraPos_ = Cygnus::Camera::GetCurrent()->transform_.translate_;
+	savedCameraRot_ = Cygnus::Camera::GetCurrent()->transform_.rotate_;
 
 	// カメラシェイクを開始（カメラ回転 + 爆発フェーズまで）
 	CameraShake::GetInstance()->StartShake(kCameraRotateDuration + kExplodeDuration, kCameraShakeIntensity);
@@ -54,7 +54,7 @@ void GameClearSequence::Update() {
 
 	// タイマー更新
 	if (!IsFinished()) {
-		timer_ += TimeManager::GetInstance()->GetDeltaTime();
+		timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	}
 
 	// フェーズ毎の更新処理
@@ -121,7 +121,7 @@ void GameClearSequence::UpdateRotate() {
 	float t = std::clamp(timer_ / kCameraRotateDuration, 0.0f, 1.0f);
 
 	// ボスの位置を取得
-	Float3 bossPos = boss_->GetTranslate();
+	Cygnus::Float3 bossPos = boss_->GetTranslate();
 	// ボスのY軸回転を取得
 	float bossForwardAngle = boss_->GetRotate().y;
 
@@ -131,40 +131,30 @@ void GameClearSequence::UpdateRotate() {
 	float endAngle = bossForwardAngle - kCameraEndAngleOffset;
 
 	// 現在の角度を補間
-	float currentAngle = Easing::Lerp(startAngle, endAngle, Easing::EaseOutSine(t));
+	float currentAngle = Cygnus::Easing::Lerp(startAngle, endAngle, Cygnus::Easing::EaseOutSine(t));
 
 	// カメラの高さを補間
-	float currentHeight = Easing::Lerp(kCameraHeightStart, kCameraHeightEnd, t);
+	float currentHeight = Cygnus::Easing::Lerp(kCameraHeightStart, kCameraHeightEnd, t);
 
 	// ボス中心の円周上のカメラ位置を計算
-	Float3 cameraPos = {bossPos.x + sinf(currentAngle) * kCameraDistance, bossPos.y + bossPos.y + currentHeight, bossPos.z + cosf(currentAngle) * kCameraDistance};
+	Cygnus::Float3 cameraPos = { bossPos.x + sinf(currentAngle) * kCameraDistance, bossPos.y + bossPos.y + currentHeight, bossPos.z + cosf(currentAngle) * kCameraDistance };
 
 	// カメラをボスの方向に向ける
-	Float3 direction = bossPos - cameraPos;
-	direction = Float3::Normalize(direction);
+	Cygnus::Float3 direction = bossPos - cameraPos;
+	direction = Cygnus::Float3::Normalize(direction);
 
 	// カメラの回転を計算
-	Float3 cameraRot = {asinf(-direction.y), atan2f(direction.x, direction.z), kCameraRotZOffset};
+	Cygnus::Float3 cameraRot = { asinf(-direction.y), atan2f(direction.x, direction.z), kCameraRotZOffset };
 
 	// カメラに適用
-	Camera::GetCurrent()->transform_.translate_ = cameraPos + CameraShake::GetInstance()->GetOffset(); // カメラシェイクも加算
-	Camera::GetCurrent()->transform_.rotate_ = cameraRot;
+	Cygnus::Camera::GetCurrent()->transform_.translate_ = cameraPos + CameraShake::GetInstance()->GetOffset(); // カメラシェイクも加算
+	Cygnus::Camera::GetCurrent()->transform_.rotate_ = cameraRot;
 
 	///
 	///	パーティクル発生
 	///
 
-	// タイマーの加算
-	particleEmitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-
-	if (particleEmitTimer_ >= kExplodeEmitInterval) {
-		Float3 offset = RandomGenerator::GetInstance()->RandomValue(kParticleOffsetMin, kParticleOffsetMax);
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", lastBossPosition_ + offset, kExplodeSmokeEmitCount);     // 煙パーティクル発生
-		ParticleEffectManager::GetInstance()->Emit("explodeScatter", lastBossPosition_ + offset, kExplodeScatterEmitCount); // 爆発飛散パーティクル発生
-
-		// パーティクル発生タイマーのリセット
-		particleEmitTimer_ = 0.0f;
-	}
+	EmitParticle(true);
 
 	// 回転終了で次のフェーズへ
 	if (timer_ > kCameraRotateDuration) {
@@ -172,8 +162,8 @@ void GameClearSequence::UpdateRotate() {
 		phase_ = Phase::ExplodeAndText;
 
 		// カメラの位置と回転を元に戻す
-		Camera::GetCurrent()->transform_.translate_ = savedCameraPos_;
-		Camera::GetCurrent()->transform_.rotate_ = savedCameraRot_;
+		Cygnus::Camera::GetCurrent()->transform_.translate_ = savedCameraPos_;
+		Cygnus::Camera::GetCurrent()->transform_.rotate_ = savedCameraRot_;
 	}
 }
 
@@ -182,16 +172,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 	///	パーティクル発生
 	///
 
-	// タイマーの加算
-	particleEmitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
-
-	if (particleEmitTimer_ >= kExplodeEmitInterval) {
-		Float3 offset = RandomGenerator::GetInstance()->RandomValue(kParticleOffsetMin, kParticleOffsetMax);
-		ParticleEffectManager::GetInstance()->Emit("explodeSmoke", lastBossPosition_ + offset, kExplodeSmokeEmitCount); // 煙パーティクル発生
-
-		// パーティクル発生タイマーのリセット
-		particleEmitTimer_ = 0.0f;
-	}
+	EmitParticle(false);
 
 	///
 	/// 背景スプライトの更新
@@ -205,7 +186,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 		// 進行度の計算
 		float t = std::clamp(timer_ / kBackgroundFadeDuration, 0.0f, 1.0f);
 		// 0.0fから最大Alpha値まで増加
-		currentAlpha = Easing::Lerp(0.0f, kBackgroundMaxAlpha, t);
+		currentAlpha = Cygnus::Easing::Lerp(0.0f, kBackgroundMaxAlpha, t);
 
 		// フェードアウト状態
 	} else if (timer_ > kExplodeDuration - kBackgroundFadeDuration) {
@@ -214,7 +195,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 		// 進行度の計算
 		float t = std::clamp(fadeOutTimer / kBackgroundFadeDuration, 0.0f, 1.0f);
 		// 最大Alpha値から0.0fまで減少
-		currentAlpha = Easing::Lerp(kBackgroundMaxAlpha, 0.0f, t);
+		currentAlpha = Cygnus::Easing::Lerp(kBackgroundMaxAlpha, 0.0f, t);
 
 		// 中間状態
 	} else {
@@ -222,7 +203,7 @@ void GameClearSequence::UpdateExplodeAndText() {
 		currentAlpha = kBackgroundMaxAlpha;
 	}
 	// スプライトにAlpha値を適用
-	Float4 currentColor = spriteBackGround_->GetColor();
+	Cygnus::Float4 currentColor = spriteBackGround_->GetColor();
 	currentColor.w = currentAlpha;
 	spriteBackGround_->SetColor(currentColor);
 
@@ -233,19 +214,19 @@ void GameClearSequence::UpdateExplodeAndText() {
 	///
 
 	// 初期位置
-	Float2 basePos = {static_cast<float>(Window::GetWidth() / 2.0f), static_cast<float>(Window::GetHeight() / 2.0f)};
+	Cygnus::Float2 basePos = { static_cast<float>(Cygnus::Window::GetWidth() / 2.0f), static_cast<float>(Cygnus::Window::GetHeight() / 2.0f) };
 	// 現在の色
-	Float4 currentTextColor = spriteClearText_->GetColor();
+	Cygnus::Float4 currentTextColor = spriteClearText_->GetColor();
 
 	// フェードイン状態（サイズ変更アニメーションのみ）
 	if (timer_ <= kTextFadeDuration) {
 		// 進行度の計算
 		float t = std::clamp(timer_ / kTextFadeDuration, 0.0f, 1.0f);
 		// 1.2倍から等倍へサイズ変更
-		Float2 currentSize = Float2::Lerp(savedClearTextSize_ * kClearTextSizeStartMultiplier, savedClearTextSize_, Easing::EaseOutBack(t));
+		Cygnus::Float2 currentSize = Cygnus::Float2::Lerp(savedClearTextSize_ * kClearTextSizeStartMultiplier, savedClearTextSize_, Cygnus::Easing::EaseOutBack(t));
 
 		// Alphaを0.0fから1.0fへ増加
-		currentTextColor.w = Easing::Lerp(0.0f, 1.0f, t);
+		currentTextColor.w = Cygnus::Easing::Lerp(0.0f, 1.0f, t);
 
 		// サイズを適用
 		spriteClearText_->SetSize(currentSize);
@@ -257,11 +238,11 @@ void GameClearSequence::UpdateExplodeAndText() {
 		float t = std::clamp(fadeOutTimer / kTextFadeDuration, 0.0f, 1.0f);
 
 		// Alphaを1.0fから0.0fへ減少
-		currentTextColor.w = Easing::Lerp(1.0f, 0.0f, t);
+		currentTextColor.w = Cygnus::Easing::Lerp(1.0f, 0.0f, t);
 
 		// スライド移動のY座標を補間して適用
-		float currentY = Easing::Lerp(basePos.y, basePos.y - kSlideDistance, t);
-		spriteClearText_->SetPosition({basePos.x, currentY});
+		float currentY = Cygnus::Easing::Lerp(basePos.y, basePos.y - kSlideDistance, t);
+		spriteClearText_->SetPosition({ basePos.x, currentY });
 	}
 	// スプライトにAlphaを設定
 	spriteClearText_->SetColor(currentTextColor);
@@ -272,5 +253,24 @@ void GameClearSequence::UpdateExplodeAndText() {
 	if (timer_ > kExplodeDuration) {
 		timer_ = 0.0f;
 		phase_ = Phase::Finish;
+	}
+}
+
+void GameClearSequence::EmitParticle(bool isScatterEmit)
+{
+	// タイマーの加算
+	particleEmitTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
+	// 発生間隔ごとにEmit
+	if (particleEmitTimer_ >= kExplodeEmitInterval) {
+		Cygnus::Float3 offset = Cygnus::RandomGenerator::GetInstance()->RandomValue(kParticleOffsetMin, kParticleOffsetMax);
+		Cygnus::ParticleEffectManager::GetInstance()->Emit("explodeSmoke", lastBossPosition_ + offset, kExplodeSmokeEmitCount); // 煙パーティクル発生
+
+		if (isScatterEmit) {
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("explodeScatter", lastBossPosition_ + offset, kExplodeScatterEmitCount); // 爆発飛散パーティクル発生
+		}
+
+		// パーティクル発生タイマーのリセット
+		particleEmitTimer_ = 0.0f;
 	}
 }

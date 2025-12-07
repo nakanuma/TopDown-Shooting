@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-TeleporterRingParticle::TeleporterRingParticle(ModelManager::ModelData& model)
+TeleporterRingParticle::TeleporterRingParticle(Cygnus::ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -14,10 +14,10 @@ TeleporterRingParticle::TeleporterRingParticle(ModelManager::ModelData& model)
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Add;
+	blendMode_ = Cygnus::BlendMode::Add;
 }
 
-TeleporterRingParticleData TeleporterRingParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
+TeleporterRingParticleData TeleporterRingParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle)
 {
 	TeleporterRingParticleData p;
 

@@ -5,7 +5,7 @@
 #include <Engine/Math/MyMath.h>
 #include <Engine/Util/RandomGenerator.h>
 
-MuzzleFlashParticle::MuzzleFlashParticle(ModelManager::ModelData& model) {
+MuzzleFlashParticle::MuzzleFlashParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -14,14 +14,14 @@ MuzzleFlashParticle::MuzzleFlashParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {true, true, true};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Add;
+	blendMode_ = Cygnus::BlendMode::Add;
 }
 
-MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+MuzzleFlashParticleData MuzzleFlashParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	MuzzleFlashParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
-	float randAngle = rand->RandomValue(0.0f, PIf * 2.0f);
+	float randAngle = rand->RandomValue(0.0f, Cygnus::PIf * 2.0f);
 
 	float scaleX = rand->RandomValue(kMinScaleX, kMaxScaleX);
 	float scaleY = rand->RandomValue(kMinScaleY, kMaxScaleY);
@@ -50,7 +50,7 @@ void MuzzleFlashParticle::UpdateParticle(MuzzleFlashParticleData& p, float dt) {
 	float t = std::clamp(p.currentTime / p.lifeTime, 0.0f, 1.0f);
 
 	// 拡縮
-	float easeT = Easing::EaseOutExpo(1.0f - t);
-	p.transform.scale_.x = Easing::Lerp(p.initScale.x, p.initScale.x * kScaleXMultipiler, easeT); // 横に引き伸ばす
-	p.transform.scale_.y = Easing::Lerp(p.initScale.y, p.initScale.y * kScaleYMultiplier, easeT); // 縦に潰す
+	float easeT = Cygnus::Easing::EaseOutExpo(1.0f - t);
+	p.transform.scale_.x = Cygnus::Easing::Lerp(p.initScale.x, p.initScale.x * kScaleXMultipiler, easeT); // 横に引き伸ばす
+	p.transform.scale_.y = Cygnus::Easing::Lerp(p.initScale.y, p.initScale.y * kScaleYMultiplier, easeT); // 縦に潰す
 }

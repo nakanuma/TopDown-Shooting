@@ -13,7 +13,7 @@
 // =========================================================
 // 固定砲台の敵クラス
 // =========================================================
-class ImmobileEnemy : public Enemy, public ICollisionCallback {
+class ImmobileEnemy : public Enemy, public Cygnus::ICollisionCallback {
 public:
 	// =========================================================
 	// Public Methods
@@ -25,7 +25,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const Float3& position, ModelManager::ModelData* model, Player* player) override;
+	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -51,7 +51,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 private:
 	// =========================================================
@@ -89,9 +89,7 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kColliderSize = {1.0f, 2.0f, 1.0f};               /* コライダーサイズ */
-	static constexpr Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
-	static constexpr Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
+	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f};       /* コライダーサイズ */
 	static constexpr float kHPBarOffsetY = 90.0f;                             /* HPバーのY軸オフセット */
 	static constexpr float kReloadBarOffsetY = 60.0f;                         /* リロード表示のY軸オフセット */
 
@@ -134,5 +132,5 @@ private:
 	bool isReloading_ = false;      /* リロード中フラグ */
 	float reloadTimer_ = 0.0f;      /* リロード中タイマー */
 
-	std::unique_ptr<BehaviorTree<ImmobileEnemy>> behaviorTree_; /* behaviorTree */
+	std::unique_ptr<Cygnus::BehaviorTree<ImmobileEnemy>> behaviorTree_; /* behaviorTree */
 };

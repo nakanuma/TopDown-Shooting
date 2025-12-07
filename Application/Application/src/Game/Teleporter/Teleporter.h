@@ -16,7 +16,7 @@
 // テレポータークラス
 // プレイヤーのみが使用する
 // =========================================================
-class Teleporter : public ICollisionCallback {
+class Teleporter : public Cygnus::ICollisionCallback {
 public:
 	// =========================================================
 	// Public Methods
@@ -27,7 +27,7 @@ public:
 	/// </summary>
 	/// <param name="position">位置</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Float3& position, ModelManager::ModelData* model);
+	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -48,7 +48,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 	// =========================================================
 	// Getter / Setter
@@ -94,7 +94,7 @@ public:
 	/// 位置の取得を行います。
 	/// </summary>
 	/// <returns>現在位置（Float3）</returns>
-	const Float3& GetTranslate() const { return object_->transform_.translate_; }
+	const Cygnus::Float3& GetTranslate() const { return object_->transform_.translate_; }
 
 	/// <summary>
 	/// ゴール時のコールバック関数を設定します。
@@ -114,19 +114,19 @@ private:
 	static constexpr float kRadius = 4.0f;              /* 半径 */
 	static constexpr float kEnvironmentStrength = 0.1f; /* 環境マップの強度 */
 
-	static constexpr float kParticleEmitInterval = 0.75f;				/* パーティクル発生頻度（秒） */
-	static constexpr uint32_t kRingParticleCount = 1;					/* パーティクル発生数 */
-	static constexpr Float3 kParticleEmitOffset = {0.0f, 0.25f, 0.0f};	/* パーティクル発生のオフセット */
+	static constexpr float kParticleEmitInterval = 0.75f;						/* パーティクル発生頻度（秒） */
+	static constexpr uint32_t kRingParticleCount = 1;							/* パーティクル発生数 */
+	static constexpr Cygnus::Float3 kParticleEmitOffset = {0.0f, 0.25f, 0.0f};	/* パーティクル発生のオフセット */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- Object -----
-	std::unique_ptr<Object3D> object_;			/* テレポーターオブジェクト */
+	std::unique_ptr<Cygnus::Object3D> object_;			/* テレポーターオブジェクト */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_; /* コライダー */
+	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
 
 	// ----- Parameters -----
 	std::string pairID_;         /* 固有ID */

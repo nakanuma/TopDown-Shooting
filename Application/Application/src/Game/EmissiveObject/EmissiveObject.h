@@ -23,13 +23,13 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kEmissiveColor = {1.0f, 0.5f, 0.0f};	/* 発光色 */
-	static constexpr float kEmissiveIntensity = 2.0f;				/* 発光強度 */
+	static constexpr Cygnus::Float3 kEmissiveColor = {1.0f, 0.5f, 0.0f};	/* 発光色 */
+	static constexpr float kEmissiveIntensity = 2.0f;						/* 発光強度 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Object3D> objectRectangleLight_;
-	std::unique_ptr<Object3D> objectDiskLight_;
-	std::unique_ptr<Object3D> objectTubeLight_;
+	std::unique_ptr<Cygnus::Object3D> objectRectangleLight_;
+	std::unique_ptr<Cygnus::Object3D> objectDiskLight_;
+	std::unique_ptr<Cygnus::Object3D> objectTubeLight_;
 };

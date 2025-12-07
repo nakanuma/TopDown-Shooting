@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model) {
+ExplodeScatterParticle::ExplodeScatterParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -13,12 +13,12 @@ ExplodeScatterParticle::ExplodeScatterParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+ExplodeScatterParticleData ExplodeScatterParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	ExplodeScatterParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置
 	p.transform.translate_ = pos;
@@ -58,7 +58,7 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	///	回転
 	///
 
-	float damping = Easing::EaseOutQuad(1.0f - t);
+	float damping = Cygnus::Easing::EaseOutQuad(1.0f - t);
 	p.transform.rotate_ += p.rotationSpeed * damping * dt;
 
 	///
@@ -66,7 +66,7 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	///
 	if (t > kShrinkStartThreshold) {                                  // 4/5に到達したら
 		float localT = (t - kShrinkStartThreshold) / kShrinkDuration; // 0~1に正規化
-		float easeT = Easing::EaseInQuad(localT);
+		float easeT = Cygnus::Easing::EaseInQuad(localT);
 		p.transform.scale_ = p.initScale * (1.0f - easeT);
 	}
 
@@ -77,6 +77,6 @@ void ExplodeScatterParticle::UpdateParticle(ExplodeScatterParticleData& p, float
 	if (t > kColorChangeStartThreshold) {
 		// 黄->橙
 		float localT = (t - kColorChangeStartThreshold) / kColorChangeDuration; // 0~1に正規化
-		p.color.y = Easing::Lerp(kGreenStart, kGreenEnd, localT);
+		p.color.y = Cygnus::Easing::Lerp(kGreenStart, kGreenEnd, localT);
 	}
 }

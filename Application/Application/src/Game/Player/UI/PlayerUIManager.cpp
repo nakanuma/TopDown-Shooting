@@ -1,4 +1,4 @@
-﻿#include "PlayerUIManager.h"
+#include "PlayerUIManager.h"
 
 // Engine
 #include <Engine/Texture/TextureManager.h>
@@ -11,10 +11,10 @@ void PlayerUIManager::Initialize() {
 	///	基盤機能
 	///
 
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// スプライト基盤
-	spriteCommon_ = std::make_unique<SpriteCommon>();
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
 	spriteCommon_->Initialize(dxBase);
 
 	///

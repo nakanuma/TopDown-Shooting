@@ -31,18 +31,18 @@ void WaypointManager::Initialize() {
 
 	for (uint32_t x = 0; x < numX; ++x) {
 		for (uint32_t z = 0; z < numZ; ++z) {
-			Float3 pos;
+			Cygnus::Float3 pos;
 			pos.x = kBottomLeft.x + x * spacing;
 			pos.y = 1.0;
 			pos.z = kBottomLeft.z + z * spacing;
 
 			// 衝突していたら生成スキップ
-			if (CollisionManager::GetInstance()->CheckSphereCollisionWithTag(pos, kWaypointRadius, checkTags)) {
+			if (Cygnus::CollisionManager::GetInstance()->CheckSphereCollisionWithTag(pos, kWaypointRadius, checkTags)) {
 				continue;
 			}
 
 			std::string name = "WP_" + std::to_string(x) + "_" + std::to_string(z);
-			waypoints_.push_back(std::make_unique<Waypoint>(name, pos, &ModelManager::GetInstance()->GetModel("Sphere")));
+			waypoints_.push_back(std::make_unique<Waypoint>(name, pos, &Cygnus::ModelManager::GetInstance()->GetModel("Sphere")));
 		}
 	}
 
@@ -82,13 +82,8 @@ void WaypointManager::Debug() {
 
 		std::string label = wp->GetName();
 		if (ImGui::TreeNode(label.c_str())) {
-			// 選択切り替えボタン
-			if (ImGui::Button("Select")) {
-				wp->isSelected_ = !wp->isSelected_;
-			}
-
 			// 位置
-			const Float3& pos = wp->GetPosition();
+			const Cygnus::Float3& pos = wp->GetPosition();
 			ImGui::Text("Position : (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
 
 			// 隣接ノード
@@ -123,8 +118,8 @@ void WaypointManager::ComputeNeighbors() {
 			}
 
 			// 一定距離以内だけ接続対象とする
-			Float3 dir = wpB->GetPosition() - wpA->GetPosition();
-			float dist = Float3::Length(dir);
+			Cygnus::Float3 dir = wpB->GetPosition() - wpA->GetPosition();
+			float dist = Cygnus::Float3::Length(dir);
 			// 離れすぎていたらスキップ
 			if (dist > kMaxDistance) {
 				continue;
@@ -133,8 +128,8 @@ void WaypointManager::ComputeNeighbors() {
 			// レイキャストで無視するコライダーリスト
 			std::unordered_set<std::string> ignoreTags = {"Player"};
 			// レイキャストで障害物チェック
-			RayCastHit hit{};
-			bool rayHit = CollisionManager::GetInstance()->RayCast(wpA->GetPosition(), Float3::Normalize(dir), dist, &hit, ignoreTags);
+			Cygnus::RayCastHit hit{};
+			bool rayHit = Cygnus::CollisionManager::GetInstance()->RayCast(wpA->GetPosition(), Cygnus::Float3::Normalize(dir), dist, &hit, ignoreTags);
 
 			// ウェイポイント同士のレイが障害物に遮られているかチェック
 			if (rayHit && hit.hitCollider->GetTag() == "NormalObstacle") {
@@ -147,17 +142,17 @@ void WaypointManager::ComputeNeighbors() {
 	}
 }
 
-Waypoint* WaypointManager::FindClosestWaypoint(const Float3& pos) {
+Waypoint* WaypointManager::FindClosestWaypoint(const Cygnus::Float3& pos) {
 	Waypoint* closest = nullptr;
-	float minDist = 3.402823466e+38f; // 最初に必ず比較が行われるように安全のためfloatの最大値を入れておく
+	float minDistSq = FLT_MAX; // 最初に必ず比較が行われるように安全のためfloatの最大値を入れておく
 
 	// 全ウェイポイントをループ
 	for (auto& wp : waypoints_) {
 		// 距離を計算
-		float dist = Float3::Length(wp->GetPosition() - pos);
+		float distSq = Cygnus::Float3::LengthSq(wp->GetPosition() - pos);
 		// これまでの最短距離よりも近ければ更新
-		if (dist < minDist) {
-			minDist = dist;
+		if (distSq < minDistSq) {
+			minDistSq = distSq;
 			closest = wp.get();
 		}
 	}
@@ -177,7 +172,7 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 	std::unordered_map<Waypoint*, float> costSoFar;
 
 	// 初期ノードの追加
-	openList.push({start, nullptr, 0.0f, Float3::Length(goal->GetPosition() - start->GetPosition())});
+	openList.push({start, nullptr, 0.0f, Cygnus::Float3::LengthSq(goal->GetPosition() - start->GetPosition())});
 	cameFrom[start] = nullptr;
 	costSoFar[start] = 0.0f;
 
@@ -203,12 +198,12 @@ std::vector<Waypoint*> WaypointManager::FindPath(Waypoint* start, Waypoint* goal
 		// 隣接ノードの探索
 		for (auto neighbor : current.wp->GetNeighbors()) {
 			// 開始点から隣接ノードまでの累積コストを計算
-			float newCost = costSoFar[current.wp] + Float3::Length(neighbor->GetPosition() - current.wp->GetPosition());
+			float newCost = costSoFar[current.wp] + Cygnus::Float3::LengthSq(neighbor->GetPosition() - current.wp->GetPosition());
 			// まだ訪れていないノード、またはより安いコストで到達できる場合のみ更新
 			if (costSoFar.find(neighbor) == costSoFar.end() || newCost < costSoFar[neighbor]) {
 				costSoFar[neighbor] = newCost;
 				// priorityを計算してオープンリストに追加
-				float priority = newCost + Float3::Length(neighbor->GetPosition() - goal->GetPosition());
+				float priority = newCost + Cygnus::Float3::LengthSq(neighbor->GetPosition() - goal->GetPosition());
 				openList.push({neighbor, current.wp, newCost, priority});
 				cameFrom[neighbor] = current.wp;
 			}

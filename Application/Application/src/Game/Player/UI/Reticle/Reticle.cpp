@@ -10,13 +10,13 @@
 // Application
 #include <src/Game/Utility/Utility.h>
 
-void Reticle::Initialize(DirectXBase* dxBase, SpriteCommon* spriteCommon) {
+void Reticle::Initialize(Cygnus::DirectXBase* dxBase, Cygnus::SpriteCommon* spriteCommon) {
 	///
 	///	クロスへア（十字線）
 	///
 
-	uint32_t textureTarget = TextureManager::Load("UI/crosshair.png");
-	spriteCrosshair_ = std::make_unique<Sprite>();
+	uint32_t textureTarget = Cygnus::TextureManager::Load("UI/crosshair.png");
+	spriteCrosshair_ = std::make_unique<Cygnus::Sprite>();
 	spriteCrosshair_->Initialize(spriteCommon, textureTarget);
 	spriteCrosshair_->SetAnchorPoint(kAnchorPoint);
 	spriteCrosshair_->SetSize(kInitialSize);
@@ -30,10 +30,10 @@ void Reticle::Update() {
 	spriteCrosshair_->Update();
 
 	// カーソルのワールド座標をスクリーン座標に変換してスプライト位置を設定
-	Float3 screenPos = Float3::Transform(Utility::CalculateCursorPosition(), Camera::GetCurrent()->GetViewProjectionMatrix());
+	Cygnus::Float3 screenPos = Cygnus::Float3::Transform(Utility::CalculateCursorPosition(), Cygnus::Camera::GetCurrent()->GetViewProjectionMatrix());
 
-	float screenWidth = static_cast<float>(Window::GetWidth());
-	float screenHeight = static_cast<float>(Window::GetHeight());
+	float screenWidth = static_cast<float>(Cygnus::Window::GetWidth());
+	float screenHeight = static_cast<float>(Cygnus::Window::GetHeight());
 
 	float screenX = (screenPos.x + 1.0f) * 0.5f * screenWidth;
 	float screenY = (1.0f - screenPos.y) * 0.5f * screenHeight;

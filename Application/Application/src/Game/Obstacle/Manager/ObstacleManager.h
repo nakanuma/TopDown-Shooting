@@ -29,22 +29,35 @@ public:
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
-	void Update(const Float3& playerPos);
+	void Update(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// モデルの描画処理を行います。
 	/// </summary>
-	void Draw(const Float3& playerPos);
+	void Draw(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// シャドウマップ用の描画処理を行います。
 	/// </summary>
-	void DrawShadow(const Float3& playerPos);
+	void DrawShadow(const Cygnus::Float3& playerPos);
 
 	/// <summary>
 	/// デバッグ用の描画処理を行います。
 	/// </summary>
 	void Debug();
+
+private:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// 障害物とプレイヤーの距離を計算し、有効化状態を取得します。
+	/// </summary>
+	/// <param name="obstaclePos">障害物の位置</param>
+	/// <param name="playerPos">プレイヤーの位置</param>
+	/// <returns></returns>
+	bool IsActiveDistance(const Cygnus::Float3& obstaclePos, const Cygnus::Float3& playerPos) const;
 
 private:
 	// =========================================================

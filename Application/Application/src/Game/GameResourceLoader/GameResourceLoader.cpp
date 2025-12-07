@@ -36,7 +36,7 @@ void GameResourceLoader::Initialize() {
 	RegisterAllParticleEffect();
 
 	// SkyBoxの初期化
-	SkyBoxManager::GetInstance()->Initialize("skybox.dds");
+	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 }
 
 void GameResourceLoader::LoadAllModelData() {
@@ -45,21 +45,21 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Plane",
 		"Primitive/Plane/plane.obj",
 		"white.png"
 	);
 
 	// スフィア
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Sphere", 
 		"Primitive/Sphere/sphere.obj", 
 		"white.png"
 	);
 
 	// キューブ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Cube",
 		"Primitive/Cube/cube.obj",
 		"white.png"
@@ -70,13 +70,13 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 弾（プレイヤー・敵共通で使用）
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Bullet", 
 		"Primitive/Cube/cube.obj", 
 		"white.png"
 	);
 	// ミサイル（ボスで使用）
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Missile", 
 		"Bullet/Missile/missile.obj", 
 		"white.png"
@@ -87,19 +87,19 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 通常敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"NormalEnemy", 
 		"Character/Enemy/NormalEnemy/normalEnemy.obj", 
 		"Character/Enemy/NormalEnemy/normalEnemy.png"
 	);
 	// 固定砲台敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ImmobileEnemy", 
 		"Character/Enemy/ImmobileEnemy/immobileEnemy.obj", 
 		"Character/Enemy/ImmobileEnemy/immobileEnemy.png"
 	);
 	// ボス敵
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"BossEnemy", 
 		"Character/Enemy/BossEnemy/bossEnemy.obj", 
 		"Character/Enemy/BossEnemy/bossEnemy.png"
@@ -110,73 +110,73 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// コンテナ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Container",
 		"Obstacle/Container/container.obj",
 		"Obstacle/container.png"
 	);
 	// フェンス
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Fence",
 		"Obstacle/Fence/fence.obj",
 		"Obstacle/fence.png"
 	);
 	// 壁
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Wall",
 		"Obstacle/Wall/wall.obj",
 		"Obstacle/wall.png"
 	);
 	// レンガのパレット積み
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"BrickPallet",
 		"Obstacle/BrickPallet/brickPallet.obj",
 		"Obstacle/brickPallet.png"
 	);
 	// コンクリートバリア
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ConcreteBarrier",
 		"Obstacle/ConcreteBarrier/concreteBarrier.obj",
 		"Obstacle/concreteBarrier.png"
 	);
 	// ドラム缶
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"DrumCan",
 		"Obstacle/DrumCan/drumCan.obj",
 		"Obstacle/drumCan.png"
 	);
 	// 貯水タンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"WaterTank",
 		"Obstacle/WaterTank/waterTank.obj",
 		"Obstacle/waterTank.png"
 	);
 	// 鉄骨の束
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"SteelBundle",
 		"Obstacle/SteelBundle/steelBundle.obj",
 		"Obstacle/steelBundle.png"
 	);
 	// 縦型タンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"VerticalTank",
 		"Obstacle/VerticalTank/verticalTank.obj",
 		"Obstacle/verticalTank.png"
 	);
 	// ISOタンク
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"ISOTank",
 		"Obstacle/ISOTank/ISOTank.obj",
 		"Obstacle/ISOTank.png"
 	);
 	// IBCコンテナ
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"IBCContainer",
 		"Obstacle/IBCContainer/IBCContainer.obj",
 		"Obstacle/IBCContainer.png"
 	);
 	// 壊れそうな壁
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"CrumblingWall",
 		"Obstacle/CrumblingWall/crumblingWall.obj",
 		"Obstacle/crumblingWall.png"
@@ -187,28 +187,28 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// 地面警告表示用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"RedCircle",
 		"Primitive/Plane/plane.obj",
 		"Effect/circle.png"
 	);
 
 	// 死亡時のクロスパーティクル用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"DeathCross",
 		"Primitive/Plane/plane.obj",
 		"Effect/glow.png"
 	);
 
 	// 銃のマズルフラッシュ用の板
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"MuzzleFlash",
 		"Primitive/Plane/planeAlign.obj",	/* 中心位置をずらした板モデル */
 		"Effect/muzzle.png"
 	);
 
 	// テレポーター用のリング
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"TeleporterRing",
 		"Primitive/Torus/torus.obj",
 		"white.png"
@@ -219,21 +219,21 @@ void GameResourceLoader::LoadAllModelData() {
 	// ---------------------------------------------------------
 
 	// ダイナマイト
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Dynamite",
 		"Object/Dynamite/dynamite.obj",
 		"Object/dynamite.png"
 	);
 
 	// テレポーター
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Teleporter",
 		"Object/Teleporter/teleporter.obj",
 		"Object/teleporter.png"
 	);
 
 	// 銃
-	ModelManager::GetInstance()->LoadAndRegisterModel(
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Gun",
 		"Object/Gun/gun.obj",
 		"white.png"
@@ -243,70 +243,37 @@ void GameResourceLoader::LoadAllModelData() {
 void GameResourceLoader::RegisterAllParticleEffect()
 {
 	// 後ろへ飛散するパーティクル
-	auto backScatterParticle = std::make_unique<BackscatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("backscatter", std::move(backScatterParticle));
-
+	RegisterParticle<BackscatterParticle>("backscatter", "Cube");
 	// ミサイルの煙パーティクル
-	auto missileSmokeParticle = std::make_unique<MissileSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("missileSmoke", std::move(missileSmokeParticle));
-
+	RegisterParticle<MissileSmokeParticle>("missileSmoke", "Cube");
 	// 地面警告表示パーティクル
-	auto groundWarningParticle = std::make_unique<RedCircleParticle>(ModelManager::GetInstance()->GetModel("RedCircle"));
-	ParticleEffectManager::GetInstance()->Register("redCircle", std::move(groundWarningParticle));
-
+	RegisterParticle<RedCircleParticle>("redCircle", "RedCircle");
 	// 地面警告攻撃の煙パーティクル
-	auto explodeSmokeParticle = std::make_unique<ExplodeSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("explodeSmoke", std::move(explodeSmokeParticle));
-
+	RegisterParticle<ExplodeSmokeParticle>("explodeSmoke", "Cube");
 	// 地面警告攻撃の飛散パーティクル
-	auto explodeScatterParticle = std::make_unique<ExplodeScatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("explodeScatter", std::move(explodeScatterParticle));
-
+	RegisterParticle<ExplodeScatterParticle>("explodeScatter", "Cube");
 	// 煙パーティクル
-	auto smokeParticle = std::make_unique<SmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("smoke", std::move(smokeParticle));
-
+	RegisterParticle<SmokeParticle>("smoke", "Cube");
 	// 火花パーティクル
-	auto sparkParticle = std::make_unique<SparkParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("spark", std::move(sparkParticle));
-
+	RegisterParticle<SparkParticle>("spark", "Cube");
 	// 壁崩壊パーティクル
-	auto wallCollapseParticle = std::make_unique<WallCollapseParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("wallCollapse", std::move(wallCollapseParticle));
-
+	RegisterParticle<WallCollapseParticle>("wallCollapse", "Cube");
 	// 血が飛び散るパーティクル
-	auto bloodSplatterParticle = std::make_unique<BloodSplatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodSplatter", std::move(bloodSplatterParticle));
-
+	RegisterParticle<BloodSplatterParticle>("bloodSplatter", "Cube");
 	// 弾衝突時の煙パーティクル
-	auto impactSmokeParticle = std::make_unique<ImpactSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("impactSmoke", std::move(impactSmokeParticle));
-
+	RegisterParticle<ImpactSmokeParticle>("impactSmoke", "Cube");
 	// 弾衝突時の血煙パーティクル
-	auto bloodSmokeParticle = std::make_unique<BloodSmokeParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodSmoke", std::move(bloodSmokeParticle));
-
+	RegisterParticle<BloodSmokeParticle>("bloodSmoke", "Cube");
 	// 死亡時のクロスパーティクル
-	auto deathCrossParticle = std::make_unique<DeathCrossParticle>(ModelManager::GetInstance()->GetModel("DeathCross"));
-	ParticleEffectManager::GetInstance()->Register("deathCross", std::move(deathCrossParticle));
-
+	RegisterParticle<DeathCrossParticle>("deathCross", "DeathCross");
 	// 薬莢排出パーティクル
-	auto shellEjectionParticle = std::make_unique<ShellEjectionParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("shellEjection", std::move(shellEjectionParticle));
-
+	RegisterParticle<ShellEjectionParticle>("shellEjection", "Cube");
 	// マズルフラッシュパーティクル
-	auto muzzleFlashParticle = std::make_unique<MuzzleFlashParticle>(ModelManager::GetInstance()->GetModel("MuzzleFlash"));
-	ParticleEffectManager::GetInstance()->Register("muzzleFlash", std::move(muzzleFlashParticle));
-
+	RegisterParticle<MuzzleFlashParticle>("muzzleFlash", "MuzzleFlash");
 	// ボスの破片パーティクル
-	auto bossFragmentsParticle = std::make_unique<BossFragmentsParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bossFragments", std::move(bossFragmentsParticle));
-
+	RegisterParticle<BossFragmentsParticle>("bossFragments", "Cube");
 	// 血が飛散するパーティクル
-	auto bloodScatterParticle = std::make_unique<BloodScatterParticle>(ModelManager::GetInstance()->GetModel("Cube"));
-	ParticleEffectManager::GetInstance()->Register("bloodScatter", std::move(bloodScatterParticle));
-
+	RegisterParticle<BloodScatterParticle>("bloodScatter", "Cube");
 	// テレポーターリングパーティクル
-	auto teleporterRingParticle = std::make_unique<TeleporterRingParticle>(ModelManager::GetInstance()->GetModel("TeleporterRing"));
-	ParticleEffectManager::GetInstance()->Register("teleporterRing", std::move(teleporterRingParticle));
+	RegisterParticle<TeleporterRingParticle>("teleporterRing", "TeleporterRing");
 }

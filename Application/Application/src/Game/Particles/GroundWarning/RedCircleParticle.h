@@ -11,20 +11,20 @@
 /// パーティクルデータ
 /// </summary>
 struct RedCircleParticleData {
-	Transform transform; /* 位置 */
-	Float3 velocity;     /* 速度ベクトル */
-	Float4 color;        /* 色 */
-	float lifeTime;      /* 生存時間 */
-	float currentTime;   /* 経過時間 */
+	Cygnus::Transform transform;	/* 位置 */
+	Cygnus::Float3 velocity;		/* 速度ベクトル */
+	Cygnus::Float4 color;			/* 色 */
+	float lifeTime;					/* 生存時間 */
+	float currentTime;				/* 経過時間 */
 
-	Float3 targetScale; /* 目標スケール */
+	Cygnus::Float3 targetScale; /* 目標スケール */
 };
 
 // =========================================================
 // 赤い円パーティクルクラス
 // ボスの警告攻撃で発生
 // =========================================================
-class RedCircleParticle : public BaseParticleEffect<RedCircleParticleData> {
+class RedCircleParticle : public Cygnus::BaseParticleEffect<RedCircleParticleData> {
 public:
 	// =========================================================
 	// Public Methods
@@ -34,7 +34,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
-	RedCircleParticle(ModelManager::ModelData& model);
+	RedCircleParticle(Cygnus::ModelManager::ModelData& model);
 
 protected:
 	// =========================================================
@@ -48,7 +48,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	RedCircleParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
+	RedCircleParticleData CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。
@@ -61,7 +61,7 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float4 kInitialColor = {1.0f, 0.0f, 0.0f, 1.0f}; /* 初期色（赤） */
-	static constexpr float kLifeTime = 1.0f;                          /* 生存時間（秒） */
-	static constexpr Float3 kTargetScale = {5.0f, 5.0f, 5.0f};        /* 目標スケール */
+	static constexpr Cygnus::Float4 kInitialColor = {1.0f, 0.0f, 0.0f, 1.0f};	/* 初期色（赤） */
+	static constexpr float kLifeTime = 1.0f;									/* 生存時間（秒） */
+	static constexpr Cygnus::Float3 kTargetScale = {5.0f, 5.0f, 5.0f};			/* 目標スケール */
 };

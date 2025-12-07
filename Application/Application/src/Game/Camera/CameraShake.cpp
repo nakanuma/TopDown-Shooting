@@ -14,11 +14,11 @@ CameraShake* CameraShake::GetInstance() {
 
 void CameraShake::Update() {
 	if (isShaking_) {
-		elapsedTime_ += TimeManager::GetInstance()->GetDeltaTime();
+		elapsedTime_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		// シェイク終了
 		if (elapsedTime_ >= duration_) {
 			isShaking_ = false;
-			offset_ = Float3(0.0f, 0.0f, 0.0f); // オフセットのリセット
+			offset_ = Cygnus::Float3(0.0f, 0.0f, 0.0f); // オフセットのリセット
 			// シェイク中
 		} else {
 			ApplyShake();
@@ -39,6 +39,6 @@ void CameraShake::ApplyShake() {
 	float currentIntensity = intensity_ * (remainingTime / duration_);
 
 	// 現在の強度に基づいてオフセットをランダムに設定
-	Float3 dis = RandomGenerator::GetInstance()->RandomValue({-currentIntensity, -currentIntensity, -currentIntensity}, {currentIntensity, currentIntensity, currentIntensity});
-	offset_ = Float3(dis.x, dis.y, dis.z);
+	Cygnus::Float3 dis = Cygnus::RandomGenerator::GetInstance()->RandomValue({-currentIntensity, -currentIntensity, -currentIntensity}, {currentIntensity, currentIntensity, currentIntensity});
+	offset_ = Cygnus::Float3(dis.x, dis.y, dis.z);
 }

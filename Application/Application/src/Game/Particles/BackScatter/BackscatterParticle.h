@@ -11,19 +11,19 @@
 /// パーティクルデータ
 /// </summary>
 struct BackscatterParticleData {
-	Transform transform; /* 位置 */
-	Float3 velocity;     /* 速度ベクトル */
-	Float4 color;        /* 色 */
-	float lifeTime;      /* 生存時間 */
-	float currentTime;   /* 経過時間 */
-	Float3 initScale;    /* 初期スケール */
+	Cygnus::Transform transform;	/* 位置 */
+	Cygnus::Float3 velocity;		/* 速度ベクトル */
+	Cygnus::Float4 color;			/* 色 */
+	float lifeTime;					/* 生存時間 */
+	float currentTime;				/* 経過時間 */
+	Cygnus::Float3 initScale;		/* 初期スケール */
 };
 
 // =========================================================
 // 後ろ方向に飛散するパーティクルクラス
 // 障害物や敵に弾が当たったときに発生
 // =========================================================
-class BackscatterParticle : public BaseParticleEffect<BackscatterParticleData> {
+class BackscatterParticle : public Cygnus::BaseParticleEffect<BackscatterParticleData> {
 public:
 	// =========================================================
 	// Public Methods
@@ -33,7 +33,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
-	BackscatterParticle(ModelManager::ModelData& model);
+	BackscatterParticle(Cygnus::ModelManager::ModelData& model);
 
 protected:
 	// =========================================================
@@ -47,7 +47,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	BackscatterParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
+	BackscatterParticleData CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。
@@ -60,16 +60,16 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kScale = {0.06f, 0.06f, 0.6f};            /* スケール */
-	static constexpr float kDirectionSpread = 0.4f;                   /* 方向のバラつき */
-	static constexpr float kMinSpeed = 12.0f;                         /* 最小スピード */
-	static constexpr float kMaxSpeed = 24.0f;                         /* 最大スピード */
-	static constexpr Float4 kInitialColor = {1.0f, 1.0f, 1.0f, 1.0f}; /* 初期色（白） */
-	static constexpr float kMinLifeTime = 0.3f;                       /* 最小生存時間（秒） */
-	static constexpr float kMaxLifeTime = 0.5f;                       /* 最大生存時間（秒） */
+	static constexpr Cygnus::Float3 kScale = {0.06f, 0.06f, 0.6f};				/* スケール */
+	static constexpr float kDirectionSpread = 0.4f;								/* 方向のバラつき */
+	static constexpr float kMinSpeed = 12.0f;									/* 最小スピード */
+	static constexpr float kMaxSpeed = 24.0f;									/* 最大スピード */
+	static constexpr Cygnus::Float4 kInitialColor = {1.0f, 1.0f, 1.0f, 1.0f};	/* 初期色（白） */
+	static constexpr float kMinLifeTime = 0.3f;									/* 最小生存時間（秒） */
+	static constexpr float kMaxLifeTime = 0.5f;									/* 最大生存時間（秒） */
 
-	static constexpr float kColorTransitionPoint = 0.5f;             /* 色遷移の境界点（0~1） */
-	static constexpr Float4 kColorWhite = {1.0f, 1.0f, 1.0f, 1.0f};  /* 白色 */
-	static constexpr Float4 kColorOrange = {1.0f, 0.5f, 0.0f, 1.0f}; /* 橙色 */
-	static constexpr Float4 kColorRed = {1.0f, 0.0f, 0.0f, 1.0f};    /* 赤色 */
+	static constexpr float kColorTransitionPoint = 0.5f;						/* 色遷移の境界点（0~1） */
+	static constexpr Cygnus::Float4 kColorWhite = {1.0f, 1.0f, 1.0f, 1.0f};		/* 白色 */
+	static constexpr Cygnus::Float4 kColorOrange = {1.0f, 0.5f, 0.0f, 1.0f};	/* 橙色 */
+	static constexpr Cygnus::Float4 kColorRed = {1.0f, 0.0f, 0.0f, 1.0f};		/* 赤色 */
 };

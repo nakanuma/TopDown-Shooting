@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ---------------------------------------------------------
 // C++ Includes
@@ -53,7 +53,7 @@ public:
 	/// <summary>
 	/// クリアタイムを加算します。
 	/// </summary>
-	void AddTime() { clearTime_ += TimeManager::GetInstance()->GetDeltaTime(); }
+	void AddTime() { clearTime_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime(); }
 
 	// =========================================================
 	// Getter / Setter

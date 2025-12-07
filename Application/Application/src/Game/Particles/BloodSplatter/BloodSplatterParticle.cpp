@@ -4,7 +4,7 @@
 #include <Engine/Math/Easing.h>
 #include <Engine/Util/RandomGenerator.h>
 
-BloodSplatterParticle::BloodSplatterParticle(ModelManager::ModelData& model) {
+BloodSplatterParticle::BloodSplatterParticle(Cygnus::ModelManager::ModelData& model) {
 	// オブジェクト設定
 	object_.model_ = &model;
 	object_.gTransformationMatrices_.numMaxInstance_ = kMaxParticles;
@@ -13,12 +13,12 @@ BloodSplatterParticle::BloodSplatterParticle(ModelManager::ModelData& model) {
 	// ビルボード適用設定
 	isBillboard_ = {false, false, false};
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle) {
+BloodSplatterParticleData BloodSplatterParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) {
 	BloodSplatterParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置
 	p.transform.translate_ = pos;
@@ -76,7 +76,7 @@ void BloodSplatterParticle::UpdateParticle(BloodSplatterParticleData& p, float d
 	if (p.isStop) {
 		// 両方から止まった瞬間の時間を引いて、正しく最初の生存時間で消えるよう調整
 		float t = std::clamp((p.currentTime - p.stopTime) / (p.lifeTime - p.stopTime), 0.0f, 1.0f);
-		float easeT = Easing::EaseInBack(t);
+		float easeT = Cygnus::Easing::EaseInBack(t);
 		p.transform.scale_ = p.initScale * (1.0f - easeT);
 	}
 }

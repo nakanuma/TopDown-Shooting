@@ -11,6 +11,7 @@
 #include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
 #include <Animation/AnimatedModelInstance.h>
+#include <PostEffectManager.h>
 
 // ---------------------------------------------------------
 // Application Includes
@@ -22,7 +23,7 @@
 // =========================================================
 // プレイヤークラス
 // =========================================================
-class Player : public ICollisionCallback, public Configurator {
+class Player : public Cygnus::ICollisionCallback, public Cygnus::Configurator {
 public:
 	// =========================================================
 	// Public Methods
@@ -69,7 +70,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other">衝突した相手のコライダー</param>
-	void OnCollision(Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 	// =========================================================
 	// Getter / Setter
@@ -79,13 +80,13 @@ public:
 	/// プレイヤーの現在位置を取得します。
 	/// </summary>
 	/// <returns>現在の位置（Float3）</returns>
-	const Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
+	const Cygnus::Float3& GetTranslate() const { return objectPlayer_->GetTranslate(); }
 
 	/// <summary>
 	/// プレイヤーの位置を設定します。
 	/// </summary>
 	/// <param name="translate">設定する位置（Float3）</param>
-	void SetTranslate(const Float3& translate) { objectPlayer_->GetTranslate() = translate; }
+	void SetTranslate(const Cygnus::Float3& translate) { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
 	/// プレイヤーの現在HPを取得します。
@@ -110,6 +111,12 @@ public:
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
 	bool IsDead() const { return isDead_; }
+
+	/// <summary>
+	/// ポストエフェクトマネージャーをセットします。
+	/// </summary>
+	/// <param name="manager">ポストエフェクトマネージャー</param>
+	void SetPostEffectManager(Cygnus::PostEffectManager* manager) { postEffectManager_ = manager; }
 
 private:
 	// =========================================================
@@ -136,12 +143,22 @@ private:
 	/// </summary>
 	void HandleOverHeat();
 
+	/// <summary>
+	/// 被弾時の発光処理を行います。
+	/// </summary>
+	void HandleHitBlink();
+
+	/// <summary>
+	/// 被弾時のダメージ演出処理を行います。
+	/// </summary>
+	void HandleDamageEffect();
+
 private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
-	static constexpr int32_t kMaxHP = 100;							/* 最大HP */
+	static constexpr Cygnus::Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
+	static constexpr int32_t kMaxHP = 100;									/* 最大HP */
 
 	static constexpr float kMoveSpeed = 0.25f;				/* 移動速度 */
 	static constexpr float kDashDuration = 0.2f;			/* ダッシュ継続時間 */
@@ -156,10 +173,10 @@ private:
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f; /* アニメーション再生速度 */
 
-	static constexpr Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;			/* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;				/* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;					/* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f;	/* 速度正規化用の加算値 */
 	static constexpr float kVelocityThreshold = 0.01f;			/* 速度判定のしきい値 */
@@ -171,29 +188,42 @@ private:
 	static constexpr int32_t kMuzzleFlashCount = 6;				/* マズルフラッシュパーティクル発生数 */
 	static constexpr float kMuzzleFlashForwardOffset = 1.4f;	/* マズルフラッシュ発生位置の前方オフセット */
 
+	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
+	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
+	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
+
+	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
+
+	static constexpr float kDamageEffectDurationIn = 0.1f;			/* ダメージ演出増加の時間 */
+	static constexpr float kDamageEffectDurationHold = 0.2f;		/* ダメージ演出維持の時間 */
+	static constexpr float kDamageEffectDurationOut = 0.8f;			/* ダメージ演出減少の時間 */
+	static constexpr float kDamageEffectIntensityThreshold = 0.5f;	/* ダメージ演出開始のための閾値 */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- System -----
-	Input* input_ = nullptr;								/* 入力管理 */
-	std::unique_ptr<SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	Cygnus::Input* input_ = nullptr;								/* 入力管理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	Cygnus::PostEffectManager* postEffectManager_;					/* ポストエフェクトマネージャーへの参照 */
 
 	// ----- Object -----
-	std::unique_ptr<AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	std::unique_ptr<Object3D> objectGun_;					/* 銃オブジェクト */
+	std::unique_ptr<Cygnus::AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectGun_;					/* 銃オブジェクト */
 
 	// ----- Animation -----
-	AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
+	Cygnus::AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
 
 	// ----- Collision -----
-	std::unique_ptr<Collider> collider_;					/* コライダー */
+	std::unique_ptr<Cygnus::Collider> collider_;					/* コライダー */
 
 	// ----- UI -----
 	std::unique_ptr<PlayerUIManager> ui_;					/* UIマネージャー */
 
 	// ----- Parameters -----
-	Float3 velocity_ = { 0.0f, 0.0f, 0.0f };				/* 速度ベクトル */
+	Cygnus::Float3 velocity_ = { 0.0f, 0.0f, 0.0f };		/* 速度ベクトル */
 	bool isMoving_ = false;									/* 移動中フラグ */
 	int32_t currentHP_ = 0;									/* 現在HP */
 
@@ -211,4 +241,26 @@ private:
 	// ----- Overheat -----
 	float overheatTime_ = 0.0f;								/* オーバーヒートタイマー */
 	bool isOverheated_ = false;								/* オーバーヒート中フラグ */
+
+	// ----- HitBlink -----
+	/// <summary>
+	/// 被弾時の発光演出フェーズ
+	/// </summary>
+	enum class HitBlinkPhase {
+		Wait,		// 待機
+		BlinkIn,	// 発光
+		BlinkOut	// 減光
+	} hitBlinkPhase_ = HitBlinkPhase::Wait;
+	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
+	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
+
+	// ----- DamageEffect -----
+	enum class DamageEffectPhase{
+		Wait,	// 待機
+		In,		// 増加
+		Hold,	// 維持
+		Out		// 減少
+	} damageEffectPhase_ = DamageEffectPhase::Wait;
+	bool isReceiveDamage_ = false;		/* 被ダメージフラグ */
+	float damageEffectTimer_ = 0.0f;	/* ダメージ演出タイマー */
 };

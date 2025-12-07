@@ -7,12 +7,12 @@
 #include <TimeManager.h>
 #include <ParticleEffect/ParticleEffectManager.h>
 
-void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* model) {
+void Teleporter::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model) {
 	///
 	///	オブジェクト生成
 	///
 
-	object_ = std::make_unique<Object3D>();
+	object_ = std::make_unique<Cygnus::Object3D>();
 	object_->model_ = model;
 	object_->transform_.translate_ = position;
 	object_->materialCB_.data_->useEnvironmentMap = true;
@@ -22,14 +22,14 @@ void Teleporter::Initialize(const Float3& position, ModelManager::ModelData* mod
 	///	コライダー生成
 	///
 
-	auto sphere = std::make_unique<SphereCollider>();
+	auto sphere = std::make_unique<Cygnus::SphereCollider>();
 	sphere->SetTag("Teleporter");
 	sphere->SetFollowTarget(&object_->transform_.translate_);
 	sphere->SetRadius(kRadius);
 	sphere->SetOwner(this);
 
 	collider_ = std::move(sphere);
-	CollisionManager::GetInstance()->Register(collider_.get());
+	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
@@ -56,11 +56,11 @@ void Teleporter::Update() {
 	/// 
 
 	if (isActive_) {
-		emitTimer_ += TimeManager::GetInstance()->GetDeltaTime();
+		emitTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		if (emitTimer_ >= kParticleEmitInterval) {
 			// 発生間隔分を減算
 			emitTimer_ -= kParticleEmitInterval;
-			ParticleEffectManager::GetInstance()->Emit("teleporterRing", GetTranslate() + kParticleEmitOffset, kRingParticleCount);
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("teleporterRing", GetTranslate() + kParticleEmitOffset, kRingParticleCount);
 		}
 	}
 }
@@ -75,7 +75,7 @@ void Teleporter::DrawShadow() {
 	object_->DrawShadow();
 }
 
-void Teleporter::OnCollision(Collider* other) {
+void Teleporter::OnCollision(Cygnus::Collider* other) {
 	// vs Player
 	if (other->GetTag() == "Player") {
 		Player* player = static_cast<Player*>(other->GetOwner());

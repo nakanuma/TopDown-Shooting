@@ -4,7 +4,7 @@
 #include <RandomGenerator.h>
 #include <Easing.h>
 
-WallCollapseParticle::WallCollapseParticle(ModelManager::ModelData& model)
+WallCollapseParticle::WallCollapseParticle(Cygnus::ModelManager::ModelData& model)
 {
 	// オブジェクト設定
 	object_.model_ = &model;
@@ -14,17 +14,17 @@ WallCollapseParticle::WallCollapseParticle(ModelManager::ModelData& model)
 	// ビルボード適用設定
 	isBillboard_ = { false, false, false };
 	// ブレンドモード設定
-	blendMode_ = BlendMode::Normal;
+	blendMode_ = Cygnus::BlendMode::Normal;
 }
 
-WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos, const Float3& velocity, float angle)
+WallCollapseParticleData WallCollapseParticle::CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle)
 {
 	WallCollapseParticleData p;
-	auto rand = RandomGenerator::GetInstance();
+	auto rand = Cygnus::RandomGenerator::GetInstance();
 
 	// 位置（壊れる壁の範囲内に生成されるようランダムなオフセットを加える）
-	Float3 spawnRange = kSpawnRange;
-	Float3 offset = {
+	Cygnus::Float3 spawnRange = kSpawnRange;
+	Cygnus::Float3 offset = {
 		rand->RandomValue(-spawnRange.x, spawnRange.x),
 		rand->RandomValue(-spawnRange.y, spawnRange.y),
 		rand->RandomValue(-spawnRange.z, spawnRange.z),
@@ -36,9 +36,9 @@ WallCollapseParticleData WallCollapseParticle::CreateParticle(const Float3& pos,
 	float scale = rand->RandomValue(kMinScale, kMaxScale);
 	p.transform.scale_ = { scale, scale, scale };
 	// 速度ベクトル
-	Float3 dir = offset;
+	Cygnus::Float3 dir = offset;
 	dir += rand->RandomValue(kMinVelocity, kMaxVelocity); // 中心から外側へ向かうオフセット
-	dir = Float3::Normalize(dir);
+	dir = Cygnus::Float3::Normalize(dir);
 	float speed = rand->RandomValue(kMinSpeed, kMaxSpeed);
 	p.velocity = dir * speed;
 	// 色

@@ -20,13 +20,13 @@ public:
 	/// ステージオブジェクト1つ分の変換情報データ
 	/// </summary>
 	struct TransformData {
-		std::string tag;			/* タグ（string） */
-		Float3 translate;			/* 位置 */
-		Float3 rotate;				/* 回転（Euler） */
-		Float3 scale;				/* スケール */
+		std::string tag;					/* タグ（string） */
+		Cygnus::Float3 translate;			/* 位置 */
+		Cygnus::Float3 rotate;				/* 回転（Euler） */
+		Cygnus::Float3 scale;				/* スケール */
 
-		Float3 colliderSize;		/* コライダーサイズ */
-		std::string pairID;			/* ペアID（string） */
+		Cygnus::Float3 colliderSize;		/* コライダーサイズ */
+		std::string pairID;					/* ペアID（string） */
 	};
 
 public:
@@ -55,16 +55,28 @@ public:
 
 private:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// Blender座標系の3次元ベクトルをEngine座標系に変換します。
+	/// </summary>
+	/// <param name="blenderVec"></param>
+	/// <returns></returns>
+	Cygnus::Float3 ConvertToEngineCoords(const std::vector<float>& blenderVec);
+
+private:
+	// =========================================================
 	// Constants
 	// =========================================================
 	static constexpr size_t kBlenderIndexX = 0;
 	static constexpr size_t kBlenderIndexY = 1;
 	static constexpr size_t kBlenderIndexZ = 2;
 
-	static constexpr Float3 kDefaultLocation = {0.0f, 0.0f, 0.0f}; /* 位置のデフォルト値 */
-	static constexpr Float3 kDefaultRotation = {0.0f, 0.0f, 0.0f}; /* 回転のデフォルト値 */
-	static constexpr Float3 kDefaultScale = {1.0f, 1.0f, 1.0f};    /* スケールのデフォルト値 */
-	static constexpr Float3 kDefaultColliderSize = {1.0f, 1.0f, 1.0f};/* コライダーサイズのデフォルト値 */
+	static constexpr Cygnus::Float3 kDefaultLocation = {0.0f, 0.0f, 0.0f};		/* 位置のデフォルト値 */
+	static constexpr Cygnus::Float3 kDefaultRotation = {0.0f, 0.0f, 0.0f};		/* 回転のデフォルト値 */
+	static constexpr Cygnus::Float3 kDefaultScale = {1.0f, 1.0f, 1.0f};			/* スケールのデフォルト値 */
+	static constexpr Cygnus::Float3 kDefaultColliderSize = {1.0f, 1.0f, 1.0f};	/* コライダーサイズのデフォルト値 */
 
 	// =========================================================
 	// Member Variables

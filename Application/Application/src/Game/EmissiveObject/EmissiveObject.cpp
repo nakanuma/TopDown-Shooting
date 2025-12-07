@@ -5,30 +5,30 @@
 #include <LightManager.h>
 
 void EmissiveObject::Initialize(){
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// Rectangle
-	objectRectangleLight_ = std::make_unique<Object3D>();
-	objectRectangleLight_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
+	objectRectangleLight_ = std::make_unique<Cygnus::Object3D>();
+	objectRectangleLight_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Cube");
 	objectRectangleLight_->transform_.translate_ = {17.720f, 4.0f, 15.0f};
 	objectRectangleLight_->transform_.scale_ = {3.0f, 2.0f, 0.1f};
 	objectRectangleLight_->transform_.rotate_ = {0.0f, -0.99f, 0.0f};
-	objectRectangleLight_->SetEmissiveAsAreaLight(Float3{1.0f, 1.0f, 1.0f}, 2.0f, 15.0f, LightManager::AreaLightType::RectAngle);
+	objectRectangleLight_->SetEmissiveAsAreaLight(Cygnus::Float3{1.0f, 1.0f, 1.0f}, 2.0f, 15.0f, Cygnus::LightManager::AreaLightType::RectAngle);
 	
 	// Disk
-	objectDiskLight_ = std::make_unique<Object3D>();
-	objectDiskLight_->model_ = &ModelManager::GetInstance()->GetModel("Sphere");
+	objectDiskLight_ = std::make_unique<Cygnus::Object3D>();
+	objectDiskLight_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Sphere");
 	objectDiskLight_->transform_.translate_ = {55.240f, 9.7f, 25.820f};
 	objectDiskLight_->transform_.scale_ = {2.0f, 2.0f, 0.2f};
 	objectDiskLight_->transform_.rotate_ = {-0.380f, 1.010f, 0.0f};
-	objectDiskLight_->SetEmissiveAsAreaLight(Float3{1.0f, 1.0f, 1.0f}, 2.5f, 12.0f, LightManager::AreaLightType::Disk);
+	objectDiskLight_->SetEmissiveAsAreaLight(Cygnus::Float3{1.0f, 1.0f, 1.0f}, 2.5f, 12.0f, Cygnus::LightManager::AreaLightType::Disk);
 
 	// Tube
-	objectTubeLight_ = std::make_unique<Object3D>();
-	objectTubeLight_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
+	objectTubeLight_ = std::make_unique<Cygnus::Object3D>();
+	objectTubeLight_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Cube");
 	objectTubeLight_->transform_.translate_ = {40.220f, 6.1f, 47.0f};
 	objectTubeLight_->transform_.scale_ = {4.0f, 0.2f, 0.2f};
-	objectTubeLight_->SetEmissiveAsAreaLight(Float3{1.0f, 1.0f, 1.0f}, 2.0f, 10.0f, LightManager::AreaLightType::Tube);
+	objectTubeLight_->SetEmissiveAsAreaLight(Cygnus::Float3{1.0f, 1.0f, 1.0f}, 2.0f, 10.0f, Cygnus::LightManager::AreaLightType::Tube);
 }
 
 void EmissiveObject::Update(){

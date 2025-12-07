@@ -19,13 +19,13 @@ public:
 	/// </summary>
 	/// <param name="worldPosition">ワールド座標</param>
 	/// <returns>スクリーン座標</returns>
-	static Float3 WorldToScreen(const Float3& worldPosition);
+	static Cygnus::Float3 WorldToScreen(const Cygnus::Float3& worldPosition);
 
 	/// <summary>
 	/// カーソル位置のワールド座標を取得します。
 	/// </summary>
 	/// <returns>カーソル位置のワールド座標</returns>
-	static Float3 CalculateCursorPosition();
+	static Cygnus::Float3 CalculateCursorPosition();
 
 	/// <summary>
 	/// カーソルがクライアント領域内にあるか確認します。

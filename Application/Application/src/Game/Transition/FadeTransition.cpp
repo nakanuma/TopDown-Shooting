@@ -14,12 +14,12 @@ FadeTransition* FadeTransition::GetInstance() {
 	return &instance;
 }
 
-void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
-	uint32_t textureWhite = TextureManager::Load("white.png");
-	Float2 windowSize = {static_cast<float>(Window::GetWidth()), static_cast<float>(Window::GetHeight())};
+void FadeTransition::Initialize(Cygnus::SpriteCommon* spriteCommon) {
+	uint32_t textureWhite = Cygnus::TextureManager::Load("white.png");
+	Cygnus::Float2 windowSize = {static_cast<float>(Cygnus::Window::GetWidth()), static_cast<float>(Cygnus::Window::GetHeight())};
 
 	// スプライト生成
-	sprite_ = std::make_unique<Sprite>();
+	sprite_ = std::make_unique<Cygnus::Sprite>();
 	sprite_->Initialize(spriteCommon, textureWhite);
 	sprite_->SetSize(windowSize);
 	sprite_->SetColor(kColorBlack);
@@ -27,22 +27,14 @@ void FadeTransition::Initialize(SpriteCommon* spriteCommon) {
 
 void FadeTransition::StartFadeIn(float duration, float delayBeforeStart) {
 	// 各種パラメーターをフェードイン開始前状態に設定
-	state_ = State::FadeIn;
-	alpha_ = 1.0f;
-	duration_ = duration;
-	timer_ = 0.0f;
+	StartTransitionCommon(State::FadeIn, 1.0f, duration);
 	delayBeforeFadeIn_ = delayBeforeStart;
-	onFadeComplete_ = nullptr;
 }
 
 void FadeTransition::StartFadeOut(float duration, std::function<void()> onComplete, float delayAfterComplete) {
 	// 各種パラメーターをフェードアウト開始前状態に設定
-	state_ = State::FadeOut;
-	alpha_ = 0.0f;
-	duration_ = duration;
-	timer_ = 0.0f;
+	StartTransitionCommon(State::FadeOut, 0.0f, duration);
 	delayAfterFadeOutComplete_ = delayAfterComplete;
-	delayTimerAfterFadeOut_ = 0.0f;
 	onFadeComplete_ = std::move(onComplete); // コピーを回避
 }
 
@@ -50,7 +42,7 @@ void FadeTransition::Update() {
 	if (state_ == State::None)
 		return;
 
-	float dt = TimeManager::GetInstance()->GetDeltaTime();
+	float dt = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// フェードイン
 	if (state_ == State::FadeIn) {
@@ -118,4 +110,16 @@ void FadeTransition::Draw() {
 
 	sprite_->SetColor({kColorBlack.x, kColorBlack.y, kColorBlack.z, alpha_});
 	sprite_->Draw();
+}
+
+void FadeTransition::StartTransitionCommon(State state, float initialAlpha, float duration) { 
+	state_ = state; 
+	alpha_ = initialAlpha;
+	duration_ = duration;
+	timer_ = 0.0f;
+	onFadeComplete_ = nullptr;
+
+	delayTimerAfterFadeOut_ = 0.0f;
+	delayAfterFadeOutComplete_ = 0.0f;
+	delayBeforeFadeIn_ = 0.0f;
 }

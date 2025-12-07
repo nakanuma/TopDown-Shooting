@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
-	void Update(Float2 position);
+	void Update(Cygnus::Float2 position);
 
 	/// <summary>
 	/// モデルの描画処理を行います。
@@ -33,8 +33,8 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float2 kDigitSize = {32.0f, 32.0f}; /* 1文字のサイズ */
-	static constexpr Float2 kAnchorPoint = {0.5f, 0.5f}; /* アンカーポイント（中心） */
+	static constexpr Cygnus::Float2 kDigitSize = {32.0f, 32.0f}; /* 1文字のサイズ */
+	static constexpr Cygnus::Float2 kAnchorPoint = {0.5f, 0.5f}; /* アンカーポイント（中心） */
 
 	static constexpr uint32_t kDecimalPointIndex = 10;     /* 小数点のテクスチャインデックス */
 	static constexpr float kDecimalPointWidthRatio = 0.2f; /* 小数点の幅比率 */
@@ -46,12 +46,12 @@ private:
 	// =========================================================
 
 	// ----- System -----
-	std::unique_ptr<SpriteCommon> spriteCommon_; /* スプライト共通処理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_; /* スプライト共通処理 */
 
 	// ----- Parameters -----
 	uint32_t digitCount_ = 0;             /* 桁数 */
 	std::vector<uint32_t> digitValues_{}; /* 各桁の数字 */
 
 	// ----- Container -----
-	std::vector<std::unique_ptr<Sprite>> digits_{}; /* スプライトを格納するコンテナ */
+	std::vector<std::unique_ptr<Cygnus::Sprite>> digits_{}; /* スプライトを格納するコンテナ */
 };

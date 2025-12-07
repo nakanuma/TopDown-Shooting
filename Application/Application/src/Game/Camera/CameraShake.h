@@ -36,7 +36,7 @@ public:
 	/// カメラに加算するオフセットを取得します。
 	/// </summary>
 	/// <returns>オフセット（Float3）</returns>
-	const Float3& GetOffset() const { return offset_; }
+	const Cygnus::Float3& GetOffset() const { return offset_; }
 
 private:
 	// =========================================================
@@ -56,5 +56,5 @@ private:
 	float intensity_ = 0.0f;             /* 揺れの強さ */
 	float elapsedTime_ = 0.0f;           /* 経過時間 */
 	bool isShaking_ = false;             /* シェイク中フラグ */
-	Float3 offset_ = {0.0f, 0.0f, 0.0f}; /* カメラに加えるオフセット */
+	Cygnus::Float3 offset_ = {0.0f, 0.0f, 0.0f}; /* カメラに加えるオフセット */
 };

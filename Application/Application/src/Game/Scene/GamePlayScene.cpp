@@ -25,28 +25,28 @@
 #include <src/Game/Waypoint/WaypointManager.h>
 
 void GamePlayScene::Initialize() {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// カメラのインスタンスを生成
-	camera_ = std::make_unique<Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
-	Camera::Set(camera_.get()); // 現在のカメラをセット
+	camera_ = std::make_unique<Cygnus::Camera>(kInitialCameraPosition, kInitialCameraRotation, kCameraFovY);
+	Cygnus::Camera::Set(camera_.get()); // 現在のカメラをセット
 
 	// SpriteCommonの生成と初期化
-	spriteCommon_ = std::make_unique<SpriteCommon>();
-	spriteCommon_->Initialize(DirectXBase::GetInstance());
+	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
+	spriteCommon_->Initialize(Cygnus::DirectXBase::GetInstance());
 
 	// TextureManagerの初期化
-	TextureManager::Initialize(dxBase->GetDevice(), SRVManager::GetInstance());
+	Cygnus::TextureManager::Initialize(dxBase->GetDevice(), Cygnus::SRVManager::GetInstance());
 
 	// SoundManagerの初期化
-	soundManager_ = std::make_unique<SoundManager>();
+	soundManager_ = std::make_unique<Cygnus::SoundManager>();
 	soundManager_->Initialize();
 
 	// Inputの初期化
-	input_ = Input::GetInstance();
+	input_ = Cygnus::Input::GetInstance();
 
 	// LightManagerの初期化
-	lightManager_ = LightManager::GetInstance();
+	lightManager_ = Cygnus::LightManager::GetInstance();
 	lightManager_->Initialize();
 
 	///
@@ -54,10 +54,10 @@ void GamePlayScene::Initialize() {
 	///
 
 	// 最初にコライダーのクリア
-	CollisionManager::GetInstance()->Clear();
+	Cygnus::CollisionManager::GetInstance()->Clear();
 
 	// パーティクルのクリア
-	ParticleEffectManager::GetInstance()->Clear();
+	Cygnus::ParticleEffectManager::GetInstance()->Clear();
 
 	/* ステージデータ */
 
@@ -88,10 +88,6 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
-	// 発光オブジェクト生成
-	/*emissiveObject_ = std::make_unique<EmissiveObject>();
-	emissiveObject_->Initialize();*/
-
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -103,9 +99,11 @@ void GamePlayScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetTranslate());                      // プレイヤーを追従対象にセット
 
 	// ポストエフェクト管理
-	postEffectManager_ = std::make_unique<PostEffectManager>();
+	postEffectManager_ = std::make_unique<Cygnus::PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(Cygnus::PostEffectType::DamageVignette);
+
+	player_->SetPostEffectManager(postEffectManager_.get()); // プレイヤーにポストエフェクトマネージャーをセット
 
 	// ゲームスタート時の演出制御クラス
 	gameStartSequence_ = std::make_unique<GameStartSequence>();
@@ -127,26 +125,22 @@ void GamePlayScene::Initialize() {
 
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
-	CollisionManager::GetInstance()->Update();         // 障害物のコライダーが未登録状態のためここで一度更新しておく
+	Cygnus::CollisionManager::GetInstance()->Update();         // 障害物のコライダーが未登録状態のためここで一度更新しておく
 	WaypointManager::GetInstance()->Initialize();
 
 	// シャドウマップ生成
-	shadowMapHandle_ = ShadowMapManager::GetInstance()->CreateShadowMap(Window::GetWidth(), Window::GetHeight());
+	shadowMapHandle_ = Cygnus::ShadowMapManager::GetInstance()->CreateShadowMap(Cygnus::Window::GetWidth(), Cygnus::Window::GetHeight());
 
 	// 平行光源の初期値設定
-	LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
-	LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
-
-	objectCube_ = std::make_unique<Object3D>();
-	objectCube_->model_ = &ModelManager::GetInstance()->GetModel("Cube");
-	objectCube_->transform_.translate_ = {30.0f, 1.0f, -30.0f};
+	Cygnus::LightManager::GetInstance()->directionalLightCB_.data_->direction = kDirectionalLightDirection;
+	Cygnus::LightManager::GetInstance()->directionalLightCB_.data_->intensity = kDirectionalLightIntensity;
 }
 
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Update() {
-	LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
-	LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
+	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
+	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
 
 	// ----------------------------------------------------------------------
 
@@ -210,23 +204,20 @@ void GamePlayScene::Update() {
 		gameClearSequence_->Update();
 	}
 
-	objectCube_->UpdateMatrix();
-	objectCube_->UpdateShadowMatrix();
-
 	// SkyBox更新
-	SkyBoxManager::GetInstance()->Update();
+	Cygnus::SkyBoxManager::GetInstance()->Update();
 	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
-	CollisionManager::GetInstance()->Update();
+	Cygnus::CollisionManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
-	ParticleEffectManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
+	Cygnus::ParticleEffectManager::GetInstance()->Update(Cygnus::TimeManager::GetInstance()->GetDeltaTime());
 
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
 }
 
 void GamePlayScene::Draw() {
-	DirectXBase* dxBase = DirectXBase::GetInstance();
-	SRVManager* srvManager = SRVManager::GetInstance();
+	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
+	Cygnus::SRVManager* srvManager = Cygnus::SRVManager::GetInstance();
 
 	// 描画前処理
 	dxBase->PreDraw();
@@ -234,33 +225,33 @@ void GamePlayScene::Draw() {
 	ID3D12DescriptorHeap* descriptorHeaps[] = {srvManager->descriptorHeap_.heap_.Get()};
 	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
-	ImguiWrapper::NewFrame();
+	Cygnus::ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
-	Camera::TransferConstantBuffer();
+	Cygnus::Camera::TransferConstantBuffer();
 	// ライトの定数バッファを設定
 	lightManager_->TransferContantBuffer();
 	// ポストエフェクト用の定数バッファを設定
 	postEffectManager_->TransfarConstantBuffer();
 	// LightCameraの定数バッファを送信
-	LightCamera::GetInstance()->TransferConstantBuffer();
+	Cygnus::LightCamera::GetInstance()->TransferConstantBuffer();
 
 	// スカイボックス描画
-	SkyBoxManager::GetInstance()->Draw();
+	Cygnus::SkyBoxManager::GetInstance()->Draw();
 
 	// ---------------------------------------------------------
 	// シャドウマップ描画前処理
 	// ---------------------------------------------------------
 
 	// ライトカメラの更新
-	LightCamera::GetInstance()->SetDirectionalLight(LightManager::GetInstance()->directionalLightCB_.data_->direction);
+	Cygnus::LightCamera::GetInstance()->SetDirectionalLight(Cygnus::LightManager::GetInstance()->directionalLightCB_.data_->direction);
 
 	// プレイヤー中心のBBを生成してライトカメラの行列更新（あとで整理）
-	LightCamera::BoundingBox playerCenterBB;
+	Cygnus::LightCamera::BoundingBox playerCenterBB;
 	playerCenterBB.SetCenterExtents(player_->GetTranslate(), kShadowBoundingBoxExtents);
-	LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB);
+	Cygnus::LightCamera::GetInstance()->UpdateViewProjection(playerCenterBB);
 
 	// シャドウマップ描画開始
-	ShadowMapManager::GetInstance()->BeginShadowPass(shadowMapHandle_);
+	Cygnus::ShadowMapManager::GetInstance()->BeginShadowPass(shadowMapHandle_);
 
 	/// =========================================================
 	/// ↓ ここから通常モデルのシャドウマップ描画
@@ -271,19 +262,17 @@ void GamePlayScene::Draw() {
 		gameStartSequence_->DrawShadow();
 	}
 
-	/*player_->DrawGunShadow();*/
+	player_->DrawGunShadow();
 	obstacleManager_->DrawShadow(player_->GetTranslate());
 	enemyManager_->DrawShadow();
 	teleporterManager_->DrawShadow();
-
-	objectCube_->DrawShadow();
 
 	/// =========================================================
 	/// ↑ ここまで通常モデルのシャドウマップ描画
 	/// =========================================================
 
 	// スキニングモデル用PSOをセット
-	dxBase->GetCommandList()->SetPipelineState(ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
+	dxBase->GetCommandList()->SetPipelineState(Cygnus::ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
 
 	/// =========================================================
 	/// ↓ ここからスキニングモデルのシャドウマップ描画
@@ -295,11 +284,16 @@ void GamePlayScene::Draw() {
 	/// ↑ ここまでスキニングモデルのシャドウマップ描画
 	/// =========================================================
 
-	ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
+	Cygnus::ShadowMapManager::GetInstance()->EndShadowPass(shadowMapHandle_);
 
 	/// =========================================================
 	/// ↓ ここから3Dオブジェクト描画
 	/// =========================================================
+	
+#pragma region メインシーンの3Dオブジェクトのレンダリングを開始
+	postEffectManager_->BeginMainScene();
+	// -----------------------------------------------
+
 	// ゲーム開始演出時オブジェクト
 	if (!gameStartSequence_->IsFinished()) {
 		gameStartSequence_->Draw();
@@ -313,10 +307,20 @@ void GamePlayScene::Draw() {
 	teleporterManager_->Draw();
 	BulletManager::GetInstance()->Draw();
 
-	objectCube_->Draw();
+	// -----------------------------------------------
+	postEffectManager_->EndMainScene();
+#pragma endregion
 
-	ParticleEffectManager::GetInstance()->Draw();
-	LineDrawer::GetInstance()->Draw();
+#pragma region バックバッファへの直接描画
+	postEffectManager_->RestoreBackBuffer(true);
+	// -----------------------------------------------
+
+	Cygnus::ParticleEffectManager::GetInstance()->Draw();
+	Cygnus::LineDrawer::GetInstance()->Draw();
+
+	// -----------------------------------------------
+	postEffectManager_->RestoreDepthBufferState();
+#pragma endregion
 
 	/// =========================================================
 	/// ↑ ここまで3Dオブジェクト描画
@@ -360,21 +364,9 @@ void GamePlayScene::Draw() {
 	Debug();
 
 	player_->Debug();
-
-	gameClearSequence_->Debug();
-
-	lightManager_->DrawDebug();
-
-	/*emissiveObject_->Debug();*/
-
-	ImGuiUtil::ImageWindow("mainSceneRT", postEffectManager_->mainSceneRT_);
-
-	ImGuiUtil::ImageWindow("bloomExtractRT", postEffectManager_->bloomExtractRT_);
-	ImGuiUtil::ImageWindow("bloomBlurRT", postEffectManager_->bloomBlurRT_);
-	ImGuiUtil::ImageWindow("bloomResultRT", postEffectManager_->bloomResultRT_);
 #endif
 	// ImGuiの内部コマンドを生成する
-	ImguiWrapper::Render(dxBase->GetCommandList());
+	Cygnus::ImguiWrapper::Render(dxBase->GetCommandList());
 	// 描画後処理
 	dxBase->PostDraw();
 	// フレーム終了処理
@@ -385,23 +377,23 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
-	if (ImGui::Button("Emit")) {
-		ParticleEffectManager::GetInstance()->Emit("teleporterRing", {156.0f, 2.0f, 20.0f}, 1);
-	}
+	ImGui::DragFloat("intensity", &postEffectManager_->damageVignetteCB_.data_->intensity, 0.01f);
+	ImGui::DragFloat("radius", &postEffectManager_->damageVignetteCB_.data_->radius, 0.01f);
+	ImGui::DragFloat("softness", &postEffectManager_->damageVignetteCB_.data_->softness, 0.01f);
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);
 	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
 	ImGui::DragFloat3("DirectionalLight : Direction", &lightManager_->directionalLightCB_.data_->direction.x, 0.01f);
-	lightManager_->directionalLightCB_.data_->direction = Float3::Normalize(lightManager_->directionalLightCB_.data_->direction);
+	lightManager_->directionalLightCB_.data_->direction = Cygnus::Float3::Normalize(lightManager_->directionalLightCB_.data_->direction);
 	ImGui::DragFloat("DirectionalLight : intensity", &lightManager_->directionalLightCB_.data_->intensity, 0.01f);
 
 	if (ImGui::Button("TITLE")) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 	if (ImGui::Button("RESULT")) {
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+		Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
 	ImGui::End();
@@ -417,5 +409,5 @@ void GamePlayScene::TransitionToResult() {
 	isTransitioning_ = true;
 
 	// フェードアウトしてリザルトシーンへ
-	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { SceneManager::GetInstance()->ChangeScene("RESULT"); }, kFadeOutDelay);
+	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT"); }, kFadeOutDelay);
 }

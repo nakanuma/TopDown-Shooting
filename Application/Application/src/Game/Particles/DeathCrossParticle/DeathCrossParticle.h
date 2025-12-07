@@ -11,18 +11,18 @@
 /// パーティクルデータ
 /// </summary>
 struct DeathCrossParticleData {
-	Transform transform; /* 位置 */
-	Float3 velocity;     /* 速度ベクトル */
-	Float4 color;        /* 色 */
-	float lifeTime;      /* 生存時間 */
-	float currentTime;   /* 経過時間 */
+	Cygnus::Transform transform;	/* 位置 */
+	Cygnus::Float3 velocity;		/* 速度ベクトル */
+	Cygnus::Float4 color;			/* 色 */
+	float lifeTime;					/* 生存時間 */
+	float currentTime;				/* 経過時間 */
 };
 
 // =========================================================
 // 死亡時のクロスパーティクルクラス
 // 敵死亡時に発生
 // =========================================================
-class DeathCrossParticle : public BaseParticleEffect<DeathCrossParticleData> {
+class DeathCrossParticle : public Cygnus::BaseParticleEffect<DeathCrossParticleData> {
 public:
 	// =========================================================
 	// Public Methods
@@ -32,7 +32,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
-	DeathCrossParticle(ModelManager::ModelData& model);
+	DeathCrossParticle(Cygnus::ModelManager::ModelData& model);
 
 protected:
 	// =========================================================
@@ -46,7 +46,7 @@ protected:
 	/// <param name="velocity">速度ベクトル</param>
 	/// <param name="angle">初期回転角</param>
 	/// <returns>パーティクルデータ</returns>
-	DeathCrossParticleData CreateParticle(const Float3& pos, const Float3& velocity, float angle) override;
+	DeathCrossParticleData CreateParticle(const Cygnus::Float3& pos, const Cygnus::Float3& velocity, float angle) override;
 
 	/// <summary>
 	/// パーティクル固有の毎フレームの更新処理を行います。
@@ -59,9 +59,9 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Float3 kInitialScale = {3.5f, 3.5f, 1.0f};        /* 初期スケール */
-	static constexpr Float4 kInitialColor = {0.5f, 0.1f, 0.05f, 1.0f}; /* 初期色 */
-	static constexpr float kLifeTime = 0.75f;                          /* 生存時間 */
+	static constexpr Cygnus::Float3 kInitialScale = {3.5f, 3.5f, 1.0f};			/* 初期スケール */
+	static constexpr Cygnus::Float4 kInitialColor = {0.5f, 0.1f, 0.05f, 1.0f};	/* 初期色 */
+	static constexpr float kLifeTime = 0.75f;									/* 生存時間 */
 
 	static constexpr float kEndScaleY = 0.4f;      /* 最終Yスケール */
 	static constexpr float kScaleDuration = 0.25f; /* スケール変更の時間 */
