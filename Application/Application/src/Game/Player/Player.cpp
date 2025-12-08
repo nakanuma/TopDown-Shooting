@@ -180,24 +180,15 @@ void Player::Draw() {
 }
 
 void Player::DrawShadow() {
-	// 死亡したら描画スキップ
-	if (isDead_) return;
-
-	objectPlayer_->DrawShadow();
-}
-
-void Player::DrawGunShadow()
-{
-	// 死亡したら描画スキップ
-	if (isDead_) return;
-
 	objectGun_->DrawShadow();
 }
 
-void Player::DrawUI() {
-	// 死亡状態ならスキップ
-	if (IsDead()) return;
+void Player::DrawShadowSkinning()
+{
+	objectPlayer_->DrawShadow();
+}
 
+void Player::DrawUI() {
 	ui_->Draw();
 }
 

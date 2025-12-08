@@ -28,10 +28,8 @@
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
-#include <src/Game/Sequence/GameStartSequence.h>
-#include <src/Game/Sequence/GameOverSequence.h>
-#include <src/Game/Sequence/GameClearSequence.h>
 #include <src/Game/EmissiveObject/EmissiveObject.h>
+#include <src/Game/GameState/Manager/GameStateManager.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -67,6 +65,21 @@ public:
 	/// </summary>
 	void Debug();
 
+	// =========================================================
+	// Getter / Setter
+	// =========================================================
+
+	Cygnus::SpriteCommon* GetSpriteCommon() const { return spriteCommon_.get(); }
+
+	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
+	Cygnus::Camera* GetCamera() const { return camera_.get(); }
+
+	Field* GetField() const { return field_.get(); }
+	Player* GetPlayer() const { return player_.get(); }
+	EnemyManager* GetEnemyManager() const { return enemyManager_.get(); }
+	ObstacleManager* GetObstacleManager() const { return obstacleManager_.get(); }
+	TeleporterManager* GetTeleportManager() const { return teleporterManager_.get(); }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -76,6 +89,11 @@ private:
 	/// リザルトシーンへの遷移を行います。
 	/// </summary>
 	void TransitionToResult();
+
+	/// <summary>
+	/// ゲーム状態の初期化を行います。
+	/// </summary>
+	void InitializeGameStates();
 
 private:
 	// =========================================================
@@ -121,9 +139,8 @@ private:
 	std::unique_ptr<FollowCamera> followCamera_;					/* 追従カメラ管理クラス */
 	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_;	/* ポストエフェクト管理クラス */
 	uint32_t shadowMapHandle_;										/* シャドウマップテクスチャ */
-	std::unique_ptr<GameStartSequence> gameStartSequence_;			/* ゲームスタート時の演出制御クラス */
-	std::unique_ptr<GameOverSequence> gameOverSequence_;			/* ゲームオーバー時の演出制御クラス */
-	std::unique_ptr<GameClearSequence> gameClearSequence_;			/* ゲームクリア時の演出制御クラス */
+
+	std::unique_ptr<GameStateManager> stateManager_;	/* ゲーム状態管理クラス */
 
 	bool isTransitioning_ = false;							/* リザルトシーンへの遷移中かどうか */
 };
