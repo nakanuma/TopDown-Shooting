@@ -48,10 +48,6 @@ void GameClearSequence::Start() {
 }
 
 void GameClearSequence::Update() {
-	// ゲームクリア演出が行われていない間はスキップ
-	if (!IsActive())
-		return;
-
 	// タイマー更新
 	if (!IsFinished()) {
 		timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
@@ -73,9 +69,6 @@ void GameClearSequence::Update() {
 }
 
 void GameClearSequence::DrawUI() {
-	// ゲームクリア演出が行われていない間はスキップ
-	if (!IsActive())
-		return;
 	// 爆発とクリア文字演出時のみ描画するよう制限
 	if (phase_ != Phase::ExplodeAndText)
 		return;

@@ -1,7 +1,7 @@
 #pragma once
 
 // ---------------------------------------------------------
-// Engine Includes
+// Application Includes
 // ---------------------------------------------------------
 #include <src/Game/GameState/Base/IGameState.h>
 #include <src/Game/Sequence/GameStartSequence.h>
@@ -16,7 +16,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="scene">ゲームプレイシーン</param>
-	explicit GameStartState(GamePlayScene* scene);
+	GameStartState(GamePlayScene* scene);
 
 	/// <summary>
 	/// デストラクタ
@@ -63,6 +63,18 @@ public:
 	/// </summary>
 	/// <returns>遷移可能ならtrue</returns>
 	bool CanTransition() const override;
+
+	/// <summary>
+	/// プレイヤーの死亡状態を取得します。
+	/// </summary>
+	/// <returns>死亡していたらtrue</returns>
+	bool IsPlayerDead() const override;
+
+	/// <summary>
+	/// ボスの死亡状態を取得します。
+	/// </summary>
+	/// <returns>死亡していたらtrue</returns>
+	bool IsBossDying() const override;
 
 private:
 	// =========================================================

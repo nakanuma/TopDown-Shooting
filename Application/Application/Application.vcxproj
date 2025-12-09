@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp" />
+    <ClCompile Include="src\Game\GameState\GameOver\GameOverState.cpp" />
     <ClCompile Include="src\Game\GameState\Manager\GameStateManager.cpp" />
     <ClCompile Include="src\Game\GameState\GamePlay\GamePlayState.cpp" />
     <ClCompile Include="src\Game\GameState\GameStart\GameStartState.cpp" />
@@ -73,6 +75,8 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h" />
+    <ClInclude Include="src\Game\GameState\GameOver\GameOverState.h" />
     <ClInclude Include="src\Game\GameState\Manager\GameStateManager.h" />
     <ClInclude Include="src\Game\GameState\GamePlay\GamePlayState.h" />
     <ClInclude Include="src\Game\GameState\GameStart\GameStartState.h" />

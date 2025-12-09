@@ -57,6 +57,18 @@ public:
 	/// <returns>遷移可能ならtrue</returns>
 	virtual bool CanTransition() const = 0;
 
+	/// <summary>
+	/// プレイヤーの死亡状態を取得します。
+	/// </summary>
+	/// <returns>死亡していたらtrue</returns>
+	virtual bool IsPlayerDead() const = 0;
+
+	/// <summary>
+	/// ボスの死亡状態を取得します。
+	/// </summary>
+	/// <returns>死亡していたらtrue</returns>
+	virtual bool IsBossDying() const = 0;
+
 protected:
 	// =========================================================
 	// Member Variables

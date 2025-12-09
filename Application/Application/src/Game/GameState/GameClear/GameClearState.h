@@ -4,23 +4,23 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/GameState/Base/IGameState.h>
+#include <src/Game/Sequence/GameClearSequence.h>
 
 // =========================================================
-// ゲームプレイ状態
+// ゲームクリア状態
 // =========================================================
-class GamePlayState : public IGameState
-{
+class GameClearState : public IGameState {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="scene">ゲームプレイシーン</param>
-	GamePlayState(GamePlayScene* scene);
+	explicit GameClearState(GamePlayScene* scene);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GamePlayState() override = default;
+	~GameClearState() override = default;
 
 	/// <summary>
 	/// 初期化処理を行います。
@@ -76,10 +76,5 @@ public:
 	bool IsBossDying() const override;
 
 private:
-	// =========================================================
-	// Member Variables
-	// =========================================================
-	bool shouldTransitionToGameOver_ = false;		// ゲームオーバー遷移フラグ
-	bool shouldTransitionToGameClear_ = false;		// ゲームクリア遷移フラグ
+	std::unique_ptr<GameClearSequence> gameClearSequence_;	// ゲームクリア時演出の制御クラス
 };
-

@@ -4,37 +4,35 @@
 #include <Camera.h>
 
 // Application
-#include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/Camera/CameraShake.h>
+#include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/System/ResultStats.h>
 
-GamePlayState::GamePlayState(GamePlayScene* scene)
-{
-	scene_ = scene;
-}
+GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
-void GamePlayState::Initialize()
-{
+void GamePlayState::Initialize() {}
 
-}
-
-void GamePlayState::Update()
-{
+void GamePlayState::Update() {
 	// プレイヤーが生きている場合、通常ゲーム用のカメラ制御を行う
-	if(!scene_->GetPlayer()->IsDead()){
+	if (!scene_->GetPlayer()->IsDead()) {
 		// 追従カメラの更新
 		scene_->GetFollowCamera()->Update();
 		// 追従カメラ + カメラシェイクを現在カメラに適用
 		scene_->GetCamera()->transform_.translate_ = scene_->GetFollowCamera()->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 	}
 
-	// プレイヤーが死亡したらゲームオーバー状態へ遷移
-	if(scene_->GetPlayer()->IsDead()){
+
+	// プレイヤーが死亡したらゲームオーバー状態遷移フラグを立てる
+	if (scene_->GetPlayer()->IsDead()) {
 		shouldTransitionToGameOver_ = true;
+	}
+	// ボスが死亡したらゲームクリア状態遷移フラグを立てる
+	if (scene_->GetEnemyManager()->GetBoss()->IsDying()) {
+		shouldTransitionToGameClear_ = true;
 	}
 
 
-	scene_->GetPlayer()->Update(true);	// プレイヤーは操作可能
+	scene_->GetPlayer()->Update(true); // プレイヤーは操作可能
 	scene_->GetEnemyManager()->Update();
 
 	scene_->GetField()->Update();
@@ -43,14 +41,11 @@ void GamePlayState::Update()
 
 	BulletManager::GetInstance()->Update();
 
-	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
-	Cygnus::CollisionManager::GetInstance()->Update();
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
 }
 
-void GamePlayState::Draw()
-{
+void GamePlayState::Draw() {
 	scene_->GetPlayer()->Draw();
 	scene_->GetEnemyManager()->Draw();
 
@@ -61,8 +56,7 @@ void GamePlayState::Draw()
 	BulletManager::GetInstance()->Draw();
 }
 
-void GamePlayState::DrawShadow()
-{
+void GamePlayState::DrawShadow() {
 	scene_->GetPlayer()->DrawShadow();
 	scene_->GetEnemyManager()->DrawShadow();
 
@@ -70,24 +64,20 @@ void GamePlayState::DrawShadow()
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GamePlayState::DrawShadowSkinning()
-{
-	scene_->GetPlayer()->DrawShadowSkinning();
-}
+void GamePlayState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinning(); }
 
-void GamePlayState::DrawUI()
-{
+void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
 	scene_->GetEnemyManager()->DrawUI();
 }
 
-void GamePlayState::Debug()
-{
+void GamePlayState::Debug() {}
 
-}
-
-bool GamePlayState::CanTransition() const
-{
+bool GamePlayState::CanTransition() const {
 	// ゲームオーバーまたはゲームクリアへの遷移条件
 	return shouldTransitionToGameOver_ || shouldTransitionToGameClear_;
 }
+
+bool GamePlayState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
+
+bool GamePlayState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }

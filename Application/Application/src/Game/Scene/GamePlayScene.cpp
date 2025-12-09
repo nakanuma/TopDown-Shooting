@@ -25,6 +25,8 @@
 
 #include <src/Game/GameState/GameStart/GameStartState.h>
 #include <src/Game/GameState/GamePlay/GamePlayState.h>
+#include <src/Game/GameState/GameOver/GameOverState.h>
+#include <src/Game/GameState/GameClear/GameClearState.h>
 
 void GamePlayScene::Initialize() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
@@ -141,6 +143,8 @@ void GamePlayScene::Update() {
 	CameraShake::GetInstance()->Update();
 	// SkyBox更新
 	Cygnus::SkyBoxManager::GetInstance()->Update();
+	// コリジョンマネージャーの更新（全てのコライダーの衝突判定）
+	Cygnus::CollisionManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	Cygnus::ParticleEffectManager::GetInstance()->Update(Cygnus::TimeManager::GetInstance()->GetDeltaTime());
 }
@@ -187,7 +191,7 @@ void GamePlayScene::Draw() {
 	/// ↓ ここから通常モデルのシャドウマップ描画
 	/// =========================================================
 
-	// ゲーム状態ごとのシャドウマップ描画処理
+	// ゲーム状態ごとの通常モデルシャドウマップ描画処理
 	stateManager_->DrawShadow();
 
 	/// =========================================================
@@ -201,6 +205,7 @@ void GamePlayScene::Draw() {
 	/// ↓ ここからスキニングモデルのシャドウマップ描画
 	/// =========================================================
 
+	// ゲーム状態ごとのスキニングモデルシャドウマップ描画処理
 	stateManager_->DrawShadowSkinning();
 
 	/// =========================================================
@@ -281,6 +286,8 @@ void GamePlayScene::Debug() {
 	}
 
 	ImGui::End();
+
+	stateManager_->Debug();
 #endif
 }
 
@@ -304,6 +311,8 @@ void GamePlayScene::InitializeGameStates()
 	// 各状態を登録
 	stateManager_->RegisterState("GameStart", std::make_unique<GameStartState>(this));
 	stateManager_->RegisterState("GamePlay", std::make_unique<GamePlayState>(this));
+	stateManager_->RegisterState("GameOver", std::make_unique<GameOverState>(this));
+	stateManager_->RegisterState("GameClear", std::make_unique<GameClearState>(this));
 
 	// 初期状態をゲームスタートに設定
 	stateManager_->ChangeState("GameStart");
