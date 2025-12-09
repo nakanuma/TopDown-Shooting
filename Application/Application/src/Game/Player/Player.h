@@ -47,14 +47,14 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ描画処理を行います。
 	/// </summary>
 	void DrawShadow();
 
 	/// <summary>
-	/// 銃モデルのシャドウマップ用の描画処理を行います。
+	/// スキニングモデルのシャドウマップ描画処理を行います。
 	/// </summary>
-	void DrawGunShadow();
+	void DrawShadowSkinning();
 
 	/// <summary>
 	/// UIの描画処理を行います。

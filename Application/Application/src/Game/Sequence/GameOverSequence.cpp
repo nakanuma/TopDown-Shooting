@@ -45,15 +45,6 @@ void GameOverSequence::Start(const Cygnus::Float3& playerPos) {
 }
 
 void GameOverSequence::Update() {
-	// プレイヤーの死亡を検出してゲームオーバー演出を開始
-	if (player_->IsDead() && !IsActive()) {
-		Start(player_->GetTranslate());
-	}
-
-	// ゲームオーバー演出が行われていない間はスキップ
-	if (!IsActive())
-		return;
-
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
@@ -97,10 +88,6 @@ void GameOverSequence::Update() {
 }
 
 void GameOverSequence::DrawUI() {
-	// ゲームオーバー演出が行われていない間はスキップ
-	if (!IsActive())
-		return;
-
 	spriteDiedText_->Draw();
 	spriteBackToTitleText_->Draw();
 }
