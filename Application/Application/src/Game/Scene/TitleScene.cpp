@@ -46,7 +46,7 @@ void TitleScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<Cygnus::PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(Cygnus::PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(Cygnus::PSOType::Vignette);
 
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();

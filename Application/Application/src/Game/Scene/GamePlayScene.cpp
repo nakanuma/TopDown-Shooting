@@ -105,7 +105,7 @@ void GamePlayScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<Cygnus::PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(Cygnus::PostEffectType::DamageVignette);
+	postEffectManager_->SetEffectType(Cygnus::PSOType::DamageVignette);
 
 	player_->SetPostEffectManager(postEffectManager_.get()); // プレイヤーにポストエフェクトマネージャーをセット
 
@@ -233,7 +233,9 @@ void GamePlayScene::Draw() {
 	postEffectManager_->RestoreBackBuffer(true);
 	// -----------------------------------------------
 
+	// パーティクルエフェクト描画
 	Cygnus::ParticleEffectManager::GetInstance()->Draw();
+	// ライン描画
 	Cygnus::LineDrawer::GetInstance()->Draw();
 
 	// -----------------------------------------------
