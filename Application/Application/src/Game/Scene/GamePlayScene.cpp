@@ -169,9 +169,6 @@ void GamePlayScene::Draw() {
 	// LightCameraの定数バッファを送信
 	Cygnus::LightCamera::GetInstance()->TransferConstantBuffer();
 
-	// スカイボックス描画
-	Cygnus::SkyBoxManager::GetInstance()->Draw();
-
 	// ---------------------------------------------------------
 	// シャドウマップ描画前処理
 	// ---------------------------------------------------------
@@ -221,6 +218,9 @@ void GamePlayScene::Draw() {
 #pragma region メインシーンの3Dオブジェクトのレンダリングを開始
 	postEffectManager_->BeginMainScene();
 	// -----------------------------------------------
+
+	// スカイボックス描画
+	Cygnus::SkyBoxManager::GetInstance()->Draw();
 
 	// ゲーム状態ごとの描画処理
 	stateManager_->Draw();
