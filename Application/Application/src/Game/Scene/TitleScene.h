@@ -126,7 +126,6 @@ private:
 	// ----- System -----
 	std::unique_ptr<Cygnus::Camera> camera_ = nullptr;						/* 3Dカメラクラス */
 	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_ = nullptr;			/* スプライト共通処理クラス */
-	std::unique_ptr<Cygnus::SoundManager> soundManager_ = nullptr;			/* サウンド管理クラス */
 	Cygnus::Input* input_ = nullptr;										/* 入力管理クラス */
 	Cygnus::LightManager* lightManager_ = nullptr;							/* 各ライト管理クラス */
 	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_;			/* ポストエフェクト管理クラス */

@@ -10,6 +10,7 @@
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
 #include <Easing.h>
+#include <SoundManager.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -384,6 +385,8 @@ void Player::HandleShooting() {
 
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		Cygnus::SoundManager::GetInstance()->Play("shot");
+
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得

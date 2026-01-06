@@ -60,4 +60,9 @@ private:
 	/// 全てのパーティクルの生成と登録を行います。
 	/// </summary>
 	void RegisterAllParticleEffect();
+
+	/// <summary>
+	/// 全てのサウンドデータの読み込みを行います。
+	/// </summary>
+	void LoadAllSoundData();
 };

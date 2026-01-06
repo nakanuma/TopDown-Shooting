@@ -33,10 +33,6 @@ void TitleScene::Initialize() {
 	// TextureManagerの初期化
 	Cygnus::TextureManager::Initialize(dxBase->GetDevice(), Cygnus::SRVManager::GetInstance());
 
-	// SoundManagerの初期化
-	soundManager_ = std::make_unique<Cygnus::SoundManager>();
-	soundManager_->Initialize();
-
 	// Inputの初期化
 	input_ = Cygnus::Input::GetInstance();
 
@@ -288,6 +284,19 @@ void TitleScene::Draw() {
 	///
 #ifdef _DEBUG
 	ImGui::Begin("TitleSceneInfo");
+
+	if (ImGui::Button("yay")) {
+		Cygnus::SoundManager::GetInstance()->Play("yay");
+	}
+	if (ImGui::Button("shot")) {
+		Cygnus::SoundManager::GetInstance()->Play("shot");
+	}
+	if (ImGui::Button("explode")) {
+		Cygnus::SoundManager::GetInstance()->Play("explode");
+	}
+	if (ImGui::Button("door")) {
+		Cygnus::SoundManager::GetInstance()->Play("door");
+	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
