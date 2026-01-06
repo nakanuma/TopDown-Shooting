@@ -15,6 +15,8 @@ void GameClearState::Initialize() {
 	gameClearSequence_->SetBoss(scene_->GetEnemyManager()->GetBoss());
 
 	gameClearSequence_->Start(); // 初期化時に演出開始
+
+	scene_->GetPlayer()->SetInvincible(true); // クリア時にはプレイヤーを無敵状態にする
 }
 
 void GameClearState::Update() { 
@@ -71,6 +73,7 @@ void GameClearState::DrawShadowSkinning() {
 }
 
 void GameClearState::DrawUI() { 
+	scene_->GetPlayer()->DrawUI();
 	gameClearSequence_->DrawUI(); 
 
 	FadeTransition::GetInstance()->Draw();

@@ -9,6 +9,7 @@
 #include <LightCamera.h>
 #include <SceneManager.h>
 #include <ShadowMapManager.h>
+#include <CommandManager.h>
 
 // Application
 #include <src/Game/Bullet/Manager/BulletManager.h>
@@ -119,12 +120,13 @@ void ResultScene::Update() {
 void ResultScene::Draw() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 	Cygnus::SRVManager* srvManager = Cygnus::SRVManager::GetInstance();
+	auto* cmd = Cygnus::CommandManager::GetInstance()->GetCommandList();
 
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
-	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
+	cmd->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	Cygnus::ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
@@ -190,7 +192,7 @@ void ResultScene::Draw() {
 
 #endif
 	// ImGuiの内部コマンドを生成する
-	Cygnus::ImguiWrapper::Render(dxBase->GetCommandList());
+	Cygnus::ImguiWrapper::Render(cmd);
 	// 描画後処理
 	dxBase->PostDraw();
 	// フレーム終了処理

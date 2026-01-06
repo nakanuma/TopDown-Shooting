@@ -89,6 +89,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
+	invincible_ = false;     // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
@@ -205,6 +206,9 @@ void Player::OnCollision(Cygnus::Collider* other) {
 	///
 
 	if (other->GetTag() == "EnemyBullet" || other->GetTag() == "HomingMissile" || other->GetTag() == "GroundWarning") {
+		// 無敵状態であればスキップ
+		if (invincible_) return;
+		
 		// 弾のダメージを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -276,6 +280,7 @@ void Player::Debug() {
 	ImGui::Text("Parameter");
 
 	ImGui::Checkbox("isDead", &isDead_);
+	ImGui::Checkbox("invincible", &invincible_);
 
 	ImGui::BeginDisabled(true); // 操作不可
 	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);

@@ -13,6 +13,10 @@ SplitBlockTransition* SplitBlockTransition::GetInstance() {
 }
 
 void SplitBlockTransition::Initialize(Cygnus::SpriteCommon* spriteCommon, uint32_t splitCount) {
+	// 初期化済みならスキップ
+	if (initialized_) return;
+	initialized_ = true;
+
 	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
 	spriteCommon_->Initialize(Cygnus::DirectXBase::GetInstance());
 

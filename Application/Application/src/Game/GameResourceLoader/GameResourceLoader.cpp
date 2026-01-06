@@ -6,6 +6,8 @@
 #include <SkyBoxManager.h>
 
 // Application
+#include <src/Game/Transition/SplitBlockTransition.h>
+
 #include <src/Game/Particles/Backscatter/BackscatterParticle.h>
 #include <src/Game/Particles/ExplodeScatter/ExplodeScatterParticle.h>
 #include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>

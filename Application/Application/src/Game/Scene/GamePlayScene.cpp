@@ -15,6 +15,7 @@
 
 // Engine
 #include <Engine/Scene/SceneManager.h>
+#include <CommandManager.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -152,12 +153,13 @@ void GamePlayScene::Update() {
 void GamePlayScene::Draw() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 	Cygnus::SRVManager* srvManager = Cygnus::SRVManager::GetInstance();
+	auto* cmd = Cygnus::CommandManager::GetInstance()->GetCommandList();
 
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
-	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
+	cmd->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	Cygnus::ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
@@ -196,7 +198,7 @@ void GamePlayScene::Draw() {
 	/// =========================================================
 
 	// スキニングモデル用PSOをセット
-	dxBase->GetCommandList()->SetPipelineState(Cygnus::ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
+	cmd->SetPipelineState(Cygnus::ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
 
 	/// =========================================================
 	/// ↓ ここからスキニングモデルのシャドウマップ描画
@@ -265,7 +267,7 @@ void GamePlayScene::Draw() {
 	Debug();
 #endif
 	// ImGuiの内部コマンドを生成する
-	Cygnus::ImguiWrapper::Render(dxBase->GetCommandList());
+	Cygnus::ImguiWrapper::Render(cmd);
 	// 描画後処理
 	dxBase->PostDraw();
 	// フレーム終了処理
@@ -290,6 +292,8 @@ void GamePlayScene::Debug() {
 	ImGui::End();
 
 	stateManager_->Debug();
+
+	player_->Debug();
 #endif
 }
 
