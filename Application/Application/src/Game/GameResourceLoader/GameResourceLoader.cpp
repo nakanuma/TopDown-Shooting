@@ -4,8 +4,11 @@
 #include <ModelManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <SkyBoxManager.h>
+#include <SoundManager.h>
 
 // Application
+#include <src/Game/Transition/SplitBlockTransition.h>
+
 #include <src/Game/Particles/Backscatter/BackscatterParticle.h>
 #include <src/Game/Particles/ExplodeScatter/ExplodeScatterParticle.h>
 #include <src/Game/Particles/ExplodeSmoke/ExplodeSmokeParticle.h>
@@ -34,6 +37,8 @@ void GameResourceLoader::Initialize() {
 	LoadAllModelData();
 	// パーティクルの生成と登録
 	RegisterAllParticleEffect();
+	// サウンドデータの読み込み
+	LoadAllSoundData();
 
 	// SkyBoxの初期化
 	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
@@ -276,4 +281,13 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	RegisterParticle<BloodScatterParticle>("bloodScatter", "Cube");
 	// テレポーターリングパーティクル
 	RegisterParticle<TeleporterRingParticle>("teleporterRing", "TeleporterRing");
+}
+
+void GameResourceLoader::LoadAllSoundData() { 
+	auto soundManager = Cygnus::SoundManager::GetInstance();
+
+	soundManager->Load("resources/Sounds/yay.wav", "yay");
+	soundManager->Load("resources/Sounds/shot.wav", "shot");
+	soundManager->Load("resources/Sounds/explode.wav", "explode");
+	soundManager->Load("resources/Sounds/door.wav", "door");
 }

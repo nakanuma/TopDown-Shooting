@@ -47,14 +47,14 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ描画処理を行います。
 	/// </summary>
 	void DrawShadow();
 
 	/// <summary>
-	/// 銃モデルのシャドウマップ用の描画処理を行います。
+	/// スキニングモデルのシャドウマップ描画処理を行います。
 	/// </summary>
-	void DrawGunShadow();
+	void DrawShadowSkinning();
 
 	/// <summary>
 	/// UIの描画処理を行います。
@@ -111,6 +111,12 @@ public:
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
 	bool IsDead() const { return isDead_; }
+
+	/// <summary>
+	/// 無敵状態を設定します。
+	/// </summary>
+	/// <param name="flag">無敵状態</param>
+	void SetInvincible(bool flag) { invincible_ = flag; }
 
 	/// <summary>
 	/// ポストエフェクトマネージャーをセットします。
@@ -227,6 +233,7 @@ private:
 	bool isMoving_ = false;									/* 移動中フラグ */
 	int32_t currentHP_ = 0;									/* 現在HP */
 
+	bool invincible_ = false;								/* 無敵フラグ（ボス撃破時に有効化） */
 	bool isDead_ = false;									/* 死亡フラグ */
 
 	// ----- Dash -----

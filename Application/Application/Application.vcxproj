@@ -11,6 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Player\UI\Mouse\Mouse.cpp" />
+    <ClCompile Include="src\Game\Player\UI\MovementKeys\MovementKeys.cpp" />
+    <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp" />
+    <ClCompile Include="src\Game\GameState\GameOver\GameOverState.cpp" />
+    <ClCompile Include="src\Game\GameState\Manager\GameStateManager.cpp" />
+    <ClCompile Include="src\Game\GameState\GamePlay\GamePlayState.cpp" />
+    <ClCompile Include="src\Game\GameState\GameStart\GameStartState.cpp" />
     <ClCompile Include="src\Game\Bullet\Base\Bullet.cpp" />
     <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp" />
     <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp" />
@@ -70,6 +77,14 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Player\UI\Mouse\Mouse.h" />
+    <ClInclude Include="src\Game\Player\UI\MovementKeys\MovementKeys.h" />
+    <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h" />
+    <ClInclude Include="src\Game\GameState\GameOver\GameOverState.h" />
+    <ClInclude Include="src\Game\GameState\Manager\GameStateManager.h" />
+    <ClInclude Include="src\Game\GameState\GamePlay\GamePlayState.h" />
+    <ClInclude Include="src\Game\GameState\GameStart\GameStartState.h" />
+    <ClInclude Include="src\Game\GameState\Base\IGameState.h" />
     <ClInclude Include="src\Game\EmissiveObject\EmissiveObject.h" />
     <ClInclude Include="src\Game\Particles\BloodScatter\BloodScatterParticle.h" />
     <ClInclude Include="src\Game\Particles\BossFragments\BossFragmentsParticle.h" />

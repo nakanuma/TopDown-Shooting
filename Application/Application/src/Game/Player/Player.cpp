@@ -10,6 +10,7 @@
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
 #include <Easing.h>
+#include <SoundManager.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -89,6 +90,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
+	invincible_ = false;     // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
@@ -180,24 +182,15 @@ void Player::Draw() {
 }
 
 void Player::DrawShadow() {
-	// 死亡したら描画スキップ
-	if (isDead_) return;
-
-	objectPlayer_->DrawShadow();
-}
-
-void Player::DrawGunShadow()
-{
-	// 死亡したら描画スキップ
-	if (isDead_) return;
-
 	objectGun_->DrawShadow();
 }
 
-void Player::DrawUI() {
-	// 死亡状態ならスキップ
-	if (IsDead()) return;
+void Player::DrawShadowSkinning()
+{
+	objectPlayer_->DrawShadow();
+}
 
+void Player::DrawUI() {
 	ui_->Draw();
 }
 
@@ -214,6 +207,9 @@ void Player::OnCollision(Cygnus::Collider* other) {
 	///
 
 	if (other->GetTag() == "EnemyBullet" || other->GetTag() == "HomingMissile" || other->GetTag() == "GroundWarning") {
+		// 無敵状態であればスキップ
+		if (invincible_) return;
+		
 		// 弾のダメージを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
 		int32_t damage = bullet->GetDamage();
@@ -285,6 +281,7 @@ void Player::Debug() {
 	ImGui::Text("Parameter");
 
 	ImGui::Checkbox("isDead", &isDead_);
+	ImGui::Checkbox("invincible", &invincible_);
 
 	ImGui::BeginDisabled(true); // 操作不可
 	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);
@@ -388,6 +385,8 @@ void Player::HandleShooting() {
 
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		Cygnus::SoundManager::GetInstance()->Play("shot");
+
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得

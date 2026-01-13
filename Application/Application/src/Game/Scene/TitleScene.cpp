@@ -12,6 +12,7 @@
 #include <SceneManager.h>
 #include <ShadowMapManager.h>
 #include <SkyBoxManager.h>
+#include <CommandManager.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
@@ -32,10 +33,6 @@ void TitleScene::Initialize() {
 	// TextureManagerの初期化
 	Cygnus::TextureManager::Initialize(dxBase->GetDevice(), Cygnus::SRVManager::GetInstance());
 
-	// SoundManagerの初期化
-	soundManager_ = std::make_unique<Cygnus::SoundManager>();
-	soundManager_->Initialize();
-
 	// Inputの初期化
 	input_ = Cygnus::Input::GetInstance();
 
@@ -46,7 +43,7 @@ void TitleScene::Initialize() {
 	// ポストエフェクト管理
 	postEffectManager_ = std::make_unique<Cygnus::PostEffectManager>();
 	postEffectManager_->Initialize();
-	postEffectManager_->SetEffectType(Cygnus::PostEffectType::Vignette);
+	postEffectManager_->SetEffectType(Cygnus::PSOType::Vignette);
 
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();
@@ -195,12 +192,13 @@ void TitleScene::Update() {
 void TitleScene::Draw() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 	Cygnus::SRVManager* srvManager = Cygnus::SRVManager::GetInstance();
+	auto* cmd = Cygnus::CommandManager::GetInstance()->GetCommandList();
 
 	// 描画前処理
 	dxBase->PreDraw();
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvManager->descriptorHeap_.heap_.Get() };
-	dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
+	cmd->SetDescriptorHeaps(1, descriptorHeaps);
 	// ImGuiのフレーム開始処理
 	Cygnus::ImguiWrapper::NewFrame();
 	// カメラの定数バッファを設定
@@ -238,7 +236,7 @@ void TitleScene::Draw() {
 	//----------------------------------//
 
 	// アニメーションモデル用PSOをセット
-	dxBase->GetCommandList()->SetPipelineState(Cygnus::ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
+	cmd->SetPipelineState(Cygnus::ShadowMapManager::GetInstance()->GetShadowSkinnedPSO());
 
 	// アニメーションモデル描画
 	//----------------------------------//
@@ -287,6 +285,19 @@ void TitleScene::Draw() {
 #ifdef _DEBUG
 	ImGui::Begin("TitleSceneInfo");
 
+	if (ImGui::Button("yay")) {
+		Cygnus::SoundManager::GetInstance()->Play("yay");
+	}
+	if (ImGui::Button("shot")) {
+		Cygnus::SoundManager::GetInstance()->Play("shot");
+	}
+	if (ImGui::Button("explode")) {
+		Cygnus::SoundManager::GetInstance()->Play("explode");
+	}
+	if (ImGui::Button("door")) {
+		Cygnus::SoundManager::GetInstance()->Play("door");
+	}
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
 	if (ImGui::Button("GAMEPLAY")) {
@@ -307,7 +318,7 @@ void TitleScene::Draw() {
 
 #endif
 	// ImGuiの内部コマンドを生成する
-	Cygnus::ImguiWrapper::Render(dxBase->GetCommandList());
+	Cygnus::ImguiWrapper::Render(cmd);
 	// 描画後処理
 	dxBase->PostDraw();
 	// フレーム終了処理

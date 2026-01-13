@@ -125,4 +125,6 @@ private:
 	uint32_t splitCount_;											/* 分割数 */
 	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_ = nullptr;	/* スプライト共通処理クラス */
 	std::function<void()> onFadeComplete_;							/* 閉じるトランジション完了後のコールバック */
+
+	bool initialized_ = false; /* 初期化したかどうか */
 };
