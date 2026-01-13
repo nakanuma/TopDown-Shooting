@@ -32,26 +32,38 @@ void PlayerUIManager::Initialize() {
 	// オーバーヒートゲージ
 	overheatGauge_ = std::make_unique<OverheatGauge>();
 	overheatGauge_->Initialize(dxBase, spriteCommon_.get());
+
+	// 移動キー
+	movementKeys_ = std::make_unique<MovementKeys>();
+	movementKeys_->Initialize(spriteCommon_.get());
+
+	// マウス
+	mouse_ = std::make_unique<Mouse>();
+	mouse_->Initialize(spriteCommon_.get());
 }
 
 void PlayerUIManager::Update(const Player* player) {
 	// レティクル
 	reticle_->Update();
-
 	// HPバー
 	hpBar_->Update(player);
-
 	// オーバーヒートゲージ
 	overheatGauge_->Update(player);
+	// 移動キー
+	movementKeys_->Update();
+	// マウス
+	mouse_->Update();
 }
 
 void PlayerUIManager::Draw() {
 	// HPバー
 	hpBar_->Draw();
-
 	// レティクル
 	reticle_->Draw();
-
 	// オーバーヒートゲージ
 	overheatGauge_->Draw();
+	// 移動キー
+	movementKeys_->Draw();
+	// マウス
+	mouse_->Draw();
 }
