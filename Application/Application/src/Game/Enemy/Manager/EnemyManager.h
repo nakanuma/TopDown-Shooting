@@ -9,6 +9,8 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
+#include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
 #include <src/Game/Enemy/BossEnemy/BossEnemy.h>
 #include <src/Game/Loader/Loader.h>
 
@@ -64,9 +66,20 @@ public:
 	BossEnemy* GetBoss() const;
 
 private:
+	/// <summary>
+	/// NormalEnemy用の共通マスターツリーを構築します。
+	/// </summary>
+	/// <returns></returns>
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> CreateNormalEnemyMasterTree();
+
+private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 	std::vector<std::unique_ptr<Enemy>> enemies_;		/* 全ての敵を格納したコンテナ */
 	Player* player_ = nullptr;							/* プレイヤーのポインタ */
+
+	// NormalEnemy共通のマスターツリー
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> normalEnemyBT_;
+	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> normalEnemyBTEditor_;
 };

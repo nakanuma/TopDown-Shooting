@@ -27,6 +27,83 @@
 #include <ImguiWrapper.h>
 
 void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {
+	/////
+	/////	基盤機能生成
+	/////
+
+	//Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
+
+	//spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
+	//spriteCommon_->Initialize(dxBase);
+
+	/////
+	///// オブジェクト生成
+	/////
+
+	//objectEnemy_ = std::make_unique<Cygnus::Object3D>();
+	//objectEnemy_->model_ = model;
+	//objectEnemy_->transform_.translate_ = position;
+	//objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	//objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
+
+	/////
+	/////	コライダー生成
+	/////
+
+	//auto aabb = std::make_unique<Cygnus::AABBCollider>();
+	//aabb->SetTag("NormalEnemy");
+	//aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
+	//aabb->SetSize(kColliderSize);
+	//aabb->SetOwner(this);
+
+	//collider_ = std::move(aabb);
+	//Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
+
+	//collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+
+	/////
+	/////	スプライト生成
+	/////
+
+	//// HPバー（後景）
+	//SetupHPBarSprite(spriteHPBackground_, kHPBarBackgroundColor);
+	//// HPバー（前景）
+	//SetupHPBarSprite(spriteHPForeground_, kHPBarForegroundColor);
+	//// リロード表示
+	//SetupReloadSprite(spriteReload_);
+
+	/////
+	/////	パラメーター設定
+	/////
+
+	//isDead_ = false;
+
+	//// HPの設定
+	//currentHP_ = kInitialHP;
+	//maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
+
+	//targetPlayer_ = player;
+
+	//spawnPosition_ = position; // スポーン地点を記録
+
+	//currentAmmo_ = kMagazineSize; // 初期マガジン設定
+
+	/////
+	/////	調整パラメーター登録
+	/////
+
+	//SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
+	//InitConfig();                                  // 初回読み込み
+
+	/////
+	/////	ビヘイビアツリー構築
+	/////
+
+	//BuildBehaviorTree();
+}
+
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player, Cygnus::BehaviorTree<NormalEnemy>* masterTree)
+{
 	///
 	///	基盤機能生成
 	///
@@ -43,7 +120,7 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->transform_.rotate_ = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
@@ -99,12 +176,10 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	///	ビヘイビアツリー構築
 	///
 
-	BuildBehaviorTree();
-
-#ifdef USE_IMGUI
-	btEditor_ = std::make_unique<Cygnus::BehaviorTreeEditor<NormalEnemy>>();
-	btEditor_->SetBehaviorTree(behaviorTree_.get());
-#endif
+	// マスターツリーを複製して自分専用のインスタンスを作成
+	if(masterTree) {
+		behaviorTree_ = masterTree->Clone();
+	}
 }
 
 void NormalEnemy::Update() {
@@ -265,27 +340,11 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 
 void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
-	ImGui::Begin("BehaviorTree_NormalEnemy");
+	//// 索敵中の視界を可視化
+	//DrawDebugSight();
 
-	btEditor_->Draw();
-	if (ImGui::Button("SAVE")) {
-		btEditor_->Save("normalEnemy.json");
-	}
-	if (ImGui::Button("LOAD")) {
-		btEditor_->Load("normalEnemy.json");
-	}
-
-	ImGui::End();
-
-	// 索敵中の視界を可視化
-	DrawDebugSight();
-
-	// 調整パラメーター
-	DrawConfigWindow("NormalEnemyConfig");
-
-	ImGui::Begin("NormalEnemy");
-
-	ImGui::End();
+	//// 調整パラメーター
+	//DrawConfigWindow("NormalEnemyConfig");
 #endif
 }
 
@@ -597,89 +656,4 @@ Cygnus::BehaviorStatus NormalEnemy::MoveToPlayer() {
 	MoveAlongPath(path, kMoveSpeed);
 
 	return Cygnus::BehaviorStatus::Running;
-}
-
-void NormalEnemy::BuildBehaviorTree() {
-	///
-	///	索敵シーケンス
-	///
-
-	// 移動前待機
-	auto waitBeforePatrol = std::make_unique<Cygnus::WaitNode<NormalEnemy>>(kWaitBeforePatrol, kWaitBeforePatrol, "wait");
-
-	// ランダム移動
-	auto randomPatrol = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomPatrol(); }, "randomPatrol");
-
-	// 回転前待機
-	auto waitBeforeRotate = std::make_unique<Cygnus::WaitNode<NormalEnemy>>(kWaitBeforeRotate, kWaitBeforeRotate, "wait");
-
-	// ランダム回転
-	auto randomRotate = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomRotate(); }, "randomRotate");
-
-	// searchSequence構築
-	auto searchSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("searchSequence");
-	searchSequence->AddChild(std::move(waitBeforePatrol));
-	searchSequence->AddChild(std::move(randomPatrol));
-	searchSequence->AddChild(std::move(waitBeforeRotate));
-	searchSequence->AddChild(std::move(randomRotate));
-
-	///
-	///	攻撃シーケンス
-	///
-
-	// 視界チェック
-	auto isPlayerInSight = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([this](NormalEnemy* enemy) { return this->IsPlayerInSight(); }, "isPlayerInSight");
-
-	// プレイヤー方向を向く
-	auto facePlayer = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->FacePlayer(); }, "facePlayer");
-
-	// 射撃を行う
-	auto shoot = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->Shoot(); }, "shoot");
-
-	// attackParallel構築
-	auto attackParallel = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>("attackParallel");
-	attackParallel->AddChild(std::move(facePlayer));
-	attackParallel->AddChild(std::move(shoot));
-
-	// attackSequence構築
-	auto attackSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("attackSequence");
-	attackSequence->AddChild(std::move(isPlayerInSight));
-	attackSequence->AddChild(std::move(attackParallel));
-
-	///
-	/// 移動シーケンス
-	///
-
-	// 視界チェック
-	auto isDetected = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([this](NormalEnemy* enemy) { return this->isPlayerDetected_; }, "isPlayerDetected");
-
-	// 発見済みなら移動
-	auto moveToPlayer = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->MoveToPlayer(); }, "moveToPlayer");
-
-	// moveSequence構築
-	auto moveSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("moveSequence");
-	moveSequence->AddChild(std::move(isDetected));
-	moveSequence->AddChild(std::move(moveToPlayer));
-
-	///
-	///	攻撃セレクタ
-	///
-
-	// attackSelector構築
-	auto attackSelector = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>("attackSelector");
-	attackSelector->AddChild(std::move(attackSequence));
-	attackSelector->AddChild(std::move(moveSequence));
-
-	///
-	///	ルートノード構築
-	///
-
-	auto root = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>("root");
-	root->AddChild(std::move(attackSelector));
-	root->AddChild(std::move(searchSequence));
-
-	///
-	///	BehaviorTree構築
-	///
-	behaviorTree_ = std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(root));
 }

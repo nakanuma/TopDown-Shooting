@@ -30,6 +30,13 @@ public:
 	/// <param name="player">プレイヤーのポインタ</param>
 	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
 
+	void Initialize(
+		const Cygnus::Float3& position, 
+		Cygnus::ModelManager::ModelData* model, 
+		Player* player,
+		Cygnus::BehaviorTree<NormalEnemy>* masterTree 
+	);
+
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
@@ -61,17 +68,10 @@ public:
 	/// </summary>
 	void Debug();
 
-private:
+public:
 	// =========================================================
-	// Internal Methods
+	// BehaviorTreeのノードから呼ばれる関数群
 	// =========================================================
-
-	/// <summary>
-	/// 経路探索で得たウェイポイント列に沿って移動します。
-	/// </summary>
-	/// <param name="path">移動経路</param>
-	/// <param name="speed">移動速度</param>
-	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
 
 	/// <summary>
 	/// プレイヤーとの距離・遮蔽チェックを行います。
@@ -80,11 +80,11 @@ private:
 	bool IsPlayerInSight();
 
 	/// <summary>
-	/// 敵の扇形の視界を可視化します。（デバッグ用）
+	/// プレイヤーを発見したかを取得します。
 	/// </summary>
-	void DrawDebugSight();
+	/// <returns></returns>
+	bool IsDetected() const { return isPlayerDetected_; }
 
-private:
 	/// <summary>
 	/// 敵が一定範囲内をランダムに移動します。
 	/// </summary>
@@ -115,10 +115,23 @@ private:
 	/// <returns>BehaviorStatus</returns>
 	Cygnus::BehaviorStatus MoveToPlayer();
 
+private:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
 	/// <summary>
-	/// BehaviorTreeの構築を行います。
+	/// 経路探索で得たウェイポイント列に沿って移動します。
 	/// </summary>
-	void BuildBehaviorTree();
+	/// <param name="path">移動経路</param>
+	/// <param name="speed">移動速度</param>
+	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
+
+private:
+	/// <summary>
+	/// 敵の扇形の視界を可視化します。（デバッグ用）
+	/// </summary>
+	void DrawDebugSight();
 
 private:
 	// =========================================================
@@ -179,5 +192,4 @@ private:
 	bool isReloading_ = false; /* リロード中フラグ */
 
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
-	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> btEditor_; /* BehaviorTreeEditor */
 };
