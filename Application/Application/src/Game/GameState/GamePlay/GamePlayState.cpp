@@ -71,7 +71,9 @@ void GamePlayState::DrawUI() {
 	scene_->GetEnemyManager()->DrawUI();
 }
 
-void GamePlayState::Debug() {}
+void GamePlayState::Debug() {
+	scene_->GetEnemyManager()->Debug();
+}
 
 bool GamePlayState::CanTransition() const {
 	// ゲームオーバーまたはゲームクリアへの遷移条件

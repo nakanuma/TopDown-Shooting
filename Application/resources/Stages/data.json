@@ -2208,30 +2208,6 @@
         "pair_id": "EMPTY"
     },
     {
-        "tag": "IMMOBILE_ENEMY",
-        "location": [
-            52.0,
-            64.0,
-            2.0
-        ],
-        "rotation": [
-            89.999995674289,
-            -0.0,
-            -180.00000500895632
-        ],
-        "scale": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "colliderSize": [
-            1.0,
-            1.0,
-            2.0
-        ],
-        "pair_id": "EMPTY"
-    },
-    {
         "tag": "BOSS_ENEMY",
         "location": [
             156.0,
@@ -3195,31 +3171,7 @@
         "tag": "NORMAL_ENEMY",
         "location": [
             24.0,
-            36.0,
-            2.0
-        ],
-        "rotation": [
-            89.999995674289,
-            -0.0,
-            -180.00000500895632
-        ],
-        "scale": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "colliderSize": [
-            1.0,
-            1.0,
-            2.0
-        ],
-        "pair_id": "EMPTY"
-    },
-    {
-        "tag": "NORMAL_ENEMY",
-        "location": [
-            56.0,
-            36.0,
+            24.0,
             2.0
         ],
         "rotation": [
@@ -3600,30 +3552,6 @@
         "pair_id": "EMPTY"
     },
     {
-        "tag": "IMMOBILE_ENEMY",
-        "location": [
-            36.0,
-            12.0,
-            2.0
-        ],
-        "rotation": [
-            89.999995674289,
-            -0.0,
-            -180.00000500895632
-        ],
-        "scale": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "colliderSize": [
-            1.0,
-            1.0,
-            2.0
-        ],
-        "pair_id": "EMPTY"
-    },
-    {
         "tag": "VERTICALTANK",
         "location": [
             44.65695571899414,
@@ -3644,30 +3572,6 @@
             3.0,
             3.0,
             5.0
-        ],
-        "pair_id": "EMPTY"
-    },
-    {
-        "tag": "NORMAL_ENEMY",
-        "location": [
-            36.0,
-            80.0,
-            2.0
-        ],
-        "rotation": [
-            89.999995674289,
-            -0.0,
-            -180.00000500895632
-        ],
-        "scale": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "colliderSize": [
-            1.0,
-            1.0,
-            2.0
         ],
         "pair_id": "EMPTY"
     },

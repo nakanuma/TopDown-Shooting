@@ -193,6 +193,16 @@ void BossEnemy::DrawUI() {
 
 void BossEnemy::Debug() {
 #ifdef USE_IMGUI
+	ImGui::Begin("BehaviorTree_BossEnemy");
+	btEditor_->Draw();
+	if (ImGui::Button("SAVE")) {
+		btEditor_->Save("bossEnemy.json");
+	}
+	if (ImGui::Button("LOAD")) {
+		btEditor_->Load("bossEnemy.json");
+	}
+	ImGui::End();
+
 	ImGui::Begin("BossEnemy");
 
 	ImGui::DragFloat3("translate", &objectEnemy_->transform_.translate_.x);

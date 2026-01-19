@@ -272,7 +272,7 @@ void GamePlayScene::Draw() {
 
 void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
-	ImGui::Begin("GameSceneInfo");
+	/*ImGui::Begin("GameSceneInfo");
 
 	if (ImGui::Button("yay")) {
 		Cygnus::SoundManager::GetInstance()->Play("yay");
@@ -298,11 +298,9 @@ void GamePlayScene::Debug() {
 		Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
-	ImGui::End();
+	ImGui::End();*/
 
 	stateManager_->Debug();
-
-	player_->Debug();
 #endif
 }
 

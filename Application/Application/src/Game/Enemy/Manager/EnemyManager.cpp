@@ -99,7 +99,7 @@ void EnemyManager::Debug() {
 
 		/* BossEnemy（一旦ここでデバッグ表示） */
 		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
-			bossEnemy->Debug();
+			
 		}
 
 		std::string label = "Enemy[" + std::to_string(i) + "]";
@@ -127,6 +127,7 @@ void EnemyManager::Debug() {
 
 			/* NormalEnemy */
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
+				normalEnemy->Debug();
 			}
 
 			/* ImmobileEnemy */

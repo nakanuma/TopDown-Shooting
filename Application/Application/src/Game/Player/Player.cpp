@@ -90,7 +90,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = maxHP_;	// 現在HPには最大HPをセット
-	invincible_ = false;    // 開始時は非無敵状態
+	invincible_ = true;    // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
@@ -278,8 +278,7 @@ void Player::Debug() {
 
 	ImGui::Begin("Player");
 
-	ImGui::DragFloat3("emissiveColor", &objectPlayer_->object_->materialCB_.data_->emissiveColor.x, 0.01f);
-	ImGui::DragFloat("emissiveIntensity", &objectPlayer_->object_->materialCB_.data_->emissiveIntensity, 0.01f);
+	ImGui::Checkbox("Invincible", &invincible_);
 
 	/* Translate */
 	ImGui::Text("Translate");
