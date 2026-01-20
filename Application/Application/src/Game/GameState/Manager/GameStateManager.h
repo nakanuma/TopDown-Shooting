@@ -26,6 +26,11 @@ public:
 	void RegisterState(const std::string& name, std::unique_ptr<IGameState> state);
 
 	/// <summary>
+	/// 終了処理を行います。
+	/// </summary>
+	void Finalize();
+
+	/// <summary>
 	/// 状態を変更します。
 	/// </summary>
 	/// <param name="name"></param>

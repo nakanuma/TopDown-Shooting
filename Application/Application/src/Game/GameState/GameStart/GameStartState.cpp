@@ -11,6 +11,8 @@ void GameStartState::Initialize() {
 	gameStartSequence_->Initialize(scene_->GetSpriteCommon());
 }
 
+void GameStartState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
+
 void GameStartState::Update() {
 	gameStartSequence_->Update();
 

@@ -14,6 +14,8 @@ void GameOverState::Initialize() {
 	gameOverSequence_->Start(scene_->GetPlayer()->GetTranslate()); // 初期化時に演出開始
 }
 
+void GameOverState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
+
 void GameOverState::Update() {
 	gameOverSequence_->Update();
 

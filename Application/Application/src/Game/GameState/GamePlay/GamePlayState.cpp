@@ -12,6 +12,8 @@ GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
 void GamePlayState::Initialize() {}
 
+void GamePlayState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
+
 void GamePlayState::Update() {
 	// プレイヤーが生きている場合、通常ゲーム用のカメラ制御を行う
 	if (!scene_->GetPlayer()->IsDead()) {

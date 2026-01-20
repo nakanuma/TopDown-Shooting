@@ -126,7 +126,7 @@ void GamePlayScene::Initialize() {
 	InitializeGameStates();
 }
 
-void GamePlayScene::Finalize() {}
+void GamePlayScene::Finalize() { stateManager_->Finalize(); }
 
 void GamePlayScene::Update() {
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア

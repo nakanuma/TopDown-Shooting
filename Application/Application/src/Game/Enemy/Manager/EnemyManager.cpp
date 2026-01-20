@@ -56,6 +56,12 @@ void EnemyManager::Initialize(const std::vector<Loader::TransformData>& datas, P
 	}
 }
 
+void EnemyManager::Finalize() { 
+	if (normalEnemyBTEditor_) {
+		normalEnemyBTEditor_->Finalize();
+	}
+}
+
 void EnemyManager::Update() {
 	// 全ての敵を更新
 	for (auto& enemy : enemies_) {
@@ -102,6 +108,9 @@ void EnemyManager::Debug() {
 			normalEnemyBTEditor_->Save("normalEnemy.json");
 		}
 	}*/
+
+	normalEnemyBTEditor_->Draw();
+
 	ImGui::End();
 
 	// 情報ウィンドウ

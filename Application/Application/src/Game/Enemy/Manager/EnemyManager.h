@@ -31,6 +31,11 @@ public:
 	void Initialize(const std::vector<Loader::TransformData>& datas, Player* player);
 
 	/// <summary>
+	/// 終了処理を行います。
+	/// </summary>
+	void Finalize();
+
+	/// <summary>
 	/// 全ての敵の毎フレーム更新処理を行います。
 	/// </summary>
 	void Update();
