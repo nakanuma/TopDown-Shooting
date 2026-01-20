@@ -132,5 +132,4 @@ private:
 	float dyingTimer_ = 0.0f; /* 死亡演出中経過時間 */
 
 	std::unique_ptr<Cygnus::BehaviorTree<BossEnemy>> behaviorTree_;   /* BehaviorTree */
-	std::unique_ptr<Cygnus::BehaviorTreeEditor<BossEnemy>> btEditor_; /* BehaviorTreeEditor */
 };

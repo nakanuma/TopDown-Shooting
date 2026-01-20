@@ -79,7 +79,9 @@ void GameStateManager::DrawUI() {
 }
 
 void GameStateManager::Debug() {
+#ifdef USE_IMGUI
 	if (currentState_) {
 		currentState_->Debug();
 	}
+#endif
 }

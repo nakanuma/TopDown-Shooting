@@ -102,15 +102,12 @@ void EnemyManager::Debug() {
 #ifdef USE_IMGUI
 	// 共通エディタウィンドウ
 	ImGui::Begin("Global BT Editor");
-	/*if(ImGui::CollapsingHeader("NormalEnemy BehaviorTree")) {
+	if(ImGui::CollapsingHeader("NormalEnemy BehaviorTree")) {
 		normalEnemyBTEditor_->Draw();
 		if(ImGui::Button("SAVE")) {
 			normalEnemyBTEditor_->Save("normalEnemy.json");
 		}
-	}*/
-
-	normalEnemyBTEditor_->Draw();
-
+	}
 	ImGui::End();
 
 	// 情報ウィンドウ
@@ -155,7 +152,6 @@ void EnemyManager::Debug() {
 
 			/* NormalEnemy */
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
-				normalEnemy->Debug();
 			}
 
 			/* ImmobileEnemy */

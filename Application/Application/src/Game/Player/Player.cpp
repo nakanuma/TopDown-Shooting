@@ -98,6 +98,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 
+#ifdef USE_IMGUI
 	RegisterParam("maxHP", &maxHP_);
 	AddSeparator();
 	RegisterParam("moveSpeed", &moveSpeed_, 0.01f);
@@ -111,6 +112,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("overheatRecoverySpeed", &overheatRecoverySpeed_, 0.01f);
 	RegisterParam("maxRandomAngle", &maxRandomAngle_, 0.01f);
 	RegisterParam("shootingBlurMultiplier", &shootingBlurMultiplier_, 0.01f);
+#endif
 
 	InitConfig(); // 初回読み込み
 }

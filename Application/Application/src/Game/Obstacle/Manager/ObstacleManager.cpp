@@ -76,7 +76,7 @@ void ObstacleManager::DrawShadow(const Cygnus::Float3& playerPos) {
 }
 
 void ObstacleManager::Debug() {
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	ImGui::Begin("obstacleManager");
 
 	ImGui::Separator();

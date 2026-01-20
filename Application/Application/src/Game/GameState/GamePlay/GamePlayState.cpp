@@ -74,7 +74,9 @@ void GamePlayState::DrawUI() {
 }
 
 void GamePlayState::Debug() {
+#ifdef USE_IMGUI
 	scene_->GetEnemyManager()->Debug();
+#endif
 }
 
 bool GamePlayState::CanTransition() const {

@@ -272,33 +272,11 @@ void GamePlayScene::Draw() {
 
 void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
-	/*ImGui::Begin("GameSceneInfo");
-
-	if (ImGui::Button("yay")) {
-		Cygnus::SoundManager::GetInstance()->Play("yay");
-	}
-	if (ImGui::Button("shot")) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-	}
-	if (ImGui::Button("explode")) {
-		Cygnus::SoundManager::GetInstance()->Play("explode");
-	}
-	if (ImGui::Button("door")) {
-		Cygnus::SoundManager::GetInstance()->Play("door");
-	}
+	ImGui::Begin("GameSceneInfo");
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);
-	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
-	if (ImGui::Button("TITLE")) {
-		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-	if (ImGui::Button("RESULT")) {
-		Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT");
-	}
-
-	ImGui::End();*/
+	ImGui::End();
 
 	stateManager_->Debug();
 #endif

@@ -166,7 +166,7 @@ void ResultScene::Draw() {
 	///
 	///	デバッグ表示
 	///
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	ImGui::Begin("ResultSceneInfo");
 
 	if (ImGui::Button("yay")) {

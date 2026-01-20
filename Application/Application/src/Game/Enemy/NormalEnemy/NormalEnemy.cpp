@@ -26,81 +26,7 @@
 // Externals
 #include <ImguiWrapper.h>
 
-void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {
-	/////
-	/////	基盤機能生成
-	/////
-
-	//Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
-
-	//spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
-	//spriteCommon_->Initialize(dxBase);
-
-	/////
-	///// オブジェクト生成
-	/////
-
-	//objectEnemy_ = std::make_unique<Cygnus::Object3D>();
-	//objectEnemy_->model_ = model;
-	//objectEnemy_->transform_.translate_ = position;
-	//objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
-	//objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
-
-	/////
-	/////	コライダー生成
-	/////
-
-	//auto aabb = std::make_unique<Cygnus::AABBCollider>();
-	//aabb->SetTag("NormalEnemy");
-	//aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
-	//aabb->SetSize(kColliderSize);
-	//aabb->SetOwner(this);
-
-	//collider_ = std::move(aabb);
-	//Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
-
-	//collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
-
-	/////
-	/////	スプライト生成
-	/////
-
-	//// HPバー（後景）
-	//SetupHPBarSprite(spriteHPBackground_, kHPBarBackgroundColor);
-	//// HPバー（前景）
-	//SetupHPBarSprite(spriteHPForeground_, kHPBarForegroundColor);
-	//// リロード表示
-	//SetupReloadSprite(spriteReload_);
-
-	/////
-	/////	パラメーター設定
-	/////
-
-	//isDead_ = false;
-
-	//// HPの設定
-	//currentHP_ = kInitialHP;
-	//maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
-
-	//targetPlayer_ = player;
-
-	//spawnPosition_ = position; // スポーン地点を記録
-
-	//currentAmmo_ = kMagazineSize; // 初期マガジン設定
-
-	/////
-	/////	調整パラメーター登録
-	/////
-
-	//SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
-	//InitConfig();                                  // 初回読み込み
-
-	/////
-	/////	ビヘイビアツリー構築
-	/////
-
-	//BuildBehaviorTree();
-}
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {}
 
 void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player, Cygnus::BehaviorTree<NormalEnemy>* masterTree)
 {
@@ -340,11 +266,11 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 
 void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
-	//// 索敵中の視界を可視化
-	//DrawDebugSight();
+	// 索敵中の視界を可視化
+	DrawDebugSight();
 
-	//// 調整パラメーター
-	//DrawConfigWindow("NormalEnemyConfig");
+	// 調整パラメーター
+	DrawConfigWindow("NormalEnemyConfig");
 #endif
 }
 
