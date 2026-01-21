@@ -220,5 +220,5 @@ private:
 
 	NormalEnemyBlackBoard bb_; /* 個別の変数群をBlackBoardに統合*/
 
-	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
+	Cygnus::BehaviorTree<NormalEnemy>* behaviorTree_ = nullptr;   /* behaviorTree */
 };

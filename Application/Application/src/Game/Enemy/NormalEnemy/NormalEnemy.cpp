@@ -104,7 +104,7 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 
 	// マスターツリーを複製して自分専用のインスタンスを作成
 	if(masterTree) {
-		behaviorTree_ = masterTree->Clone();
+		behaviorTree_ = masterTree;
 	}
 }
 
