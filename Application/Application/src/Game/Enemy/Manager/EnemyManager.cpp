@@ -110,53 +110,50 @@ void EnemyManager::Debug() {
 	}
 	ImGui::End();
 
-	// 情報ウィンドウ
-	ImGui::Begin("enemyManager");
+	// 情報・監視ウィンドウ
+	ImGui::Begin("Enemy Monitor");
 
-	ImGui::Separator();
 	ImGui::Text("Total Enemies: %zu", enemies_.size());
+	ImGui::Separator();
 
-	// 敵ごとの情報表示
-	for (size_t i = 0; i < enemies_.size(); ++i) {
+	// 現在BTEditorが誰を監視しているか保持しておく変数
+	static Enemy* currentMonitorTarget = nullptr;
+
+	for(size_t i = 0; i < enemies_.size(); ++i) {
 		Enemy* enemy = enemies_[i].get();
-		if (!enemy)
-			continue;
+		if (!enemy) continue;
 
-		/* BossEnemy（一旦ここでデバッグ表示） */
-		if (BossEnemy* bossEnemy = dynamic_cast<BossEnemy*>(enemy)) {
-			
+		std::string label = "[" + std::to_string(i) + "]" + enemy->GetTag();
+
+		// 監視中の敵のラベルの色を強調する
+		if(enemy == currentMonitorTarget) {
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
 		}
 
-		std::string label = "Enemy[" + std::to_string(i) + "]";
-		if (ImGui::TreeNode(label.c_str())) {
+		bool nodeOpen = ImGui::TreeNode(label.c_str());
 
-			///
-			///	共通の情報を表示
-			///
+		if (enemy == currentMonitorTarget) {
+			ImGui::PopStyleColor();
+		}
 
-			// タイプの表示
-			ImGui::Text("Tag : %s", enemy->GetTag().c_str());
+		if(nodeOpen) {
+			// 監視対象に設定するボタン
+			if (ImGui::Button("Monitor this Enemy")) {
+				currentMonitorTarget = enemy;
+				// NormalEnemyの場合にのみBTEditorにセット
+				if (NormalEnemy* ne = dynamic_cast<NormalEnemy*>(enemy)) {
+					normalEnemyBTEditor_->SetMonitorTarget(ne);
+				}
+			}
 
-			// 座標の表示
-			const Cygnus::Float3& translate = enemy->GetTranslate();
-			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", translate.x, translate.y, translate.z);
+			ImGui::Text("Translate : (%.2f, %.2f, %.2f)", enemy->GetTranslate().x, enemy->GetTranslate().y, enemy->GetTranslate().z);
 
-			// HPの表示
-			ImGui::Text("HP : %d", enemy->GetHP());
-
-			// 他の項目追加
-
-			///
-			///	種類毎の情報を表示
-			///
-
-			/* NormalEnemy */
+			// 各敵固有のBlackBoard表示
 			if (NormalEnemy* normalEnemy = dynamic_cast<NormalEnemy*>(enemy)) {
+				ShowNormalEnemyBlackBoard(normalEnemy);
 			}
 
-			/* ImmobileEnemy */
-			if (ImmobileEnemy* immobileEnemy = dynamic_cast<ImmobileEnemy*>(enemy)) {
-			}
+			// 他の敵も同様に作成予定
 
 			ImGui::TreePop();
 		}
@@ -270,4 +267,26 @@ std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> EnemyManager::CreateNormalEne
 	///
 
 	return std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(root));
+}
+
+void EnemyManager::ShowNormalEnemyBlackBoard(NormalEnemy* enemy)
+{
+	auto& bb = enemy->GetBlackBoard();
+
+	if (ImGui::TreeNodeEx("BlackBoard", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "[Perception]");
+		ImGui::Checkbox("Detected", &bb.isPlayerDetected);
+
+		ImGui::TextColored(ImVec4(0.4f, 0.7f, 1.0f, 1.0f), "[Combat]");
+		int ammo = (int)bb.currentAmmo;
+		if (ImGui::SliderInt("Ammo", &ammo, 0, 12)) { bb.currentAmmo =  (uint32_t)ammo; }
+		ImGui::Checkbox("Reloading", &bb.isReloading);
+		ImGui::ProgressBar((float)bb.currentAmmo / 12.0f, ImVec2(-1, 0));
+
+		ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "[Navigation]");
+		ImGui::Text("Target WP: %s", bb.currentTargetWP ? "Valid" : "None");
+		ImGui::DragFloat("Rotate Timer", &bb.rotateTimer, 0.01f);
+
+		ImGui::TreePop();
+	}
 }

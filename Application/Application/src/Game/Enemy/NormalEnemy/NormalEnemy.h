@@ -18,6 +18,27 @@
 // =========================================================
 class NormalEnemy : public Enemy, public Cygnus::ICollisionCallback, public Cygnus::Configurator {
 public:
+	/// <summary>
+	/// 思考や状態に関する変数をまとめたBlackBoard
+	/// </summary>
+	struct NormalEnemyBlackBoard {
+		// 索敵
+		bool isPlayerDetected = false;
+
+		// 移動・タイマー
+		float rotateTimer = 0.0f;
+		float rotateDirection = 0.0f;
+		Waypoint* currentTargetWP = nullptr;
+
+		// 戦闘
+		uint32_t currentAmmo = 0;
+		uint32_t burstCount = 0;
+		float burstCooldown = 0.0f;
+		float fireCooldown = 0.0f;
+		float reloadTimer = 0.0f;
+		bool isReloading = false;
+	};
+
 	// =========================================================
 	// Public Methods
 	// =========================================================
@@ -69,6 +90,12 @@ public:
 	void Debug();
 
 public:
+	/// <summary>
+	/// ブラックボードを取得します。
+	/// </summary>
+	/// <returns></returns>
+	NormalEnemyBlackBoard& GetBlackBoard() { return bb_; }
+
 	// =========================================================
 	// BehaviorTreeのノードから呼ばれる関数群
 	// =========================================================
@@ -83,7 +110,7 @@ public:
 	/// プレイヤーを発見したかを取得します。
 	/// </summary>
 	/// <returns></returns>
-	bool IsDetected() const { return isPlayerDetected_; }
+	bool IsDetected() const { return bb_.isPlayerDetected; }
 
 	/// <summary>
 	/// 敵が一定範囲内をランダムに移動します。
@@ -177,19 +204,21 @@ private:
 	// Member Variables
 	// =========================================================
 	Cygnus::Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; /* 初期スポーン地点 */
-	Waypoint* currentTargetWP_ = nullptr;				/* 現在の移動目標 */
+	//Waypoint* currentTargetWP_ = nullptr;				/* 現在の移動目標 */
 
-	bool isPlayerDetected_ = false; /* プレイヤー発見フラグ */
-	float rotateTimer_ = 0.0f;      /* 回転時タイマー */
-	float rotateDirection_ = 0.0f;  /* 回転方向 */
+	//bool isPlayerDetected_ = false; /* プレイヤー発見フラグ */
+	//float rotateTimer_ = 0.0f;      /* 回転時タイマー */
+	//float rotateDirection_ = 0.0f;  /* 回転方向 */
 
-	uint32_t currentAmmo_ = 0;   /* 現在の弾数 */
-	uint32_t burstCount_ = 0;    /* 現在のバースト内で撃った弾数 */
-	float burstCooldown_ = 0.0f; /* バースト内のクールタイム */
-	float fireCooldown_ = 0.0f;  /* バースト間のクールタイム */
+	//uint32_t currentAmmo_ = 0;   /* 現在の弾数 */
+	//uint32_t burstCount_ = 0;    /* 現在のバースト内で撃った弾数 */
+	//float burstCooldown_ = 0.0f; /* バースト内のクールタイム */
+	//float fireCooldown_ = 0.0f;  /* バースト間のクールタイム */
 
-	float reloadTimer_ = 0.0f; /* リロード中タイマー */
-	bool isReloading_ = false; /* リロード中フラグ */
+	//float reloadTimer_ = 0.0f; /* リロード中タイマー */
+	//bool isReloading_ = false; /* リロード中フラグ */
+
+	NormalEnemyBlackBoard bb_; /* 個別の変数群をBlackBoardに統合*/
 
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
 };

@@ -89,7 +89,7 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 
 	spawnPosition_ = position; // スポーン地点を記録
 
-	currentAmmo_ = kMagazineSize; // 初期マガジン設定
+	bb_.currentAmmo = kMagazineSize; // 初期マガジン設定
 
 	///
 	///	調整パラメーター登録
@@ -189,7 +189,7 @@ void NormalEnemy::DrawUI() {
 	///
 
 	// リロード進捗率
-	float reloadProgress = 1.0f - (reloadTimer_ / kReloadTime);
+	float reloadProgress = 1.0f - (bb_.reloadTimer / kReloadTime);
 	// リロード時間に応じてサイズ変更
 	spriteReload_->SetSize({kReloadSize.x * reloadProgress, kReloadSize.y});
 	// スクリーン座標をセット
@@ -198,7 +198,7 @@ void NormalEnemy::DrawUI() {
 	     screenPosition.y - kReloadBarOffsetY});
 
 	// リロード時のみ描画
-	if (isReloading_ && reloadTimer_ < kReloadTime) {
+	if (bb_.isReloading && bb_.reloadTimer < kReloadTime) {
 		spriteReload_->Draw();
 	}
 }
@@ -209,8 +209,8 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 	///
 	if (other->GetTag() == "PlayerBullet") {
 		// デバッグでプレイヤー発見状態にする
-		if (!isPlayerDetected_) {
-			isPlayerDetected_ = true;
+		if (!bb_.isPlayerDetected) {
+			bb_.isPlayerDetected = true;
 		}
 
 		// 被弾時の発光演出を開始
@@ -367,7 +367,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	}
 
 	// プレイヤー発見状態にする
-	isPlayerDetected_ = true;
+	bb_.isPlayerDetected = true;
 	return true;
 }
 
@@ -423,7 +423,7 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 	///	移動先のウェイポイントを取得
 	///
 
-	if (!currentTargetWP_) {
+	if (!bb_.currentTargetWP) {
 		// 移動先ウェイポイント候補
 		std::vector<Waypoint*> candidates;
 		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
@@ -438,7 +438,7 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 
 		// 候補からランダムに1つ選択
 		uint32_t randIndex = Cygnus::RandomGenerator::GetInstance()->RandomValue(0, static_cast<int>(candidates.size()) - 1);
-		currentTargetWP_ = candidates[randIndex];
+		bb_.currentTargetWP = candidates[randIndex];
 
 		status = Cygnus::BehaviorStatus::Running;
 
@@ -448,15 +448,15 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 	} else {
 		// 経路探索
 		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
-		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, currentTargetWP_);
+		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, bb_.currentTargetWP);
 		if (!path.empty()) {
 			// 移動
 			MoveAlongPath(path, kPatrolMoveSpeed);
 
 			// 目標に到達したらターゲットをクリア
-			Cygnus::Float3 targetPos = currentTargetWP_->GetPosition();
+			Cygnus::Float3 targetPos = bb_.currentTargetWP->GetPosition();
 			if (Cygnus::Float3::Length(targetPos - objectEnemy_->transform_.translate_) < kWaypointReachDistance) {
-				currentTargetWP_ = nullptr;
+				bb_.currentTargetWP = nullptr;
 
 				status = Cygnus::BehaviorStatus::Success; // 成功
 			}
@@ -467,27 +467,27 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 }
 
 Cygnus::BehaviorStatus NormalEnemy::RandomRotate() {
-	if (rotateTimer_ <= 0.0f) {
+	if (bb_.rotateTimer <= 0.0f) {
 		// 回転方向をランダムに決める
-		rotateDirection_ = Cygnus::RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
+		bb_.rotateDirection = Cygnus::RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
 
 		// 回転時間をランダムに決める
-		rotateTimer_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
+		bb_.rotateTimer = Cygnus::RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
 	}
 
 	// 回転処理
-	objectEnemy_->transform_.rotate_.y += rotateDirection_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.rotate_.y += bb_.rotateDirection * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// タイマー減少
-	rotateTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	bb_.rotateTimer -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// 時間が残っていれば実行中
-	if (rotateTimer_ > 0.0f) {
+	if (bb_.rotateTimer > 0.0f) {
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// 終了したら成功
-	rotateTimer_ = 0.0f;
+	bb_.rotateTimer = 0.0f;
 	return Cygnus::BehaviorStatus::Success;
 }
 
@@ -507,32 +507,32 @@ Cygnus::BehaviorStatus NormalEnemy::Shoot() {
 	// memo : リロード開始/終了時に移動先の経路探索を挟む
 
 	// リロード中処理
-	if (isReloading_) {
-		reloadTimer_ -= dt;
+	if (bb_.isReloading) {
+		bb_.reloadTimer -= dt;
 		// リロード終了時に弾を込める
-		if (reloadTimer_ <= 0.0f) {
-			isReloading_ = false;
-			currentAmmo_ = kMagazineSize;
+		if (bb_.reloadTimer <= 0.0f) {
+			bb_.isReloading = false;
+			bb_.currentAmmo = kMagazineSize;
 		}
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// バースト間のインターバル（次のバースト撃ちまで待機）
-	if (fireCooldown_ > 0.0f) {
-		fireCooldown_ -= dt;
+	if (bb_.fireCooldown > 0.0f) {
+		bb_.fireCooldown -= dt;
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// バースト内のインターバル（バースト射撃中）
-	if (burstCooldown_ > 0.0f) {
-		burstCooldown_ -= dt;
+	if (bb_.burstCooldown > 0.0f) {
+		bb_.burstCooldown -= dt;
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// 弾切れならリロード開始
-	if (currentAmmo_ <= 0) {
-		isReloading_ = true;
-		reloadTimer_ = kReloadTime; // リロード時間セット
+	if (bb_.currentAmmo <= 0) {
+		bb_.isReloading = true;
+		bb_.reloadTimer = kReloadTime; // リロード時間セット
 
 		return Cygnus::BehaviorStatus::Running;
 	}
@@ -550,18 +550,18 @@ Cygnus::BehaviorStatus NormalEnemy::Shoot() {
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// カウント更新
-	currentAmmo_--;
-	burstCount_++;
+	bb_.currentAmmo--;
+	bb_.burstCount++;
 
 	// バースト射撃中管理
-	if (burstCount_ < kBurstSize) {
+	if (bb_.burstCount < kBurstSize) {
 		// バースト内クールタイムをセット
-		burstCooldown_ = kBurstInterval;
+		bb_.burstCooldown = kBurstInterval;
 
 		// バースト射撃終了
 	} else {
-		burstCount_ = 0;
-		fireCooldown_ = kFireInterval; // バースト間クールタイムをセット
+		bb_.burstCount = 0;
+		bb_.fireCooldown = kFireInterval; // バースト間クールタイムをセット
 	}
 
 	return Cygnus::BehaviorStatus::Success;

@@ -77,6 +77,12 @@ private:
 	/// <returns></returns>
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> CreateNormalEnemyMasterTree();
 
+	/// <summary>
+	/// NormalEnemyのBlackBoardをエディターに表示します。
+	/// </summary>
+	/// <param name="enemy"></param>
+	void ShowNormalEnemyBlackBoard(NormalEnemy* enemy);
+
 private:
 	// =========================================================
 	// Member Variables
