@@ -15,9 +15,10 @@
 #include <src/Game/Bullet/Base/Bullet.h>
 
 // ---------------------------------------------------------
-// Foward Declaration
+// Forward Declaration
 // ---------------------------------------------------------
 class Player;
+namespace Cygnus { enum class BehaviorStatus; }
 
 // =========================================================
 // 敵の基底クラス
@@ -95,6 +96,20 @@ public:
 	/// <returns>現在のHP</returns>
 	int32_t GetHP() const { return currentHP_; }
 
+	/// <summary>
+	/// ノードの状態を記録します。
+	/// </summary>
+	/// <param name="nodePtr"></param>
+	/// <param name="status"></param>
+	void SetNodeStatus(const void* nodePtr, Cygnus::BehaviorStatus status);
+
+	/// <summary>
+	/// ノードの状態を取得します。
+	/// </summary>
+	/// <param name="nodePtr"></param>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus GetNodeStatus(const void* nodePtr) const;
+
 protected:
 	// =========================================================
 	// Internal Methods
@@ -169,4 +184,7 @@ protected:
 	} hitBlinkPhase_ = HitBlinkPhase::Wait;
 	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
 	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
+
+	// ----- Others -----
+	std::unordered_map<const void*, Cygnus::BehaviorStatus> nodeStatusMap_; /* この個体でのノード実行状態を保存するマップ */
 };

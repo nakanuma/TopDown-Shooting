@@ -5,6 +5,12 @@
 
 void GameStateManager::RegisterState(const std::string& name, std::unique_ptr<IGameState> state) { states_[name] = std::move(state); }
 
+void GameStateManager::Finalize() { 
+	if (currentState_) {
+		currentState_->Finalize();
+	}
+}
+
 void GameStateManager::ChangeState(const std::string& name) {
 	// 状態が登録されているか確認
 	auto it = states_.find(name);
@@ -73,7 +79,9 @@ void GameStateManager::DrawUI() {
 }
 
 void GameStateManager::Debug() {
+#ifdef USE_IMGUI
 	if (currentState_) {
 		currentState_->Debug();
 	}
+#endif
 }

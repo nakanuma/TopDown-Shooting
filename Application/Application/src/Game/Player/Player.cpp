@@ -89,14 +89,31 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///	パラメーター設定
 	///
 
-	currentHP_ = kMaxHP;     // 現在HPには最大HPをセット
-	invincible_ = false;     // 開始時は非無敵状態
+	currentHP_ = maxHP_;	// 現在HPには最大HPをセット
+	invincible_ = false;    // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
 	///
 
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
+
+#ifdef USE_IMGUI
+	RegisterParam("maxHP", &maxHP_);
+	AddSeparator();
+	RegisterParam("moveSpeed", &moveSpeed_, 0.01f);
+	RegisterParam("dashDuration", &dashDuration_, 0.01f);
+	RegisterParam("dashCoolDown", &dashCoolDown_, 0.01f);
+	RegisterParam("dashSpeedMultiplier", &dashSpeedMultiplier_, 0.01f);
+	AddSeparator();
+	RegisterParam("fireCooldown", &fireCooldown_, 0.01f);
+	RegisterParam("overheatLimit", &overheatLimit_, 0.01f);
+	RegisterParam("overheatGainPerSecond", &overheatGainPerSecond_, 0.01f);
+	RegisterParam("overheatRecoverySpeed", &overheatRecoverySpeed_, 0.01f);
+	RegisterParam("maxRandomAngle", &maxRandomAngle_, 0.01f);
+	RegisterParam("shootingBlurMultiplier", &shootingBlurMultiplier_, 0.01f);
+#endif
+
 	InitConfig(); // 初回読み込み
 }
 
@@ -119,7 +136,7 @@ void Player::Update(bool operable) {
 	}
 
 	// HPが0未満にならないよう制限
-	currentHP_ = std::clamp(currentHP_, 0, kMaxHP);
+	currentHP_ = std::clamp(currentHP_, 0, maxHP_);
 
 	// 被弾時の発光演出
 	HandleHitBlink();
@@ -258,10 +275,12 @@ void Player::OnCollision(Cygnus::Collider* other) {
 
 void Player::Debug() {
 #ifdef USE_IMGUI
+	// コンフィグウインドウ
+	DrawConfigWindow("playerConfig");
+
 	ImGui::Begin("Player");
 
-	ImGui::DragFloat3("emissiveColor", &objectPlayer_->object_->materialCB_.data_->emissiveColor.x, 0.01f);
-	ImGui::DragFloat("emissiveIntensity", &objectPlayer_->object_->materialCB_.data_->emissiveIntensity, 0.01f);
+	ImGui::Checkbox("Invincible", &invincible_);
 
 	/* Translate */
 	ImGui::Text("Translate");
@@ -300,10 +319,6 @@ void Player::Debug() {
 	/*  */
 
 	ImGui::End();
-
-
-	// コンフィグウインドウ
-	DrawConfigWindow("playerConfig");
 #endif
 }
 
@@ -356,7 +371,7 @@ void Player::HandleMove() {
 		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		if (dashTimer_ <= 0.0f) {
 			isDashing_ = false;                 // ダッシュ終了
-			dashCooldownTimer_ = kDashCoolDown; // クールタイムをセット
+			dashCooldownTimer_ = dashCoolDown_; // クールタイムをセット
 		}
 	}
 
@@ -364,13 +379,13 @@ void Player::HandleMove() {
 	bool dashInput = input_->TriggerKey(DIK_LSHIFT) || input_->IsTriggerMouse(2); // 左SHIFT or 中央クリック
 	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
 		isDashing_ = true;          // ダッシュ中へ
-		dashTimer_ = kDashDuration; // ダッシュ時間をセット
+		dashTimer_ = dashDuration_; // ダッシュ時間をセット
 	}
 
 	// 速度を更新
-	float currentSpeed = kMoveSpeed;
+	float currentSpeed = moveSpeed_;
 	if (isDashing_) {
-		currentSpeed *= kDashSpeedMultiplier; // ダッシュ中は速度に倍率をかける
+		currentSpeed *= dashSpeedMultiplier_; // ダッシュ中は速度に倍率をかける
 	}
 	velocity_ = velocity_ * currentSpeed;
 
@@ -385,8 +400,6 @@ void Player::HandleShooting() {
 
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
@@ -398,10 +411,10 @@ void Player::HandleShooting() {
 		direction = Cygnus::Float3::Normalize(direction);
 
 		// 少しだけ方向をブレさせる
-		float blurAmount = kMaxRandomAngle;
+		float blurAmount = maxRandomAngle_;
 
 		if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
-			blurAmount *= kShootingBlurMultiplier; // プレイヤーが動いていたらブレの幅を増やす
+			blurAmount *= shootingBlurMultiplier_; // プレイヤーが動いていたらブレの幅を増やす
 		}
 
 		float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
@@ -436,14 +449,14 @@ void Player::HandleOverHeat()
 	// オーバーヒートしていない場合の処理
 	if (!isOverheated_ && isFiring_) {
 		// オーバーヒート処理
-		overheatTime_ += kOverheatGainPerSecond * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-		if (overheatTime_ >= kOverheatLimit) {
-			overheatTime_ = kOverheatLimit;
+		overheatTime_ += overheatGainPerSecond_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		if (overheatTime_ >= overheatLimit_) {
+			overheatTime_ = overheatLimit_;
 			isOverheated_ = true;
 		}
 
 		// 射撃処理
-		if (fireTimer_ >= kFireCooldown) {
+		if (fireTimer_ >= fireCooldown_) {
 			HandleShooting();
 			fireTimer_ = 0.0f;
 		}
@@ -451,7 +464,7 @@ void Player::HandleOverHeat()
 		// オーバーヒート中の処理
 	} else {
 		// 冷却処理（撃っていない間 or オーバーヒート中）
-		overheatTime_ -= kOverheatRecoverySpeed * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		overheatTime_ -= overheatRecoverySpeed_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		overheatTime_ = std::max(overheatTime_, 0.0f);
 
 		// 冷却時間完了でオーバーヒート解除

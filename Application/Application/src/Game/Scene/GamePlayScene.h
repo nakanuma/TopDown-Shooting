@@ -30,6 +30,7 @@
 #include <src/Game/Teleporter/TeleporterManager.h>
 #include <src/Game/EmissiveObject/EmissiveObject.h>
 #include <src/Game/GameState/Manager/GameStateManager.h>
+#include <src/Game/Pause/PauseMenu.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -91,6 +92,11 @@ private:
 	void TransitionToResult();
 
 	/// <summary>
+	/// タイトルシーンへの遷移を行います。
+	/// </summary>
+	void TransitionToTitle();
+
+	/// <summary>
 	/// ゲーム状態の初期化を行います。
 	/// </summary>
 	void InitializeGameStates();
@@ -142,4 +148,7 @@ private:
 	std::unique_ptr<GameStateManager> stateManager_;	/* ゲーム状態管理クラス */
 
 	bool isTransitioning_ = false;							/* リザルトシーンへの遷移中かどうか */
+
+	bool isPaused_ = false;	/* ポーズ中フラグ */
+	std::unique_ptr<PauseMenu> pauseMenu_;	/* ポーズメニュークラス */
 };

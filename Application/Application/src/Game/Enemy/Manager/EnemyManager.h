@@ -9,6 +9,8 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
+#include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
 #include <src/Game/Enemy/BossEnemy/BossEnemy.h>
 #include <src/Game/Loader/Loader.h>
 
@@ -27,6 +29,11 @@ public:
 	/// <param name="datas">初期位置や回転などのTransformデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
 	void Initialize(const std::vector<Loader::TransformData>& datas, Player* player);
+
+	/// <summary>
+	/// 終了処理を行います。
+	/// </summary>
+	void Finalize();
 
 	/// <summary>
 	/// 全ての敵の毎フレーム更新処理を行います。
@@ -64,9 +71,26 @@ public:
 	BossEnemy* GetBoss() const;
 
 private:
+	/// <summary>
+	/// NormalEnemy用の共通マスターツリーを構築します。
+	/// </summary>
+	/// <returns></returns>
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> CreateNormalEnemyMasterTree();
+
+	/// <summary>
+	/// NormalEnemyのBlackBoardをエディターに表示します。
+	/// </summary>
+	/// <param name="enemy"></param>
+	void ShowNormalEnemyBlackBoard(NormalEnemy* enemy);
+
+private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 	std::vector<std::unique_ptr<Enemy>> enemies_;		/* 全ての敵を格納したコンテナ */
 	Player* player_ = nullptr;							/* プレイヤーのポインタ */
+
+	// NormalEnemy共通のマスターツリー
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> normalEnemyBT_;
+	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> normalEnemyBTEditor_;
 };

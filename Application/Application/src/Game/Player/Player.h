@@ -3,15 +3,15 @@
 // ---------------------------------------------------------
 // Engine Includes
 // ---------------------------------------------------------
+#include <Animation/AnimatedModelInstance.h>
 #include <Collider/Collider.h>
 #include <Collider/CollisionManager.h>
 #include <Input/Input.h>
 #include <Object3D.h>
+#include <PostEffectManager.h>
 #include <Sprite.h>
 #include <SpriteCommon.h>
 #include <Util/ParameterSystem.h>
-#include <Animation/AnimatedModelInstance.h>
-#include <PostEffectManager.h>
 
 // ---------------------------------------------------------
 // Application Includes
@@ -98,13 +98,13 @@ public:
 	/// プレイヤーの最大HPを取得します。
 	/// </summary>
 	/// <returns>最大HP</returns>
-	int32_t GetMaxHP() const { return kMaxHP; }
+	int32_t GetMaxHP() const { return maxHP_; }
 
 	/// <summary>
 	/// オーバーヒート率を取得します。
 	/// </summary>
 	/// <returns>オーバーヒート率（0.0f～1.0f）</returns>
-	float GetOverheatRatio() const { return overheatTime_ / kOverheatLimit; }
+	float GetOverheatRatio() const { return overheatTime_ / overheatLimit_; }
 
 	/// <summary>
 	/// 死亡フラグを取得します。
@@ -163,111 +163,112 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float3 kColliderSize = { 1.0f, 2.0f, 1.0f };	/* コライダーサイズ */
-	static constexpr int32_t kMaxHP = 100;									/* 最大HP */
+	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f}; /* コライダーサイズ */
 
-	static constexpr float kMoveSpeed = 0.25f;				/* 移動速度 */
-	static constexpr float kDashDuration = 0.2f;			/* ダッシュ継続時間 */
-	static constexpr float kDashCoolDown = 1.5f;			/* ダッシュのクールタイム時間 */
-	static constexpr float kDashSpeedMultiplier = 3.0f;		/* ダッシュ速度倍率 */
+	static constexpr float kAnimationPlaybackSpeed = 1.5f;              /* アニメーション再生速度 */
 
-	static constexpr float kFireCooldown = 0.15f;			/* 連射速度 */
-	static constexpr float kMaxRandomAngle = 0.02f;			/* 射撃ブレ角 */
-	static constexpr float kOverheatLimit = 3.0f;			/* オーバーヒートになる秒数 */
-	static constexpr float kOverheatGainPerSecond = 1.0f;	/* オーバーヒート加熱速度（1秒あたり） */
-	static constexpr float kOverheatRecoverySpeed = 1.6f;	/* オーバーヒート冷却速度（1秒あたり） */
+	static constexpr Cygnus::Float4 kGunColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;                /* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;                      /* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;                        /* 銃の右方向位置オフセット */
 
-	static constexpr float kAnimationPlaybackSpeed = 1.5f; /* アニメーション再生速度 */
+	static constexpr float kVelocityNormalizeAdditive = 1.0f; /* 速度正規化用の加算値 */
+	static constexpr float kVelocityThreshold = 0.01f;        /* 速度判定のしきい値 */
 
-	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
-
-	static constexpr float kVelocityNormalizeAdditive = 1.0f;	/* 速度正規化用の加算値 */
-	static constexpr float kVelocityThreshold = 0.01f;			/* 速度判定のしきい値 */
-
-	static constexpr float kShootingBlurMultiplier = 3.0f;	/* 移動時の射撃ブレ倍率 */
-
-	static constexpr int32_t kShellEjectionCount = 1;			/* 薬莢排出パーティクル発生数 */
-	static constexpr int32_t kBloodSplatterCount = 30;			/* 血飛沫パーティクル発生数 */
-	static constexpr int32_t kMuzzleFlashCount = 6;				/* マズルフラッシュパーティクル発生数 */
-	static constexpr float kMuzzleFlashForwardOffset = 1.4f;	/* マズルフラッシュ発生位置の前方オフセット */
+	static constexpr int32_t kShellEjectionCount = 1;        /* 薬莢排出パーティクル発生数 */
+	static constexpr int32_t kBloodSplatterCount = 30;       /* 血飛沫パーティクル発生数 */
+	static constexpr int32_t kMuzzleFlashCount = 6;          /* マズルフラッシュパーティクル発生数 */
+	static constexpr float kMuzzleFlashForwardOffset = 1.4f; /* マズルフラッシュ発生位置の前方オフセット */
 
 	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
 	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
-	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
-	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f};	/* 被弾時の発光色 */
+	static constexpr float kHitBlinkDuration = 0.05f;                    /* 被弾時の発光時間 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f}; /* 被弾時の発光色 */
 
-	static constexpr float kDamageEffectDurationIn = 0.1f;			/* ダメージ演出増加の時間 */
-	static constexpr float kDamageEffectDurationHold = 0.2f;		/* ダメージ演出維持の時間 */
-	static constexpr float kDamageEffectDurationOut = 0.8f;			/* ダメージ演出減少の時間 */
-	static constexpr float kDamageEffectIntensityThreshold = 0.5f;	/* ダメージ演出開始のための閾値 */
+	static constexpr float kDamageEffectDurationIn = 0.1f;         /* ダメージ演出増加の時間 */
+	static constexpr float kDamageEffectDurationHold = 0.2f;       /* ダメージ演出維持の時間 */
+	static constexpr float kDamageEffectDurationOut = 0.8f;        /* ダメージ演出減少の時間 */
+	static constexpr float kDamageEffectIntensityThreshold = 0.5f; /* ダメージ演出開始のための閾値 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
 
 	// ----- System -----
-	Cygnus::Input* input_ = nullptr;								/* 入力管理 */
-	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
-	Cygnus::PostEffectManager* postEffectManager_;					/* ポストエフェクトマネージャーへの参照 */
+	Cygnus::Input* input_ = nullptr;                     /* 入力管理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_; /* スプライト共通処理 */
+	Cygnus::PostEffectManager* postEffectManager_;       /* ポストエフェクトマネージャーへの参照 */
 
 	// ----- Object -----
-	std::unique_ptr<Cygnus::AnimatedModelInstance> objectPlayer_;	/* プレイヤーオブジェクト */
-	std::unique_ptr<Cygnus::Object3D> objectGun_;					/* 銃オブジェクト */
+	std::unique_ptr<Cygnus::AnimatedModelInstance> objectPlayer_; /* プレイヤーオブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectGun_;                 /* 銃オブジェクト */
 
 	// ----- Animation -----
-	Cygnus::AnimatedModelInstance::AnimatedModelData walkData_;		/* アニメーションデータ */
+	Cygnus::AnimatedModelInstance::AnimatedModelData walkData_; /* アニメーションデータ */
 
 	// ----- Collision -----
-	std::unique_ptr<Cygnus::Collider> collider_;					/* コライダー */
+	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
 
 	// ----- UI -----
-	std::unique_ptr<PlayerUIManager> ui_;					/* UIマネージャー */
+	std::unique_ptr<PlayerUIManager> ui_; /* UIマネージャー */
 
 	// ----- Parameters -----
-	Cygnus::Float3 velocity_ = { 0.0f, 0.0f, 0.0f };		/* 速度ベクトル */
-	bool isMoving_ = false;									/* 移動中フラグ */
-	int32_t currentHP_ = 0;									/* 現在HP */
+	Cygnus::Float3 velocity_ = {0.0f, 0.0f, 0.0f}; /* 速度ベクトル */
+	bool isMoving_ = false;                        /* 移動中フラグ */
+	int32_t currentHP_ = 0;                        /* 現在HP */
 
-	bool invincible_ = false;								/* 無敵フラグ（ボス撃破時に有効化） */
-	bool isDead_ = false;									/* 死亡フラグ */
+	bool invincible_ = false; /* 無敵フラグ（ボス撃破時に有効化） */
+	bool isDead_ = false;     /* 死亡フラグ */
 
 	// ----- Dash -----
-	bool isDashing_ = false;								/* ダッシュ中フラグ */
-	float dashTimer_ = 0.0f;								/* ダッシュタイマー */
-	float dashCooldownTimer_ = 0.0f;						/* ダッシュのクールダウンタイマー */
+	bool isDashing_ = false;         /* ダッシュ中フラグ */
+	float dashTimer_ = 0.0f;         /* ダッシュタイマー */
+	float dashCooldownTimer_ = 0.0f; /* ダッシュのクールダウンタイマー */
 
 	// ----- Shooting -----
-	bool isFiring_ = false;									/* 射撃中フラグ */
-	float fireTimer_ = 0.0f;								/* 射撃タイマー */
+	bool isFiring_ = false;  /* 射撃中フラグ */
+	float fireTimer_ = 0.0f; /* 射撃タイマー */
 
 	// ----- Overheat -----
-	float overheatTime_ = 0.0f;								/* オーバーヒートタイマー */
-	bool isOverheated_ = false;								/* オーバーヒート中フラグ */
+	float overheatTime_ = 0.0f; /* オーバーヒートタイマー */
+	bool isOverheated_ = false; /* オーバーヒート中フラグ */
 
 	// ----- HitBlink -----
 	/// <summary>
 	/// 被弾時の発光演出フェーズ
 	/// </summary>
 	enum class HitBlinkPhase {
-		Wait,		// 待機
-		BlinkIn,	// 発光
-		BlinkOut	// 減光
+		Wait,    // 待機
+		BlinkIn, // 発光
+		BlinkOut // 減光
 	} hitBlinkPhase_ = HitBlinkPhase::Wait;
-	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
-	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
+	bool isHitBlink_ = false;    /* 被弾時の発光演出中フラグ */
+	float hitBlinkTimer_ = 0.0f; /* 被弾時の発光演出タイマー */
 
 	// ----- DamageEffect -----
-	enum class DamageEffectPhase{
-		Wait,	// 待機
-		In,		// 増加
-		Hold,	// 維持
-		Out		// 減少
+	enum class DamageEffectPhase {
+		Wait, // 待機
+		In,   // 増加
+		Hold, // 維持
+		Out   // 減少
 	} damageEffectPhase_ = DamageEffectPhase::Wait;
-	bool isReceiveDamage_ = false;		/* 被ダメージフラグ */
-	float damageEffectTimer_ = 0.0f;	/* ダメージ演出タイマー */
+	bool isReceiveDamage_ = false;   /* 被ダメージフラグ */
+	float damageEffectTimer_ = 0.0f; /* ダメージ演出タイマー */
+
+	// ----- Config -----
+	int32_t maxHP_ = 100; /* 最大HP */
+
+	float moveSpeed_ = 0.25f;          /* 移動速度 */
+	float dashDuration_ = 0.2f;        /* ダッシュ継続時間 */
+	float dashCoolDown_ = 1.5f;        /* ダッシュのクールタイム時間 */
+	float dashSpeedMultiplier_ = 3.0f; /* ダッシュ速度倍率 */
+
+	float fireCooldown_ = 0.15f;          /* 連射速度 */
+	float overheatLimit_ = 3.0f;          /* オーバーヒートになるまでの秒数 */
+	float overheatGainPerSecond_ = 1.0f;  /* オーバーヒート加熱速度（1秒あたり） */
+	float overheatRecoverySpeed_ = 1.6f;  /* オーバーヒート冷却速度（1秒あたり） */
+	float maxRandomAngle_ = 0.02f;        /* 射撃ブレ角 */
+	float shootingBlurMultiplier_ = 3.0f; /* 移動時の射撃ブレ倍率 */
 };

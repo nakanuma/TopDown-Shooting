@@ -3,6 +3,20 @@
 // Engine
 #include <TimeManager.h>
 #include <Easing.h>
+#include <BehaviourTree/BehaviorNode.h>
+
+void Enemy::SetNodeStatus(const void* nodePtr, Cygnus::BehaviorStatus status)
+{
+	nodeStatusMap_[nodePtr] = status;
+
+}
+
+Cygnus::BehaviorStatus Enemy::GetNodeStatus(const void* nodePtr) const
+{
+	auto it = nodeStatusMap_.find(nodePtr);
+
+	return (it != nodeStatusMap_.end()) ? it->second : Cygnus::BehaviorStatus::Running;
+}
 
 void Enemy::SetupHPBarSprite(std::unique_ptr<Cygnus::Sprite>& spritePtr, const Cygnus::Float4& color) {
 	uint32_t texture = Cygnus::TextureManager::Load("white.png");

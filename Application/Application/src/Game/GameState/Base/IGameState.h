@@ -22,6 +22,11 @@ public:
 	virtual void Initialize() = 0;
 
 	/// <summary>
+	/// 終了処理を行います。
+	/// </summary>
+	virtual void Finalize() = 0;
+
+	/// <summary>
 	/// 更新処理を行います。
 	/// </summary>
 	virtual void Update() = 0;

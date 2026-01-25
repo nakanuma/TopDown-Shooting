@@ -71,7 +71,7 @@ void TeleporterManager::DrawShadow() {
 }
 
 void TeleporterManager::Debug() {
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	ImGui::Begin("TeleporterManager");
 
 	for (size_t i = 0; i < teleporters_.size(); ++i) {

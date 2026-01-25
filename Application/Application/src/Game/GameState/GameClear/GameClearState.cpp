@@ -19,6 +19,8 @@ void GameClearState::Initialize() {
 	scene_->GetPlayer()->SetInvincible(true); // クリア時にはプレイヤーを無敵状態にする
 }
 
+void GameClearState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
+
 void GameClearState::Update() { 
 	gameClearSequence_->Update();
 

@@ -7,10 +7,13 @@
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Transition/FadeTransition.h>
 
 GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
 void GamePlayState::Initialize() {}
+
+void GamePlayState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
 
 void GamePlayState::Update() {
 	// プレイヤーが生きている場合、通常ゲーム用のカメラ制御を行う
@@ -43,6 +46,8 @@ void GamePlayState::Update() {
 
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
+
+	FadeTransition::GetInstance()->Update();
 }
 
 void GamePlayState::Draw() {
@@ -69,9 +74,15 @@ void GamePlayState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinni
 void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
 	scene_->GetEnemyManager()->DrawUI();
+
+	FadeTransition::GetInstance()->Draw();
 }
 
-void GamePlayState::Debug() {}
+void GamePlayState::Debug() {
+#ifdef USE_IMGUI
+	scene_->GetEnemyManager()->Debug();
+#endif
+}
 
 bool GamePlayState::CanTransition() const {
 	// ゲームオーバーまたはゲームクリアへの遷移条件

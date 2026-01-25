@@ -94,11 +94,6 @@ void BossEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager:
 	///
 
 	BuildBehaviorTree();
-
-#ifdef USE_IMGUI
-	btEditor_ = std::make_unique<Cygnus::BehaviorTreeEditor<BossEnemy>>();
-	btEditor_->SetBehaviorTree(behaviorTree_.get());
-#endif
 }
 
 void BossEnemy::Update() {

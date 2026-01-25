@@ -124,13 +124,45 @@ void GamePlayScene::Initialize() {
 
 	// ゲーム状態の初期化
 	InitializeGameStates();
+
+	// ポーズメニュー生成
+	pauseMenu_ = std::make_unique<PauseMenu>();
+	pauseMenu_->Initialize(spriteCommon_.get());
+
+	pauseMenu_->SetCloseCallback([this](){
+		isPaused_ = false; // ポーズ状態の解除
+		pauseMenu_->Hide(); // ボーズ終了呼び出し
+	});
+	pauseMenu_->SetTitleCallback([this](){ 
+		isPaused_ = false; // ポーズ状態の解除
+		pauseMenu_->Hide(); // ボーズ終了呼び出し
+		TransitionToTitle(); // タイトルシーンへ移行
+	});
 }
 
-void GamePlayScene::Finalize() {}
+void GamePlayScene::Finalize() { stateManager_->Finalize(); }
 
 void GamePlayScene::Update() {
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
 	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
+
+	// ESCまたはゲームへ戻るボタン押下でポーズ状態切り替え
+	if(input_->TriggerKey(DIK_ESCAPE)) {
+		isPaused_ = !isPaused_;
+		// ポーズ状態に応じてフェードイン/アウトを開始
+		if(isPaused_) {
+			pauseMenu_->Show();
+		} else {
+			pauseMenu_->Hide();
+		}
+	}
+	
+	// ポーズ中更新処理
+	pauseMenu_->Update();
+	if(isPaused_) {
+		// ポーズ中ならこの先の更新はスキップ
+		return;
+	}
 
 	// ゲーム状態ごとの更新処理
 	stateManager_->Update();
@@ -254,6 +286,9 @@ void GamePlayScene::Draw() {
 	// ゲーム状態ごとのUI描画処理
 	stateManager_->DrawUI();
 
+	// ポーズ中UI描画処理
+	pauseMenu_->DrawUI();
+
 	/// =========================================================
 	/// ↑ ここまでスプライト描画
 	/// =========================================================
@@ -274,35 +309,24 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
-	if (ImGui::Button("yay")) {
-		Cygnus::SoundManager::GetInstance()->Play("yay");
-	}
-	if (ImGui::Button("shot")) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-	}
-	if (ImGui::Button("explode")) {
-		Cygnus::SoundManager::GetInstance()->Play("explode");
-	}
-	if (ImGui::Button("door")) {
-		Cygnus::SoundManager::GetInstance()->Play("door");
-	}
-
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
-	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.1f);
-	ImGui::DragFloat3("camera.rotate", &camera_->transform_.rotate_.x, 0.01f);
 
-	if (ImGui::Button("TITLE")) {
+	ImGui::Checkbox("isPaused", &isPaused_);
+
+	if(ImGui::Button("TITLE")) {
 		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-	if (ImGui::Button("RESULT")) {
-		Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT");
+
+	if(ImGui::Button("TtoR")) {
+		TransitionToResult();
+	}
+	if (ImGui::Button("TtoT")) {
+		TransitionToTitle();
 	}
 
 	ImGui::End();
 
 	stateManager_->Debug();
-
-	player_->Debug();
 #endif
 }
 
@@ -316,6 +340,19 @@ void GamePlayScene::TransitionToResult() {
 
 	// フェードアウトしてリザルトシーンへ
 	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT"); }, kFadeOutDelay);
+}
+
+void GamePlayScene::TransitionToTitle()
+{
+	// 既に遷移中ならスキップ
+	if (isTransitioning_)
+		return;
+
+	// 1度のみ呼び出されるようフラグを立てる
+	isTransitioning_ = true;
+
+	// フェードアウトしてタイトルシーンへ
+	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
 }
 
 void GamePlayScene::InitializeGameStates()

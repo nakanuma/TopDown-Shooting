@@ -26,7 +26,10 @@
 // Externals
 #include <ImguiWrapper.h>
 
-void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {}
+
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player, Cygnus::BehaviorTree<NormalEnemy>* masterTree)
+{
 	///
 	///	基盤機能生成
 	///
@@ -43,7 +46,7 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
 	objectEnemy_->model_ = model;
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
+	objectEnemy_->transform_.rotate_ = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
@@ -86,7 +89,7 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 
 	spawnPosition_ = position; // スポーン地点を記録
 
-	currentAmmo_ = kMagazineSize; // 初期マガジン設定
+	bb_.currentAmmo = kMagazineSize; // 初期マガジン設定
 
 	///
 	///	調整パラメーター登録
@@ -99,12 +102,10 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	///	ビヘイビアツリー構築
 	///
 
-	BuildBehaviorTree();
-
-#ifdef USE_IMGUI
-	btEditor_ = std::make_unique<Cygnus::BehaviorTreeEditor<NormalEnemy>>();
-	btEditor_->SetBehaviorTree(behaviorTree_.get());
-#endif
+	// マスターツリーを複製して自分専用のインスタンスを作成
+	if(masterTree) {
+		behaviorTree_ = masterTree;
+	}
 }
 
 void NormalEnemy::Update() {
@@ -188,7 +189,7 @@ void NormalEnemy::DrawUI() {
 	///
 
 	// リロード進捗率
-	float reloadProgress = 1.0f - (reloadTimer_ / kReloadTime);
+	float reloadProgress = 1.0f - (bb_.reloadTimer / kReloadTime);
 	// リロード時間に応じてサイズ変更
 	spriteReload_->SetSize({kReloadSize.x * reloadProgress, kReloadSize.y});
 	// スクリーン座標をセット
@@ -197,7 +198,7 @@ void NormalEnemy::DrawUI() {
 	     screenPosition.y - kReloadBarOffsetY});
 
 	// リロード時のみ描画
-	if (isReloading_ && reloadTimer_ < kReloadTime) {
+	if (bb_.isReloading && bb_.reloadTimer < kReloadTime) {
 		spriteReload_->Draw();
 	}
 }
@@ -208,8 +209,8 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 	///
 	if (other->GetTag() == "PlayerBullet") {
 		// デバッグでプレイヤー発見状態にする
-		if (!isPlayerDetected_) {
-			isPlayerDetected_ = true;
+		if (!bb_.isPlayerDetected) {
+			bb_.isPlayerDetected = true;
 		}
 
 		// 被弾時の発光演出を開始
@@ -265,27 +266,11 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 
 void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
-	ImGui::Begin("BehaviorTree_NormalEnemy");
-
-	btEditor_->Draw();
-	if (ImGui::Button("SAVE")) {
-		btEditor_->Save("normalEnemy.json");
-	}
-	if (ImGui::Button("LOAD")) {
-		btEditor_->Load("normalEnemy.json");
-	}
-
-	ImGui::End();
-
 	// 索敵中の視界を可視化
 	DrawDebugSight();
 
 	// 調整パラメーター
 	DrawConfigWindow("NormalEnemyConfig");
-
-	ImGui::Begin("NormalEnemy");
-
-	ImGui::End();
 #endif
 }
 
@@ -382,7 +367,7 @@ bool NormalEnemy::IsPlayerInSight() {
 	}
 
 	// プレイヤー発見状態にする
-	isPlayerDetected_ = true;
+	bb_.isPlayerDetected = true;
 	return true;
 }
 
@@ -438,7 +423,7 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 	///	移動先のウェイポイントを取得
 	///
 
-	if (!currentTargetWP_) {
+	if (!bb_.currentTargetWP) {
 		// 移動先ウェイポイント候補
 		std::vector<Waypoint*> candidates;
 		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
@@ -453,7 +438,7 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 
 		// 候補からランダムに1つ選択
 		uint32_t randIndex = Cygnus::RandomGenerator::GetInstance()->RandomValue(0, static_cast<int>(candidates.size()) - 1);
-		currentTargetWP_ = candidates[randIndex];
+		bb_.currentTargetWP = candidates[randIndex];
 
 		status = Cygnus::BehaviorStatus::Running;
 
@@ -463,15 +448,15 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 	} else {
 		// 経路探索
 		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
-		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, currentTargetWP_);
+		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, bb_.currentTargetWP);
 		if (!path.empty()) {
 			// 移動
 			MoveAlongPath(path, kPatrolMoveSpeed);
 
 			// 目標に到達したらターゲットをクリア
-			Cygnus::Float3 targetPos = currentTargetWP_->GetPosition();
+			Cygnus::Float3 targetPos = bb_.currentTargetWP->GetPosition();
 			if (Cygnus::Float3::Length(targetPos - objectEnemy_->transform_.translate_) < kWaypointReachDistance) {
-				currentTargetWP_ = nullptr;
+				bb_.currentTargetWP = nullptr;
 
 				status = Cygnus::BehaviorStatus::Success; // 成功
 			}
@@ -482,27 +467,27 @@ Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
 }
 
 Cygnus::BehaviorStatus NormalEnemy::RandomRotate() {
-	if (rotateTimer_ <= 0.0f) {
+	if (bb_.rotateTimer <= 0.0f) {
 		// 回転方向をランダムに決める
-		rotateDirection_ = Cygnus::RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
+		bb_.rotateDirection = Cygnus::RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
 
 		// 回転時間をランダムに決める
-		rotateTimer_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
+		bb_.rotateTimer = Cygnus::RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
 	}
 
 	// 回転処理
-	objectEnemy_->transform_.rotate_.y += rotateDirection_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	objectEnemy_->transform_.rotate_.y += bb_.rotateDirection * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// タイマー減少
-	rotateTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	bb_.rotateTimer -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	// 時間が残っていれば実行中
-	if (rotateTimer_ > 0.0f) {
+	if (bb_.rotateTimer > 0.0f) {
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// 終了したら成功
-	rotateTimer_ = 0.0f;
+	bb_.rotateTimer = 0.0f;
 	return Cygnus::BehaviorStatus::Success;
 }
 
@@ -522,32 +507,32 @@ Cygnus::BehaviorStatus NormalEnemy::Shoot() {
 	// memo : リロード開始/終了時に移動先の経路探索を挟む
 
 	// リロード中処理
-	if (isReloading_) {
-		reloadTimer_ -= dt;
+	if (bb_.isReloading) {
+		bb_.reloadTimer -= dt;
 		// リロード終了時に弾を込める
-		if (reloadTimer_ <= 0.0f) {
-			isReloading_ = false;
-			currentAmmo_ = kMagazineSize;
+		if (bb_.reloadTimer <= 0.0f) {
+			bb_.isReloading = false;
+			bb_.currentAmmo = kMagazineSize;
 		}
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// バースト間のインターバル（次のバースト撃ちまで待機）
-	if (fireCooldown_ > 0.0f) {
-		fireCooldown_ -= dt;
+	if (bb_.fireCooldown > 0.0f) {
+		bb_.fireCooldown -= dt;
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// バースト内のインターバル（バースト射撃中）
-	if (burstCooldown_ > 0.0f) {
-		burstCooldown_ -= dt;
+	if (bb_.burstCooldown > 0.0f) {
+		bb_.burstCooldown -= dt;
 		return Cygnus::BehaviorStatus::Running;
 	}
 
 	// 弾切れならリロード開始
-	if (currentAmmo_ <= 0) {
-		isReloading_ = true;
-		reloadTimer_ = kReloadTime; // リロード時間セット
+	if (bb_.currentAmmo <= 0) {
+		bb_.isReloading = true;
+		bb_.reloadTimer = kReloadTime; // リロード時間セット
 
 		return Cygnus::BehaviorStatus::Running;
 	}
@@ -565,18 +550,18 @@ Cygnus::BehaviorStatus NormalEnemy::Shoot() {
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	// カウント更新
-	currentAmmo_--;
-	burstCount_++;
+	bb_.currentAmmo--;
+	bb_.burstCount++;
 
 	// バースト射撃中管理
-	if (burstCount_ < kBurstSize) {
+	if (bb_.burstCount < kBurstSize) {
 		// バースト内クールタイムをセット
-		burstCooldown_ = kBurstInterval;
+		bb_.burstCooldown = kBurstInterval;
 
 		// バースト射撃終了
 	} else {
-		burstCount_ = 0;
-		fireCooldown_ = kFireInterval; // バースト間クールタイムをセット
+		bb_.burstCount = 0;
+		bb_.fireCooldown = kFireInterval; // バースト間クールタイムをセット
 	}
 
 	return Cygnus::BehaviorStatus::Success;
@@ -597,89 +582,4 @@ Cygnus::BehaviorStatus NormalEnemy::MoveToPlayer() {
 	MoveAlongPath(path, kMoveSpeed);
 
 	return Cygnus::BehaviorStatus::Running;
-}
-
-void NormalEnemy::BuildBehaviorTree() {
-	///
-	///	索敵シーケンス
-	///
-
-	// 移動前待機
-	auto waitBeforePatrol = std::make_unique<Cygnus::WaitNode<NormalEnemy>>(kWaitBeforePatrol, kWaitBeforePatrol, "wait");
-
-	// ランダム移動
-	auto randomPatrol = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomPatrol(); }, "randomPatrol");
-
-	// 回転前待機
-	auto waitBeforeRotate = std::make_unique<Cygnus::WaitNode<NormalEnemy>>(kWaitBeforeRotate, kWaitBeforeRotate, "wait");
-
-	// ランダム回転
-	auto randomRotate = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->RandomRotate(); }, "randomRotate");
-
-	// searchSequence構築
-	auto searchSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("searchSequence");
-	searchSequence->AddChild(std::move(waitBeforePatrol));
-	searchSequence->AddChild(std::move(randomPatrol));
-	searchSequence->AddChild(std::move(waitBeforeRotate));
-	searchSequence->AddChild(std::move(randomRotate));
-
-	///
-	///	攻撃シーケンス
-	///
-
-	// 視界チェック
-	auto isPlayerInSight = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([this](NormalEnemy* enemy) { return this->IsPlayerInSight(); }, "isPlayerInSight");
-
-	// プレイヤー方向を向く
-	auto facePlayer = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->FacePlayer(); }, "facePlayer");
-
-	// 射撃を行う
-	auto shoot = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->Shoot(); }, "shoot");
-
-	// attackParallel構築
-	auto attackParallel = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>("attackParallel");
-	attackParallel->AddChild(std::move(facePlayer));
-	attackParallel->AddChild(std::move(shoot));
-
-	// attackSequence構築
-	auto attackSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("attackSequence");
-	attackSequence->AddChild(std::move(isPlayerInSight));
-	attackSequence->AddChild(std::move(attackParallel));
-
-	///
-	/// 移動シーケンス
-	///
-
-	// 視界チェック
-	auto isDetected = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([this](NormalEnemy* enemy) { return this->isPlayerDetected_; }, "isPlayerDetected");
-
-	// 発見済みなら移動
-	auto moveToPlayer = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([this](NormalEnemy* enemy, float dt) { return this->MoveToPlayer(); }, "moveToPlayer");
-
-	// moveSequence構築
-	auto moveSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>("moveSequence");
-	moveSequence->AddChild(std::move(isDetected));
-	moveSequence->AddChild(std::move(moveToPlayer));
-
-	///
-	///	攻撃セレクタ
-	///
-
-	// attackSelector構築
-	auto attackSelector = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>("attackSelector");
-	attackSelector->AddChild(std::move(attackSequence));
-	attackSelector->AddChild(std::move(moveSequence));
-
-	///
-	///	ルートノード構築
-	///
-
-	auto root = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>("root");
-	root->AddChild(std::move(attackSelector));
-	root->AddChild(std::move(searchSequence));
-
-	///
-	///	BehaviorTree構築
-	///
-	behaviorTree_ = std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(root));
 }

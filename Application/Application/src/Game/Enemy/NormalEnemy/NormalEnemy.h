@@ -18,6 +18,27 @@
 // =========================================================
 class NormalEnemy : public Enemy, public Cygnus::ICollisionCallback, public Cygnus::Configurator {
 public:
+	/// <summary>
+	/// 思考や状態に関する変数をまとめたBlackBoard
+	/// </summary>
+	struct NormalEnemyBlackBoard {
+		// 索敵
+		bool isPlayerDetected = false;
+
+		// 移動・タイマー
+		float rotateTimer = 0.0f;
+		float rotateDirection = 0.0f;
+		Waypoint* currentTargetWP = nullptr;
+
+		// 戦闘
+		uint32_t currentAmmo = 0;
+		uint32_t burstCount = 0;
+		float burstCooldown = 0.0f;
+		float fireCooldown = 0.0f;
+		float reloadTimer = 0.0f;
+		bool isReloading = false;
+	};
+
 	// =========================================================
 	// Public Methods
 	// =========================================================
@@ -29,6 +50,13 @@ public:
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
 	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
+
+	void Initialize(
+		const Cygnus::Float3& position, 
+		Cygnus::ModelManager::ModelData* model, 
+		Player* player,
+		Cygnus::BehaviorTree<NormalEnemy>* masterTree 
+	);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -61,17 +89,16 @@ public:
 	/// </summary>
 	void Debug();
 
-private:
-	// =========================================================
-	// Internal Methods
-	// =========================================================
-
+public:
 	/// <summary>
-	/// 経路探索で得たウェイポイント列に沿って移動します。
+	/// ブラックボードを取得します。
 	/// </summary>
-	/// <param name="path">移動経路</param>
-	/// <param name="speed">移動速度</param>
-	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
+	/// <returns></returns>
+	NormalEnemyBlackBoard& GetBlackBoard() { return bb_; }
+
+	// =========================================================
+	// BehaviorTreeのノードから呼ばれる関数群
+	// =========================================================
 
 	/// <summary>
 	/// プレイヤーとの距離・遮蔽チェックを行います。
@@ -80,11 +107,11 @@ private:
 	bool IsPlayerInSight();
 
 	/// <summary>
-	/// 敵の扇形の視界を可視化します。（デバッグ用）
+	/// プレイヤーを発見したかを取得します。
 	/// </summary>
-	void DrawDebugSight();
+	/// <returns></returns>
+	bool IsDetected() const { return bb_.isPlayerDetected; }
 
-private:
 	/// <summary>
 	/// 敵が一定範囲内をランダムに移動します。
 	/// </summary>
@@ -115,10 +142,23 @@ private:
 	/// <returns>BehaviorStatus</returns>
 	Cygnus::BehaviorStatus MoveToPlayer();
 
+private:
+	// =========================================================
+	// Internal Methods
+	// =========================================================
+
 	/// <summary>
-	/// BehaviorTreeの構築を行います。
+	/// 経路探索で得たウェイポイント列に沿って移動します。
 	/// </summary>
-	void BuildBehaviorTree();
+	/// <param name="path">移動経路</param>
+	/// <param name="speed">移動速度</param>
+	void MoveAlongPath(const std::vector<Waypoint*>& path, float speed);
+
+private:
+	/// <summary>
+	/// 敵の扇形の視界を可視化します。（デバッグ用）
+	/// </summary>
+	void DrawDebugSight();
 
 private:
 	// =========================================================
@@ -164,20 +204,21 @@ private:
 	// Member Variables
 	// =========================================================
 	Cygnus::Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; /* 初期スポーン地点 */
-	Waypoint* currentTargetWP_ = nullptr;				/* 現在の移動目標 */
+	//Waypoint* currentTargetWP_ = nullptr;				/* 現在の移動目標 */
 
-	bool isPlayerDetected_ = false; /* プレイヤー発見フラグ */
-	float rotateTimer_ = 0.0f;      /* 回転時タイマー */
-	float rotateDirection_ = 0.0f;  /* 回転方向 */
+	//bool isPlayerDetected_ = false; /* プレイヤー発見フラグ */
+	//float rotateTimer_ = 0.0f;      /* 回転時タイマー */
+	//float rotateDirection_ = 0.0f;  /* 回転方向 */
 
-	uint32_t currentAmmo_ = 0;   /* 現在の弾数 */
-	uint32_t burstCount_ = 0;    /* 現在のバースト内で撃った弾数 */
-	float burstCooldown_ = 0.0f; /* バースト内のクールタイム */
-	float fireCooldown_ = 0.0f;  /* バースト間のクールタイム */
+	//uint32_t currentAmmo_ = 0;   /* 現在の弾数 */
+	//uint32_t burstCount_ = 0;    /* 現在のバースト内で撃った弾数 */
+	//float burstCooldown_ = 0.0f; /* バースト内のクールタイム */
+	//float fireCooldown_ = 0.0f;  /* バースト間のクールタイム */
 
-	float reloadTimer_ = 0.0f; /* リロード中タイマー */
-	bool isReloading_ = false; /* リロード中フラグ */
+	//float reloadTimer_ = 0.0f; /* リロード中タイマー */
+	//bool isReloading_ = false; /* リロード中フラグ */
 
-	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;   /* behaviorTree */
-	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> btEditor_; /* BehaviorTreeEditor */
+	NormalEnemyBlackBoard bb_; /* 個別の変数群をBlackBoardに統合*/
+
+	Cygnus::BehaviorTree<NormalEnemy>* behaviorTree_ = nullptr;   /* behaviorTree */
 };

@@ -29,6 +29,11 @@ public:
 	void Initialize() override;
 
 	/// <summary>
+	/// 終了処理を行います。
+	/// </summary>
+	void Finalize() override;
+
+	/// <summary>
 	/// 更新処理を行います。
 	/// </summary>
 	void Update() override;
