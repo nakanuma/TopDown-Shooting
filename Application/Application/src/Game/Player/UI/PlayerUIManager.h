@@ -14,9 +14,10 @@
 #include <src/Game/Player/UI/Reticle/Reticle.h>
 #include <src/Game/Player/UI/MovementKeys/MovementKeys.h>
 #include <src/Game/Player/UI/Mouse/Mouse.h>
+#include <src/Game/Player/UI/PauseKey/PauseKey.h>
 
 // ---------------------------------------------------------
-// Foward Declaration
+// Forward Declaration
 // ---------------------------------------------------------
 class Player;
 
@@ -54,5 +55,6 @@ private:
 	std::unique_ptr<HPBar> hpBar_;							/* HPバー */
 	std::unique_ptr<OverheatGauge> overheatGauge_;			/* オーバーヒートゲージ */
 	std::unique_ptr<MovementKeys> movementKeys_;            /* 移動キー */
-	std::unique_ptr<Mouse> mouse_;
+	std::unique_ptr<Mouse> mouse_;							/* マウス */
+	std::unique_ptr<PauseKey> pauseKey_;					/* ポーズキー */
 };

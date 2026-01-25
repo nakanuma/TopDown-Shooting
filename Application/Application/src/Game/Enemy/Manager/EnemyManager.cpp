@@ -271,6 +271,8 @@ std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> EnemyManager::CreateNormalEne
 
 void EnemyManager::ShowNormalEnemyBlackBoard(NormalEnemy* enemy)
 {
+#ifdef USE_IMGUI
+
 	auto& bb = enemy->GetBlackBoard();
 
 	if (ImGui::TreeNodeEx("BlackBoard", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -289,4 +291,6 @@ void EnemyManager::ShowNormalEnemyBlackBoard(NormalEnemy* enemy)
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

@@ -40,6 +40,10 @@ void PlayerUIManager::Initialize() {
 	// マウス
 	mouse_ = std::make_unique<Mouse>();
 	mouse_->Initialize(spriteCommon_.get());
+
+	// ポーズキー
+	pauseKey_ = std::make_unique<PauseKey>();
+	pauseKey_->Initialize(spriteCommon_.get());
 }
 
 void PlayerUIManager::Update(const Player* player) {
@@ -53,6 +57,8 @@ void PlayerUIManager::Update(const Player* player) {
 	movementKeys_->Update();
 	// マウス
 	mouse_->Update();
+	// ポーズキー
+	pauseKey_->Update();
 }
 
 void PlayerUIManager::Draw() {
@@ -66,4 +72,6 @@ void PlayerUIManager::Draw() {
 	movementKeys_->Draw();
 	// マウス
 	mouse_->Draw();
+	// ポーズキー
+	pauseKey_->Draw();
 }

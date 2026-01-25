@@ -124,6 +124,10 @@ void GamePlayScene::Initialize() {
 
 	// ゲーム状態の初期化
 	InitializeGameStates();
+
+	// ポーズメニュー生成
+	pauseMenu_ = std::make_unique<PauseMenu>();
+	pauseMenu_->Initialize(spriteCommon_.get());
 }
 
 void GamePlayScene::Finalize() { stateManager_->Finalize(); }
@@ -131,6 +135,24 @@ void GamePlayScene::Finalize() { stateManager_->Finalize(); }
 void GamePlayScene::Update() {
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
 	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
+
+	// ESCでポーズ切り替え
+	if(input_->TriggerKey(DIK_ESCAPE)) {
+		isPaused_ = !isPaused_;
+		// ポーズ状態に応じてフェードイン/アウトを開始
+		if(isPaused_) {
+			pauseMenu_->Show();
+		} else {
+			pauseMenu_->Hide();
+		}
+	}
+	
+	// ポーズ中更新処理
+	pauseMenu_->Update();
+	if(isPaused_) {
+		// ポーズ中ならこの先の更新はスキップ
+		return;
+	}
 
 	// ゲーム状態ごとの更新処理
 	stateManager_->Update();
@@ -254,6 +276,9 @@ void GamePlayScene::Draw() {
 	// ゲーム状態ごとのUI描画処理
 	stateManager_->DrawUI();
 
+	// ポーズ中UI描画処理
+	pauseMenu_->DrawUI();
+
 	/// =========================================================
 	/// ↑ ここまでスプライト描画
 	/// =========================================================
@@ -275,6 +300,12 @@ void GamePlayScene::Debug() {
 	ImGui::Begin("GameSceneInfo");
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
+
+	ImGui::Checkbox("isPaused", &isPaused_);
+
+	if(ImGui::Button("TITLE")) {
+		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
 
 	ImGui::End();
 

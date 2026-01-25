@@ -90,7 +90,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = maxHP_;	// 現在HPには最大HPをセット
-	invincible_ = true;    // 開始時は非無敵状態
+	invincible_ = false;    // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録

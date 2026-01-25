@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Player\UI\PauseKey\PauseKey.cpp" />
+    <ClCompile Include="src\Game\Pause\PauseMenu.cpp" />
     <ClCompile Include="src\Game\Player\UI\Mouse\Mouse.cpp" />
     <ClCompile Include="src\Game\Player\UI\MovementKeys\MovementKeys.cpp" />
     <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp" />
@@ -77,6 +79,8 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Player\UI\PauseKey\PauseKey.h" />
+    <ClInclude Include="src\Game\Pause\PauseMenu.h" />
     <ClInclude Include="src\Game\Player\UI\Mouse\Mouse.h" />
     <ClInclude Include="src\Game\Player\UI\MovementKeys\MovementKeys.h" />
     <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h" />
