@@ -7,6 +7,7 @@
 #include <TextureManager.h>
 #include <TimeManager.h>
 #include <Easing.h>
+#include <Input/Input.h>
 
 void PauseMenu::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	// 背景スプライト生成
@@ -32,6 +33,7 @@ void PauseMenu::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	spriteContinue_->Initialize(spriteCommon, textureContinue);
 	spriteContinue_->SetAnchorPoint({ 0.5f, 0.5f });
 	spriteContinue_->SetPosition(kContinueInitPos);
+	sizeContinueBase_ = spriteContinue_->GetSize(); // サイズを保持
 
 	// タイトルへ戻る文字スプライト生成
 	uint32_t textureBackToTitle = Cygnus::TextureManager::Load("UI/pause_backToTitle.png");
@@ -39,6 +41,7 @@ void PauseMenu::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	spriteBackToTitle_->Initialize(spriteCommon, textureBackToTitle);
 	spriteBackToTitle_->SetAnchorPoint({ 0.5f, 0.5f });
 	spriteBackToTitle_->SetPosition(kBackToTitleInitPos);
+	sizeBackToTitleBase_ = spriteBackToTitle_->GetSize(); // サイズを保持
 }
 
 void PauseMenu::Update() {
@@ -46,6 +49,10 @@ void PauseMenu::Update() {
 	UpdateBackground();
 	// メニュー項目のアニメーション処理
 	UpdateMenuAnimation();
+	// メニュー項目のマウス判定処理
+	if(animationProgress_ > 0.0f) {
+		UpdateButtons();
+	}
 }
 
 void PauseMenu::DrawUI() {
@@ -117,21 +124,76 @@ void PauseMenu::UpdateMenuAnimation()
 	}
 	animationProgress_ = std::clamp(animationProgress_, 0.0f, 1.0f);
 
-	// イージングの適用
-	float easeT = Cygnus::Easing::EaseOutQuad(animationProgress_);
+	auto updateItem = [&](Cygnus::Sprite* sprite, Cygnus::Float2 basePos, int delayIndex) {
+		// 各項目の開始タイミングをずらす
+		float startThreshold = delayIndex * kAnimDelay;
+		float localProgress = (animationProgress_ - startThreshold) / (1.0f - startThreshold);
+		localProgress = std::clamp(localProgress, 0.0f, 1.0f);
 
-	// 時間に応じたオフセットを計算
-	float currentOffset = (1.0f - easeT) * kSlideOffset;
+		// イージング適用
+		float easeValue = Cygnus::Easing::EaseOutQuad(localProgress);
 
-	auto updateItem = [&](Cygnus::Sprite* sprite, Cygnus::Float2 basePos) {
 		// 座標の更新
+		float currentOffset = (1.0f - easeValue) * kSlideOffset;
 		sprite->SetPosition({basePos.x + currentOffset, basePos.y});
 		// アルファ更新
-		sprite->SetColor({1.0f, 1.0f, 1.0f, animationProgress_});
+		sprite->SetColor({1.0f, 1.0f, 1.0f, localProgress });
+
 		sprite->Update();
 	};
 
-	updateItem(spritePauseText_.get(), kPauseInitPos);
-	updateItem(spriteContinue_.get(), kContinueInitPos);
-	updateItem(spriteBackToTitle_.get(), kBackToTitleInitPos);
+	updateItem(spritePauseText_.get(), kPauseInitPos, 0);
+	updateItem(spriteContinue_.get(), kContinueInitPos, 1);
+	updateItem(spriteBackToTitle_.get(), kBackToTitleInitPos, 2);
+}
+
+void PauseMenu::UpdateButtons()
+{
+	// マウス位置の取得
+	Cygnus::Float2 mousePos = { 
+		static_cast<float>(Cygnus::Input::GetInstance()->GetMousePosition().x), 
+		static_cast<float>(Cygnus::Input::GetInstance()->GetMousePosition().y) 
+	};
+
+	auto handleHover = [&](Cygnus::Sprite* sprite, float localAlpha, const Cygnus::Float2& baseSize) {
+		// 非表示中なら判定しない
+		if(localAlpha <= 0.0f) return;
+
+		Cygnus::Float2 pos = sprite->GetPosition();
+		Cygnus::Float2 size = sprite->GetSize();
+
+		// 当たり判定
+		bool isHover = (
+			mousePos.x >= pos.x - size.x / 2.0f && mousePos.x <= pos.x + size.x / 2.0f && 
+			mousePos.y >= pos.y - size.y / 2.0f && mousePos.y <= pos.y + size.y / 2.0f
+			);
+
+		// スケール設定
+		float scale = isHover ? kScaleHover : kScaleDefault;
+		sprite->SetSize({baseSize.x * scale, baseSize.y * scale});
+		
+		// 色設定
+		Cygnus::Float4 targetColor = isHover ? kColorHover : kColorDefault;
+		targetColor.w = localAlpha;
+		sprite->SetColor(targetColor);
+
+		// クリック判定
+		if(isHover && Cygnus::Input::GetInstance()->IsTriggerMouse(0)) {
+			// 「ゲームを続ける」ボタンの場合
+			if(sprite == spriteContinue_.get()) {
+				// コールバック関数の実行
+				if(closeCallback_) closeCallback_();
+			// 「タイトルへ戻る」ボタンの場合
+			} else if (sprite == spriteBackToTitle_.get()) {
+				// コールバック関数の実行
+				if(titleCallback_) titleCallback_();
+			}
+		}
+	};
+
+	float continueAlpha = std::clamp((animationProgress_ - kAnimDelay) / (1.0f - kAnimDelay), 0.0f, 1.0f);
+	float titleAlpha = std::clamp((animationProgress_ - kAnimDelay * 2.0f) / (1.0f - kAnimDelay * 2.0f), 0.0f, 1.0f);
+
+	handleHover(spriteContinue_.get(), continueAlpha, sizeContinueBase_);
+	handleHover(spriteBackToTitle_.get(), titleAlpha, sizeBackToTitleBase_);
 }

@@ -92,6 +92,11 @@ private:
 	void TransitionToResult();
 
 	/// <summary>
+	/// タイトルシーンへの遷移を行います。
+	/// </summary>
+	void TransitionToTitle();
+
+	/// <summary>
 	/// ゲーム状態の初期化を行います。
 	/// </summary>
 	void InitializeGameStates();

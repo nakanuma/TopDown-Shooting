@@ -7,6 +7,7 @@
 #include <src/Game/Camera/CameraShake.h>
 #include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/System/ResultStats.h>
+#include <src/Game/Transition/FadeTransition.h>
 
 GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
@@ -45,6 +46,8 @@ void GamePlayState::Update() {
 
 	// クリアタイム（経過時間）の記録
 	ResultStats::GetInstance()->AddTime();
+
+	FadeTransition::GetInstance()->Update();
 }
 
 void GamePlayState::Draw() {
@@ -71,6 +74,8 @@ void GamePlayState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinni
 void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
 	scene_->GetEnemyManager()->DrawUI();
+
+	FadeTransition::GetInstance()->Draw();
 }
 
 void GamePlayState::Debug() {

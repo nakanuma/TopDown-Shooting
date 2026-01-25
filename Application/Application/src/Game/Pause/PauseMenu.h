@@ -1,6 +1,11 @@
 #pragma once
 
 // ---------------------------------------------------------
+// C++ Includes
+// ---------------------------------------------------------
+#include <functional>
+
+// ---------------------------------------------------------
 // Engine Includes
 // ---------------------------------------------------------
 #include <Sprite.h>
@@ -45,7 +50,17 @@ public:
 	// Getter / Setter
 	// =========================================================
 
+	/// <summary>
+	/// 「ゲームを続ける」ボタンを押した際のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback"></param>
+	void SetCloseCallback(std::function<void()> callback) { closeCallback_ = callback; }
 
+	/// <summary>
+	/// 「タイトルへ戻る」ボタンを押した際のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback"></param>
+	void SetTitleCallback(std::function<void()> callback) { titleCallback_ = callback; }
 
 private:
 	// =========================================================
@@ -62,6 +77,11 @@ private:
 	/// </summary>
 	void UpdateMenuAnimation();
 
+	/// <summary>
+	/// メニュー項目のマウス判定処理を行います。
+	/// </summary>
+	void UpdateButtons();
+
 private:
 	// =========================================================
 	// Constants
@@ -72,9 +92,16 @@ private:
 	static constexpr float kMenuFadeDuration = 0.2f;	/* メニューのフェード速度 */
 	static constexpr float kSlideOffset = 100.0f;		/* メニュー項目の右側開始位置オフセット */
 
+	static constexpr float kAnimDelay = 0.2f;	/* アニメーションの遅延時間 */
+
 	static constexpr Cygnus::Float2 kPauseInitPos = {640.0f, 200.0f};		/* ポーズ文字の初期位置 */
 	static constexpr Cygnus::Float2 kContinueInitPos = { 640.0f, 350.0f };	/* ゲームを続ける文字の初期位置 */
 	static constexpr Cygnus::Float2 kBackToTitleInitPos = {640.0f, 450.0f};	/* タイトルへ戻る文字の初期位置 */
+
+	static constexpr Cygnus::Float4 kColorDefault = { 1.0f, 1.0f, 1.0f, 1.0f };		/* 通常時の色 */
+	static constexpr Cygnus::Float4 kColorHover = { 1.0f, 0.25f, 0.0f, 1.0f };		/* ホバー時の色 */
+	static constexpr float kScaleDefault = 1.0f;	/* 通常時スケール */
+	static constexpr float kScaleHover = 1.1f;		/* ホバー時スケール */
 
 	// =========================================================
 	// Member Variables
@@ -93,6 +120,12 @@ private:
 	float animationProgress_ = 0.0f;	/* アニメーションの進行度 */
 
 	bool isShowing_ = false;	/* ポーズメニューの表示が行われているかどうか */
+
+	Cygnus::Float2 sizeContinueBase_ = {0.0f, 0.0f};
+	Cygnus::Float2 sizeBackToTitleBase_ = {0.0f, 0.0f};
+
+	std::function<void()> closeCallback_;	/* ゲームに戻る際のコールバック関数 */
+	std::function<void()> titleCallback_;	/* タイトルへ戻る際のコールバック関数 */
 };
 
 

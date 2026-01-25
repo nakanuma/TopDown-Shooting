@@ -128,6 +128,16 @@ void GamePlayScene::Initialize() {
 	// ポーズメニュー生成
 	pauseMenu_ = std::make_unique<PauseMenu>();
 	pauseMenu_->Initialize(spriteCommon_.get());
+
+	pauseMenu_->SetCloseCallback([this](){
+		isPaused_ = false; // ポーズ状態の解除
+		pauseMenu_->Hide(); // ボーズ終了呼び出し
+	});
+	pauseMenu_->SetTitleCallback([this](){ 
+		isPaused_ = false; // ポーズ状態の解除
+		pauseMenu_->Hide(); // ボーズ終了呼び出し
+		TransitionToTitle(); // タイトルシーンへ移行
+	});
 }
 
 void GamePlayScene::Finalize() { stateManager_->Finalize(); }
@@ -136,7 +146,7 @@ void GamePlayScene::Update() {
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
 	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
 
-	// ESCでポーズ切り替え
+	// ESCまたはゲームへ戻るボタン押下でポーズ状態切り替え
 	if(input_->TriggerKey(DIK_ESCAPE)) {
 		isPaused_ = !isPaused_;
 		// ポーズ状態に応じてフェードイン/アウトを開始
@@ -307,6 +317,13 @@ void GamePlayScene::Debug() {
 		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
+	if(ImGui::Button("TtoR")) {
+		TransitionToResult();
+	}
+	if (ImGui::Button("TtoT")) {
+		TransitionToTitle();
+	}
+
 	ImGui::End();
 
 	stateManager_->Debug();
@@ -323,6 +340,19 @@ void GamePlayScene::TransitionToResult() {
 
 	// フェードアウトしてリザルトシーンへ
 	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT"); }, kFadeOutDelay);
+}
+
+void GamePlayScene::TransitionToTitle()
+{
+	// 既に遷移中ならスキップ
+	if (isTransitioning_)
+		return;
+
+	// 1度のみ呼び出されるようフラグを立てる
+	isTransitioning_ = true;
+
+	// フェードアウトしてタイトルシーンへ
+	FadeTransition::GetInstance()->StartFadeOut(kFadeOutDuration, []() { Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE"); }, kFadeOutDelay);
 }
 
 void GamePlayScene::InitializeGameStates()
