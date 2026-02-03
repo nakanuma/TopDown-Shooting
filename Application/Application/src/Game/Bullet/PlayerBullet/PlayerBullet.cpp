@@ -10,6 +10,7 @@
 #include <Engine/Util/RandomGenerator.h>
 #include <MyMath.h>
 #include <TimeManager.h>
+#include <SoundManager.h>
 
 // ---------------------------------------------------------
 // External Includes
@@ -131,22 +132,41 @@ void PlayerBullet::OnCollision(Cygnus::Collider* other) {
 	Cygnus::Float3 bulletPos = this->GetTranslate();
 
 	// ---------------------------------------------------------
-	// 血の出る敵との衝突
+	// 柔らかい敵との衝突
 	// ---------------------------------------------------------
 	if (other->GetTag() == "NormalEnemy") {
 		// ヒット時パーティクル発生
 		EmitBloodHitParticles(bulletPos, velocity_);
 		// ライフサイクル終了
 		FinishLifeCycle();
+
+		// 効果音発生
+		Cygnus::SoundManager::GetInstance()->Play("hit_soft_enemy", false, 0.1f);
 	}
 
 	// ---------------------------------------------------------
-	// 硬い敵・物との衝突
+	// 硬い敵との衝突
 	// ---------------------------------------------------------
-	if (other->GetTag() == "ImmobileEnemy" || other->GetTag() == "BossEnemy" || other->GetTag() == "Obstacle") {
+	if (other->GetTag() == "ImmobileEnemy" || other->GetTag() == "BossEnemy") {
 		// ヒット時パーティクル発生
 		EmitHardHitParticles(bulletPos, velocity_);
 		// ライフサイクル終了
 		FinishLifeCycle();
+
+		// 効果音発生
+		Cygnus::SoundManager::GetInstance()->Play("hit_hard_enemy", false, 0.2f);
+	}
+
+	// ---------------------------------------------------------
+	// 障害物との衝突
+	// ---------------------------------------------------------
+	if (other->GetTag() == "Obstacle") {
+		// ヒット時パーティクル発生
+		EmitHardHitParticles(bulletPos, velocity_);
+		// ライフサイクル終了
+		FinishLifeCycle();
+
+		// 効果音発生
+		Cygnus::SoundManager::GetInstance()->Play("hit_obstacle", false, 0.2f);
 	}
 }

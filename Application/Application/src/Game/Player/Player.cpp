@@ -435,6 +435,9 @@ void Player::HandleShooting() {
 
 		Cygnus::Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
 		Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
+	
+		// 効果音発生
+		Cygnus::SoundManager::GetInstance()->Play("player_shoot");
 	}
 }
 

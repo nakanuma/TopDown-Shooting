@@ -7,6 +7,7 @@
 #include <Engine/Util/RandomGenerator.h>
 #include <Engine/Util/TimeManager.h>
 #include <Engine/ParticleEffect/ParticleEffectManager.h>
+#include <SoundManager.h>
 
 // Application
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
@@ -208,6 +209,9 @@ void ImmobileEnemy::OnCollision(Cygnus::Collider* other) {
 			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle2)); // クロス片側
 
 			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
+
+			// 効果音発生
+			Cygnus::SoundManager::GetInstance()->Play("enemy_dead", false, 0.25f);
 		}
 	}
 }

@@ -169,19 +169,6 @@ void ResultScene::Draw() {
 #ifdef USE_IMGUI
 	ImGui::Begin("ResultSceneInfo");
 
-	if (ImGui::Button("yay")) {
-		Cygnus::SoundManager::GetInstance()->Play("yay");
-	}
-	if (ImGui::Button("shot")) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-	}
-	if (ImGui::Button("explode")) {
-		Cygnus::SoundManager::GetInstance()->Play("explode");
-	}
-	if (ImGui::Button("door")) {
-		Cygnus::SoundManager::GetInstance()->Play("door");
-	}
-
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
 	if (ImGui::Button("TITLE")) {
