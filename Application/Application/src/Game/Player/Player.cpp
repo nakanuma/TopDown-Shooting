@@ -437,7 +437,7 @@ void Player::HandleShooting() {
 		Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
 	
 		// 効果音発生
-		Cygnus::SoundManager::GetInstance()->Play("player_shoot");
+		Cygnus::SoundManager::GetInstance()->Play("player_shoot", false, 0.1f);
 	}
 }
 
