@@ -286,8 +286,14 @@ void GameResourceLoader::RegisterAllParticleEffect()
 void GameResourceLoader::LoadAllSoundData() { 
 	auto soundManager = Cygnus::SoundManager::GetInstance();
 
-	soundManager->Load("resources/Sounds/yay.wav", "yay");
-	soundManager->Load("resources/Sounds/shot.wav", "shot");
-	soundManager->Load("resources/Sounds/explode.wav", "explode");
-	soundManager->Load("resources/Sounds/door.wav", "door");
+	// プレイヤー射撃音
+	soundManager->Load("resources/Sounds/player_shoot.wav", "player_shoot");
+	// 敵死亡音
+	soundManager->Load("resources/Sounds/enemy_dead.wav", "enemy_dead");
+	// 柔らかい敵ヒット音
+	soundManager->Load("resources/Sounds/hit_soft_enemy.wav", "hit_soft_enemy");
+	// 硬い敵ヒット音
+	soundManager->Load("resources/Sounds/hit_hard_enemy.wav", "hit_hard_enemy");
+	// 障害物ヒット音
+	soundManager->Load("resources/Sounds/hit_obstacle.wav", "hit_obstacle");
 }
