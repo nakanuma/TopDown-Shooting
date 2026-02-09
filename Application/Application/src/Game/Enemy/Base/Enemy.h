@@ -14,12 +14,12 @@
 // ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
 #include <src/Game/Enemy/UI/EnemyUIManager.h>
+#include <src/Game/Enemy/VisualEffect/EnemyVisualEffects.h>
 
 // ---------------------------------------------------------
 // Forward Declaration
 // ---------------------------------------------------------
 class Player;
-namespace Cygnus { enum class BehaviorStatus; }
 
 // =========================================================
 // 敵の基底クラス
@@ -97,37 +97,7 @@ public:
 	/// <returns>現在のHP</returns>
 	int32_t GetHP() const { return currentHP_; }
 
-	/// <summary>
-	/// ノードの状態を記録します。
-	/// </summary>
-	/// <param name="nodePtr"></param>
-	/// <param name="status"></param>
-	void SetNodeStatus(const void* nodePtr, Cygnus::BehaviorStatus status);
-
-	/// <summary>
-	/// ノードの状態を取得します。
-	/// </summary>
-	/// <param name="nodePtr"></param>
-	/// <returns></returns>
-	Cygnus::BehaviorStatus GetNodeStatus(const void* nodePtr) const;
-
 protected:
-	// =========================================================
-	// Internal Methods
-	// =========================================================
-
-	/// <summary>
-	/// 被弾時の発光処理を行います。
-	/// </summary>
-	void HandleHitBlink();
-
-protected:
-	// =========================================================
-	// Constants
-	// =========================================================
-	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
-	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
-
 	// =========================================================
 	// Member Variables
 	// =========================================================
@@ -141,6 +111,9 @@ protected:
 	// ----- UI -----
 	std::unique_ptr<EnemyUIManager> ui_;
 
+	// ----- VisualEffect -----
+	std::unique_ptr<EnemyVisualEffects> visualEffect_;
+
 	// ----- Parameters -----
 	bool isActive_ = false; /* 有効化フラグ */
 	bool isDead_ = false;   /* 死亡フラグ */
@@ -149,19 +122,4 @@ protected:
 	int32_t currentHP_ = 0; /* 現在HP */
 
 	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
-
-	// ----- HitBlink -----
-	/// <summary>
-	/// 被弾時の発光演出フェーズ
-	/// </summary>
-	enum class HitBlinkPhase {
-		Wait,		// 待機
-		BlinkIn,	// 発光
-		BlinkOut	// 減光
-	} hitBlinkPhase_ = HitBlinkPhase::Wait;
-	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
-	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
-
-	// ----- Others -----
-	std::unordered_map<const void*, Cygnus::BehaviorStatus> nodeStatusMap_; /* この個体でのノード実行状態を保存するマップ */
 };

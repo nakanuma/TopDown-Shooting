@@ -25,7 +25,6 @@ void ImmobileEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	objectEnemy_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("ImmobileEnemy");
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
 	///	コライダー生成
@@ -65,6 +64,10 @@ void ImmobileEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	
 	ui_ = std::make_unique<EnemyUIManager>();
 	ui_->Initialize();
+
+	// 発光演出クラス生成・初期化
+	visualEffect_ = std::make_unique<EnemyVisualEffects>();
+	visualEffect_->Initialize(objectEnemy_.get());
 }
 
 void ImmobileEnemy::Update() {
@@ -82,7 +85,7 @@ void ImmobileEnemy::Update() {
 	objectEnemy_->UpdateShadowMatrix();
 
 	// 被弾時の発光演出
-	HandleHitBlink();
+	visualEffect_->Update();
 
 	///
 	///	ビヘイビアツリーを評価
@@ -118,11 +121,7 @@ void ImmobileEnemy::OnCollision(Cygnus::Collider* other) {
 
 	if (other->GetTag() == "PlayerBullet") {
 		// 被弾時の発光演出を開始
-		if (!isDead_) {
-			isHitBlink_ = true;
-			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
-			hitBlinkTimer_ = 0.0f;
-		}
+		visualEffect_->TriggerHitBlink();
 
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());

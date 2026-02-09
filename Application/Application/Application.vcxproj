@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp" />
@@ -25,7 +26,6 @@
     <ClCompile Include="src\Game\GameState\GameStart\GameStartState.cpp" />
     <ClCompile Include="src\Game\Bullet\Base\Bullet.cpp" />
     <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp" />
-    <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp" />
     <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp" />
     <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp" />
     <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp" />
@@ -82,6 +82,7 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h" />
     <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h" />
