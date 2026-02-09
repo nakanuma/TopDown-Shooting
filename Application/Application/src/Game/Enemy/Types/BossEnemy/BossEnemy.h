@@ -26,7 +26,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
+	void Initialize(const Cygnus::Float3& position, Player* player) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -105,11 +105,6 @@ private:
 	// =========================================================
 	static constexpr Cygnus::Float4 kBossColor = {0.2f, 0.2f, 0.2f, 1.0f}; /* ボスの色 */
 	static constexpr Cygnus::Float3 kColliderSize = {5.2f, 3.0f, 5.2f};    /* コライダーサイズ */
-
-	static constexpr Cygnus::Float2 kHPBarPosition = {640.0f, 25.0f};                 /* HPバーの位置 */
-	static constexpr Cygnus::Float2 kHPBarSizeBoss = {640.0f, 50.0f};                 /* HPバーのサイズ */
-	static constexpr Cygnus::Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
-	static constexpr Cygnus::Float4 kHPBarForegroundColor = {1.0f, 0.0f, 0.0f, 1.0f}; /* HPバー前景色 */
 
 	static constexpr int32_t kInitialHP = 300;        /* 初期HP */
 	static constexpr float kMoveSpeed = 3.0f;         /* 移動速度 */

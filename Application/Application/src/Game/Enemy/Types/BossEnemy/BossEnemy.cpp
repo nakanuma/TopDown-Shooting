@@ -17,22 +17,13 @@
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Camera/CameraShake.h>
 
-void BossEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {
-	///
-	///	基盤機能生成
-	///
-
-	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
-
-	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
-	spriteCommon_->Initialize(dxBase);
-
+void BossEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	///
 	/// オブジェクト生成
 	///
 
 	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
-	objectEnemy_->model_ = model;
+	objectEnemy_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("BossEnemy");
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = kBossColor;
@@ -55,26 +46,6 @@ void BossEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager:
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
 
 	///
-	///	スプライト生成
-	///
-
-	// HPバー（後景）
-	uint32_t textureHPBackground = Cygnus::TextureManager::Load("white.png");
-	spriteHPBackground_ = std::make_unique<Cygnus::Sprite>();
-	spriteHPBackground_->Initialize(spriteCommon_.get(), textureHPBackground);
-	spriteHPBackground_->SetSize(kHPBarSizeBoss);
-	spriteHPBackground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
-	spriteHPBackground_->SetColor(kHPBarBackgroundColor);
-
-	// HPバー（前景）
-	uint32_t textureHPForeground = Cygnus::TextureManager::Load("white.png");
-	spriteHPForeground_ = std::make_unique<Cygnus::Sprite>();
-	spriteHPForeground_->Initialize(spriteCommon_.get(), textureHPForeground);
-	spriteHPForeground_->SetSize(kHPBarSizeBoss);
-	spriteHPForeground_->SetPosition({kHPBarPosition.x - (kHPBarSizeBoss.x / 2.0f), kHPBarPosition.y}); // 中心になるよう設定
-	spriteHPForeground_->SetColor(kHPBarForegroundColor);
-
-	///
 	///	パラメーター設定
 	///
 
@@ -94,6 +65,13 @@ void BossEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager:
 	///
 
 	BuildBehaviorTree();
+
+	///
+	///	UI生成
+	/// 
+
+	ui_ = std::make_unique<EnemyUIManager>();
+	ui_->Initialize();
 }
 
 void BossEnemy::Update() {
@@ -125,15 +103,6 @@ void BossEnemy::Update() {
 	collider_->Update();
 
 	///
-	///	スプライト更新処理
-	///
-
-	// HPバー（後景）更新
-	spriteHPBackground_->Update();
-	// HPバー（前景）更新
-	spriteHPForeground_->Update();
-
-	///
 	///	死亡演出更新
 	///
 
@@ -153,38 +122,23 @@ void BossEnemy::Update() {
 			isDead_ = true;
 		}
 	}
+
+	///
+	///	UI更新
+	/// 
+
+	EnemyUIState state;
+	state.worldPos = objectEnemy_->transform_.translate_;
+	state.hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
+
+	ui_->Update(state);
 }
 
-void BossEnemy::Draw() {
-	// オブジェクト描画処理
-	objectEnemy_->Draw();
-}
+void BossEnemy::Draw() { objectEnemy_->Draw(); }
 
 void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
-void BossEnemy::DrawUI() {
-	if (isDying_)
-		return; // 死亡演出中はスキップ
-
-	// HP割合
-	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
-
-	///
-	/// HPバー（後景）描画
-	///
-
-	spriteHPBackground_->Draw();
-
-	///
-	/// HPバー（前景）描画
-	///
-
-	// 現在HPに応じてサイズ変更
-	Cygnus::Float2 hpBarForegroundSize = {kHPBarSizeBoss.x * hpRatio, kHPBarSizeBoss.y};
-	spriteHPForeground_->SetSize(hpBarForegroundSize);
-
-	spriteHPForeground_->Draw();
-}
+void BossEnemy::DrawUI() { ui_->Draw(); }
 
 void BossEnemy::Debug() {
 #ifdef USE_IMGUI

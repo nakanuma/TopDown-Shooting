@@ -10,7 +10,7 @@
 // ---------------------------------------------------------
 // Application Includes
 // ---------------------------------------------------------
-#include <src/Game/Enemy/BossEnemy/BossEnemy.h>
+#include <src/Game/Enemy/Types/BossEnemy/BossEnemy.h>
 
 // =========================================================
 // ゲームクリア時の演出を制御するクラス

@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp" />
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp" />
+    <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp" />
     <ClCompile Include="src\Game\Player\UI\PauseKey\PauseKey.cpp" />
     <ClCompile Include="src\Game\Pause\PauseMenu.cpp" />
     <ClCompile Include="src\Game\Player\UI\Mouse\Mouse.cpp" />
@@ -50,8 +53,8 @@
     <ClCompile Include="src\Game\Particles\BackScatter\BackscatterParticle.cpp" />
     <ClCompile Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.cpp" />
     <ClCompile Include="src\Game\Bullet\Manager\BulletManager.cpp" />
-    <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp" />
-    <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp" />
+    <ClCompile Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.cpp" />
+    <ClCompile Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.cpp" />
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp" />
     <ClCompile Include="src\Game\Camera\CameraShake.cpp" />
     <ClCompile Include="src\Game\Player\UI\HPBar\HPBar.cpp" />
@@ -60,8 +63,8 @@
     <ClCompile Include="src\Game\Loader\Loader.cpp" />
     <ClCompile Include="src\Game\Obstacle\Manager\ObstacleManager.cpp" />
     <ClCompile Include="src\Game\Camera\FollowCamera.cpp" />
-    <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp" />
-    <ClCompile Include="src\Game\Enemy\Manager\EnemyManager.cpp" />
+    <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.cpp" />
+    <ClCompile Include="src\Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="src\Game\Bullet\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="src\Game\Field\Field.cpp" />
     <ClCompile Include="src\Game\Player\Player.cpp" />
@@ -79,6 +82,9 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h" />
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h" />
+    <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h" />
     <ClInclude Include="src\Game\Player\UI\PauseKey\PauseKey.h" />
     <ClInclude Include="src\Game\Pause\PauseMenu.h" />
     <ClInclude Include="src\Game\Player\UI\Mouse\Mouse.h" />
@@ -116,8 +122,8 @@
     <ClInclude Include="src\Game\Particles\BackScatter\BackscatterParticle.h" />
     <ClInclude Include="src\Game\Player\UI\OverheatGauge\OverheatGauge.h" />
     <ClInclude Include="src\Game\Bullet\Manager\BulletManager.h" />
-    <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h" />
-    <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h" />
+    <ClInclude Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.h" />
+    <ClInclude Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.h" />
     <ClInclude Include="src\Game\Bullet\EnemyBullet\EnemyBullet.h" />
     <ClInclude Include="src\Game\Camera\CameraShake.h" />
     <ClInclude Include="src\Game\Player\UI\HPBar\HPBar.h" />
@@ -127,8 +133,8 @@
     <ClInclude Include="src\Game\Obstacle\Manager\ObstacleManager.h" />
     <ClInclude Include="src\Game\Obstacle\Base\Obstacle.h" />
     <ClInclude Include="src\Game\Camera\FollowCamera.h" />
-    <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h" />
-    <ClInclude Include="src\Game\Enemy\Manager\EnemyManager.h" />
+    <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.h" />
+    <ClInclude Include="src\Game\Enemy\EnemyManager.h" />
     <ClInclude Include="src\Game\Enemy\Base\Enemy.h" />
     <ClInclude Include="src\Game\Bullet\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h" />

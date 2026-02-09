@@ -27,25 +27,16 @@
 // Externals
 #include <ImguiWrapper.h>
 
-void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) {}
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {}
 
 void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player, Cygnus::BehaviorTree<NormalEnemy>* masterTree)
 {
-	///
-	///	基盤機能生成
-	///
-
-	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
-
-	spriteCommon_ = std::make_unique<Cygnus::SpriteCommon>();
-	spriteCommon_->Initialize(dxBase);
-
 	///
 	/// オブジェクト生成
 	///
 
 	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
-	objectEnemy_->model_ = model;
+	objectEnemy_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("NormalEnemy");
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
@@ -64,17 +55,6 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
-
-	///
-	///	スプライト生成
-	///
-
-	// HPバー（後景）
-	SetupHPBarSprite(spriteHPBackground_, kHPBarBackgroundColor);
-	// HPバー（前景）
-	SetupHPBarSprite(spriteHPForeground_, kHPBarForegroundColor);
-	// リロード表示
-	SetupReloadSprite(spriteReload_);
 
 	///
 	///	パラメーター設定
@@ -107,6 +87,13 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManage
 	if(masterTree) {
 		behaviorTree_ = masterTree;
 	}
+
+	///
+	///	UI生成
+	/// 
+
+	ui_ = std::make_unique<EnemyUIManager>();
+	ui_->Initialize();
 }
 
 void NormalEnemy::Update() {
@@ -135,74 +122,23 @@ void NormalEnemy::Update() {
 	}
 
 	///
-	///	スプライト更新処理
-	///
+	///	UI更新
+	/// 
 
-	// HPバー（後景）更新
-	spriteHPBackground_->Update();
-	// HPバー（前景）更新
-	spriteHPForeground_->Update();
-	// リロード表示
-	spriteReload_->Update();
+	EnemyUIState state;
+	state.worldPos = objectEnemy_->transform_.translate_;
+	state.hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
+	state.reloadRatio = bb_.reloadTimer / kReloadTime;
+	state.isReloading = bb_.isReloading;
+
+	ui_->Update(state);
 }
 
-void NormalEnemy::Draw() {
-	// オブジェクト描画
-	objectEnemy_->Draw();
-}
+void NormalEnemy::Draw() { objectEnemy_->Draw(); }
 
 void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
-void NormalEnemy::DrawUI() {
-	// オブジェクトのワールド座標->スクリーン座標に変換
-	Cygnus::Float3 screenPosition = Utility::WorldToScreen(objectEnemy_->transform_.translate_);
-	// HP割合
-	float hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
-
-	///
-	/// HPバー（後景）描画
-	///
-
-	// スクリーン座標をセット
-	spriteHPBackground_->SetPosition({
-	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定,
-	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
-	});
-	spriteHPBackground_->Draw();
-
-	///
-	///	HPバー（前景）描画
-	///
-
-	// 現在HPに応じてサイズ変更
-	Cygnus::Float2 hpBarForegroundSize = {kHPBarSize.x * hpRatio, kHPBarSize.y};
-	spriteHPForeground_->SetSize(hpBarForegroundSize);
-
-	// スクリーン座標をセット
-	spriteHPForeground_->SetPosition({
-	    screenPosition.x - kHPBarSize.x / 2.0f, // HPバーが中心になるように設定
-	    screenPosition.y - kHPBarOffsetY        // オフセット分上にずらす
-	});
-	spriteHPForeground_->Draw();
-
-	///
-	///	リロード表示
-	///
-
-	// リロード進捗率
-	float reloadProgress = 1.0f - (bb_.reloadTimer / kReloadTime);
-	// リロード時間に応じてサイズ変更
-	spriteReload_->SetSize({kReloadSize.x * reloadProgress, kReloadSize.y});
-	// スクリーン座標をセット
-	spriteReload_->SetPosition(
-	    {screenPosition.x - kReloadSize.x / 2.0f, // リロード表示が中心になるよう設定
-	     screenPosition.y - kReloadBarOffsetY});
-
-	// リロード時のみ描画
-	if (bb_.isReloading && bb_.reloadTimer < kReloadTime) {
-		spriteReload_->Draw();
-	}
-}
+void NormalEnemy::DrawUI() { ui_->Draw(); }
 
 void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 	///

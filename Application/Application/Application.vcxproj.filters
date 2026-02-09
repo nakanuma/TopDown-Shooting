@@ -183,16 +183,16 @@
     <ClCompile Include="src\Game\Camera\FollowCamera.cpp">
       <Filter>src\Game\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Enemy\BossEnemy\BossEnemy.cpp">
+    <ClCompile Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.cpp">
       <Filter>src\Game\Enemy\BossEnemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.cpp">
+    <ClCompile Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.cpp">
       <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Enemy\Manager\EnemyManager.cpp">
+    <ClCompile Include="src\Game\Enemy\EnemyManager.cpp">
       <Filter>src\Game\Enemy\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Enemy\NormalEnemy\NormalEnemy.cpp">
+    <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.cpp">
       <Filter>src\Game\Enemy\NormalEnemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Field\Field.cpp">
@@ -360,6 +360,15 @@
     <ClCompile Include="src\Game\Player\UI\PauseKey\PauseKey.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h">
@@ -389,16 +398,16 @@
     <ClInclude Include="src\Game\Enemy\Base\Enemy.h">
       <Filter>src\Game\Enemy\Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Enemy\BossEnemy\BossEnemy.h">
+    <ClInclude Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.h">
       <Filter>src\Game\Enemy\BossEnemy</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Enemy\ImmobileEnemy\ImmobileEnemy.h">
+    <ClInclude Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.h">
       <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Enemy\Manager\EnemyManager.h">
+    <ClInclude Include="src\Game\Enemy\EnemyManager.h">
       <Filter>src\Game\Enemy\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Enemy\NormalEnemy\NormalEnemy.h">
+    <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.h">
       <Filter>src\Game\Enemy\NormalEnemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Field\Field.h">
@@ -561,6 +570,15 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Player\UI\PauseKey\PauseKey.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

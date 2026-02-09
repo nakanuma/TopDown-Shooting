@@ -25,7 +25,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) override;
+	void Initialize(const Cygnus::Float3& position, Player* player) override;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -90,8 +90,6 @@ private:
 	// Constants
 	// =========================================================
 	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f};       /* コライダーサイズ */
-	static constexpr float kHPBarOffsetY = 90.0f;                             /* HPバーのY軸オフセット */
-	static constexpr float kReloadBarOffsetY = 60.0f;                         /* リロード表示のY軸オフセット */
 
 	static constexpr int32_t kInitialHP = 40;    /* 初期HP */
 	static constexpr float kSearchRange = 20.0f; /* プレイヤー発見距離 */

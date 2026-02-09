@@ -22,7 +22,7 @@
 // ---------------------------------------------------------
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Camera/FollowCamera.h>
-#include <src/Game/Enemy/Manager/EnemyManager.h>
+#include <src/Game/Enemy/EnemyManager.h>
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>

@@ -9,9 +9,9 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
-#include <src/Game/Enemy/NormalEnemy/NormalEnemy.h>
-#include <src/Game/Enemy/ImmobileEnemy/ImmobileEnemy.h>
-#include <src/Game/Enemy/BossEnemy/BossEnemy.h>
+#include <src/Game/Enemy/Types/NormalEnemy/NormalEnemy.h>
+#include <src/Game/Enemy/Types/ImmobileEnemy/ImmobileEnemy.h>
+#include <src/Game/Enemy/Types/BossEnemy/BossEnemy.h>
 #include <src/Game/Loader/Loader.h>
 
 // =========================================================
