@@ -7,22 +7,10 @@
 #include <numbers>
 
 // Engine
-#include <Camera.h>
-#include <Collider/CollisionManager.h>
-#include <DirectXBase.h>
-#include <Engine/3D/LineDrawer.h>
-#include <Engine/ParticleEffect/ParticleEffectManager.h>
-#include <Engine/Util/RandomGenerator.h>
-#include <Engine/Util/TimeManager.h>
-#include <SoundManager.h>
+#include <TimeManager.h>
 
 // Application
-#include <src/Game/Bullet/Base/Bullet.h>
-#include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
-#include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Player/Player.h>
-#include <src/Game/System/ResultStats.h>
-#include <src/Game/Utility/Utility.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -55,6 +43,9 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	currentHP_ = kInitialHP;
 	maxHP_ = kInitialHP;
 	targetPlayer_ = player;
+
+	// ビヘイビアツリー構築
+	BuildBehaviorTree();
 }
 
 void NormalEnemy::Update() {
@@ -73,6 +64,9 @@ void NormalEnemy::Update() {
 
 	// 発光演出更新
 	visualEffect_->Update();
+
+	// ビヘイビアツリー更新
+	behaviorTree_->Tick(this, Cygnus::TimeManager::GetInstance()->GetDeltaTime());
 }
 
 void NormalEnemy::Draw() { objectEnemy_->Draw(); }
@@ -82,57 +76,14 @@ void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 void NormalEnemy::DrawUI() { ui_->Draw(); }
 
 void NormalEnemy::OnCollision(Cygnus::Collider* other) {
-	///
-	/// vs PlayerBullet
-	///
-	if (other->GetTag() == "PlayerBullet") {
-		// 被弾時の発光演出を開始
-		visualEffect_->TriggerHitBlink();
+	// 敵共通の衝突時処理
+	Enemy::OnCollision(other);
 
-		// PlayerBulletのdamageを取得
-		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
-		int32_t damage = bullet->GetDamage();
-
-		// HPを減らす
-		currentHP_ -= damage;
-		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
-		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
-
-		// HPが0になったら自身を死亡させる
-		if (currentHP_ <= 0) {
-			isDead_ = true;
-
-			// 死亡時パーティクル発生
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, Cygnus::DegToRad(kDeathCrossAngle1)); // クロス片側
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, { 0.0f, 0.0f, 0.0f }, Cygnus::DegToRad(kDeathCrossAngle2)); // クロス片側
-
-			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
-
-			// 効果音発生
-			Cygnus::SoundManager::GetInstance()->Play("enemy_dead", false, 0.25f);
-		}
-	}
-
-	///
-	/// vs Obstacle
-	///
+	// このクラス特有の衝突時処理
+	// vs Obstacle
 	if (other->GetTag() == "Obstacle") {
-		Cygnus::AABBCollider* myAABB = dynamic_cast<Cygnus::AABBCollider*>(collider_.get());
-		Cygnus::AABBCollider* otherAABB = dynamic_cast<Cygnus::AABBCollider*>(other);
-
-		// 押し戻し処理
-		if (myAABB && otherAABB) {
-			// 押し戻しベクトル取得
-			Cygnus::Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
-			// 位置を補正
-			objectEnemy_->transform_.translate_ += pushVec;
-
-			// コライダーも更新しておく
-			Cygnus::Float3 currentMin = myAABB->GetMin();
-			Cygnus::Float3 currentMax = myAABB->GetMax();
-			myAABB->SetMin(currentMin + pushVec);
-			myAABB->SetMax(currentMax + pushVec);
-		}
+		// 障害物との押し戻し処理
+		ResolveObstacleCollision(other);
 	}
 }
 
@@ -140,4 +91,41 @@ void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
 	
 #endif
+}
+
+void NormalEnemy::BuildBehaviorTree() {
+
+	///
+	///	攻撃時ノード（シーケンス）
+	/// 
+
+	auto attackNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
+
+	// プレイヤー方向を向くノード
+	auto faceToPlayer = std::make_unique<Cygnus::ActionNode<NormalEnemy>>(
+		[](NormalEnemy* enemy, float dt){ return enemy->FaceToPlayer(); }, "FaceToPlayer");
+	attackNode->AddChild(std::move(faceToPlayer));
+
+	///
+	///	ルートノード（シーケンス）
+	/// 
+
+	auto rootNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
+	rootNode->AddChild(std::move(attackNode)); // 攻撃時ノード追加
+
+	///
+	///	ツリー構築
+	/// 
+	
+	behaviorTree_ = std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(rootNode));
+}
+
+Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer() {
+	// プレイヤーへの方向ベクトルからY軸回転角度を計算
+	Cygnus::Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
+	float targetAngle = std::atan2f(toPlayer.x, toPlayer.z);
+	// Y軸回転を適用
+	objectEnemy_->transform_.rotate_.y = targetAngle;
+
+	return Cygnus::BehaviorStatus::Success;
 }

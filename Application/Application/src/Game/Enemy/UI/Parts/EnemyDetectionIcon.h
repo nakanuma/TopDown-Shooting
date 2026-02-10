@@ -7,9 +7,9 @@
 #include <SpriteCommon.h>
 
 // =========================================================
-// 敵のHPバーUIクラス
+// 敵のプレイヤー発見アイコンUIクラス
 // =========================================================
-class EnemyHPBar
+class EnemyDetectionIcon
 {
 public:
 	// =========================================================
@@ -26,27 +26,36 @@ public:
 	/// 更新処理を行います。
 	/// </summary>
 	/// <param name="worldPos">ワールド座標</param>
-	/// <param name="hpRatio">HP割合</param>
-	void Update(const Cygnus::Float3& worldPos, float hpRatio);
+	void Update(const Cygnus::Float3& worldPos);
 
 	/// <summary>
 	/// 描画処理を行います。
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// アニメーション演出を開始します。
+	/// </summary>
+	void Play();
+
 private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kHPBarSize = { 100.0f, 20.0f };		/* HPバーのサイズ */
-	static constexpr float kHPBarOffsetY = 90.0f;						/* HPバーのY軸オフセット */
+	static constexpr float kDetectionIconOffsetY = 120.0f;
 
-	static constexpr Cygnus::Float4 kHPBarBackgroundColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* HPバー背景色 */
-	static constexpr Cygnus::Float4 kHPBarForegroundColor = { 0.0f, 1.0f, 0.5f, 1.0f };	/* HPバー前景色 */
+	static constexpr float kFlashDuration = 0.25f;	/* 点滅時間 */
+	static constexpr float kHoldDuration = 1.0f;	/* 維持時間 */
+	static constexpr float kFadeDuration = 0.2f;	/* フェード時間 */
+
+	static constexpr float kBlinkInterval = 0.02f;	/* 点滅速度 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::Sprite> spriteHPBackground_; /* HPバー後景スプライト */
-	std::unique_ptr<Cygnus::Sprite> spriteHPForeground_; /* HPバー前景スプライト */
+	std::unique_ptr<Cygnus::Sprite> spriteDetectionIcon_;	/* 発見アイコンスプライト */
+
+	bool isActive_ = false;	/* アニメーション中か */
+	float timer_ = 0.0f;	/* アニメーション用タイマー */
 };
+

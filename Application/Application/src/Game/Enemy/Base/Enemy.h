@@ -24,7 +24,7 @@ class Player;
 // =========================================================
 // 敵の基底クラス
 // =========================================================
-class Enemy {
+class Enemy : public Cygnus::ICollisionCallback{
 public:
 	// =========================================================
 	// Public Methods
@@ -57,6 +57,12 @@ public:
 	/// UIの描画処理を行います。
 	/// </summary>
 	virtual void DrawUI() = 0;
+
+	/// <summary>
+	/// 衝突時のコールバック処理を行います。
+	/// </summary>
+	/// <param name="other">衝突した相手のコライダー</param>
+	virtual void OnCollision(Cygnus::Collider* other) override;
 
 	/// <summary>
 	/// 破棄を行います。
@@ -99,27 +105,48 @@ public:
 
 protected:
 	// =========================================================
+	// Internal Methods
+	// =========================================================
+
+	/// <summary>
+	/// プレイヤー弾衝突時のダメージ適用処理（パーティクル・SE・死亡判定も含む）
+	/// </summary>
+	/// <param name="damage"></param>
+	void ApplyDamage(int32_t damage);
+
+	/// <summary>
+	/// 障害物との押し戻し処理
+	/// </summary>
+	/// <param name="other"></param>
+	void ResolveObstacleCollision(Cygnus::Collider* other);
+
+	/// <summary>
+	/// 発見アイコンのアニメーション開始（プレイヤー発見時に呼び出し）
+	/// </summary>
+	void ToggleDetectUI();
+
+protected:
+	// =========================================================
+	// Constants
+	// =========================================================
+	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
+	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
+	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
+
+	// =========================================================
 	// Member Variables
 	// =========================================================
-	
-	// ----- Object -----
-	std::unique_ptr<Cygnus::Object3D> objectEnemy_; /* 敵オブジェクト */
-
-	// ----- Collision -----
-	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
-
-	// ----- UI -----
-	std::unique_ptr<EnemyUIManager> ui_;
-
-	// ----- VisualEffect -----
-	std::unique_ptr<EnemyVisualEffects> visualEffect_;
+	std::unique_ptr<Cygnus::Object3D> objectEnemy_;		/* 敵オブジェクト */
+	std::unique_ptr<Cygnus::Collider> collider_;		/* コライダー */
+	std::unique_ptr<EnemyUIManager> ui_;				/* UI */
+	std::unique_ptr<EnemyVisualEffects> visualEffect_;	/* 発光演出管理 */
 
 	// ----- Parameters -----
-	bool isActive_ = false; /* 有効化フラグ */
-	bool isDead_ = false;   /* 死亡フラグ */
-
-	int32_t maxHP_ = 0;     /* 最大HP */
-	int32_t currentHP_ = 0; /* 現在HP */
+	bool isActive_ = false;			/* 有効化フラグ */
+	bool isDead_ = false;			/* 死亡フラグ */
+	bool isDetectedPlayer_ = false;	/* プレイヤー発見フラグ */
+	int32_t maxHP_ = 0;				/* 最大HP */
+	int32_t currentHP_ = 0;			/* 現在HP */
 
 	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
 };

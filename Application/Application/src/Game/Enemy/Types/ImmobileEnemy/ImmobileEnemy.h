@@ -13,7 +13,7 @@
 // =========================================================
 // 固定砲台の敵クラス
 // =========================================================
-class ImmobileEnemy : public Enemy, public Cygnus::ICollisionCallback {
+class ImmobileEnemy : public Enemy {
 public:
 	// =========================================================
 	// Public Methods

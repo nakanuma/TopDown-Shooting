@@ -19,13 +19,14 @@ public:
 	/// <summary>
 	/// 初期化処理を行います。
 	/// </summary>
+	/// <param name="spriteCommon">スプライト基盤機能</param>
 	void Initialize(Cygnus::SpriteCommon* spriteCommon);
 
 	/// <summary>
 	/// 更新処理を行います。
 	/// </summary>
-	/// <param name="worldPos"></param>
-	/// <param name="hpRatio"></param>
+	/// <param name="worldPos">ワールド座標</param>
+	/// <param name="hpRatio">HP割合</param>
 	void Update(const Cygnus::Float3 worldPos, float reloadRatio, bool isReloading);
 
 	/// <summary>

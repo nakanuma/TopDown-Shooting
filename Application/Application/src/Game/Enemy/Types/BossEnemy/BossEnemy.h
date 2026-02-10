@@ -14,7 +14,7 @@
 // =========================================================
 // ボスエネミークラス
 // =========================================================
-class BossEnemy : public Enemy, public Cygnus::ICollisionCallback {
+class BossEnemy : public Enemy {
 public:
 	// =========================================================
 	// Public Methods

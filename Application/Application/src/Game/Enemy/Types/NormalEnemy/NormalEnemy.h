@@ -4,19 +4,16 @@
 // Engine Includes
 // ---------------------------------------------------------
 #include <Engine/BehaviourTree/BehaviorTree.h>
-#include <Engine/BehaviourTree/BehaviorTreeEditor.h>
-#include <Engine/Util/ParameterSystem.h>
 
 // ---------------------------------------------------------
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
-#include <src/Game/Waypoint/WaypointManager.h>
 
 // =========================================================
 // 通常の敵クラス
 // =========================================================
-class NormalEnemy : public Enemy, public Cygnus::ICollisionCallback {
+class NormalEnemy : public Enemy {
 public:
 	// =========================================================
 	// Public Methods
@@ -66,6 +63,17 @@ private:
 	// Internal Methods
 	// =========================================================
 
+	/// <summary>
+	/// ビヘイビアツリーの構築を行います。
+	/// </summary>
+	void BuildBehaviorTree();
+
+	/// <summary>
+	/// プレイヤー方向を見続けます。
+	/// </summary>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus FaceToPlayer();
+
 private:
 	// =========================================================
 	// Constants
@@ -73,12 +81,9 @@ private:
 	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f};	/* コライダーサイズ */
 	static constexpr int32_t kInitialHP = 40;	/* 初期HP */
 
-	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
-	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
-	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
-
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	Cygnus::Float3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; /* 初期スポーン地点 */
+	
+	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;	/* ビヘイビアツリー */
 };

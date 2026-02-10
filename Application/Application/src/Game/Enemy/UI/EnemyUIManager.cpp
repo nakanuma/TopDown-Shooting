@@ -16,6 +16,10 @@ void EnemyUIManager::Initialize() {
 	// リロードバー
 	reloadBar_ = std::make_unique<EnemyReloadBar>();
 	reloadBar_->Initialize(spriteCommon_.get());
+
+	// 発見アイコン
+	detectionIcon_ = std::make_unique<EnemyDetectionIcon>();
+	detectionIcon_->Initialize(spriteCommon_.get());
 }
 
 void EnemyUIManager::Update(const EnemyUIState& state) {
@@ -24,6 +28,9 @@ void EnemyUIManager::Update(const EnemyUIState& state) {
 
 	// リロードバー更新
 	reloadBar_->Update(state.worldPos, state.reloadRatio, state.isReloading);
+
+	// 発見アイコン更新
+	detectionIcon_->Update(state.worldPos);
 }
 
 void EnemyUIManager::Draw() {
@@ -32,4 +39,7 @@ void EnemyUIManager::Draw() {
 
 	// リロードバー描画
 	reloadBar_->Draw();
+
+	// 発見アイコン描画
+	detectionIcon_->Draw();
 }
