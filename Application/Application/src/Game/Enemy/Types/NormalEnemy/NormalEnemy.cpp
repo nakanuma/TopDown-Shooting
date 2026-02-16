@@ -75,7 +75,74 @@ void NormalEnemy::Update() {
 
 void NormalEnemy::Draw() { 
 	objectEnemy_->Draw(); 
-	Debug();
+
+#ifdef _DEBUG
+
+	Cygnus::Float4 color = IsDetectedPlayer() ? Cygnus::Float4(1.0f, 0.0f, 0.0f, 1.0f) : Cygnus::Float4(1.0f, 1.0f, 1.0f, 1.0f);
+	Cygnus::Float3 center = objectEnemy_->transform_.translate_;
+
+	const uint32_t kCircleSegments = 32;
+
+#pragma region 射撃音半径（円形）描画
+	for (uint32_t i = 0; i < kCircleSegments; i++) {
+		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+
+		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kShootDetectionRadius, center.y, center.z + std::sinf(angle1) * kShootDetectionRadius};
+		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kShootDetectionRadius, center.y, center.z + std::sinf(angle2) * kShootDetectionRadius};
+
+		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
+	}
+#pragma endregion
+
+#pragma region 近接半径（円形）描画
+	for (uint32_t i = 0; i < kCircleSegments; i++) {
+		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+
+		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kProximityRadius, center.y, center.z + std::sinf(angle1) * kProximityRadius};
+		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kProximityRadius, center.y, center.z + std::sinf(angle2) * kProximityRadius};
+
+		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
+	}
+#pragma endregion
+
+#pragma region 視界（扇形）描画
+	const uint32_t kSectorSegments = 32;
+	// 敵の向いている方向を基準にする
+	float currentRotY = objectEnemy_->transform_.rotate_.y;
+	float halfFovRad = Cygnus::DegToRad(kSearchFovDeg * 0.5f);
+
+	// 扇形の両端の角度を算出
+	float baseAngle = std::atan2f(std::sinf(currentRotY), std::cosf(currentRotY));
+
+	// 扇の開始地点と終了地点（左右対称に広げる）
+	float startAngle = baseAngle - halfFovRad;
+	float endAngle = baseAngle + halfFovRad;
+
+	Cygnus::Float3 prevPoint;
+	for (uint32_t i = 0; i <= kSectorSegments; i++) {
+		float t = static_cast<float>(i) / kSectorSegments;
+		float angle = startAngle + (endAngle - startAngle) * t;
+
+		Cygnus::Float3 nextPoint = {center.x + std::sinf(angle) * kVisionRange, center.y, center.z + std::cosf(angle) * kVisionRange};
+
+		if (i > 0) {
+			// 弧を描画
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
+		} else {
+			// 扇の左側の線
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(center, nextPoint, color);
+		}
+		if (i == kSectorSegments) {
+			// 扇の右側の線
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(nextPoint, center, color);
+		}
+		prevPoint = nextPoint;
+	}
+#pragma endregion
+
+#endif
 }
 
 void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
@@ -99,73 +166,7 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 
 void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
-	Cygnus::Float4 color = IsDetectedPlayer() ? Cygnus::Float4(1.0f, 0.0f, 0.0f, 1.0f) : Cygnus::Float4(1.0f, 1.0f, 1.0f, 1.0f);
-	Cygnus::Float3 center = objectEnemy_->transform_.translate_;
-
-	const uint32_t kCircleSegments = 32;
-
-	#pragma region 射撃音半径（円形）描画
-	for (uint32_t i = 0; i < kCircleSegments; i++) {
-		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
-		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
-
-		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kProximityRadius, center.y, center.z + std::sinf(angle1) * kShootDetectionRadius};
-		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kProximityRadius, center.y, center.z + std::sinf(angle2) * kShootDetectionRadius};
-
-		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
-	}
-	#pragma endregion
-
-	#pragma region 近接半径（円形）描画
-	for (uint32_t i = 0; i < kCircleSegments; i++) {
-		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
-		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
-
-		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kProximityRadius, center.y, center.z + std::sinf(angle1) * kProximityRadius};
-		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kProximityRadius, center.y, center.z + std::sinf(angle2) * kProximityRadius};
-		
-		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
-	}
-	#pragma endregion
-
-	#pragma region 視界（扇形）描画
-	const uint32_t kSectorSegments = 32;
-	// 敵の向いている方向を基準にする
-	float currentRotY = objectEnemy_->transform_.rotate_.y;
-	float halfFovRad = Cygnus::DegToRad(kSearchFovDeg * 0.5f);
-
-	// 扇形の両端の角度を算出
-	float baseAngle = std::atan2f(std::sinf(currentRotY), std::cosf(currentRotY));
-
-	// 扇の開始地点と終了地点（左右対称に広げる）
-	float startAngle = baseAngle - halfFovRad;
-	float endAngle = baseAngle + halfFovRad;
-
-	Cygnus::Float3 prevPoint;
-	for (uint32_t i = 0; i <= kSectorSegments; i++) {
-		float t = static_cast<float>(i) / kSectorSegments;
-		float angle = startAngle + (endAngle - startAngle) * t;
-
-		Cygnus::Float3 nextPoint = {
-			center.x + std::sinf(angle) * kVisionRange, 
-			center.y, 
-			center.z + std::cosf(angle) * kVisionRange
-		};
-
-		if (i > 0) {
-			// 弧を描画
-			Cygnus::LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
-		} else {
-			// 扇の左側の線
-			Cygnus::LineDrawer::GetInstance()->RegisterLine(center, nextPoint, color);
-		}
-		if (i == kSectorSegments) {
-			// 扇の右側の線
-			Cygnus::LineDrawer::GetInstance()->RegisterLine(nextPoint, center, color);
-		}
-		prevPoint = nextPoint;
-	}
-	#pragma endregion
+	
 #endif
 }
 
@@ -212,7 +213,7 @@ void NormalEnemy::CheckDetect() {
 
 #pragma region 射撃音（半径）チェック
 	// プレイヤーが半径内で射撃していれば発見状態にする
-	if (targetPlayer_) {
+	if (targetPlayer_->IsShootedThisFrame()) {
 		if (distSq <= (kShootDetectionRadius * kShootDetectionRadius)) {
 			OnDetected();
 			return;
@@ -227,7 +228,7 @@ void NormalEnemy::CheckDetect() {
 	}
 #pragma endregion
 
-#pragma region 視界チェック（扇形）
+#pragma region 視界チェック（扇形 + レイキャスト）
 	// 索敵半径内かどうかの判定
 	if (distSq <= kVisionRange * kVisionRange) {
 		// 前方向ベクトルを計算
@@ -244,8 +245,18 @@ void NormalEnemy::CheckDetect() {
 		float halfFovRad = Cygnus::DegToRad(kSearchFovDeg * 0.5f);
 		float cosThresold = std::cosf(halfFovRad);
 
-		// 内積結果が閾値より大きければ視界内で発見状態にする
+		// 内積結果が閾値より大きければ視界内
 		if (dot >= cosThresold) {
+			// レイキャスト判定
+			Cygnus::RayCastHit hit{};
+			bool hasHit = Cygnus::CollisionManager::GetInstance()->RayCast(objectEnemy_->transform_.translate_, toPlayer, std::sqrtf(distSq), &hit);
+
+			// 障害物に遮られたらスキップ
+			if (hasHit && hit.hitCollider->GetTag() == "Obstacle") {
+				return;
+			}
+
+			// ここまできたら発見状態にする
 			OnDetected();
 			return;
 		}

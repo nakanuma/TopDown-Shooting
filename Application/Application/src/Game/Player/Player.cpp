@@ -282,6 +282,8 @@ void Player::Debug() {
 
 	ImGui::Begin("Player");
 
+	ImGui::Checkbox("isShootedThisFrame_", &isShootedThisFrame_);
+
 	ImGui::Checkbox("Invincible", &invincible_);
 
 	/* Translate */

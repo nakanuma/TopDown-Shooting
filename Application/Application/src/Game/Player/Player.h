@@ -119,6 +119,12 @@ public:
 	void SetInvincible(bool flag) { invincible_ = flag; }
 
 	/// <summary>
+	/// このフレームで射撃したかどうかを取得します。
+	/// </summary>
+	/// <returns>このフレームでの射撃フラグ</returns>
+	bool IsShootedThisFrame() const { return isShootedThisFrame_; }
+
+	/// <summary>
 	/// ポストエフェクトマネージャーをセットします。
 	/// </summary>
 	/// <param name="manager">ポストエフェクトマネージャー</param>

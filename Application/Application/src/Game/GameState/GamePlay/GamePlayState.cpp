@@ -81,6 +81,8 @@ void GamePlayState::DrawUI() {
 void GamePlayState::Debug() {
 #ifdef USE_IMGUI
 	scene_->GetEnemyManager()->Debug();
+
+	scene_->GetPlayer()->Debug();
 #endif
 }
 
