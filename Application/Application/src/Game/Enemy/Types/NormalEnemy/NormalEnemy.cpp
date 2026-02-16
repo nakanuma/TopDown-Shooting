@@ -12,6 +12,8 @@
 
 // Application
 #include <src/Game/Player/Player.h>
+#include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
+#include <src/Game/Bullet/Manager/BulletManager.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -272,4 +274,52 @@ Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer() {
 	objectEnemy_->transform_.rotate_.y = targetAngle;
 
 	return Cygnus::BehaviorStatus::Success;
+}
+
+Cygnus::BehaviorStatus NormalEnemy::ActionShoot() {
+	// リロード中なら失敗を返す
+	if (isReloading_) return Cygnus::BehaviorStatus::Failure;
+	// マガジンに弾が無ければ失敗を返す
+	if (magazine_ <= 0) return Cygnus::BehaviorStatus::Failure;
+
+	// 射撃間隔の待機
+	shootTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	if (shootTimer_ > 0.0f) return Cygnus::BehaviorStatus::Running;
+
+	// 射撃回数の決定（1 or 2発）
+	int numShots = Cygnus::RandomGenerator::GetInstance()->RandomValue(1, 2);
+	// 発射処理
+	for (int i = 0; i < numShots; i++) {
+		// 発射方向
+		Cygnus::Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
+		
+		// 弾を生成
+		auto newBullet = std::make_unique<EnemyBullet>();
+		newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
+		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+
+		magazine_--;
+	}
+
+	// 次までの射撃間隔時間を設定
+	shootTimer_ = kShootInterval;
+	return Cygnus::BehaviorStatus::Success;
+}
+
+Cygnus::BehaviorStatus NormalEnemy::ActionReload() { 
+	// リロード開始
+	if (!isReloading_) {
+		isReloading_ = true;
+		reloadTimer_ = kReloadTime;
+	}
+
+	// タイマーを更新してリロードが完了したら成功を返す
+	reloadTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	if (reloadTimer_ <= 0.0f) {
+		magazine_ = kMaxMagazine;
+		isReloading_ = false;
+		return Cygnus::BehaviorStatus::Success;
+	}
+
+	return Cygnus::BehaviorStatus::Running;
 }

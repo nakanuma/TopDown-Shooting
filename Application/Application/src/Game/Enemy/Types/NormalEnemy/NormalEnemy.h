@@ -79,6 +79,18 @@ private:
 	/// <returns></returns>
 	Cygnus::BehaviorStatus FaceToPlayer();
 
+	/// <summary>
+	/// 射撃処理を行います。
+	/// </summary>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus ActionShoot();
+
+	/// <summary>
+	/// リロード処理を行います。
+	/// </summary>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus ActionReload();
+
 private:
 	// =========================================================
 	// Constants
@@ -91,9 +103,18 @@ private:
 	static constexpr float kVisionRange = 20.0f;			/* 視界（扇形）の長さ */
 	static constexpr float kSearchFovDeg = 75.0f;			/* 索敵視野角（度） */
 
+	static constexpr int32_t kMaxMagazine = 8;		/* マガジン内最大弾数 */
+	static constexpr float kShootInterval = 1.0f;	/* 発射間隔 */
+	static constexpr float kReloadTime = 1.0f;      /* リロード所要時間 */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================
 	
+	int32_t magazine_ = 8;		/* 現在のマガジン内弾数 */
+	float shootTimer_ = 0.0f;	/* 射撃間隔タイマー */
+	float reloadTimer_ = 0.0f;	/* リロードタイマー */
+	bool isReloading_ = false;	/* リロード中フラグ */
+
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;	/* ビヘイビアツリー */
 };
