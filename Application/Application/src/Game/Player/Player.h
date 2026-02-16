@@ -228,8 +228,9 @@ private:
 	float dashCooldownTimer_ = 0.0f; /* ダッシュのクールダウンタイマー */
 
 	// ----- Shooting -----
-	bool isFiring_ = false;  /* 射撃中フラグ */
-	float fireTimer_ = 0.0f; /* 射撃タイマー */
+	bool isFiring_ = false;				/* 射撃中フラグ */
+	bool isShootedThisFrame_ = false;	/* このフレームで弾を発射したか */
+	float fireTimer_ = 0.0f;			/* 射撃タイマー */
 
 	// ----- Overheat -----
 	float overheatTime_ = 0.0f; /* オーバーヒートタイマー */

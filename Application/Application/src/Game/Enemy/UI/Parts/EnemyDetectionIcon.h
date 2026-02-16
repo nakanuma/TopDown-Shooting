@@ -48,7 +48,7 @@ private:
 	static constexpr float kHoldDuration = 1.0f;	/* 維持時間 */
 	static constexpr float kFadeDuration = 0.2f;	/* フェード時間 */
 
-	static constexpr float kBlinkInterval = 0.02f;	/* 点滅速度 */
+	static constexpr float kBlinkInterval = 0.05f;	/* 点滅速度 */
 
 	// =========================================================
 	// Member Variables

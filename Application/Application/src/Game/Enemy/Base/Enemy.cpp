@@ -66,7 +66,10 @@ void Enemy::ResolveObstacleCollision(Cygnus::Collider* other)
 	}
 }
 
-void Enemy::ToggleDetectUI()
-{
-	ui_->PlayDetectAnimation();
+void Enemy::OnDetected() {
+	// 既に発見状態ならスキップ
+	if (isDetectedPlayer_) return;
+
+	isDetectedPlayer_ = true;	// 発見状態にする
+	ui_->PlayDetectAnimation(); // UIアニメーションを行う
 }

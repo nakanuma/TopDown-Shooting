@@ -69,6 +69,11 @@ private:
 	void BuildBehaviorTree();
 
 	/// <summary>
+	/// プレイヤー検出判定を行います。
+	/// </summary>
+	void CheckDetect();
+
+	/// <summary>
 	/// プレイヤー方向を見続けます。
 	/// </summary>
 	/// <returns></returns>
@@ -80,6 +85,11 @@ private:
 	// =========================================================
 	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f};	/* コライダーサイズ */
 	static constexpr int32_t kInitialHP = 40;	/* 初期HP */
+
+	static constexpr float kShootDetectionRadius = 25.0f;	/* プレイヤーの射撃音で気づく距離 */
+	static constexpr float kProximityRadius = 7.5f;			/* 接近（円形）で気づく距離 */
+	static constexpr float kVisionRange = 20.0f;			/* 視界（扇形）の長さ */
+	static constexpr float kSearchFovDeg = 75.0f;			/* 索敵視野角（度） */
 
 	// =========================================================
 	// Member Variables

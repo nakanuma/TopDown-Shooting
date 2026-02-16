@@ -77,7 +77,7 @@ public:
 	/// 死亡フラグの取得を行います。
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
-	bool IsDead() { return isDead_; }
+	bool IsDead() const { return isDead_; }
 
 	/// <summary>
 	/// コライダーのタグを取得します。
@@ -103,6 +103,12 @@ public:
 	/// <returns>現在のHP</returns>
 	int32_t GetHP() const { return currentHP_; }
 
+	/// <summary>
+	/// プレイヤー検出フラグの取得を行います。
+	/// </summary>
+	/// <returns></returns>
+	bool IsDetectedPlayer() const { return isDetectedPlayer_; }
+
 protected:
 	// =========================================================
 	// Internal Methods
@@ -121,9 +127,9 @@ protected:
 	void ResolveObstacleCollision(Cygnus::Collider* other);
 
 	/// <summary>
-	/// 発見アイコンのアニメーション開始（プレイヤー発見時に呼び出し）
+	/// 発見時の共通処理
 	/// </summary>
-	void ToggleDetectUI();
+	void OnDetected();
 
 protected:
 	// =========================================================

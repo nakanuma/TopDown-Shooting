@@ -118,6 +118,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
+	// このフレームで射撃したかフラグのリセット
+	isShootedThisFrame_ = false;
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
@@ -400,6 +402,9 @@ void Player::HandleShooting() {
 
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		// このフレームで射撃したことを記録
+		isShootedThisFrame_ = true;
+
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
