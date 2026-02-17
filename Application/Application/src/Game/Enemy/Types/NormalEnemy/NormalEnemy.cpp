@@ -55,6 +55,11 @@ void NormalEnemy::Update() {
 	// プレイヤー検出処理
 	CheckDetect();
 
+	// プレイヤーを向く処理（プレイヤー発見状態でのみ）
+	if(IsDetectedPlayer()) {
+		FaceToPlayer();
+	}
+
 	// オブジェクト更新
 	objectEnemy_->UpdateMatrix();
 	objectEnemy_->UpdateShadowMatrix();
@@ -66,6 +71,8 @@ void NormalEnemy::Update() {
 	EnemyUIState state;
 	state.worldPos = objectEnemy_->transform_.translate_;
 	state.hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
+	state.isReloading = isReloading_;
+	state.reloadRatio = reloadTimer_ / kReloadTime;
 	ui_->Update(state);
 
 	// 発光演出更新
@@ -173,32 +180,39 @@ void NormalEnemy::Debug() {
 }
 
 void NormalEnemy::BuildBehaviorTree() {
-
-#pragma region 索敵時ノード（シーケンス）構築
-
-	auto searchNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
-
-	// プレイヤーの検出判定を行うノード
-	auto checkDetectNode = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([](NormalEnemy* e) -> bool { return e->IsDetectedPlayer(); });
-	searchNode->AddChild(std::move(checkDetectNode));
-
-#pragma endregion
-
 #pragma region 攻撃時ノード（シーケンス）構築
 
 	auto attackNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
 
-	// プレイヤー方向を向くノード
-	auto faceToPlayerNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->FaceToPlayer(); }, "FaceToPlayer");
-	attackNode->AddChild(std::move(faceToPlayerNode));
+	// プレイヤーの検出判定ノード（コンディション）
+	auto checkDetectNode = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([](NormalEnemy* e) -> bool { return e->IsDetectedPlayer(); });
+	attackNode->AddChild(std::move(checkDetectNode));
+
+	// 射撃 or リロード（セレクター）
+	auto shootOrReloadNode = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
+
+	auto shootNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy*e, float dt){return e->ActionShoot();}, "ActionShoot");
+	shootOrReloadNode->AddChild(std::move(shootNode));
+
+	auto reloadNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) {return e->ActionReload(); }, "ActionReload");
+	shootOrReloadNode->AddChild(std::move(reloadNode));
+
+	attackNode->AddChild(std::move(shootOrReloadNode));
 
 #pragma endregion
 
-#pragma region ルートノード（シーケンス）構築
+#pragma region 索敵時ノード（シーケンス）構築
 
-	auto rootNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
-	rootNode->AddChild(std::move(searchNode)); // 索敵時ノード追加
+	auto searchNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
+	// TODO : 巡回・待機など索敵時の行動追加
+
+#pragma endregion
+
+#pragma region ルートノード（セレクター）構築
+
+	auto rootNode = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
 	rootNode->AddChild(std::move(attackNode)); // 攻撃時ノード追加
+	rootNode->AddChild(std::move(searchNode)); // 索敵時ノード追加
 
 	// ツリーの作成
 	behaviorTree_ = std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(rootNode));
@@ -292,6 +306,7 @@ Cygnus::BehaviorStatus NormalEnemy::ActionShoot() {
 	for (int i = 0; i < numShots; i++) {
 		// 発射方向
 		Cygnus::Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
+		direction = Cygnus::Float3::Normalize(direction);
 		
 		// 弾を生成
 		auto newBullet = std::make_unique<EnemyBullet>();

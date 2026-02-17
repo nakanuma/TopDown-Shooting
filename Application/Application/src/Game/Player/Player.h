@@ -225,7 +225,7 @@ private:
 	bool isMoving_ = false;                        /* 移動中フラグ */
 	int32_t currentHP_ = 0;                        /* 現在HP */
 
-	bool invincible_ = false; /* 無敵フラグ（ボス撃破時に有効化） */
+	bool invincible_ = true; /* 無敵フラグ（ボス撃破時に有効化） */
 	bool isDead_ = false;     /* 死亡フラグ */
 
 	// ----- Dash -----
