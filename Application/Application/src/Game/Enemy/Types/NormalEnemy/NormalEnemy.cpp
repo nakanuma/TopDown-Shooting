@@ -46,7 +46,6 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	currentHP_ = kInitialHP;
 	maxHP_ = kInitialHP;
 
-
 	targetPlayer_ = player;
 
 	// ビヘイビアツリー構築

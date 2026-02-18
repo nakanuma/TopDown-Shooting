@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.cpp" />
     <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp" />
     <ClCompile Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.h" />
     <ClInclude Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h" />

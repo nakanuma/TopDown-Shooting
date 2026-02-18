@@ -109,7 +109,7 @@ private:
 	static constexpr float kSearchFovDeg = 75.0f;			/* 索敵視野角（度） */
 	static constexpr float kFirstShootDelay = 1.5f;         /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
 
-	static constexpr int32_t kMaxMagazine = 8;			/* マガジン内最大弾数 */
+	static constexpr int32_t kMaxMagazine = 6;			/* マガジン内最大弾数 */
 	static constexpr float kBulletSpreadAngle = 0.1f;	/* 弾の拡散角 */
 	static constexpr float kShootMinInterval = 1.0f;	/* 発射最小間隔 */
 	static constexpr float kShootMaxInterval = 2.0f;    /* 発射最大間隔 */
@@ -121,7 +121,7 @@ private:
 	// Member Variables
 	// =========================================================
 	
-	int32_t magazine_ = 8;		/* 現在のマガジン内弾数 */
+	int32_t magazine_ = 6;		/* 現在のマガジン内弾数 */
 	float shootTimer_ = 0.0f;	/* 射撃間隔タイマー */
 	float reloadTimer_ = 0.0f;	/* リロードタイマー */
 	bool isReloading_ = false;	/* リロード中フラグ */
