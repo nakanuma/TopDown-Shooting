@@ -129,7 +129,7 @@ protected:
 	/// <summary>
 	/// 発見時の共通処理
 	/// </summary>
-	void OnDetected();
+	virtual void OnDetected();
 
 protected:
 	// =========================================================

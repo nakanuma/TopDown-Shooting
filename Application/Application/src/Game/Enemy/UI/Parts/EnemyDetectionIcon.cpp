@@ -21,7 +21,7 @@ void EnemyDetectionIcon::Update(const Cygnus::Float3& worldPos) {
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
-	// アニメーション処理
+	// 点滅アニメーション処理
 	float alpha = 1.0f;
 	// 1.点滅
 	if(timer_ < kFlashDuration) {

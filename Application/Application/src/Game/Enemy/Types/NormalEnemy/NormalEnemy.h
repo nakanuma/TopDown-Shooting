@@ -71,7 +71,12 @@ private:
 	/// <summary>
 	/// プレイヤー検出判定を行います。
 	/// </summary>
-	void CheckDetect();
+	bool CheckDetect();
+
+	/// <summary>
+	/// プレイヤー発見時の処理を行います
+	/// </summary>
+	void OnDetected() override;
 
 	/// <summary>
 	/// プレイヤー方向を見続けます。
@@ -102,10 +107,15 @@ private:
 	static constexpr float kProximityRadius = 10.0f;		/* 接近（円形）で気づく距離 */
 	static constexpr float kVisionRange = 20.0f;			/* 視界（扇形）の長さ */
 	static constexpr float kSearchFovDeg = 75.0f;			/* 索敵視野角（度） */
+	static constexpr float kFirstShootDelay = 1.5f;         /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
 
-	static constexpr int32_t kMaxMagazine = 8;		/* マガジン内最大弾数 */
-	static constexpr float kShootInterval = 1.0f;	/* 発射間隔 */
-	static constexpr float kReloadTime = 1.0f;      /* リロード所要時間 */
+	static constexpr int32_t kMaxMagazine = 8;			/* マガジン内最大弾数 */
+	static constexpr float kBulletSpreadAngle = 0.1f;	/* 弾の拡散角 */
+	static constexpr float kShootMinInterval = 1.0f;	/* 発射最小間隔 */
+	static constexpr float kShootMaxInterval = 2.0f;    /* 発射最大間隔 */
+	static constexpr float kReloadTime = 2.0f;			/* リロード所要時間 */
+
+	static constexpr float kRotationSpeed = 4.0f;	/* 回転速度 */
 
 	// =========================================================
 	// Member Variables
