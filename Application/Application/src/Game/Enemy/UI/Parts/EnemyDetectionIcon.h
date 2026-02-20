@@ -45,7 +45,7 @@ private:
 	static constexpr float kDetectionIconOffsetY = 120.0f;
 
 	static constexpr float kFlashDuration = 0.25f;	/* 点滅時間 */
-	static constexpr float kHoldDuration = 1.0f;	/* 維持時間 */
+	static constexpr float kHoldDuration = 1.5f;	/* 維持時間 */
 	static constexpr float kFadeDuration = 0.2f;	/* フェード時間 */
 
 	static constexpr float kBlinkInterval = 0.025f;	/* 点滅速度 */

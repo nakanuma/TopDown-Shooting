@@ -9,6 +9,7 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Enemy/Base/Enemy.h>
+#include <src/Game/Waypoint/Waypoint.h>
 
 // =========================================================
 // 通常の敵クラス
@@ -82,19 +83,31 @@ private:
 	/// プレイヤー方向を見続けます。
 	/// </summary>
 	/// <returns></returns>
-	Cygnus::BehaviorStatus FaceToPlayer();
+	Cygnus::BehaviorStatus FaceToPlayer(float dt);
 
 	/// <summary>
 	/// 射撃処理を行います。
 	/// </summary>
 	/// <returns></returns>
-	Cygnus::BehaviorStatus ActionShoot();
+	Cygnus::BehaviorStatus ActionShoot(float dt);
 
 	/// <summary>
 	/// リロード処理を行います。
 	/// </summary>
 	/// <returns></returns>
-	Cygnus::BehaviorStatus ActionReload();
+	Cygnus::BehaviorStatus ActionReload(float dt);
+
+	/// <summary>
+	/// 移動するかどうかの判定・準備を行います。
+	/// </summary>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus ActionDecideMove();
+
+	/// <summary>
+	/// 移動を行います。
+	/// </summary>
+	/// <returns></returns>
+	Cygnus::BehaviorStatus ActionMove(float dt);
 
 private:
 	// =========================================================
@@ -115,7 +128,13 @@ private:
 	static constexpr float kShootMaxInterval = 2.0f;    /* 発射最大間隔 */
 	static constexpr float kReloadTime = 2.0f;			/* リロード所要時間 */
 
-	static constexpr float kRotationSpeed = 4.0f;	/* 回転速度 */
+	static constexpr float kRotationSpeed = 4.0f;	 /* 回転速度（プレイヤー発見時） */
+	static constexpr float kMoveMinSpeed = 3.0f;	 /* 移動最小速度（射撃時） */
+	static constexpr float kMoveMaxSpeed = 6.0f;     /* 移動最大速度（射撃時） */
+	static constexpr float kKeepDistance = 10.0f;	 /* プレイヤーとの理想的な距離（移動場所判定用） */
+	static constexpr float kMoveProbability = 0.5f;  /* 移動する確率（射撃時） */
+	static constexpr float kMoveMinDuration = 0.25f; /* 移動最小時間（射撃時） */
+	static constexpr float kMoveMaxDuration = 2.0f;  /* 移動最大時間（射撃時） */
 
 	// =========================================================
 	// Member Variables
@@ -125,6 +144,12 @@ private:
 	float shootTimer_ = 0.0f;	/* 射撃間隔タイマー */
 	float reloadTimer_ = 0.0f;	/* リロードタイマー */
 	bool isReloading_ = false;	/* リロード中フラグ */
+
+	float moveSpeed_ = 0.0f;                /* 移動速度 */
+	float moveTimer_ = 0.0f;				/* 移動残り時間 */
+	Cygnus::Float3 moveDir_ = {0, 0, 0};	/* 移動方向 */
+
+	Waypoint* combatTargetWP_ = nullptr; /* 戦闘時移動用のウェイポイント */
 
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_;	/* ビヘイビアツリー */
 };

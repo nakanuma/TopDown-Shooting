@@ -14,6 +14,7 @@
 #include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
 #include <src/Game/Bullet/Manager/BulletManager.h>
 #include <src/Game/Player/Player.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 // Externals
 #include <ImguiWrapper.h>
@@ -144,6 +145,11 @@ void NormalEnemy::Draw() {
 	}
 #pragma endregion
 
+	ImGui::Begin("NormalEnemy");
+	ImGui::DragFloat("moveTimer", &moveTimer_);
+	ImGui::DragFloat3("moveDir", &moveDir_.x);
+	ImGui::End();
+
 #endif
 }
 
@@ -182,30 +188,40 @@ void NormalEnemy::BuildBehaviorTree() {
 	// プレイヤーの検出判定を行うノード
 	auto checkDetectNode = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([](NormalEnemy* e) -> bool { return e->CheckDetect(); });
 	// プレイヤーの方を向くノード
-	auto faceToPlayerNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->FaceToPlayer(); }, "FaceToPlayer");
+	auto faceToPlayerNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->FaceToPlayer(dt); }, "FaceToPlayer");
 	// 射撃を行うノード
-	auto shootNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionShoot(); }, "ActionShoot");
+	auto shootNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionShoot(dt); }, "ActionShoot");
 	// リロードを行うノード
-	auto reloadNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionReload(); }, "ActionReload");
+	auto reloadNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionReload(dt); }, "ActionReload");
+	// 移動判定・準備を行うノード
+	auto decideMoveNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionDecideMove(); }, "ActionDecideMove");
+	// 移動を行うノード
+	auto moveNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return e->ActionMove(dt); }, "ActionMove");
 
 	///
 	///	CompositeNode
 	/// 
 
-	// 弾があれば射撃、弾が無ければリロードを行うセレクタノード
+	// 射撃 / リロードの選択ノード
 	auto shootOrReloadNode = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
 	shootOrReloadNode->AddChild(std::move(shootNode));
 	shootOrReloadNode->AddChild(std::move(reloadNode));
 
-	// 常にプレイヤーを向きながら射撃+リロードを行うパラレルノード
-	auto shootParallelNode = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>();
-	shootParallelNode->AddChild(std::move(faceToPlayerNode));
-	shootParallelNode->AddChild(std::move(shootOrReloadNode));
+	// 移動判定->射撃を行うノード
+	auto moveAndAttackSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
+	moveAndAttackSequence->AddChild(std::move(decideMoveNode));
+	moveAndAttackSequence->AddChild(std::move(shootOrReloadNode));
+
+	// 移動と攻撃の並列ノード
+	auto combatParallelNode = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>();
+	combatParallelNode->AddChild(std::move(faceToPlayerNode));
+	combatParallelNode->AddChild(std::move(moveNode));
+	combatParallelNode->AddChild(std::move(moveAndAttackSequence));
 
 	// 常にプレイヤー発見状態を確認し、発見していれば射撃行動を行うセレクタノード
 	auto attackNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
 	attackNode->AddChild(std::move(checkDetectNode));
-	attackNode->AddChild(std::move(shootParallelNode));
+	attackNode->AddChild(std::move(combatParallelNode));
 
 #pragma endregion
 
@@ -298,7 +314,7 @@ void NormalEnemy::OnDetected() {
 	shootTimer_ = kFirstShootDelay; // 発見時のみ、最初の射撃まで遅延時間を設定する
 }
 
-Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer() {
+Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer(float dt) {
 	// プレイヤーへの方向ベクトルからY軸回転角度を計算
 	Cygnus::Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
 	float targetAngle = std::atan2f(toPlayer.x, toPlayer.z);
@@ -312,7 +328,7 @@ Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer() {
 	while (angleDiff < -Cygnus::PIf) angleDiff += (Cygnus::PIf * 2.0f);
 
 	// 回転速度を考慮して補間
-	float maxRotation = kRotationSpeed * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	float maxRotation = kRotationSpeed * dt;
 	if (std::abs(angleDiff) <= maxRotation) {
 		objectEnemy_->transform_.rotate_.y = targetAngle;
 	} else {
@@ -323,7 +339,7 @@ Cygnus::BehaviorStatus NormalEnemy::FaceToPlayer() {
 	return Cygnus::BehaviorStatus::Success;
 }
 
-Cygnus::BehaviorStatus NormalEnemy::ActionShoot() {
+Cygnus::BehaviorStatus NormalEnemy::ActionShoot(float dt) {
 	// リロード中なら失敗を返す
 	if (isReloading_)
 		return Cygnus::BehaviorStatus::Failure;
@@ -332,7 +348,7 @@ Cygnus::BehaviorStatus NormalEnemy::ActionShoot() {
 		return Cygnus::BehaviorStatus::Failure;
 
 	// 射撃間隔の待機
-	shootTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	shootTimer_ -= dt;
 	if (shootTimer_ > 0.0f)
 		return Cygnus::BehaviorStatus::Running;
 
@@ -354,7 +370,7 @@ Cygnus::BehaviorStatus NormalEnemy::ActionShoot() {
 	return Cygnus::BehaviorStatus::Success;
 }
 
-Cygnus::BehaviorStatus NormalEnemy::ActionReload() {
+Cygnus::BehaviorStatus NormalEnemy::ActionReload(float dt) {
 	// リロード開始
 	if (!isReloading_) {
 		isReloading_ = true;
@@ -362,12 +378,84 @@ Cygnus::BehaviorStatus NormalEnemy::ActionReload() {
 	}
 
 	// タイマーを更新してリロードが完了したら成功を返す
-	reloadTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	reloadTimer_ -= dt;
 	if (reloadTimer_ <= 0.0f) {
 		magazine_ = kMaxMagazine;
 		isReloading_ = false;
 		return Cygnus::BehaviorStatus::Success;
 	}
 
+	return Cygnus::BehaviorStatus::Running;
+}
+
+Cygnus::BehaviorStatus NormalEnemy::ActionDecideMove() {
+	// 既に移動中ならスキップ
+	if (moveTimer_ > 0.0f) 
+		return Cygnus::BehaviorStatus::Success;
+
+	// 移動するかどうかを指定した確率で決定
+	if (Cygnus::RandomGenerator::GetInstance()->RandomValueBool(kMoveProbability)) {
+		// 移動先ウェイポイントの選出
+		std::vector<Waypoint*> candidates;
+		Cygnus::Float3 myPos = objectEnemy_->transform_.translate_;
+		Cygnus::Float3 playerPos = targetPlayer_->GetTranslate();
+		float distToPlayer = Cygnus::Float3::Length(playerPos - myPos);
+
+		// プレイヤーへの方向ベクトル
+		Cygnus::Float3 toPlayerVec = Cygnus::Float3::Normalize(playerPos - myPos);
+
+		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
+			Cygnus::Float3 wpPos = wp->GetPosition();
+			float distFromMe = Cygnus::Float3::Length(wpPos - myPos);
+
+			// 自分の一定範囲内のウェイポイントを対象にする
+			if (distFromMe > 2.0f && distFromMe < 20.0f) {
+				Cygnus::Float3 toWPVec = Cygnus::Float3::Normalize(wpPos - myPos);
+				// プレイヤー方向 or 逆方向かを判定
+				float dot = Cygnus::Float3::Dot(toPlayerVec, toWPVec);
+
+				// プレイヤーとの距離判定
+				if (distToPlayer > kKeepDistance) {
+					// プレイヤーが理想距離よりも遠いなら前方にあるウェイポイントを候補に
+					if (dot > 0.2f) candidates.push_back(wp.get());
+				} else {
+					// プレイヤーが理想距離よりも近いなら後方にあるウェイポイントを候補に
+					if (dot < -0.2f) candidates.push_back(wp.get());
+				}
+			}
+		}
+
+		// 候補があればターゲットを設定
+		if (!candidates.empty()) {
+			uint32_t idx = Cygnus::RandomGenerator::GetInstance()->RandomValue(0, (uint32_t)candidates.size() - 1);
+			combatTargetWP_ = candidates[idx];
+
+			// 移動時間と速度をランダムに設定
+			moveTimer_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kMoveMinDuration, kMoveMaxDuration);
+			moveSpeed_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(kMoveMinSpeed, kMoveMaxSpeed);
+		}
+	}
+
+	return Cygnus::BehaviorStatus::Success;
+}
+
+Cygnus::BehaviorStatus NormalEnemy::ActionMove(float dt) { 
+	// 移動時間が残っていない or 移動先ウェイポイントが未設定ならスキップ
+	if (moveTimer_ <= 0.0f || combatTargetWP_ == nullptr) {
+		combatTargetWP_ = nullptr;
+		return Cygnus::BehaviorStatus::Success;
+	}
+
+	// 移動先ウェイポイントへの方向
+	Cygnus::Float3 myPos = objectEnemy_->transform_.translate_;
+	Cygnus::Float3 targetPos = combatTargetWP_->GetPosition();
+	Cygnus::Float3 dir = Cygnus::Float3::Normalize(targetPos - myPos);
+	dir.y = 0.0f; // 上下方向には移動しない
+
+	// 移動実行
+	objectEnemy_->transform_.translate_ += dir * moveSpeed_ * dt;
+
+	// タイマー更新
+	moveTimer_ -= dt;
 	return Cygnus::BehaviorStatus::Running;
 }

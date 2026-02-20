@@ -1,8 +1,12 @@
 #include "EnemyDetectionIcon.h"
 
+// C++
+#include <algorithm>
+
 // Engine
 #include <TextureManager.h>
 #include <TimeManager.h>
+#include <Easing.h>
 
 // Application
 #include <src/Game/Utility/Utility.h>
@@ -34,7 +38,9 @@ void EnemyDetectionIcon::Update(const Cygnus::Float3& worldPos) {
 	// 3.フェードで徐々に非表示
 	} else {
 		float fadeTimer = timer_ - (kFlashDuration + kHoldDuration);
-		alpha = 1.0f - (fadeTimer / kFadeDuration);
+		float t = std::clamp(fadeTimer / kFadeDuration, 0.0f, 1.0f);
+		float easeT = Cygnus::Easing::EaseInQuad(t);
+		alpha = 1.0f - easeT;
 	}
 
 	// ワールド座標をスクリーン座標に変換
