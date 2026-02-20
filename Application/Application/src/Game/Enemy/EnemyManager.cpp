@@ -70,9 +70,16 @@ void EnemyManager::Draw() {
 }
 
 void EnemyManager::DrawShadow() {
-	// 全ての敵の影を描画
+	// 全ての敵の通常モデルの影を描画
 	for (auto& enemy : enemies_) {
 		enemy->DrawShadow();
+	}
+}
+
+void EnemyManager::DrawShadowSkinning() {
+	// 全ての敵のスキニングモデルの影を描画
+	for (auto& enemy : enemies_) {
+		enemy->DrawShadowSkinning();
 	}
 }
 

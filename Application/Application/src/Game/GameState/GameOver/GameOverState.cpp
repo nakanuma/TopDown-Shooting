@@ -43,7 +43,9 @@ void GameOverState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GameOverState::DrawShadowSkinning() {}
+void GameOverState::DrawShadowSkinning() { 
+	scene_->GetEnemyManager()->DrawShadowSkinning(); 
+}
 
 void GameOverState::DrawUI() {
 	gameOverSequence_->DrawUI();

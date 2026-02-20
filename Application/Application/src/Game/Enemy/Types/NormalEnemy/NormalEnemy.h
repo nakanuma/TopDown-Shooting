@@ -4,6 +4,7 @@
 // Engine Includes
 // ---------------------------------------------------------
 #include <Engine/BehaviourTree/BehaviorTree.h>
+#include <Engine/Model/Animation/AnimatedModelInstance.h>
 
 // ---------------------------------------------------------
 // Application Includes
@@ -42,9 +43,14 @@ public:
 	void Draw() override;
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ用の描画処理を行います。
 	/// </summary>
 	void DrawShadow() override;
+
+	/// <summary>
+	/// スキニングモデルのシャドウマップ用の描画処理を行います。
+	/// </summary>
+	void DrawShadowSkinning() override;
 
 	/// <summary>
 	/// UIの描画処理を行います。
@@ -89,8 +95,8 @@ private:
 	static constexpr float kSearchFovDeg = 75.0f;         /* 索敵視野角（度） */
 	static constexpr float kVisionRange = 20.0f;          /* 視界（扇形）の長さ */
 
-	static constexpr float kReloadTime = 2.0f;      /* リロード所要時間 */
-	static constexpr float kFirstShootDelay = 1.5f; /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
+	static constexpr float kReloadTime = 2.0f;        /* リロード所要時間 */
+	static constexpr float kFirstShootDelay = 1.5f;   /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
 	static constexpr int32_t kMaxMagazine = 6;        /* マガジン内最大弾数 */
 	static constexpr float kBulletSpreadAngle = 0.1f; /* 弾の拡散角 */
 	static constexpr float kShootMinInterval = 1.0f;  /* 発射最小間隔 */
@@ -100,9 +106,15 @@ private:
 	static constexpr float kRotationSpeed = 4.0f;    /* 回転速度（プレイヤー発見時） */
 	static constexpr float kMoveMinSpeed = 3.0f;     /* 移動最小速度（射撃時） */
 	static constexpr float kMoveMaxSpeed = 6.0f;     /* 移動最大速度（射撃時） */
-	static constexpr float kMoveProbability = 0.5f;  /* 移動する確率（射撃時） */
+	static constexpr float kMoveProbability = 0.7f;  /* 移動する確率（射撃時） */
 	static constexpr float kMoveMinDuration = 0.25f; /* 移動最小時間（射撃時） */
 	static constexpr float kMoveMaxDuration = 2.0f;  /* 移動最大時間（射撃時） */
+
+	static constexpr float kAnimationPlaybackSpeed = 0.5f; /* アニメーション再生速度 */
+
+	static constexpr Cygnus::Float4 kGunColor = {0.25f, 0.25f, 0.25f, 1.0f}; /* 銃の色 */
+	static constexpr float kGunForwardOffset = 1.8f;  /* 銃の前方位置オフセット */
+	static constexpr float kGunUpOffset = 0.9f;       /* 銃の上方向位置オフセット */
 
 	// =========================================================
 	// Member Variables
@@ -117,7 +129,12 @@ private:
 	float moveTimer_ = 0.0f;             /* 移動残り時間 */
 	Cygnus::Float3 moveDir_ = {0, 0, 0}; /* 移動方向 */
 
+	bool isWalking_ = false; /* 歩いているかどうか */
+
 	Waypoint* combatTargetWP_ = nullptr; /* 戦闘時移動用のウェイポイント */
 
 	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> behaviorTree_; /* ビヘイビアツリー */
+
+	std::unique_ptr<Cygnus::AnimatedModelInstance> objectEnemyAnim_; /* オブジェクト（アニメーション適用） */
+	Cygnus::AnimatedModelInstance::AnimatedModelData walkData_;      /* 歩行アニメーションデータ */
 };

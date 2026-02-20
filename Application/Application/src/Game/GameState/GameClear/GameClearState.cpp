@@ -72,6 +72,7 @@ void GameClearState::DrawShadow() {
 
 void GameClearState::DrawShadowSkinning() {
 	scene_->GetPlayer()->DrawShadowSkinning();
+	scene_->GetEnemyManager()->DrawShadowSkinning();
 }
 
 void GameClearState::DrawUI() { 

@@ -141,6 +141,8 @@ void BossEnemy::Draw() { objectEnemy_->Draw(); }
 
 void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
+void BossEnemy::DrawShadowSkinning() {}
+
 void BossEnemy::DrawUI() { ui_->Draw(); }
 
 void BossEnemy::Debug() {

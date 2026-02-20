@@ -243,6 +243,13 @@ void GameResourceLoader::LoadAllModelData() {
 		"Object/Gun/gun.obj",
 		"white.png"
 	);
+
+	// ピストル
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
+		"Pistol", 
+		"Object/Gun/pistol.obj", 
+		"white.png"
+	);
 }
 
 void GameResourceLoader::RegisterAllParticleEffect()

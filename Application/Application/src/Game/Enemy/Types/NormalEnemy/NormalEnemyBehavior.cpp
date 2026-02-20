@@ -79,7 +79,7 @@ bool NormalEnemyBehavior::CheckDetect(NormalEnemy* e) {
 		return true;
 
 	// プレイヤーとの距離（2乗）を計算
-	float distSq = Cygnus::Float3::LengthSq(e->targetPlayer_->GetTranslate() - e->objectEnemy_->transform_.translate_);
+	float distSq = Cygnus::Float3::LengthSq(e->targetPlayer_->GetTranslate() - e->objectEnemyAnim_->GetTranslate());
 
 #pragma region 射撃音（半径）チェック
 	// プレイヤーが半径内で射撃していれば発見状態にする
@@ -102,10 +102,10 @@ bool NormalEnemyBehavior::CheckDetect(NormalEnemy* e) {
 	// 索敵半径内かどうかの判定
 	if (distSq <= e->kVisionRange * e->kVisionRange) {
 		// 前方向ベクトルを計算
-		Cygnus::Float3 forward = {std::sinf(e->objectEnemy_->transform_.rotate_.y), 0.0f, std::cosf(e->objectEnemy_->transform_.rotate_.y)};
+		Cygnus::Float3 forward = {std::sinf(e->objectEnemyAnim_->GetRotate().y), 0.0f, std::cosf(e->objectEnemyAnim_->GetRotate().y)};
 
 		// 敵からプレイヤーへの方向ベクトルを計算
-		Cygnus::Float3 toPlayer = e->targetPlayer_->GetTranslate() - e->objectEnemy_->transform_.translate_;
+		Cygnus::Float3 toPlayer = e->targetPlayer_->GetTranslate() - e->objectEnemyAnim_->GetTranslate();
 		toPlayer = Cygnus::Float3::Normalize(toPlayer);
 
 		// 内積から角度を求める
@@ -119,7 +119,7 @@ bool NormalEnemyBehavior::CheckDetect(NormalEnemy* e) {
 		if (dot >= cosThresold) {
 			// レイキャスト判定
 			Cygnus::RayCastHit hit{};
-			bool hasHit = Cygnus::CollisionManager::GetInstance()->RayCast(e->objectEnemy_->transform_.translate_, toPlayer, std::sqrtf(distSq), &hit);
+			bool hasHit = Cygnus::CollisionManager::GetInstance()->RayCast(e->objectEnemyAnim_->GetTranslate(), toPlayer, std::sqrtf(distSq), &hit);
 
 			// 障害物に遮られたらスキップ
 			if (hasHit && hit.hitCollider->GetTag() == "Obstacle") {
@@ -140,11 +140,11 @@ bool NormalEnemyBehavior::CheckDetect(NormalEnemy* e) {
 
 Cygnus::BehaviorStatus NormalEnemyBehavior::FaceToPlayer(NormalEnemy* e, float dt) {
 	// プレイヤーへの方向ベクトルからY軸回転角度を計算
-	Cygnus::Float3 toPlayer = e->targetPlayer_->GetTranslate() - e->objectEnemy_->transform_.translate_;
+	Cygnus::Float3 toPlayer = e->targetPlayer_->GetTranslate() - e->objectEnemyAnim_->GetTranslate();
 	float targetAngle = std::atan2f(toPlayer.x, toPlayer.z);
 
 	// 現在の角度と目標角度の差分を求める
-	float currentAngle = e->objectEnemy_->transform_.rotate_.y;
+	float currentAngle = e->objectEnemyAnim_->GetRotate().y;
 	float angleDiff = targetAngle - currentAngle;
 
 	// 最短距離で回転するように角度差を補正
@@ -156,10 +156,10 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::FaceToPlayer(NormalEnemy* e, float d
 	// 回転速度を考慮して補間
 	float maxRotation = e->kRotationSpeed * dt;
 	if (std::abs(angleDiff) <= maxRotation) {
-		e->objectEnemy_->transform_.rotate_.y = targetAngle;
+		e->objectEnemyAnim_->GetRotate().y = targetAngle;
 	} else {
 		// 角度差の符号に応じて回転
-		e->objectEnemy_->transform_.rotate_.y += (angleDiff > 0 ? maxRotation : -maxRotation);
+		e->objectEnemyAnim_->GetRotate().y += (angleDiff > 0 ? maxRotation : -maxRotation);
 	}
 
 	return Cygnus::BehaviorStatus::Success;
@@ -179,14 +179,14 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionShoot(NormalEnemy* e, float dt
 		return Cygnus::BehaviorStatus::Running;
 
 	// 発射方向を決定
-	Cygnus::Float3 direction = e->targetPlayer_->GetTranslate() - e->objectEnemy_->transform_.translate_;
+	Cygnus::Float3 direction = e->targetPlayer_->GetTranslate() - e->objectEnemyAnim_->GetTranslate();
 	float randSpread = Cygnus::RandomGenerator::GetInstance()->RandomValue(-e->kBulletSpreadAngle, e->kBulletSpreadAngle);
 	direction += {randSpread, 0.0f, randSpread}; // XとZ方向にランダムな拡散角を加算
 	direction = Cygnus::Float3::Normalize(direction);
 
 	// 弾を生成
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(e->objectEnemy_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
+	newBullet->Initialize(e->objectGun_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
 	e->magazine_--;
@@ -216,14 +216,15 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionReload(NormalEnemy* e, float d
 
 Cygnus::BehaviorStatus NormalEnemyBehavior::ActionDecideMove(NormalEnemy* e, float dt) {
 	// 既に移動中ならスキップ
-	if (e->moveTimer_ > 0.0f)
+	if (e->moveTimer_ > 0.0f) {
 		return Cygnus::BehaviorStatus::Success;
+	}
 
 	// 移動するかどうかを指定した確率で決定
 	if (Cygnus::RandomGenerator::GetInstance()->RandomValueBool(e->kMoveProbability)) {
 		// 移動先ウェイポイントの選出
 		std::vector<Waypoint*> candidates;
-		Cygnus::Float3 myPos = e->objectEnemy_->transform_.translate_;
+		Cygnus::Float3 myPos = e->objectEnemyAnim_->GetTranslate();
 		Cygnus::Float3 playerPos = e->targetPlayer_->GetTranslate();
 		float distToPlayer = Cygnus::Float3::Length(playerPos - myPos);
 
@@ -261,6 +262,9 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionDecideMove(NormalEnemy* e, flo
 			// 移動時間と速度をランダムに設定
 			e->moveTimer_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(e->kMoveMinDuration, e->kMoveMaxDuration);
 			e->moveSpeed_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(e->kMoveMinSpeed, e->kMoveMaxSpeed);
+		
+			// 歩いている状態であることを示す
+			e->isWalking_ = true;
 		}
 	}
 
@@ -270,18 +274,19 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionDecideMove(NormalEnemy* e, flo
 Cygnus::BehaviorStatus NormalEnemyBehavior::ActionMove(NormalEnemy* e, float dt) {
 	// 移動時間が残っていない or 移動先ウェイポイントが未設定ならスキップ
 	if (e->moveTimer_ <= 0.0f || e->combatTargetWP_ == nullptr) {
+		e->isWalking_ = false; // 移動が終了したこと示す
 		e->combatTargetWP_ = nullptr;
 		return Cygnus::BehaviorStatus::Success;
 	}
 
 	// 移動先ウェイポイントへの方向
-	Cygnus::Float3 myPos = e->objectEnemy_->transform_.translate_;
+	Cygnus::Float3 myPos = e->objectEnemyAnim_->GetTranslate();
 	Cygnus::Float3 targetPos = e->combatTargetWP_->GetPosition();
 	Cygnus::Float3 dir = Cygnus::Float3::Normalize(targetPos - myPos);
 	dir.y = 0.0f; // 上下方向には移動しない
 
 	// 移動実行
-	e->objectEnemy_->transform_.translate_ += dir * e->moveSpeed_ * dt;
+	e->objectEnemyAnim_->GetTranslate() += dir * e->moveSpeed_ * dt;
 
 	// タイマー更新
 	e->moveTimer_ -= dt;

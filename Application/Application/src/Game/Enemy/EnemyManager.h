@@ -46,9 +46,14 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 全ての敵のシャドウマップ描画処理を行います。
+	/// 全ての敵の通常モデルのシャドウマップ描画処理を行います。
 	/// </summary>
 	void DrawShadow();
+
+	/// <summary>
+	/// 全ての敵のスキニングモデルのシャドウマップ描画処理を行います。
+	/// </summary>
+	void DrawShadowSkinning();
 
 	/// <summary>
 	/// 全ての敵のUI描画処理を行います。

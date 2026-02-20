@@ -78,7 +78,10 @@ void GamePlayState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GamePlayState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinning(); }
+void GamePlayState::DrawShadowSkinning() { 
+	scene_->GetPlayer()->DrawShadowSkinning(); 
+	scene_->GetEnemyManager()->DrawShadowSkinning();
+}
 
 void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();

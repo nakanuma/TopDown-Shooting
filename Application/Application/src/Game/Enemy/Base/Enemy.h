@@ -49,9 +49,14 @@ public:
 	virtual void Draw() = 0;
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ用の描画処理を行います。
 	/// </summary>
 	virtual void DrawShadow() = 0;
+
+	/// <summary>
+	/// スキニングモデルのシャドウマップ描画処理を行います。
+	/// </summary>
+	virtual void DrawShadowSkinning() = 0;
 
 	/// <summary>
 	/// UIの描画処理を行います。
@@ -143,6 +148,7 @@ protected:
 	// Member Variables
 	// =========================================================
 	std::unique_ptr<Cygnus::Object3D> objectEnemy_;		/* 敵オブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectGun_;       /* 銃オブジェクト */
 	std::unique_ptr<Cygnus::Collider> collider_;		/* コライダー */
 	std::unique_ptr<EnemyUIManager> ui_;				/* UI */
 	std::unique_ptr<EnemyVisualEffects> visualEffect_;	/* 発光演出管理 */

@@ -112,6 +112,8 @@ void ImmobileEnemy::Draw() { objectEnemy_->Draw(); }
 
 void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
+void ImmobileEnemy::DrawShadowSkinning() {}
+
 void ImmobileEnemy::DrawUI() { ui_->Draw(); }
 
 void ImmobileEnemy::OnCollision(Cygnus::Collider* other) { 
