@@ -378,6 +378,9 @@
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Bullet\Base\Bullet.h">
@@ -597,6 +600,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
