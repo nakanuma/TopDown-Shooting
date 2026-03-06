@@ -7,10 +7,9 @@
 #include <SpriteCommon.h>
 
 // =========================================================
-// 敵のHPバーUIクラス
+// 敵のリロードアイコンUIクラス
 // =========================================================
-class EnemyHPBar
-{
+class EnemyReloadIcon {
 public:
 	// =========================================================
 	// Public Methods
@@ -26,8 +25,7 @@ public:
 	/// 更新処理を行います。
 	/// </summary>
 	/// <param name="worldPos">ワールド座標</param>
-	/// <param name="hpRatio">HP割合</param>
-	void Update(const Cygnus::Float3& worldPos, float hpRatio);
+	void Update(const Cygnus::Float3& worldPos, bool isReloading);
 
 	/// <summary>
 	/// 描画処理を行います。
@@ -38,15 +36,24 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kHPBarSize = { 100.0f, 20.0f };		/* HPバーのサイズ */
-	static constexpr float kHPBarOffsetY = 90.0f;						/* HPバーのY軸オフセット */
+	static constexpr float kIconOffsetY = 120.0f; /* アイコンのY軸オフセット */
 
-	static constexpr Cygnus::Float4 kHPBarBackgroundColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* HPバー背景色 */
-	static constexpr Cygnus::Float4 kHPBarForegroundColor = { 0.0f, 1.0f, 0.5f, 1.0f };	/* HPバー前景色 */
+	static constexpr float kStartScaleRatio = 0.8f; /* 開始時の倍率 */
+	static constexpr float kEndScaleRatio = 1.0f;   /* 終了時の倍率 */
+	static constexpr float kScaleDuration = 0.3f;   /* 拡大にかける時間 */
+
+	static constexpr float kFadeStartDelay = 1.5f; /* フェード開始までの待機時間 */
+	static constexpr float kFadeDuration = 0.2f;   /* フェードにかける時間 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::Sprite> spriteHPBackground_; /* HPバー後景スプライト */
-	std::unique_ptr<Cygnus::Sprite> spriteHPForeground_; /* HPバー前景スプライト */
+	std::unique_ptr<Cygnus::Sprite> sprite_; /* スプライト */
+
+	Cygnus::Float2 baseSize_ = {0.0f, 0.0f}; /* スプライトの基準サイズ */
+
+	bool isVisible_ = false; /* 表示フラグ */
+	float timer_ = 0.0f;     /* アニメーション用タイマー */
+
+	bool wasReloading_ = false; /* 前フレームのリロード状態 */
 };

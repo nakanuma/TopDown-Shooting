@@ -1,525 +1,212 @@
 #include "NormalEnemy.h"
 
-// C++
-#include <Windows.h>
-#include <algorithm>
-#include <cstdio>
-#include <numbers>
-
 // Engine
-#include <Camera.h>
-#include <Collider/CollisionManager.h>
-#include <DirectXBase.h>
-#include <Engine/3D/LineDrawer.h>
-#include <Engine/ParticleEffect/ParticleEffectManager.h>
-#include <Engine/Util/RandomGenerator.h>
-#include <Engine/Util/TimeManager.h>
-#include <SoundManager.h>
+#include <LineDrawer.h>
+#include <TimeManager.h>
 
 // Application
-#include <src/Game/Bullet/Base/Bullet.h>
-#include <src/Game/Bullet/EnemyBullet/EnemyBullet.h>
-#include <src/Game/Bullet/Manager/BulletManager.h>
-#include <src/Game/Player/Player.h>
-#include <src/Game/System/ResultStats.h>
-#include <src/Game/Utility/Utility.h>
+#include <src/Game/Enemy/Types/NormalEnemy/NormalEnemyBehavior.h>
 
 // Externals
 #include <ImguiWrapper.h>
 
-void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {}
-
-void NormalEnemy::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player, Cygnus::BehaviorTree<NormalEnemy>* masterTree)
-{
-	///
-	/// オブジェクト生成
-	///
-
+void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
+	// オブジェクト生成
 	objectEnemy_ = std::make_unique<Cygnus::Object3D>();
 	objectEnemy_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("NormalEnemy");
 	objectEnemy_->transform_.translate_ = position;
-	objectEnemy_->transform_.rotate_ = { 0.0f, std::numbers::pi_v<float>, 0.0f }; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
+	objectEnemy_->transform_.rotate_ = {0.0f, Cygnus::PIf, 0.0f}; // 手前を向いた状態でスポーン
 
-	///
-	///	コライダー生成
-	///
+	// アニメーションデータ読み込み
+	walkData_.modelData = Cygnus::ModelManager::LoadModelFile("Character/Enemy/NormalEnemy/walk.gltf");
+	walkData_.modelData.material.textureHandle = Cygnus::TextureManager::Load("Character/Enemy/NormalEnemy/normalEnemy.png");
+	walkData_.animation = Cygnus::AnimationLoader::LoadAnimation("resources/Models", "Character/Enemy/NormalEnemy/walk.gltf");
+	walkData_.skeleton.CreateSkeleton(walkData_.modelData.rootNode);
 
+	// 敵オブジェクト生成
+	objectEnemyAnim_ = std::make_unique<Cygnus::AnimatedModelInstance>();
+	objectEnemyAnim_->Initialize(walkData_);
+	objectEnemyAnim_->GetTranslate() = position;
+	objectEnemyAnim_->GetRotate() = {0.0f, Cygnus::PIf, 0.0f}; // 手前を向いた状態でスポーン
+	objectEnemyAnim_->SetPlayBackSpeed(kAnimationPlaybackSpeed);
+
+	// 銃オブジェクト生成
+	objectGun_ = std::make_unique<Cygnus::Object3D>();
+	objectGun_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("Pistol");
+	objectGun_->materialCB_.data_->color = kGunColor;
+
+	// コライダー生成・登録
 	auto aabb = std::make_unique<Cygnus::AABBCollider>();
 	aabb->SetTag("NormalEnemy");
-	aabb->SetFollowTarget(&objectEnemy_->transform_.translate_);
+	aabb->SetFollowTarget(&objectEnemyAnim_->GetTranslate());
 	aabb->SetSize(kColliderSize);
 	aabb->SetOwner(this);
-
 	collider_ = std::move(aabb);
 	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
-	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
+	// UI生成・初期化
+	ui_ = std::make_unique<EnemyUIManager>();
+	ui_->Initialize();
 
-	///
-	///	パラメーター設定
-	///
+	// 発光演出クラス生成・初期化
+	visualEffect_ = std::make_unique<EnemyVisualEffects>();
+	visualEffect_->Initialize(objectEnemy_.get());
 
-	isDead_ = false;
-
-	// HPの設定
+	// パラメーター設定
 	currentHP_ = kInitialHP;
-	maxHP_ = currentHP_; // 最大HPには設定した現在HPを設定（全Enemyクラス共通）
+	maxHP_ = kInitialHP;
 
 	targetPlayer_ = player;
 
-	spawnPosition_ = position; // スポーン地点を記録
-
-	bb_.currentAmmo = kMagazineSize; // 初期マガジン設定
-
-	///
-	///	調整パラメーター登録
-	///
-
-	SetConfigPath("Enemy/normalEnemyConfig.json"); // ファイルパス設定
-	InitConfig();                                  // 初回読み込み
-
-	///
-	///	ビヘイビアツリー構築
-	///
-
-	// マスターツリーを複製して自分専用のインスタンスを作成
-	if(masterTree) {
-		behaviorTree_ = masterTree;
-	}
-
-	///
-	///	UI生成
-	/// 
-
-	ui_ = std::make_unique<EnemyUIManager>();
-	ui_->Initialize();
+	// ビヘイビアツリー構築
+	behaviorTree_ = NormalEnemyBehavior::CreateTree(this);
 }
 
 void NormalEnemy::Update() {
-	///
-	/// コライダー更新処理
-	///
+	float dt = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
+	// 敵オブジェクト更新
+	objectEnemyAnim_->Update(dt, isWalking_);
+	objectEnemyAnim_->object_->UpdateShadowMatrix();
+
+	// 銃オブジェクト更新
+	Cygnus::Float3 myPos = objectEnemyAnim_->GetTranslate();
+	Cygnus::Float3 myRot = objectEnemyAnim_->GetRotate();
+	Cygnus::Float3 forward = {sinf(myRot.y), 0.0f, cosf(myRot.y)};
+	Cygnus::Float3 up = {0.0f, 1.0f, 0.0f};
+
+	objectGun_->transform_.translate_ = myPos + (forward * kGunForwardOffset) + (up * kGunUpOffset); // 位置を補正
+	objectGun_->transform_.rotate_ = myRot;
+
+	objectGun_->UpdateMatrix();
+	objectGun_->UpdateShadowMatrix();
+
+	// コライダー更新
 	collider_->Update();
 
-	///
-	/// オブジェクト更新処理
-	///
-
-	objectEnemy_->UpdateMatrix();
-	objectEnemy_->UpdateShadowMatrix();
-
-	// 被弾時の発光演出
-	HandleHitBlink();
-
-	///
-	///	ビヘイビアツリーを評価
-	///
-
-	if (behaviorTree_) {
-		behaviorTree_->Tick(this, Cygnus::TimeManager::GetInstance()->GetDeltaTime());
-	}
-
-	///
-	///	UI更新
-	/// 
-
+	// UI更新
 	EnemyUIState state;
-	state.worldPos = objectEnemy_->transform_.translate_;
+	state.worldPos = objectEnemyAnim_->GetTranslate();
 	state.hpRatio = static_cast<float>(currentHP_) / static_cast<float>(maxHP_);
-	state.reloadRatio = bb_.reloadTimer / kReloadTime;
-	state.isReloading = bb_.isReloading;
-
+	state.isReloading = isReloading_;
+	state.reloadRatio = reloadTimer_ / kReloadTime;
 	ui_->Update(state);
+
+	// 発光演出更新
+	visualEffect_->Update();
+
+	// ビヘイビアツリー更新
+	behaviorTree_->Tick(this, Cygnus::TimeManager::GetInstance()->GetDeltaTime());
 }
 
-void NormalEnemy::Draw() { objectEnemy_->Draw(); }
+void NormalEnemy::Draw() {
+	objectEnemyAnim_->Draw();
+	objectGun_->Draw();
 
-void NormalEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
+#ifdef _DEBUG
+	DebugDrawLine();
+#endif
+}
+
+void NormalEnemy::DrawShadow() { objectGun_->DrawShadow(); }
+
+void NormalEnemy::DrawShadowSkinning() { objectEnemyAnim_->DrawShadow(); }
 
 void NormalEnemy::DrawUI() { ui_->Draw(); }
 
 void NormalEnemy::OnCollision(Cygnus::Collider* other) {
-	///
-	/// vs PlayerBullet
-	///
+	// 敵共通の衝突時処理
+	Enemy::OnCollision(other);
+
 	if (other->GetTag() == "PlayerBullet") {
-		// デバッグでプレイヤー発見状態にする
-		if (!bb_.isPlayerDetected) {
-			bb_.isPlayerDetected = true;
-		}
-
-		// 被弾時の発光演出を開始
-		if (!isDead_) {
-			isHitBlink_ = true;
-			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
-			hitBlinkTimer_ = 0.0f;
-		}
-
-		// PlayerBulletのdamageを取得
-		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
-		int32_t damage = bullet->GetDamage();
-
-		// HPを減らす
-		currentHP_ -= damage;
-		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
-		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
-
-		// HPが0になったら自身を死亡させる
-		if (currentHP_ <= 0) {
-			isDead_ = true;
-
-			// 死亡時パーティクル発生
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle1));
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle2));
-
-			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
-
-			// 効果音発生
-			Cygnus::SoundManager::GetInstance()->Play("enemy_dead", false, 0.25f);
-		}
+		OnDetected();
 	}
 
-	///
-	/// vs Obstacle
-	///
+	// vs Obstacle
 	if (other->GetTag() == "Obstacle") {
-		Cygnus::AABBCollider* myAABB = dynamic_cast<Cygnus::AABBCollider*>(collider_.get());
-		Cygnus::AABBCollider* otherAABB = dynamic_cast<Cygnus::AABBCollider*>(other);
-
-		// 押し戻し処理
-		if (myAABB && otherAABB) {
-			// 押し戻しベクトル取得
-			Cygnus::Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
-			// 位置を補正
-			objectEnemy_->transform_.translate_ += pushVec;
-
-			// コライダーも更新しておく
-			Cygnus::Float3 currentMin = myAABB->GetMin();
-			Cygnus::Float3 currentMax = myAABB->GetMax();
-			myAABB->SetMin(currentMin + pushVec);
-			myAABB->SetMax(currentMax + pushVec);
-		}
+		// 障害物との押し戻し処理
+		ResolveObstacleCollision(other);
 	}
 }
 
 void NormalEnemy::Debug() {
 #ifdef USE_IMGUI
-	// 索敵中の視界を可視化
-	DrawDebugSight();
 
-	// 調整パラメーター
-	DrawConfigWindow("NormalEnemyConfig");
 #endif
 }
 
-void NormalEnemy::MoveAlongPath(const std::vector<Waypoint*>& path, float speed) {
-	// 経路に移動先がなければ終了
-	if (path.size() < 2)
-		return;
+void NormalEnemy::OnDetected() {
+	Enemy::OnDetected(); // 基底クラスの共通処理を呼び出す
 
-	// [0]は敵の位置なので[1]が次に向かう目標ウェイポイントになる
-	Waypoint* nextWP = path[1];
-	// 2個先の位置を補間した座標を目標にする
-	Cygnus::Float3 targetPos = nextWP->GetPosition();
-	if (path.size() > 2) {
-		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * kPathInterpolation;
-	}
-	Cygnus::Float3 dir = Cygnus::Float3::Normalize(targetPos - objectEnemy_->transform_.translate_);
-	dir.y = 0.0f;
-	dir = Cygnus::Float3::Normalize(dir);
-
-	// 移動
-	objectEnemy_->transform_.translate_ += dir * speed * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-	// 向き補間
-	Cygnus::Float3 lookDir = dir;
-
-	float currentYaw = objectEnemy_->transform_.rotate_.y;
-	float targetYaw = std::atan2(lookDir.x, lookDir.z);
-
-	// -π ~ πに正規化
-	float deltaYaw = targetYaw - currentYaw;
-	while (deltaYaw > Cygnus::PIf)
-		deltaYaw -= 2.0f * Cygnus::PIf;
-	while (deltaYaw < -Cygnus::PIf)
-		deltaYaw += 2.0f * Cygnus::PIf;
-
-	float newYaw = currentYaw + deltaYaw * kTurnSpeed * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-	objectEnemy_->transform_.rotate_.y = newYaw;
+	shootTimer_ = kFirstShootDelay; // 発見時のみ、最初の射撃まで遅延時間を設定する
 }
 
-bool NormalEnemy::IsPlayerInSight() {
-	if (!targetPlayer_)
-		return false;
+void NormalEnemy::DebugDrawLine() {
+#ifdef _DEBUG
 
-	if (targetPlayer_->IsDead())
-		return false;
+	Cygnus::Float4 color = IsDetectedPlayer() ? Cygnus::Float4(1.0f, 0.0f, 0.0f, 1.0f) : Cygnus::Float4(1.0f, 1.0f, 1.0f, 1.0f);
+	Cygnus::Float3 center = objectEnemyAnim_->GetTranslate();
 
-	Cygnus::Float3 enemyPos = this->objectEnemy_->transform_.translate_;
-	Cygnus::Float3 playerPos = targetPlayer_->GetTranslate();
-	Cygnus::Float3 toPlayer = playerPos - enemyPos;
+	const uint32_t kCircleSegments = 32;
 
-	///
-	///	距離チェック
-	///
+#pragma region 射撃音半径（円形）描画
+	for (uint32_t i = 0; i < kCircleSegments; i++) {
+		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
 
-	float distance = Cygnus::Float3::Length(toPlayer);
-	// Playerが範囲外ならfalse
-	if (distance > kSearchRadius) {
-		return false;
+		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kShootDetectionRadius, center.y, center.z + std::sinf(angle1) * kShootDetectionRadius};
+		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kShootDetectionRadius, center.y, center.z + std::sinf(angle2) * kShootDetectionRadius};
+
+		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
 	}
+#pragma endregion
 
-	///
-	///	FOVチェック
-	///
+#pragma region 近接半径（円形）描画
+	for (uint32_t i = 0; i < kCircleSegments; i++) {
+		float angle1 = (static_cast<float>(i) / kCircleSegments) * (Cygnus::PIf * 2.0f);
+		float angle2 = (static_cast<float>(i + 1) / kCircleSegments) * (Cygnus::PIf * 2.0f);
 
-	toPlayer = Cygnus::Float3::Normalize(toPlayer);
+		Cygnus::Float3 p1 = {center.x + std::cosf(angle1) * kProximityRadius, center.y, center.z + std::sinf(angle1) * kProximityRadius};
+		Cygnus::Float3 p2 = {center.x + std::cosf(angle2) * kProximityRadius, center.y, center.z + std::sinf(angle2) * kProximityRadius};
 
-	// 前方向ベクトル（Y軸回転のみで考慮）
-	Cygnus::Float3 forward = {std::sinf(objectEnemy_->transform_.rotate_.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate_.y)};
-
-	forward = Cygnus::Float3::Normalize(forward);
-
-	// 内積から角度を求める
-	float dot = Cygnus::Float3::Dot(forward, toPlayer);
-
-	// ラジアンに変換
-	float angleRad = std::acosf(dot);
-	float angleDeg = angleRad * 180.0f / Cygnus::PIf;
-
-	// 扇形角度チェック
-	if (angleDeg > (kSearchFovDeg * 0.5f)) {
-		return false;
+		Cygnus::LineDrawer::GetInstance()->RegisterLine(p1, p2, color);
 	}
+#pragma endregion
 
-	///
-	///	RayCastによる障害物チェック
-	///
+#pragma region 視界（扇形）描画
+	const uint32_t kSectorSegments = 32;
+	// 敵の向いている方向を基準にする
+	float currentRotY = objectEnemyAnim_->GetRotate().y;
+	float halfFovRad = Cygnus::DegToRad(kSearchFovDeg * 0.5f);
 
-	Cygnus::RayCastHit hit{};
-	bool rayCast = Cygnus::CollisionManager::GetInstance()->RayCast(enemyPos, toPlayer, distance, &hit);
+	// 扇形の両端の角度を算出
+	float baseAngle = std::atan2f(std::sinf(currentRotY), std::cosf(currentRotY));
 
-	if (rayCast && hit.hitCollider->GetTag() == "Obstacle") {
-		return false;
-	}
-
-	// プレイヤー発見状態にする
-	bb_.isPlayerDetected = true;
-	return true;
-}
-
-void NormalEnemy::DrawDebugSight() {
-	// 視界にプレイヤーがいれば赤色に
-	Cygnus::Float4 color;
-	if (IsPlayerInSight()) {
-		color = kDebugSightColorDetect;
-	} else {
-		color = kDebugSightColorNormal;
-	}
-
-	Cygnus::Float3 center = objectEnemy_->transform_.translate_;
-
-	// 前方向ベクトル（Y軸回転のみで考慮）
-	Cygnus::Float3 forward = {std::sinf(objectEnemy_->transform_.rotate_.y), 0.0f, std::cosf(objectEnemy_->transform_.rotate_.y)};
-	forward = Cygnus::Float3::Normalize(forward);
-
-	// 左端の方向ベクトル
-	float halfFovRad = (kSearchFovDeg * 0.5f) * Cygnus::PIf / 180.0f;
-	float baseAngle = std::atan2f(forward.z, forward.x);
-
+	// 扇の開始地点と終了地点（左右対称に広げる）
 	float startAngle = baseAngle - halfFovRad;
 	float endAngle = baseAngle + halfFovRad;
 
-	// 扇形を分割して線を描画
-	Cygnus::Float3 firstPoint = {center.x + std::cosf(startAngle) * kSearchRadius, center.y, center.z + std::sinf(startAngle) * kSearchRadius};
-
-	Cygnus::Float3 prevPoint = firstPoint;
-
-	for (uint32_t i = 1; i <= kDebugSightSegments; i++) {
-		float t = static_cast<float>(i) / kDebugSightSegments;
+	Cygnus::Float3 prevPoint;
+	for (uint32_t i = 0; i <= kSectorSegments; i++) {
+		float t = static_cast<float>(i) / kSectorSegments;
 		float angle = startAngle + (endAngle - startAngle) * t;
 
-		Cygnus::Float3 nextPoint = {center.x + std::cosf(angle) * kSearchRadius, center.y, center.z + std::sinf(angle) * kSearchRadius};
+		Cygnus::Float3 nextPoint = {center.x + std::sinf(angle) * kVisionRange, center.y, center.z + std::cosf(angle) * kVisionRange};
 
-		// 円弧の線分
-		Cygnus::LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
-
+		if (i > 0) {
+			// 弧を描画
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(prevPoint, nextPoint, color);
+		} else {
+			// 扇の左側の線
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(center, nextPoint, color);
+		}
+		if (i == kSectorSegments) {
+			// 扇の右側の線
+			Cygnus::LineDrawer::GetInstance()->RegisterLine(nextPoint, center, color);
+		}
 		prevPoint = nextPoint;
 	}
+#pragma endregion
 
-	// 扇の骨組み（中心から弧の両端）
-	Cygnus::Float3 lastPoint = prevPoint;
-	Cygnus::LineDrawer::GetInstance()->RegisterLine(center, firstPoint, color);
-	Cygnus::LineDrawer::GetInstance()->RegisterLine(center, lastPoint, color);
-}
-
-Cygnus::BehaviorStatus NormalEnemy::RandomPatrol() {
-	Cygnus::BehaviorStatus status = Cygnus::BehaviorStatus::Running;
-
-	///
-	///	移動先のウェイポイントを取得
-	///
-
-	if (!bb_.currentTargetWP) {
-		// 移動先ウェイポイント候補
-		std::vector<Waypoint*> candidates;
-		for (auto& wp : WaypointManager::GetInstance()->GetWaypoints()) {
-			float distFromSpawn = Cygnus::Float3::Length(wp->GetPosition() - spawnPosition_);                        // スポーン地点からウェイポイントまでの距離
-			float distFromCurrent = Cygnus::Float3::Length(wp->GetPosition() - objectEnemy_->transform_.translate_); // 現在地点からウェイポイントまでの距離
-
-			// スポーン地点から一定範囲内にあるかつ、現在位置から一定距離離れたウェイポイントのみを収集
-			if (distFromSpawn <= kPatrolRange && distFromCurrent >= kMinPatrolRange) {
-				candidates.push_back(wp.get());
-			}
-		}
-
-		// 候補からランダムに1つ選択
-		uint32_t randIndex = Cygnus::RandomGenerator::GetInstance()->RandomValue(0, static_cast<int>(candidates.size()) - 1);
-		bb_.currentTargetWP = candidates[randIndex];
-
-		status = Cygnus::BehaviorStatus::Running;
-
-		///
-		/// ターゲットのウェイポイントまで移動
-		///
-	} else {
-		// 経路探索
-		Waypoint* startWP = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
-		std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(startWP, bb_.currentTargetWP);
-		if (!path.empty()) {
-			// 移動
-			MoveAlongPath(path, kPatrolMoveSpeed);
-
-			// 目標に到達したらターゲットをクリア
-			Cygnus::Float3 targetPos = bb_.currentTargetWP->GetPosition();
-			if (Cygnus::Float3::Length(targetPos - objectEnemy_->transform_.translate_) < kWaypointReachDistance) {
-				bb_.currentTargetWP = nullptr;
-
-				status = Cygnus::BehaviorStatus::Success; // 成功
-			}
-		}
-	}
-
-	return status;
-}
-
-Cygnus::BehaviorStatus NormalEnemy::RandomRotate() {
-	if (bb_.rotateTimer <= 0.0f) {
-		// 回転方向をランダムに決める
-		bb_.rotateDirection = Cygnus::RandomGenerator::GetInstance()->RandomValueBool() ? 1.0f : -1.0f;
-
-		// 回転時間をランダムに決める
-		bb_.rotateTimer = Cygnus::RandomGenerator::GetInstance()->RandomValue(kRotateTimeMin, kRotateTimeMax);
-	}
-
-	// 回転処理
-	objectEnemy_->transform_.rotate_.y += bb_.rotateDirection * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-	// タイマー減少
-	bb_.rotateTimer -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-	// 時間が残っていれば実行中
-	if (bb_.rotateTimer > 0.0f) {
-		return Cygnus::BehaviorStatus::Running;
-	}
-
-	// 終了したら成功
-	bb_.rotateTimer = 0.0f;
-	return Cygnus::BehaviorStatus::Success;
-}
-
-Cygnus::BehaviorStatus NormalEnemy::FacePlayer() {
-	// プレイヤーへの方向ベクトルからY軸回転角度の計算
-	Cygnus::Float3 toPlayer = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
-	float targetAngle = std::atan2(toPlayer.x, toPlayer.z);
-	// Y軸回転を適用
-	objectEnemy_->transform_.rotate_.y = targetAngle;
-
-	return Cygnus::BehaviorStatus::Success;
-}
-
-Cygnus::BehaviorStatus NormalEnemy::Shoot() {
-	float dt = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-	// memo : リロード開始/終了時に移動先の経路探索を挟む
-
-	// リロード中処理
-	if (bb_.isReloading) {
-		bb_.reloadTimer -= dt;
-		// リロード終了時に弾を込める
-		if (bb_.reloadTimer <= 0.0f) {
-			bb_.isReloading = false;
-			bb_.currentAmmo = kMagazineSize;
-		}
-		return Cygnus::BehaviorStatus::Running;
-	}
-
-	// バースト間のインターバル（次のバースト撃ちまで待機）
-	if (bb_.fireCooldown > 0.0f) {
-		bb_.fireCooldown -= dt;
-		return Cygnus::BehaviorStatus::Running;
-	}
-
-	// バースト内のインターバル（バースト射撃中）
-	if (bb_.burstCooldown > 0.0f) {
-		bb_.burstCooldown -= dt;
-		return Cygnus::BehaviorStatus::Running;
-	}
-
-	// 弾切れならリロード開始
-	if (bb_.currentAmmo <= 0) {
-		bb_.isReloading = true;
-		bb_.reloadTimer = kReloadTime; // リロード時間セット
-
-		return Cygnus::BehaviorStatus::Running;
-	}
-
-	// 弾の発射処理
-	Cygnus::Float3 direction = targetPlayer_->GetTranslate() - objectEnemy_->transform_.translate_;
-	// 拡散角をランダムに設定
-	float randSpread = Cygnus::RandomGenerator::GetInstance()->RandomValue(-kBulletSpreadAngle, kBulletSpreadAngle);
-	direction.x += randSpread;
-	direction.z += randSpread;
-	direction = Cygnus::Float3::Normalize(direction);
-	// 弾の生成
-	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(objectEnemy_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
-	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
-
-	// カウント更新
-	bb_.currentAmmo--;
-	bb_.burstCount++;
-
-	// バースト射撃中管理
-	if (bb_.burstCount < kBurstSize) {
-		// バースト内クールタイムをセット
-		bb_.burstCooldown = kBurstInterval;
-
-		// バースト射撃終了
-	} else {
-		bb_.burstCount = 0;
-		bb_.fireCooldown = kFireInterval; // バースト間クールタイムをセット
-	}
-
-	return Cygnus::BehaviorStatus::Success;
-}
-
-Cygnus::BehaviorStatus NormalEnemy::MoveToPlayer() {
-	if (targetPlayer_->IsDead())
-		return Cygnus::BehaviorStatus::Failure;
-
-	// 経路探索でプレイヤーに移動
-	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(objectEnemy_->transform_.translate_);
-	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(targetPlayer_->GetTranslate());
-
-	if (!start || !goal)
-		return Cygnus::BehaviorStatus::Failure;
-
-	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
-	MoveAlongPath(path, kMoveSpeed);
-
-	return Cygnus::BehaviorStatus::Running;
+#endif
 }

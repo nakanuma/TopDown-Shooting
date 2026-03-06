@@ -90,7 +90,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = maxHP_;	// 現在HPには最大HPをセット
-	invincible_ = false;    // 開始時は非無敵状態
+	invincible_ = true;    // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
@@ -118,6 +118,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 }
 
 void Player::Update(bool operable) {
+	// このフレームで射撃したかフラグのリセット
+	isShootedThisFrame_ = false;
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
@@ -280,6 +282,8 @@ void Player::Debug() {
 
 	ImGui::Begin("Player");
 
+	ImGui::Checkbox("isShootedThisFrame_", &isShootedThisFrame_);
+
 	ImGui::Checkbox("Invincible", &invincible_);
 
 	/* Translate */
@@ -400,6 +404,9 @@ void Player::HandleShooting() {
 
 	// 左クリックで弾を生成
 	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		// このフレームで射撃したことを記録
+		isShootedThisFrame_ = true;
+
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得

@@ -47,7 +47,10 @@ void GameStartState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GameStartState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinning(); }
+void GameStartState::DrawShadowSkinning() { 
+	scene_->GetPlayer()->DrawShadowSkinning(); 
+	scene_->GetEnemyManager()->DrawShadowSkinning();
+}
 
 void GameStartState::DrawUI() {
 	scene_->GetEnemyManager()->DrawUI();

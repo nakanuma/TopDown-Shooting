@@ -3,13 +3,12 @@
 // ---------------------------------------------------------
 // Engine Includes
 // ---------------------------------------------------------
-#include <Sprite.h>
-#include <SpriteCommon.h>
+#include <Object3D.h>
 
 // =========================================================
-// 敵のリロードバーUIクラス
+// 敵の発光演出クラス
 // =========================================================
-class EnemyReloadBar
+class EnemyVisualEffects
 {
 public:
 	// =========================================================
@@ -19,33 +18,40 @@ public:
 	/// <summary>
 	/// 初期化処理を行います。
 	/// </summary>
-	/// <param name="spriteCommon">スプライト基盤機能</param>
-	void Initialize(Cygnus::SpriteCommon* spriteCommon);
+	/// <param name="targetObject">対象のオブジェクト</param>
+	void Initialize(Cygnus::Object3D* targetObject);
 
 	/// <summary>
 	/// 更新処理を行います。
 	/// </summary>
-	/// <param name="worldPos">ワールド座標</param>
-	/// <param name="hpRatio">HP割合</param>
-	void Update(const Cygnus::Float3 worldPos, float reloadRatio, bool isReloading);
+	void Update();
 
 	/// <summary>
-	/// 描画処理を行います。
+	/// 発光演出を開始します。
 	/// </summary>
-	void Draw();
+	void TriggerHitBlink();
 
 private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kReloadSize = { 100.0f, 10.0f }; /* リロード表示スプライトのサイズ */
-	static constexpr float kReloadBarOffsetY = 60.0f;				 /* リロード表示のY軸オフセット */
+	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::Sprite> spriteReloadBar_; /* リロードバースプライト */
+	Cygnus::Object3D* targetObject_ = nullptr; /* 対象のオブジェクト */
 
-	bool isVisible_;	/* 表示フラグ */
+	/// <summary>
+	/// 被弾時の発光演出フェーズ
+	/// </summary>
+	enum class HitBlinkPhase {
+		Wait,		// 待機
+		BlinkIn,	// 発光
+		BlinkOut	// 減光
+	} hitBlinkPhase_ = HitBlinkPhase::Wait;
+	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
+	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
 };
 

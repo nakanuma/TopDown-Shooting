@@ -46,9 +46,14 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 全ての敵のシャドウマップ描画処理を行います。
+	/// 全ての敵の通常モデルのシャドウマップ描画処理を行います。
 	/// </summary>
 	void DrawShadow();
+
+	/// <summary>
+	/// 全ての敵のスキニングモデルのシャドウマップ描画処理を行います。
+	/// </summary>
+	void DrawShadowSkinning();
 
 	/// <summary>
 	/// 全ての敵のUI描画処理を行います。
@@ -69,28 +74,10 @@ public:
 	/// </summary>
 	/// <returns>ボスのポインタ</returns>
 	BossEnemy* GetBoss() const;
-
-private:
-	/// <summary>
-	/// NormalEnemy用の共通マスターツリーを構築します。
-	/// </summary>
-	/// <returns></returns>
-	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> CreateNormalEnemyMasterTree();
-
-	/// <summary>
-	/// NormalEnemyのBlackBoardをエディターに表示します。
-	/// </summary>
-	/// <param name="enemy"></param>
-	void ShowNormalEnemyBlackBoard(NormalEnemy* enemy);
-
 private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 	std::vector<std::unique_ptr<Enemy>> enemies_;		/* 全ての敵を格納したコンテナ */
 	Player* player_ = nullptr;							/* プレイヤーのポインタ */
-
-	// NormalEnemy共通のマスターツリー
-	std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> normalEnemyBT_;
-	std::unique_ptr<Cygnus::BehaviorTreeEditor<NormalEnemy>> normalEnemyBTEditor_;
 };

@@ -14,7 +14,7 @@
 // =========================================================
 // ボスエネミークラス
 // =========================================================
-class BossEnemy : public Enemy, public Cygnus::ICollisionCallback {
+class BossEnemy : public Enemy {
 public:
 	// =========================================================
 	// Public Methods
@@ -39,9 +39,14 @@ public:
 	void Draw() override;
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ用の描画処理を行います。
 	/// </summary>
 	void DrawShadow() override;
+
+	/// <summary>
+	/// スキニングモデルのシャドウマップ用の描画処理を行います。
+	/// </summary>
+	void DrawShadowSkinning() override;
 
 	/// <summary>
 	/// UIの描画処理を行います。

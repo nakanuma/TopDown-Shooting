@@ -25,7 +25,6 @@ void ImmobileEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	objectEnemy_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("ImmobileEnemy");
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
-	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
 	///	コライダー生成
@@ -65,6 +64,10 @@ void ImmobileEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	
 	ui_ = std::make_unique<EnemyUIManager>();
 	ui_->Initialize();
+
+	// 発光演出クラス生成・初期化
+	visualEffect_ = std::make_unique<EnemyVisualEffects>();
+	visualEffect_->Initialize(objectEnemy_.get());
 }
 
 void ImmobileEnemy::Update() {
@@ -82,7 +85,7 @@ void ImmobileEnemy::Update() {
 	objectEnemy_->UpdateShadowMatrix();
 
 	// 被弾時の発光演出
-	HandleHitBlink();
+	visualEffect_->Update();
 
 	///
 	///	ビヘイビアツリーを評価
@@ -109,44 +112,13 @@ void ImmobileEnemy::Draw() { objectEnemy_->Draw(); }
 
 void ImmobileEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
+void ImmobileEnemy::DrawShadowSkinning() {}
+
 void ImmobileEnemy::DrawUI() { ui_->Draw(); }
 
-void ImmobileEnemy::OnCollision(Cygnus::Collider* other) {
-	///
-	///	vs PlayerBullet
-	///
-
-	if (other->GetTag() == "PlayerBullet") {
-		// 被弾時の発光演出を開始
-		if (!isDead_) {
-			isHitBlink_ = true;
-			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
-			hitBlinkTimer_ = 0.0f;
-		}
-
-		// PlayerBulletのdamageを取得
-		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());
-		int32_t damage = bullet->GetDamage();
-
-		// HPを減らす
-		currentHP_ -= damage;
-		ResultStats::GetInstance()->AddHit();          // 弾が命中したことを記録
-		ResultStats::GetInstance()->AddDamage(damage); // 与えたダメージを記録
-
-		// HPが0になったら自身を死亡させる
-		if (currentHP_ <= 0) {
-			isDead_ = true;
-
-			// 死亡時パーティクル発生
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle1)); // クロス片側
-			Cygnus::ParticleEffectManager::GetInstance()->Emit("deathCross", objectEnemy_->transform_.translate_, kDeathCrossCount, {0.0f, 0.0f, 0.0f}, Cygnus::DegToRad(kDeathCrossAngle2)); // クロス片側
-
-			ResultStats::GetInstance()->AddDefeated(); // 撃破したことを記録
-
-			// 効果音発生
-			Cygnus::SoundManager::GetInstance()->Play("enemy_dead", false, 0.25f);
-		}
-	}
+void ImmobileEnemy::OnCollision(Cygnus::Collider* other) { 
+	// 敵共通の衝突時処理
+	Enemy::OnCollision(other); 
 }
 
 bool ImmobileEnemy::IsPlayerInSight() {

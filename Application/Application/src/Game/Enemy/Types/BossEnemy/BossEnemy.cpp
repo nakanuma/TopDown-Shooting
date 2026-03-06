@@ -27,7 +27,6 @@ void BossEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 	objectEnemy_->transform_.translate_ = position;
 	objectEnemy_->transform_.rotate_ = {0.0f, std::numbers::pi_v<float>, 0.0f}; // 手前を向いた状態でスポーン（一時的に）
 	objectEnemy_->materialCB_.data_->color = kBossColor;
-	objectEnemy_->materialCB_.data_->emissiveColor = kHitBlinkColor;
 
 	///
 	///	コライダー生成
@@ -72,6 +71,10 @@ void BossEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 
 	ui_ = std::make_unique<EnemyUIManager>();
 	ui_->Initialize();
+
+	// 発光演出クラス生成・初期化
+	visualEffect_ = std::make_unique<EnemyVisualEffects>();
+	visualEffect_->Initialize(objectEnemy_.get());
 }
 
 void BossEnemy::Update() {
@@ -83,7 +86,7 @@ void BossEnemy::Update() {
 	objectEnemy_->UpdateShadowMatrix();
 
 	// 被弾時の発光演出
-	HandleHitBlink();
+	visualEffect_->Update();
 
 	if (!isActive_)
 		return;
@@ -138,6 +141,8 @@ void BossEnemy::Draw() { objectEnemy_->Draw(); }
 
 void BossEnemy::DrawShadow() { objectEnemy_->DrawShadow(); }
 
+void BossEnemy::DrawShadowSkinning() {}
+
 void BossEnemy::DrawUI() { ui_->Draw(); }
 
 void BossEnemy::Debug() {
@@ -168,11 +173,7 @@ void BossEnemy::OnCollision(Cygnus::Collider* other) {
 		}
 
 		// 被弾時の発光演出を開始
-		if (!isDying_) {
-			isHitBlink_ = true;
-			hitBlinkPhase_ = HitBlinkPhase::BlinkIn;
-			hitBlinkTimer_ = 0.0f;
-		}
+		visualEffect_->TriggerHitBlink();
 
 		// PlayerBulletのdamageを取得
 		Bullet* bullet = dynamic_cast<Bullet*>(other->GetOwner());

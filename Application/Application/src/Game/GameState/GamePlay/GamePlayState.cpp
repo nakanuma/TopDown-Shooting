@@ -8,6 +8,7 @@
 #include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/System/ResultStats.h>
 #include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Waypoint/WaypointManager.h>
 
 GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
@@ -48,6 +49,10 @@ void GamePlayState::Update() {
 	ResultStats::GetInstance()->AddTime();
 
 	FadeTransition::GetInstance()->Update();
+
+	
+
+	/*WaypointManager::GetInstance()->Update();*/
 }
 
 void GamePlayState::Draw() {
@@ -59,6 +64,10 @@ void GamePlayState::Draw() {
 	scene_->GetTeleportManager()->Draw();
 
 	BulletManager::GetInstance()->Draw();
+
+
+
+	/*WaypointManager::GetInstance()->Draw();*/
 }
 
 void GamePlayState::DrawShadow() {
@@ -69,7 +78,10 @@ void GamePlayState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GamePlayState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinning(); }
+void GamePlayState::DrawShadowSkinning() { 
+	scene_->GetPlayer()->DrawShadowSkinning(); 
+	scene_->GetEnemyManager()->DrawShadowSkinning();
+}
 
 void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
@@ -81,6 +93,8 @@ void GamePlayState::DrawUI() {
 void GamePlayState::Debug() {
 #ifdef USE_IMGUI
 	scene_->GetEnemyManager()->Debug();
+
+	scene_->GetPlayer()->Debug();
 #endif
 }
 
