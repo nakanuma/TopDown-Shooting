@@ -107,6 +107,12 @@ public:
 	float GetOverheatRatio() const { return overheatTime_ / overheatLimit_; }
 
 	/// <summary>
+	/// オーバーヒート中状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsOverHeadted() const { return isOverheated_; }
+
+	/// <summary>
 	/// 死亡フラグを取得します。
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
@@ -173,10 +179,12 @@ private:
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f;              /* アニメーション再生速度 */
 
-	static constexpr Cygnus::Float4 kGunColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;                /* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;                      /* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;                        /* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float4 kGunColor = {0.0f, 0.0f, 0.0f, 1.0f};	/* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float3 kGunEmissiveColor = {1.0f, 0.0f, 0.0f}; /* 銃のオーバーヒート時発光色（赤） */
+	static constexpr float kGunIntensityFactor = 2.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f; /* 速度正規化用の加算値 */
 	static constexpr float kVelocityThreshold = 0.01f;        /* 速度判定のしきい値 */
@@ -242,6 +250,8 @@ private:
 	float overheatTime_ = 0.0f; /* オーバーヒートタイマー */
 	bool isOverheated_ = false; /* オーバーヒート中フラグ */
 
+	float gunEmissiveIntensity_ = 0.0f; /* 銃の発光強度（オーバーヒート時） */
+
 	// ----- HitBlink -----
 	/// <summary>
 	/// 被弾時の発光演出フェーズ
@@ -276,6 +286,15 @@ private:
 	float overheatLimit_ = 3.0f;          /* オーバーヒートになるまでの秒数 */
 	float overheatGainPerSecond_ = 1.0f;  /* オーバーヒート加熱速度（1秒あたり） */
 	float overheatRecoverySpeed_ = 1.6f;  /* オーバーヒート冷却速度（1秒あたり） */
+
+	float overheatRecoveryThreshold_ = 3.0f; /* オーバーヒートした際、冷却が開始するまでの時間（秒） */
+
+	float recoveryDelayTimer_ = 0.0f;		/* 現在の待機カウント */
+	float recoveryDelayThreshould_ = 0.5f;	/* 射撃をやめてから冷却が始まるまでの時間（秒） */
+
+	float coolingAccelerationTimer_ = 0.0f; /* 冷却が始まってからの経過時間 */
+	float coolingAccelerationRate_ = 1.5f;  /* 冷却時間の加速倍率*/
+
 	float maxRandomAngle_ = 0.02f;        /* 射撃ブレ角 */
 	float shootingBlurMultiplier_ = 3.0f; /* 移動時の射撃ブレ倍率 */
 };

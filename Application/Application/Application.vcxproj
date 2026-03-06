@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.h" />
     <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.h" />

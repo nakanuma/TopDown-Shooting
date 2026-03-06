@@ -1,4 +1,5 @@
 {
+    "coolingAccelerationRate": 1.25,
     "dashCoolDown": 1.5,
     "dashDuration": 0.20000000298023224,
     "dashSpeedMultiplier": 3.0,
@@ -9,5 +10,7 @@
     "overheatGainPerSecond": 1.0,
     "overheatLimit": 3.0,
     "overheatRecoverySpeed": 1.600000023841858,
+    "overheatRecoveryThreshold": 2.5,
+    "recoveryDelayThreshould": 0.5,
     "shootingBlurMultiplier": 3.0
 }

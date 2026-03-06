@@ -63,6 +63,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
 	objectGun_->materialCB_.data_->environmentStrength = kGunEnvironmentStrength;
 
+	objectGun_->materialCB_.data_->emissiveColor = kGunEmissiveColor;
+
 	///
 	///	コライダー生成
 	///
@@ -100,11 +102,13 @@ void Player::Initialize(const Loader::TransformData& data) {
 
 #ifdef USE_IMGUI
 	RegisterParam("maxHP", &maxHP_);
+
 	AddSeparator();
 	RegisterParam("moveSpeed", &moveSpeed_, 0.01f);
 	RegisterParam("dashDuration", &dashDuration_, 0.01f);
 	RegisterParam("dashCoolDown", &dashCoolDown_, 0.01f);
 	RegisterParam("dashSpeedMultiplier", &dashSpeedMultiplier_, 0.01f);
+
 	AddSeparator();
 	RegisterParam("fireCooldown", &fireCooldown_, 0.01f);
 	RegisterParam("overheatLimit", &overheatLimit_, 0.01f);
@@ -112,6 +116,11 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("overheatRecoverySpeed", &overheatRecoverySpeed_, 0.01f);
 	RegisterParam("maxRandomAngle", &maxRandomAngle_, 0.01f);
 	RegisterParam("shootingBlurMultiplier", &shootingBlurMultiplier_, 0.01f);
+
+	AddSeparator();
+	RegisterParam("recoveryDelayThreshould", &recoveryDelayThreshould_, 0.01f);
+	RegisterParam("coolingAccelerationRate", &coolingAccelerationRate_, 0.01f);
+	RegisterParam("overheatRecoveryThreshold", &overheatRecoveryThreshold_, 0.01f);
 #endif
 
 	InitConfig(); // 初回読み込み
@@ -282,45 +291,12 @@ void Player::Debug() {
 
 	ImGui::Begin("Player");
 
-	ImGui::Checkbox("isShootedThisFrame_", &isShootedThisFrame_);
-
-	ImGui::Checkbox("Invincible", &invincible_);
-
 	/* Translate */
 	ImGui::Text("Translate");
 
 	ImGui::DragFloat3("translate", &objectPlayer_->GetTranslate().x, 0.01f);
-
 	ImGui::DragFloat3("rotate", &objectPlayer_->GetRotate().x, 0.01f);
-
 	ImGui::DragFloat3("scale", &objectPlayer_->GetScale().x, 0.01f);
-
-	ImGui::Separator();
-	ImGui::DragFloat3("Gun:Translate", &objectGun_->transform_.translate_.x, 0.01f);
-	ImGui::DragFloat3("Gun:Rotate", &objectGun_->transform_.rotate_.x, 0.01f);
-	ImGui::DragFloat3("Gun:Scale", &objectGun_->transform_.scale_.x, 0.01f);
-
-	/* Parameter */
-	ImGui::Text("Parameter");
-
-	ImGui::Checkbox("isDead", &isDead_);
-	ImGui::Checkbox("invincible", &invincible_);
-
-	ImGui::BeginDisabled(true); // 操作不可
-	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);
-	ImGui::EndDisabled();
-
-	ImGui::DragInt("HP", &currentHP_);
-
-	ImGui::Text("dashCooldown : %.2f", dashCooldownTimer_);
-
-	// オーバーヒート
-	ImGui::Text("overheatTime : %.2f", overheatTime_);
-	ImGui::Checkbox("isOverheated", &isOverheated_);
-
-	ImGui::Checkbox("isMoving", &isMoving_);
-
-	/*  */
 
 	ImGui::End();
 #endif
@@ -450,16 +426,22 @@ void Player::HandleShooting() {
 
 void Player::HandleOverHeat()
 {
+	float deltaTime = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
 	// 左クリック取得
 	isFiring_ = Cygnus::Input::GetInstance()->IsPressMouse(0);
-
 	// 発射タイマーを進める
-	fireTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	fireTimer_ += deltaTime;
 
-	// オーバーヒートしていない場合の処理
+	// 射撃中（オーバーヒートしていない状態）処理
 	if (!isOverheated_ && isFiring_) {
-		// オーバーヒート処理
+		// 加熱処理
 		overheatTime_ += overheatGainPerSecond_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
+		// 冷却開始タイマーをリセット（射撃最中は冷却しないように）
+		recoveryDelayTimer_ = 0.0f;
+		coolingAccelerationTimer_ = 0.0f;
+
 		if (overheatTime_ >= overheatLimit_) {
 			overheatTime_ = overheatLimit_;
 			isOverheated_ = true;
@@ -471,17 +453,35 @@ void Player::HandleOverHeat()
 			fireTimer_ = 0.0f;
 		}
 
-		// オーバーヒート中の処理
+	// 冷却フェーズ（オーバーヒート済 or 非射撃時）
 	} else {
-		// 冷却処理（撃っていない間 or オーバーヒート中）
-		overheatTime_ -= overheatRecoverySpeed_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-		overheatTime_ = std::max(overheatTime_, 0.0f);
+		// 冷却開始までの待機時間をカウント
+		recoveryDelayTimer_ += deltaTime;
 
-		// 冷却時間完了でオーバーヒート解除
+		// 現在の状態によって冷却開始までの時間を変える
+		float currentThreshold = isOverheated_ ? overheatRecoveryThreshold_ : recoveryDelayThreshould_;
+
+		// 冷却処理（オーバーヒート済、又は冷却待機時間が終わった際）
+		if (recoveryDelayTimer_ >= currentThreshold) {
+			coolingAccelerationTimer_ += deltaTime; // 冷却が開始してからの経過時間をカウント
+
+			// 時間経過で冷却速度の倍率を上げる
+			float accelerationMultiplier = 1.0f + (coolingAccelerationTimer_ * coolingAccelerationRate_);
+
+			overheatTime_ -= (overheatRecoverySpeed_ * accelerationMultiplier) * deltaTime;
+			overheatTime_ = std::max(overheatTime_, 0.0f);
+		}
+
+		// 冷却完了でオーバーヒート解除
 		if (isOverheated_ && overheatTime_ <= 0.0f) {
 			isOverheated_ = false;
+			coolingAccelerationTimer_ = 0.0f;
 		}
 	}
+
+	// 銃の発光強度変更処理（オーバーヒート時に銃身を赤くする処理）
+	float intensity = std::powf(GetOverheatRatio(), kGunIntensityFactor); // オーバーヒートに近づいたら急速に赤くしたいため累乗を使う
+	objectGun_->materialCB_.data_->emissiveIntensity = intensity;
 }
 
 void Player::HandleHitBlink()

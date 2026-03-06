@@ -5,6 +5,8 @@
 
 // Engine
 #include <Engine/3D/Camera.h>
+#include <TimeManager.h>
+#include <Easing.h>
 
 // Application
 #include <src/Game/Player/Player.h>
@@ -64,7 +66,22 @@ void OverheatGauge::Update(const Player* player) {
 		color = kColorRed;
 	}
 
-	sprite_->SetColor({ color.x, color.y, color.z, 1.0f });
+	///
+	///	オーバーヒート中の点滅処理
+	/// 
+	
+	float alpha = 1.0f;
+	if (player->IsOverHeadted()) {
+		overheatBlinkTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		float blink = (std::sinf(overheatBlinkTimer_ * kOverheatedBlinkSpeed) * 0.5f) + 0.5f; // sinで0~1の波を作る
+
+		alpha = Cygnus::Easing::Lerp(kBlinkingAlphaMin, kBlinkingAlphaMax, blink); // 点滅中のアルファ値を最低値と最大値で行き来させる
+	} else {
+		// オーバーヒート中でなければタイマーリセット
+		overheatBlinkTimer_ = 0.0f;
+	}
+
+	sprite_->SetColor({ color.x, color.y, color.z, alpha });
 }
 
 void OverheatGauge::Draw() { sprite_->Draw(); }
