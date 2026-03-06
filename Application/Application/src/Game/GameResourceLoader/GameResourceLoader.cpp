@@ -26,6 +26,7 @@
 #include <src/Game/Particles/BossFragments/BossFragmentsParticle.h>
 #include <src/Game/Particles/BloodScatter/BloodScatterParticle.h>
 #include <src/Game/Particles/TeleporterRing/TeleporterRingParticle.h>
+#include <src/Game/Particles/GunOverheatSmoke/GunOverheatSmokeParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -288,6 +289,8 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	RegisterParticle<BloodScatterParticle>("bloodScatter", "Cube");
 	// テレポーターリングパーティクル
 	RegisterParticle<TeleporterRingParticle>("teleporterRing", "TeleporterRing");
+	// 銃のオーバーヒート時煙パーティクル
+	RegisterParticle<GunOverheatSmokeParticle>("gunOverheatSmoke", "Cube");
 }
 
 void GameResourceLoader::LoadAllSoundData() { 

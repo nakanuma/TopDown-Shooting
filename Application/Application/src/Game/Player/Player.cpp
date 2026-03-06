@@ -479,9 +479,28 @@ void Player::HandleOverHeat()
 		}
 	}
 
+	///
+	///	銃モデルのオーバーヒート時更新処理
+	/// 
+
 	// 銃の発光強度変更処理（オーバーヒート時に銃身を赤くする処理）
 	float intensity = std::powf(GetOverheatRatio(), kGunIntensityFactor); // オーバーヒートに近づいたら急速に赤くしたいため累乗を使う
 	objectGun_->materialCB_.data_->emissiveIntensity = intensity;
+
+	// オーバーヒート中の煙パーティクル
+	if (IsOverHeadted()) {
+		overheatSmokeTimer_ += deltaTime; // 煙用タイマー加算
+
+		// 指定した間隔を超えたら発生
+		if (overheatSmokeTimer_ >= kOverheatSmokeInterval) {
+			Cygnus::Float3 forward = {sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y)}; // 銃の前方向ベクトル
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("gunOverheatSmoke", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), 1); // 銃のオーバーヒート時煙パーティクル
+		
+			overheatSmokeTimer_ = 0.0f; // 発生したのでタイマーリセット
+		}
+	} else {
+		overheatSmokeTimer_ = 0.0f; // オーバーヒートしていないので常にリセット
+	}
 }
 
 void Player::HandleHitBlink()
