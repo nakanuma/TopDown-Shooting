@@ -30,7 +30,7 @@ void DashBar::Update(const Player* player) {
 
 	// クールダウンの進捗率にイージングを適用し、スプライトの現在幅を計算（）
 	float progress = 1.0f - player->GetDashCooldownRatio();
-	float easedProgress = Cygnus::Easing::EaseInCubic(progress);
+	float easedProgress = Cygnus::Easing::EaseInSine(progress);
 	float newWidth = kDashBarSize.x * easedProgress;
 
 	spriteDashBar_->SetSize({newWidth, kDashBarSize.y}); // ダッシュクールダウン残り時間に応じてサイズ変更

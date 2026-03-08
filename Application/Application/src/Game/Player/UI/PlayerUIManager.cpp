@@ -58,7 +58,7 @@ void PlayerUIManager::Update(const Player* player) {
 	// オーバーヒートゲージ
 	overheatGauge_->Update(player);
 	// 移動キー
-	movementKeys_->Update();
+	movementKeys_->Update(player);
 	// マウス
 	mouse_->Update();
 	// ポーズキー

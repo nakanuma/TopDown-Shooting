@@ -359,7 +359,7 @@ void Player::HandleMove() {
 	}
 
 	// ダッシュ入力
-	bool dashInput = input_->TriggerKey(DIK_LSHIFT) || input_->IsTriggerMouse(2); // 左SHIFT or 中央クリック
+	bool dashInput = input_->TriggerKey(DIK_SPACE); // SPACE
 	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
 		isDashing_ = true;          // ダッシュ中へ
 		dashTimer_ = dashDuration_; // ダッシュ時間をセット
