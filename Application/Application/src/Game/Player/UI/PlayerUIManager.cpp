@@ -44,6 +44,10 @@ void PlayerUIManager::Initialize() {
 	// ポーズキー
 	pauseKey_ = std::make_unique<PauseKey>();
 	pauseKey_->Initialize(spriteCommon_.get());
+
+	// ダッシュ時クールタイム表示
+	dashBar_ = std::make_unique<DashBar>();
+	dashBar_->Initialize(spriteCommon_.get());
 }
 
 void PlayerUIManager::Update(const Player* player) {
@@ -59,6 +63,8 @@ void PlayerUIManager::Update(const Player* player) {
 	mouse_->Update();
 	// ポーズキー
 	pauseKey_->Update();
+	// ダッシュ時クールタイム表示
+	dashBar_->Update(player);
 }
 
 void PlayerUIManager::Draw() {
@@ -74,4 +80,6 @@ void PlayerUIManager::Draw() {
 	mouse_->Draw();
 	// ポーズキー
 	pauseKey_->Draw();
+	// ダッシュ時クールタイム表示
+	dashBar_->Draw();
 }

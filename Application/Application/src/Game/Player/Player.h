@@ -110,7 +110,19 @@ public:
 	/// オーバーヒート中状態を取得します。
 	/// </summary>
 	/// <returns></returns>
-	bool IsOverHeadted() const { return isOverheated_; }
+	bool IsOverHeated() const { return isOverheated_; }
+
+	/// <summary>
+	/// ダッシュ中状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsDashing() const { return isDashing_; }
+
+	/// <summary>
+	/// ダッシュクールダウンの割合を取得します。
+	/// </summary>
+	/// <returns>クールダウン残り時間割合（0.0f～1.0f）</returns>
+	float GetDashCooldownRatio() const { return dashCooldownTimer_ / dashCoolDown_; }
 
 	/// <summary>
 	/// 死亡フラグを取得します。
@@ -184,7 +196,7 @@ private:
 	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
 	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
 	static constexpr Cygnus::Float3 kGunEmissiveColor = {1.0f, 0.0f, 0.0f}; /* 銃のオーバーヒート時発光色（赤） */
-	static constexpr float kGunIntensityFactor = 2.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
+	static constexpr float kGunIntensityFactor = 3.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
 	static constexpr float kOverheatSmokeInterval = 0.12f;                  /* オーバーヒート時煙パーティクルの頻度 */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f; /* 速度正規化用の加算値 */

@@ -12,9 +12,10 @@
 class Player;
 
 // =========================================================
-// プレイヤーのHPバーUIクラス
+// プレイヤーのダッシュ時クールタイム表示UIクラス
 // =========================================================
-class HPBar {
+class DashBar
+{
 public:
 	// =========================================================
 	// Public Methods
@@ -25,7 +26,7 @@ public:
 	/// </summary>
 	/// <param name="dxBase">DirectX基盤クラス</param>
 	/// <param name="spriteCommon">スプライト共通クラス</param>
-	void Initialize(Cygnus::DirectXBase* dxBase, Cygnus::SpriteCommon* spriteCommon);
+	void Initialize(Cygnus::SpriteCommon* spriteCommon);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -41,15 +42,14 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kHPBarSize = { 300.0f, 30.0f };		 /* HPバーの最大サイズ */
-	static constexpr Cygnus::Float2 kHPBarPosition = { 490.0f, 630.0f }; /* HPバーの位置（中央） */
+	static constexpr Cygnus::Float2 kDashBarSize = { 80.0f, 10.0f };	/* バーのサイズ */
+	static constexpr Cygnus::Float4 kDashBarColor = { 0.25f, 0.5f, 1.0f, 1.0f }; /* バーの色 */
 
-	static constexpr Cygnus::Float4 kHPBackgroundColor = { 0.0f, 0.0f, 0.0f, 1.0f }; /* HPバー背景色（黒） */
-	static constexpr Cygnus::Float4 kHPForegroundColor = { 1.0f, 0.2f, 0.2f, 1.0f }; /* HPバー背景色（黒） */
+	static constexpr float kDashBarOffsetY = -60.0f;	/* プレイヤーからのY軸オフセット */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::Sprite> spriteHPBackground_;				/* HPバースプライト（後景） */
-	std::unique_ptr<Cygnus::Sprite> spriteHPForeground_;				/* HPバースプライト（前景） */
+	std::unique_ptr<Cygnus::Sprite> spriteDashBar_;	/* クールダウン表示スプライト */
 };
+

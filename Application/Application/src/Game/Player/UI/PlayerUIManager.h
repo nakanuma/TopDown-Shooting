@@ -15,6 +15,7 @@
 #include <src/Game/Player/UI/MovementKeys/MovementKeys.h>
 #include <src/Game/Player/UI/Mouse/Mouse.h>
 #include <src/Game/Player/UI/PauseKey/PauseKey.h>
+#include <src/Game/Player/UI/DashBar/DashBar.h>
 
 // ---------------------------------------------------------
 // Forward Declaration
@@ -57,4 +58,5 @@ private:
 	std::unique_ptr<MovementKeys> movementKeys_;            /* 移動キー */
 	std::unique_ptr<Mouse> mouse_;							/* マウス */
 	std::unique_ptr<PauseKey> pauseKey_;					/* ポーズキー */
+	std::unique_ptr<DashBar> dashBar_;						/* ダッシュ時クールタイム表示 */
 };

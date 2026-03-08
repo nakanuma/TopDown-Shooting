@@ -92,7 +92,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	///
 
 	currentHP_ = maxHP_;	// 現在HPには最大HPをセット
-	invincible_ = true;    // 開始時は非無敵状態
+	invincible_ = false;    // 開始時は非無敵状態
 
 	///
 	///	調整パラメーター登録
@@ -348,9 +348,12 @@ void Player::HandleMove() {
 
 	// ダッシュ中処理
 	if (isDashing_) {
-		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime(); // ダッシュ時タイマー更新
+		invincible_ = true; // ダッシュ時は無敵状態
+
 		if (dashTimer_ <= 0.0f) {
 			isDashing_ = false;                 // ダッシュ終了
+			invincible_ = false;				// 無敵終了
 			dashCooldownTimer_ = dashCoolDown_; // クールタイムをセット
 		}
 	}
@@ -488,7 +491,7 @@ void Player::HandleOverHeat()
 	objectGun_->materialCB_.data_->emissiveIntensity = intensity;
 
 	// オーバーヒート中の煙パーティクル
-	if (IsOverHeadted()) {
+	if (IsOverHeated()) {
 		overheatSmokeTimer_ += deltaTime; // 煙用タイマー加算
 
 		// 指定した間隔を超えたら発生

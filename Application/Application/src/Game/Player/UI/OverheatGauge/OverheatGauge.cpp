@@ -71,7 +71,7 @@ void OverheatGauge::Update(const Player* player) {
 	/// 
 	
 	float alpha = 1.0f;
-	if (player->IsOverHeadted()) {
+	if (player->IsOverHeated()) {
 		overheatBlinkTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 		float blink = (std::sinf(overheatBlinkTimer_ * kOverheatedBlinkSpeed) * 0.5f) + 0.5f; // sinで0~1の波を作る
 
