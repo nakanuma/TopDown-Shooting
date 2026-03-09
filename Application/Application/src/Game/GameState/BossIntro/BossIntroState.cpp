@@ -8,7 +8,7 @@ BossIntroState::BossIntroState(GamePlayScene* scene) { scene_ = scene; }
 
 void BossIntroState::Initialize() { 
 	bossIntroSequence_ = std::make_unique<BossIntroSequence>(); 
-	bossIntroSequence_->Initialize(scene_->GetSpriteCommon(), scene_->GetPlayer());
+	bossIntroSequence_->Initialize(scene_->GetSpriteCommon(), scene_->GetPlayer(), scene_);
 
 	bossIntroSequence_->Start(); // 登場演出開始
 }
@@ -28,6 +28,8 @@ void BossIntroState::Update() {
 }
 
 void BossIntroState::Draw() { 
+	bossIntroSequence_->Draw();
+
 	scene_->GetPlayer()->Draw();
 	scene_->GetEnemyManager()->Draw(); 
 
@@ -36,6 +38,8 @@ void BossIntroState::Draw() {
 }
 
 void BossIntroState::DrawShadow() {
+	bossIntroSequence_->DrawShadow();
+
 	scene_->GetPlayer()->DrawShadow();
 	scene_->GetEnemyManager()->DrawShadow(); 
 
@@ -51,7 +55,9 @@ void BossIntroState::DrawUI() {
 	FadeTransition::GetInstance()->Draw(); 
 }
 
-void BossIntroState::Debug() {}
+void BossIntroState::Debug() {
+	bossIntroSequence_->Debug();
+}
 
 bool BossIntroState::CanTransition() const { 
 	// ボス登場演出が終了したら遷移可能

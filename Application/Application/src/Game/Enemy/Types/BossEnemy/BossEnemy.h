@@ -74,6 +74,12 @@ public:
 	/// <returns>死亡中フラグ</returns>
 	bool IsDying() const { return isDying_; }
 
+	/// <summary>
+	/// アクティブ状態を設定します。
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetActive(bool flag) { isActive_ = flag; }
+
 private:
 	// =========================================================
 	// Internal Methods
