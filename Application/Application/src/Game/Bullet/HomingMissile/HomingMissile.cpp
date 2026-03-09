@@ -122,6 +122,16 @@ void HomingMissile::OnCollision(Cygnus::Collider* other) {
 		// ライフサイクル終了
 		FinishLifeCycle();
 	}
+
+	// ---------------------------------------------------------
+	// プレイヤーの弾との衝突
+	// ---------------------------------------------------------
+	if (other->GetTag() == "PlayerBullet") {
+		// ヒット時パーティクル発生
+		EmitHitParticles();
+		// 死亡状態にする
+		isDead_ = true;
+	}
 }
 
 void HomingMissile::EmitHitParticles() {

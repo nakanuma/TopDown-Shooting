@@ -71,7 +71,7 @@ private:
 
 	static constexpr Cygnus::Float3 kMissileScale = {0.5f, 0.5f, 0.5f};       /* オブジェクトのスケール */
 	static constexpr Cygnus::Float4 kMissileColor = {0.5f, 0.5f, 0.5f, 1.0f}; /* オブジェクトの色 */
-	static constexpr Cygnus::Float3 kColliderSize = {0.5f, 0.5f, 2.5f};       /* コライダーサイズ */
+	static constexpr Cygnus::Float3 kColliderSize = {0.5f, 4.0f, 2.5f};       /* コライダーサイズ（プレイヤーが撃ち落とせるよう見た目より縦長の判定に） */
 
 	static constexpr float kSmokeOffsetDistance = -3.0f; /* ミサイル煙パーティクルのオフセット距離 */
 	static constexpr int32_t kMissileSmokeCount = 1;     /* ミサイル煙パーティクルの発生数 */
