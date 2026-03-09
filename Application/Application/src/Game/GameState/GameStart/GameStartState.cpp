@@ -74,3 +74,5 @@ bool GameStartState::CanTransition() const {
 bool GameStartState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GameStartState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GameStartState::ShouldShowBossIntro() const { return false; }

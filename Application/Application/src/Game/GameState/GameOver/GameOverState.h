@@ -80,6 +80,8 @@ public:
 	/// <returns>死亡していたらtrue</returns>
 	bool IsBossDying() const override;
 
+	bool ShouldShowBossIntro() const override;
+
 private:
 	std::unique_ptr<GameOverSequence> gameOverSequence_;	// ゲームオーバー時演出の制御クラス
 };

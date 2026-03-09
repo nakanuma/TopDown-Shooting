@@ -4,24 +4,23 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/GameState/Base/IGameState.h>
-#include <src/Game/Sequence/GameStartSequence.h>
+#include <src/Game/Sequence/BossIntroSequence.h>
 
 // =========================================================
-// ゲーム開始状態
+// ボス登場演出
 // =========================================================
-class GameStartState : public IGameState
-{
+class BossIntroState : public IGameState {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="scene">ゲームプレイシーン</param>
-	GameStartState(GamePlayScene* scene);
+	BossIntroState(GamePlayScene* scene);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GameStartState() override = default;
+	~BossIntroState() override = default;
 
 	/// <summary>
 	/// 初期化処理を行います。
@@ -36,7 +35,7 @@ public:
 	/// <summary>
 	/// 更新処理を行います。
 	/// </summary>
-	void Update() override;
+	void Update()override;
 
 	/// <summary>
 	/// 描画処理を行います。
@@ -84,9 +83,5 @@ public:
 	bool ShouldShowBossIntro() const override;
 
 private:
-	// =========================================================
-	// Member Variables
-	// =========================================================
-	std::unique_ptr<GameStartSequence> gameStartSequence_;	// ゲーム開始時演出の制御クラス
+	std::unique_ptr<BossIntroSequence> bossIntroSequence_; /* ボス登場演出 */
 };
-

@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Sequence\BossIntroSequence.cpp" />
+    <ClCompile Include="src\Game\GameState\BossIntro\BossIntroState.cpp" />
     <ClCompile Include="src\Game\Player\UI\DashBar\DashBar.cpp" />
     <ClCompile Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.cpp" />
     <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.cpp" />
@@ -88,6 +90,8 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Sequence\BossIntroSequence.h" />
+    <ClInclude Include="src\Game\GameState\BossIntro\BossIntroState.h" />
     <ClInclude Include="src\Game\Player\UI\DashBar\DashBar.h" />
     <ClInclude Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.h" />
     <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.h" />

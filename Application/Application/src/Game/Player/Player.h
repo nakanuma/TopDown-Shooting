@@ -89,6 +89,12 @@ public:
 	void SetTranslate(const Cygnus::Float3& translate) { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
+	/// プレイヤーの回転を取得します。
+	/// </summary>
+	/// <returns>回転（Float3）</returns>
+	const Cygnus::Float3& GetRotate() const { return objectPlayer_->GetRotate(); }
+
+	/// <summary>
 	/// プレイヤーの現在HPを取得します。
 	/// </summary>
 	/// <returns>現在HP</returns>
@@ -147,6 +153,24 @@ public:
 	/// </summary>
 	/// <param name="manager">ポストエフェクトマネージャー</param>
 	void SetPostEffectManager(Cygnus::PostEffectManager* manager) { postEffectManager_ = manager; }
+
+	/// <summary>
+	/// 速度ベクトルを設定します。
+	/// </summary>
+	/// <param name="velocity"></param>
+	void SetVelovity(const Cygnus::Float3& velocity) { velocity_ = velocity; }
+
+	/// <summary>
+	/// 回転を設定します。
+	/// </summary>
+	/// <param name="rotate"></param>
+	void SetRotate(const Cygnus::Float3& rotate) { objectPlayer_->GetRotate() = rotate; }
+
+	/// <summary>
+	/// 移動速度を取得します
+	/// </summary>
+	/// <returns></returns>
+	float GetMoveSpeed() const { return moveSpeed_; }
 
 private:
 	// =========================================================

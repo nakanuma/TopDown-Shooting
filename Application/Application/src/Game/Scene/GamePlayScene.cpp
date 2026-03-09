@@ -28,6 +28,7 @@
 #include <src/Game/GameState/GamePlay/GamePlayState.h>
 #include <src/Game/GameState/GameOver/GameOverState.h>
 #include <src/Game/GameState/GameClear/GameClearState.h>
+#include <src/Game/GameState/BossIntro/BossIntroState.h>
 
 void GamePlayScene::Initialize() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
@@ -309,21 +310,18 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
+	ImGui::Checkbox("hasBossIntroPlayed", &hasBossIntroPlayed_);
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
 	ImGui::Checkbox("isPaused", &isPaused_);
 
+	ImGui::DragFloat3("Camera : Translate", &camera_->GetCurrent()->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("Camera : Rotate", &camera_->GetCurrent()->transform_.rotate_.x, 0.01f);
+
 	if(ImGui::Button("TITLE")) {
 		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-
-	if(ImGui::Button("TtoR")) {
-		TransitionToResult();
-	}
-	if (ImGui::Button("TtoT")) {
-		TransitionToTitle();
-	}
-
 	ImGui::End();
 
 	stateManager_->Debug();
@@ -365,6 +363,7 @@ void GamePlayScene::InitializeGameStates()
 	stateManager_->RegisterState("GamePlay", std::make_unique<GamePlayState>(this));
 	stateManager_->RegisterState("GameOver", std::make_unique<GameOverState>(this));
 	stateManager_->RegisterState("GameClear", std::make_unique<GameClearState>(this));
+	stateManager_->RegisterState("BossIntro", std::make_unique<BossIntroState>(this));
 
 	// 初期状態をゲームスタートに設定
 	stateManager_->ChangeState("GameStart");

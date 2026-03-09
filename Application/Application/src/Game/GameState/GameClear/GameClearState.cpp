@@ -92,3 +92,5 @@ bool GameClearState::CanTransition() const {
 bool GameClearState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GameClearState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GameClearState::ShouldShowBossIntro() const { return false; }

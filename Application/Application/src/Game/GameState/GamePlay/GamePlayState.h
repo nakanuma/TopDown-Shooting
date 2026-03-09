@@ -80,11 +80,15 @@ public:
 	/// <returns>死亡していたらtrue</returns>
 	bool IsBossDying() const override;
 
+	bool ShouldShowBossIntro() const override;
+
 private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
 	bool shouldTransitionToGameOver_ = false;		// ゲームオーバー遷移フラグ
 	bool shouldTransitionToGameClear_ = false;		// ゲームクリア遷移フラグ
+
+	bool shouldTransitionToBossInrto_ = false;		// ボス登場演出遷移フラグ
 };
 

@@ -12,7 +12,12 @@
 
 GamePlayState::GamePlayState(GamePlayScene* scene) { scene_ = scene; }
 
-void GamePlayState::Initialize() {}
+void GamePlayState::Initialize() {
+	// 全てのフラグをリセット
+	shouldTransitionToGameOver_ = false;
+	shouldTransitionToGameClear_ = false;
+	shouldTransitionToBossInrto_ = false;
+}
 
 void GamePlayState::Finalize() { scene_->GetEnemyManager()->Finalize(); }
 
@@ -33,6 +38,24 @@ void GamePlayState::Update() {
 	// ボスが死亡したらゲームクリア状態遷移フラグを立てる
 	if (scene_->GetEnemyManager()->GetBoss()->IsDying()) {
 		shouldTransitionToGameClear_ = true;
+	}
+	// プレイヤーがボスに近づいたらボス登場演出遷移フラグを立てる（デバッグ用。あとで判定をイベントトリガーに置き換える）
+	if (!scene_->HasBossIntroPlayed() && !shouldTransitionToBossInrto_) {
+		const float kEncounterRadius = 50.0f;	// 接近の検知半径
+
+		// 両方の位置を取得
+		Cygnus::Float3 playerPos = scene_->GetPlayer()->GetTranslate();
+		Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
+
+		// 2点間の距離を計算
+		Cygnus::Float3 diff = playerPos - bossPos;
+		float distance = Cygnus::Float3::Length(diff);
+
+		// 検知半径に入ったらフラグを立てる
+		if (distance <= kEncounterRadius) {
+			shouldTransitionToBossInrto_ = true;
+			scene_->SetBossIntroPlayed(true); // 既にボス登場演出を再生したことをゲームシーンに知らせる（再度判定防止用）
+		}
 	}
 
 
@@ -99,10 +122,12 @@ void GamePlayState::Debug() {
 }
 
 bool GamePlayState::CanTransition() const {
-	// ゲームオーバーまたはゲームクリアへの遷移条件
-	return shouldTransitionToGameOver_ || shouldTransitionToGameClear_;
+	// ゲームオーバー || ゲームクリア || ボス登場演出  への遷移条件
+	return shouldTransitionToGameOver_ || shouldTransitionToGameClear_ || shouldTransitionToBossInrto_;
 }
 
 bool GamePlayState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GamePlayState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GamePlayState::ShouldShowBossIntro() const { return shouldTransitionToBossInrto_; }

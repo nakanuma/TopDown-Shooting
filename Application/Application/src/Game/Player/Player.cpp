@@ -144,6 +144,10 @@ void Player::Update(bool operable) {
 		HandleOverHeat();
 		// 移動処理
 		HandleMove();
+	} else if (!operable && !isDead_) {
+		// 操作不可時にも位置の更新は行えるようにする（ボス登場演出時の自動移動）
+		isMoving_ = (velocity_.x != 0.0f || velocity_.z != 0.0f);
+		objectPlayer_->GetTranslate() += velocity_;
 	}
 
 	// HPが0未満にならないよう制限
