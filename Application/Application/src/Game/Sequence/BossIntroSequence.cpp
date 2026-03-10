@@ -71,14 +71,6 @@ void BossIntroSequence::Update() {
 
 				shakeBaseCameraPos_ = Cygnus::Camera::GetCurrent()->transform_.translate_; // 現在のカメラ位置を保存
 
-				// ボスの方向を向く
-				Cygnus::Float3 pPos = player_->GetTranslate();
-				Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
-				float dx = bossPos.x - pPos.x;
-				float dz = bossPos.z - pPos.z;
-				float targetRot = std::atan2f(dx, dz);
-				player_->SetRotate({0.0f, targetRot, 0.0f});
-
 				// 暗転が終わったのでフェードインを開始
 				FadeTransition::GetInstance()->StartFadeIn(kFadeDuration, 0.0f);
 			});
@@ -92,13 +84,23 @@ void BossIntroSequence::Update() {
 		}
 
 		break;
-	case Phase::RearCamera:
+	case Phase::RearCamera: {
 		// プレイヤーの歩行を止める
-		player_->SetVelovity({ 0.0f, 0.0f, 0.0f });
+		player_->SetVelovity({0.0f, 0.0f, 0.0f});
+
+		// ボスの方向を向く
+		Cygnus::Float3 playerPos = player_->GetTranslate();
+		Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
+		float dx = bossPos.x - playerPos.x;
+		float dz = bossPos.z - playerPos.z;
+		float targetRot = std::atan2f(dx, dz);
+		player_->SetRotate({0.0f, targetRot, 0.0f});
 
 		// 状態の更新
 		phase_ = Phase::Shaking; // 次のフェーズへ移行
 		timer_ = 0.0f;
+	}
+
 		break;
 
 	case Phase::Shaking:
