@@ -40,7 +40,7 @@ void BossIntroSequence::Update() {
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
 	switch (phase_) {
-	case Phase::Fade1:
+	case Phase::Fade1: {
 		if (!isFadeStarted_) {
 			isFadeStarted_ = true; // フェードしていることを記録
 
@@ -64,10 +64,18 @@ void BossIntroSequence::Update() {
 				float rotX = 0.1f;
 
 				Cygnus::Camera::GetCurrent()->transform_.translate_ = cameraPos;
-				Cygnus::Camera::GetCurrent()->transform_.rotate_ = { rotX, rotY, 0.0f };
+				Cygnus::Camera::GetCurrent()->transform_.rotate_ = {rotX, rotY, 0.0f};
 
 				// プレイヤーを所定位置へ移動（ムービー位置を合わせるため）
-				player_->SetTranslate({ 156.0f, 2.0f, 32.0f });
+				player_->SetTranslate({156.0f, 2.0f, 32.0f});
+
+				// ボスの方向を向く
+				Cygnus::Float3 newPlayerPos = player_->GetTranslate();
+				Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
+				float dx = bossPos.x - newPlayerPos.x;
+				float dz = bossPos.z - newPlayerPos.z;
+				float targetRot = std::atan2f(dx, dz);
+				player_->SetRotate({0.0f, targetRot, 0.0f});
 
 				shakeBaseCameraPos_ = Cygnus::Camera::GetCurrent()->transform_.translate_; // 現在のカメラ位置を保存
 
@@ -79,9 +87,10 @@ void BossIntroSequence::Update() {
 		// フェードが終了したので状態の更新
 		if (isFadeStarted_ && FadeTransition::GetInstance()->IsFinished()) {
 			phase_ = Phase::RearCamera; // 次のフェーズへ移行
-			isFadeStarted_ = false; // この後使い回すのでフラグをリセットしておく
-			timer_ = 0.0f; // タイマーリセット
+			isFadeStarted_ = false;     // この後使い回すのでフラグをリセットしておく
+			timer_ = 0.0f;              // タイマーリセット
 		}
+	}
 
 		break;
 	case Phase::RearCamera: {
@@ -163,7 +172,7 @@ void BossIntroSequence::Update() {
 
 			// フェードアウト（暗転を開始）
 			FadeTransition::GetInstance()->StartFadeOut(kFadeDuration, [this]() {
-				/* 暗転した瞬間の処理（通常カメラへ切り替え）*/
+				/* 暗転した瞬間の処理（トップダウンカメラへ切り替え）*/
 				Cygnus::Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
 				Cygnus::Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;
 
@@ -204,6 +213,11 @@ void BossIntroSequence::DrawUI() {}
 void BossIntroSequence::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("BossIntroSequence");
+
+	if (ImGui::Button("Skip")) {
+		Skip();
+	}
+
 	ImGui::Text("Timer : %.2f", timer_);
 
 	// フェーズ名の表示
@@ -237,4 +251,24 @@ void BossIntroSequence::Debug() {
 	ImGui::Text("Current Phase : %s", phaseStr);
 	ImGui::End();
 #endif
+}
+
+void BossIntroSequence::Skip() {
+	if (phase_ != Phase::Finish) {
+		// カメラをトップダウンに設定
+		Cygnus::Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
+		Cygnus::Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;
+
+		// 壁崩壊済みフラグを立てる
+		isWallCrumbled_ = true;
+
+		// ボスを有効化する
+		scene_->GetEnemyManager()->GetBoss()->SetActive(true);
+
+		// 終了フェーズにする
+		phase_ = Phase::Finish;
+		timer_ = 0.0f;
+
+		return;
+	}
 }

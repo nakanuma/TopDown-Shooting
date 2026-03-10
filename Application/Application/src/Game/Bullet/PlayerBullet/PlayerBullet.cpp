@@ -169,4 +169,17 @@ void PlayerBullet::OnCollision(Cygnus::Collider* other) {
 		// 効果音発生
 		Cygnus::SoundManager::GetInstance()->Play("hit_obstacle", false, 0.2f);
 	}
+
+	// ---------------------------------------------------------
+	// ミサイルとの衝突
+	// ---------------------------------------------------------
+	if (other->GetTag() == "HomingMissile") {
+		// ヒット時パーティクル発生
+		EmitHardHitParticles(bulletPos, velocity_);
+		// ライフサイクル終了
+		FinishLifeCycle();
+
+		// 効果音発生
+		Cygnus::SoundManager::GetInstance()->Play("hit_obstacle", false, 0.2f);
+	}
 }

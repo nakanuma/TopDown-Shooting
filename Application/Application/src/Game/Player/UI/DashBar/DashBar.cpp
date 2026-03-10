@@ -20,18 +20,15 @@ void DashBar::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 }
 
 void DashBar::Update(const Player* player) {
+	// クールダウンの進捗率にイージングを適用し、スプライトの現在幅を計算（）
+	progress_ = player->GetDashCooldownRatio();
+
+	float newWidth = kDashBarSize.x * progress_;
+
 	// ワールド座標をスクリーン座標に変換
 	Cygnus::Float3 screenPos = Utility::WorldToScreen(player->GetTranslate());
 	// スプライトの位置を計算
-	Cygnus::Float2 spritePos = {
-		screenPos.x - (kDashBarSize.x / 2.0f),
-		screenPos.y - kDashBarOffsetY
-	};
-
-	// クールダウンの進捗率にイージングを適用し、スプライトの現在幅を計算（）
-	float progress = 1.0f - player->GetDashCooldownRatio();
-	float easedProgress = Cygnus::Easing::EaseInSine(progress);
-	float newWidth = kDashBarSize.x * easedProgress;
+	Cygnus::Float2 spritePos = {screenPos.x - (kDashBarSize.x / 2.0f), screenPos.y - kDashBarOffsetY};
 
 	spriteDashBar_->SetSize({newWidth, kDashBarSize.y}); // ダッシュクールダウン残り時間に応じてサイズ変更
 	spriteDashBar_->SetPosition(spritePos);
@@ -39,5 +36,10 @@ void DashBar::Update(const Player* player) {
 }
 
 void DashBar::Draw() {
+	// クールダウン中でないなら描画スキップ
+	if (progress_ <= 0.0f) {
+		return;
+	}
+
 	spriteDashBar_->Draw();
 }

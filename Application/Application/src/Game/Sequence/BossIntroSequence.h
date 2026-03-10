@@ -73,7 +73,10 @@ private:
 	// Internal Methods
 	// =========================================================
 
-
+	/// <summary>
+	/// 演出のスキップを行います。
+	/// </summary>
+	void Skip();
 
 private:
 	/// <summary>
@@ -111,8 +114,8 @@ private:
 
 	static constexpr float kShakePhaseEndDuration = 8.0f; /* シェイクフェーズの終了時間 */
 
-	static constexpr float kPlayerShootDuration = 1.2f; /* プレイヤーが射撃するタイミング */
-	static constexpr float kShootDownMissilePhaseEndDuration = 2.0f; /* ミサイル墜落フェーズの終了時間 */
+	static constexpr float kPlayerShootDuration = 1.3f; /* プレイヤーが射撃するタイミング */
+	static constexpr float kShootDownMissilePhaseEndDuration = 2.5f; /* ミサイル墜落フェーズの終了時間 */
 
 	static constexpr Cygnus::Float3 kTopdownCameraPos = { 156.0f, 51.8f, -6.0f };   /* トップダウン視点カメラ位置 */
 	static constexpr Cygnus::Float3 kTopdownCameraRot = { Cygnus::PIf / 4.0f, 0.0f, 0.0f }; /* トップダウン視点カメラ回転 */
