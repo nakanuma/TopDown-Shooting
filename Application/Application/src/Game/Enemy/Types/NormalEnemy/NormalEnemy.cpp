@@ -65,6 +65,10 @@ void NormalEnemy::Initialize(const Cygnus::Float3& position, Player* player) {
 void NormalEnemy::Update() {
 	float dt = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 
+	// 元オブジェクトの更新（エフェクト発生用なので後で削除修正）
+	objectEnemy_->transform_.translate_ = objectEnemyAnim_->GetTranslate();
+	objectEnemy_->UpdateMatrix();
+
 	// 敵オブジェクト更新
 	objectEnemyAnim_->Update(dt, isWalking_);
 	objectEnemyAnim_->object_->UpdateShadowMatrix();

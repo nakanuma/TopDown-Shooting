@@ -7,6 +7,7 @@
 #include <ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
 #include <TimeManager.h>
+#include <Input/Input.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -48,8 +49,8 @@ void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 }
 
 void GameStartSequence::Update() {
-	// デバッグスキップ用
-	DebugSkip();
+	// 入力操作によるスキップ判定
+	HandleSkip();
 
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
@@ -131,6 +132,11 @@ void GameStartSequence::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameStartSequence");
 
+	ImGui::DragFloat("SpaceHoldTimer", &spaceHoldTimer_, 0.01f);
+	if (ImGui::Button("Skip")) {
+		Skip();
+	}
+
 	// フェーズ名を表示
 	const char* phaseStr = "";
 	switch (phase_) {
@@ -151,10 +157,6 @@ void GameStartSequence::Debug() {
 		break;
 	}
 	ImGui::Text("Current Phase : %s", phaseStr);
-
-	if (ImGui::Button("Skip")) {
-		isDebugSkip_ = true;
-	}
 
 	ImGui::End();
 #endif
@@ -238,8 +240,8 @@ void GameStartSequence::UpdateTransition() {
 	}
 }
 
-void GameStartSequence::DebugSkip() {
-	if (isDebugSkip_ && phase_ != Phase::Finish) {
+void GameStartSequence::Skip() {
+	if (phase_ != Phase::Finish) {
 		// カメラを最終位置に設定
 		Cygnus::Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
 		Cygnus::Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;
@@ -257,5 +259,21 @@ void GameStartSequence::DebugSkip() {
 		lerpT_ = 1.0f;
 
 		return;
+	}
+}
+
+void GameStartSequence::HandleSkip() {
+	if (phase_ != Phase::Finish) {
+		// SPACEキーが押されている間タイマーを加算
+		if (Cygnus::Input::GetInstance()->PushKey(DIK_SPACE)) {
+			spaceHoldTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
+			// 一定時間押し続けたらスキップ実行
+			if (spaceHoldTimer_ >= kSkipHoldTime) {
+				Skip();
+			}
+		} else {
+			spaceHoldTimer_ = 0.0f;
+		}
 	}
 }

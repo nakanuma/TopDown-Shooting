@@ -3,7 +3,7 @@
     "dashCoolDown": 1.5,
     "dashDuration": 0.20000000298023224,
     "dashSpeedMultiplier": 3.0,
-    "fireCooldown": 0.15000000596046448,
+    "fireCooldown": 0.20000000298023224,
     "maxHP": 100,
     "maxRandomAngle": 0.019999999552965164,
     "moveSpeed": 0.25,

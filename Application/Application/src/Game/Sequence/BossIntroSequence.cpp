@@ -32,6 +32,9 @@ void BossIntroSequence::Start() {
 }
 
 void BossIntroSequence::Update() {
+	// 入力操作によるスキップ判定
+	HandleSkip();
+
 	// オブジェクト更新
 	objectCrumblingWall_->UpdateMatrix();
 	objectCrumblingWall_->UpdateShadowMatrix();
@@ -270,5 +273,21 @@ void BossIntroSequence::Skip() {
 		timer_ = 0.0f;
 
 		return;
+	}
+}
+
+void BossIntroSequence::HandleSkip() {
+	if (phase_ != Phase::Finish) {
+		// SPACEキーが押されている間タイマーを加算
+		if (Cygnus::Input::GetInstance()->PushKey(DIK_SPACE)) {
+			spaceHoldTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
+			// 一定時間押し続けたらスキップ実行
+			if (spaceHoldTimer_ >= kSkipHoldTime) {
+				Skip();
+			}
+		} else {
+			spaceHoldTimer_ = 0.0f;
+		}
 	}
 }
