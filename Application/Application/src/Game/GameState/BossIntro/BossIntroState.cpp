@@ -24,6 +24,8 @@ void BossIntroState::Update() {
 	scene_->GetField()->Update();
 	scene_->GetObstacleManager()->Update(scene_->GetPlayer()->GetTranslate());
 
+	BulletManager::GetInstance()->Update();
+
 	FadeTransition::GetInstance()->Update();
 }
 
@@ -35,6 +37,8 @@ void BossIntroState::Draw() {
 
 	scene_->GetField()->Draw();
 	scene_->GetObstacleManager()->Draw(scene_->GetPlayer()->GetTranslate());
+
+	BulletManager::GetInstance()->Draw();
 }
 
 void BossIntroState::DrawShadow() {

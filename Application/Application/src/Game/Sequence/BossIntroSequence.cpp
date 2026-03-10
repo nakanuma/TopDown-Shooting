@@ -1,10 +1,14 @@
 #include "BossIntroSequence.h"
 
+// C++
+#include <algorithm>
+
 // Engine
 #include <TimeManager.h>
 #include <Camera.h>
 #include <ImguiWrapper.h>
 #include <ParticleEffect/ParticleEffectManager.h>
+#include <Easing.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
@@ -48,15 +52,15 @@ void BossIntroSequence::Update() {
 				Cygnus::Float3 playerPos = player_->GetTranslate();
 
 				float distance = 20.0f;
-				float sideOffset = -3.0f;
-				float height = 4.0f;
+				float sideOffset = -10.0f;
+				float height = 4.0;
 
 				Cygnus::Float3 cameraPos;
 				cameraPos.x = playerPos.x - sideOffset;
 				cameraPos.y = playerPos.y + height;
 				cameraPos.z = playerPos.z - distance;
 
-				float rotY = -0.1f;
+				float rotY = -0.3f;
 				float rotX = 0.1f;
 
 				Cygnus::Camera::GetCurrent()->transform_.translate_ = cameraPos;
@@ -66,6 +70,14 @@ void BossIntroSequence::Update() {
 				player_->SetTranslate({ 156.0f, 2.0f, 32.0f });
 
 				shakeBaseCameraPos_ = Cygnus::Camera::GetCurrent()->transform_.translate_; // 現在のカメラ位置を保存
+
+				// ボスの方向を向く
+				Cygnus::Float3 pPos = player_->GetTranslate();
+				Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
+				float dx = bossPos.x - pPos.x;
+				float dz = bossPos.z - pPos.z;
+				float targetRot = std::atan2f(dx, dz);
+				player_->SetRotate({0.0f, targetRot, 0.0f});
 
 				// 暗転が終わったのでフェードインを開始
 				FadeTransition::GetInstance()->StartFadeIn(kFadeDuration, 0.0f);
@@ -114,10 +126,31 @@ void BossIntroSequence::Update() {
 		// 現在カメラにシェイクを適用
 		Cygnus::Camera::GetCurrent()->transform_.translate_ = shakeBaseCameraPos_ + CameraShake::GetInstance()->GetOffset();
 
-		// 仮でフェーズ移行
-		if(timer_ > 8.0f) {
-			phase_ = Phase::Fade2;
-			timer_ = 0.0f;
+		// 時間を過ぎたら終了
+		if (timer_ > kShakePhaseEndDuration) {
+			phase_ = Phase::ShootDownMissile; // 次のフェーズへ移行
+			timer_ = 0.0f;             // タイマーリセット
+		}
+
+		break;
+
+	case Phase::ShootDownMissile:
+		// ボスがミサイルを撃つ
+		if (!hasLaunchMissile_) {
+			scene_->GetEnemyManager()->GetBoss()->LaunchMissile();
+			hasLaunchMissile_ = true;
+		}
+
+		// プレイヤーが射撃する
+		if (!hasPlayerShooted_ && timer_ > kPlayerShootDuration) {
+			player_->Fire();
+			hasPlayerShooted_ = true;
+		}
+
+		// 時間を過ぎたら終了
+		if (timer_ > kShootDownMissilePhaseEndDuration) {
+			phase_ = Phase::Fade2; // 次のフェーズへ移行
+			timer_ = 0.0f; // タイマーリセット
 		}
 
 		break;
@@ -167,6 +200,7 @@ void BossIntroSequence::DrawShadow() {
 void BossIntroSequence::DrawUI() {}
 
 void BossIntroSequence::Debug() {
+#ifdef USE_IMGUI
 	ImGui::Begin("BossIntroSequence");
 	ImGui::Text("Timer : %.2f", timer_);
 
@@ -185,6 +219,12 @@ void BossIntroSequence::Debug() {
 	case BossIntroSequence::Phase::Shaking:
 		phaseStr = "Shaking";
 		break;
+	case BossIntroSequence::Phase::CameraPan:
+		phaseStr = "CameraPan";
+		break;
+	case BossIntroSequence::Phase::ShootDownMissile:
+		phaseStr = "ShootDownMissile";
+		break;
 	case BossIntroSequence::Phase::Fade2:
 		phaseStr = "Fade2";
 		break;
@@ -194,4 +234,5 @@ void BossIntroSequence::Debug() {
 	}
 	ImGui::Text("Current Phase : %s", phaseStr);
 	ImGui::End();
+#endif
 }

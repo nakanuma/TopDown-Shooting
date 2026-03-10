@@ -80,6 +80,11 @@ public:
 	/// <param name="flag"></param>
 	void SetActive(bool flag) { isActive_ = flag; }
 
+	/// <summary>
+	/// ミサイルを発射する
+	/// </summary>
+	void LaunchMissile() { FireHomingMissile(); }
+
 private:
 	// =========================================================
 	// Internal Methods

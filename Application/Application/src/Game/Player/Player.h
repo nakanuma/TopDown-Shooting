@@ -172,6 +172,11 @@ public:
 	/// <returns></returns>
 	float GetMoveSpeed() const { return moveSpeed_; }
 
+	/// <summary>
+	/// プレイヤーの正面方向へ弾を1発射撃します。（ボス登場シーン用）
+	/// </summary>
+	void Fire() { Shoot(false); }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -186,6 +191,11 @@ private:
 	/// 移動およびダッシュ入力の処理を行います。
 	/// </summary>
 	void HandleMove();
+
+	/// <summary>
+	/// 弾の生成処理を行います。
+	/// </summary>
+	void Shoot(bool forCursorDirection);
 
 	/// <summary>
 	/// 弾の入力発射処理を行います。

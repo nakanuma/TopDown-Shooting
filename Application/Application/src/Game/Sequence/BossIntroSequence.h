@@ -80,12 +80,14 @@ private:
 	/// 演出のフェーズ
 	/// </summary>
 	enum class Phase {
-		None,			/* 初期状態 */
-		Fade1,			/* フェードインアウト（開始時） */
-		RearCamera,		/* 背面カメラ */
-		Shaking,		/* 揺れ */
-		Fade2,			/* フェードインアウト（終了時） */
-		Finish			/* 終了 */
+		None,				/* 初期状態 */
+		Fade1,				/* フェードインアウト（開始時） */
+		RearCamera,			/* 背面カメラ */
+		Shaking,			/* 揺れ */
+		CameraPan,			/* カメラ水平移動（横から視点） */
+		ShootDownMissile,	/* ボスのミサイルを撃ち落とす */
+		Fade2,				/* フェードインアウト（終了時） */
+		Finish				/* 終了 */
 	};
 
 	// =========================================================
@@ -107,6 +109,11 @@ private:
 	static constexpr float kShakeDuration3 = 1.75f;
 	static constexpr float kShakeIntensity3 = 1.0f;
 
+	static constexpr float kShakePhaseEndDuration = 8.0f; /* シェイクフェーズの終了時間 */
+
+	static constexpr float kPlayerShootDuration = 1.2f; /* プレイヤーが射撃するタイミング */
+	static constexpr float kShootDownMissilePhaseEndDuration = 2.0f; /* ミサイル墜落フェーズの終了時間 */
+
 	static constexpr Cygnus::Float3 kTopdownCameraPos = { 156.0f, 51.8f, -6.0f };   /* トップダウン視点カメラ位置 */
 	static constexpr Cygnus::Float3 kTopdownCameraRot = { Cygnus::PIf / 4.0f, 0.0f, 0.0f }; /* トップダウン視点カメラ回転 */
 
@@ -123,6 +130,7 @@ private:
 	GamePlayScene* scene_ = nullptr;	/* ゲームプレイシーンへのポインタ */
 
 	Cygnus::Float3 shakeBaseCameraPos_;	/* シェイク時のカメラ位置保持用 */
+
 	// 各シェイク済みフラグ
 	bool isShaked1_ = false;
 	bool isShaked2_ = false;
@@ -130,6 +138,9 @@ private:
 
 	// 壁崩壊済みフラグ
 	bool isWallCrumbled_ = false;
+
+	bool hasLaunchMissile_ = false; // ミサイル発射済みフラグ
+	bool hasPlayerShooted_ = false; // プレイヤー射撃済みフラグ
 
 	std::unique_ptr<Cygnus::Object3D> objectCrumblingWall_; /* 壊れそうな壁オブジェクト */
 };

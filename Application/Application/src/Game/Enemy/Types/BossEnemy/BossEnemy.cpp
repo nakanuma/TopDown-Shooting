@@ -167,11 +167,6 @@ void BossEnemy::OnCollision(Cygnus::Collider* other) {
 	/// vs PlayerBullet
 	///
 	if (other->GetTag() == "PlayerBullet") {
-		// プレイヤーに攻撃されたら有効化（todo : 登場演出を入れる予定なので仮。あとで削除）
-		if (!isActive_) {
-			isActive_ = true;
-		}
-
 		// 被弾時の発光演出を開始
 		visualEffect_->TriggerHitBlink();
 

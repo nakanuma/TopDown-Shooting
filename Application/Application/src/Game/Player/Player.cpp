@@ -380,54 +380,64 @@ void Player::HandleMove() {
 	objectPlayer_->GetTranslate() += velocity_;
 }
 
-void Player::HandleShooting() {
-	///
-	///	左クリックで弾の生成
-	///
+void Player::Shoot(bool forCursorDirection) {
+	// このフレームで射撃したことを記録
+	isShootedThisFrame_ = true;
 
-	// 左クリックで弾を生成
-	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
-		// このフレームで射撃したことを記録
-		isShootedThisFrame_ = true;
+	Cygnus::Float3 direction;
 
+	// カーソル方向への射撃
+	if (forCursorDirection) {
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
 		Cygnus::Float3 playerPos = objectPlayer_->GetTranslate();
-
-		// 発射方向
-		Cygnus::Float3 direction = cursorPos - playerPos;
+		direction = cursorPos - playerPos;
+	// プレイヤー正面方向への射撃
+	} else {
+		direction.x = sinf(objectGun_->transform_.rotate_.y);
 		direction.y = 0.0f;
-		direction = Cygnus::Float3::Normalize(direction);
+		direction.z = cosf(objectGun_->transform_.rotate_.y);
+	}
 
-		// 少しだけ方向をブレさせる
-		float blurAmount = maxRandomAngle_;
+	// 方向を正規化
+	direction.y = 0.0f;
+	direction = Cygnus::Float3::Normalize(direction);
 
-		if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
-			blurAmount *= shootingBlurMultiplier_; // プレイヤーが動いていたらブレの幅を増やす
-		}
+	// 少しだけ方向をブレさせる
+	float blurAmount = maxRandomAngle_;
 
-		float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
+	if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
+		blurAmount *= shootingBlurMultiplier_; // プレイヤーが動いていたらブレの幅を増やす
+	}
 
-		// Y成分以外のランダムベクトルを加算
-		direction.x += blurDist;
-		direction.z += blurDist;
-		direction = Cygnus::Float3::Normalize(direction); // 再正規化
+	float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
 
-		// 弾の生成・初期化
-		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
-		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
-		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
+	// Y成分以外のランダムベクトルを加算
+	direction.x += blurDist;
+	direction.z += blurDist;
+	direction = Cygnus::Float3::Normalize(direction); // 再正規化
 
-		// パーティクル発生
-		Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
+	// 弾の生成・初期化
+	auto newBullet = std::make_unique<PlayerBullet>();
+	newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+	ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
-		Cygnus::Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
-		Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
-	
-		// 効果音発生
-		Cygnus::SoundManager::GetInstance()->Play("player_shoot", false, 0.1f);
+	// パーティクル発生
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, {0.0f, 0.0f, 0.0f}, objectGun_->transform_.rotate_.y); // 薬莢排出
+
+	Cygnus::Float3 forward = {sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y)};                                                 // 前方向ベクトル
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
+
+	// 効果音発生
+	Cygnus::SoundManager::GetInstance()->Play("player_shoot", false, 0.1f);
+}
+
+void Player::HandleShooting() {
+	// 左クリックで弾を生成
+	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		Shoot(true); // カーソル方向への発射
 	}
 }
 
