@@ -75,6 +75,9 @@ void ResultScene::Initialize() {
 	spriteClearTime_ = std::make_unique<NumberSprite>();
 	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), kDecimalPlaces);
 
+	cursor_ = std::make_unique<Cursor>();
+	cursor_->Initialize();
+
 	///
 	///	フェード
 	///
@@ -111,6 +114,9 @@ void ResultScene::Update() {
 	spriteDefeated_->Update(kDefeatedPosition);
 	spriteHitRate_->Update(kHitRatePosition);
 	spriteClearTime_->Update(kClearTimePosition);
+
+	// カーソルUI更新
+	cursor_->Update();
 }
 
 void ResultScene::Draw() {
@@ -155,6 +161,8 @@ void ResultScene::Draw() {
 	spriteDefeated_->Draw();
 	spriteHitRate_->Draw();
 	spriteClearTime_->Draw();
+
+	cursor_->Draw();
 
 	// フェード描画
 	FadeTransition::GetInstance()->Draw();

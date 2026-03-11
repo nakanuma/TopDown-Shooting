@@ -23,6 +23,7 @@
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
+#include <src/Game/Utility/Cursor.h>
 
 // =========================================================
 // タイトルシーンクラス
@@ -131,9 +132,9 @@ private:
 	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_;			/* ポストエフェクト管理クラス */
 
 	// ----- Sprite -----
-	/// Todo : 適切なクラスへの整理
 	std::unique_ptr<Cygnus::Sprite> spriteTitle_;					/* タイトルロゴスプライト */
 	std::unique_ptr<Cygnus::Sprite> spriteStartButton_;				/* スタートボタンスプライト */
+	std::unique_ptr<Cursor> cursor_;                                /* カーソルUI */
 
 	// ----- Objects -----
 	std::unique_ptr<Field> field_;							/* 床オブジェクト */

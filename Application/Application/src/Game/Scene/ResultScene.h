@@ -21,6 +21,7 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Utility/NumberSprite.h>
+#include <src/Game/Utility/Cursor.h>
 
 // =========================================================
 // リザルトシーンシーンクラス
@@ -85,7 +86,6 @@ private:
 	Cygnus::LightManager* lightManager_ = nullptr;							/* 各ライト管理クラス */
 
 	// ----- Sprite -----
-	/// Todo : 適切なクラスへの整理
 	std::unique_ptr<Cygnus::Sprite> spriteBackGround_;				/* 背景スプライト */
 	std::unique_ptr<Cygnus::Sprite> spriteTitleButton_;				/* タイトルボタンスプライト */
 	std::unique_ptr<Cygnus::Sprite> spriteRecord_;					/* 戦績スプライト */
@@ -94,6 +94,8 @@ private:
 	std::unique_ptr<NumberSprite> spriteDefeated_;			/* 撃破数数字スプライト */
 	std::unique_ptr<NumberSprite> spriteHitRate_;			/* 命中率数字スプライト */
 	std::unique_ptr<NumberSprite> spriteClearTime_;			/* クリアタイム数字スプライト */
+
+	std::unique_ptr<Cursor> cursor_; /* カーソルUI */
 
 	// ----- Others -----
 	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */

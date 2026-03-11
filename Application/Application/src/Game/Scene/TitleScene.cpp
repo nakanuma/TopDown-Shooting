@@ -66,6 +66,9 @@ void TitleScene::Initialize() {
 	spriteStartButton_->SetPosition(kStartButtonPosition);
 	spriteStartButton_->SetAnchorPoint(kAnchorPoint);
 
+	cursor_ = std::make_unique<Cursor>();
+	cursor_->Initialize();
+
 	///
 	///	オブジェクト
 	///
@@ -153,6 +156,9 @@ void TitleScene::Update() {
 	blinkTimer += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	float alpha = (sinf(blinkTimer * kStartButtonBlinkSpeed) + kStartButtonBlinkOffset) / kStartButtonBlinkScale;
 	spriteStartButton_->SetColor({ kStartButtonBaseColor.x, kStartButtonBaseColor.y, kStartButtonBaseColor.z, alpha });
+
+	// カーソルUI更新
+	cursor_->Update();
 
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
@@ -270,6 +276,8 @@ void TitleScene::Draw() {
 	if (FadeTransition::GetInstance()->IsFinished()) {
 		spriteStartButton_->Draw();
 	}
+
+	cursor_->Draw();
 
 	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();

@@ -11,6 +11,11 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
+#include <src/Game/Utility/Cursor.h>
+
 // =========================================================
 // ポーズメニュークラス
 // =========================================================
@@ -126,6 +131,8 @@ private:
 
 	std::function<void()> closeCallback_;	/* ゲームに戻る際のコールバック関数 */
 	std::function<void()> titleCallback_;	/* タイトルへ戻る際のコールバック関数 */
+
+	std::unique_ptr<Cursor> cursor_; /* カーソルUI */
 };
 
 
