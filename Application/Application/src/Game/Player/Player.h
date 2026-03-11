@@ -276,9 +276,10 @@ private:
 	std::unique_ptr<PlayerUIManager> ui_; /* UIマネージャー */
 
 	// ----- Parameters -----
-	Cygnus::Float3 velocity_ = {0.0f, 0.0f, 0.0f}; /* 速度ベクトル */
-	bool isMoving_ = false;                        /* 移動中フラグ */
-	int32_t currentHP_ = 0;                        /* 現在HP */
+	Cygnus::Float3 velocity_ = {0.0f, 0.0f, 0.0f};		/* 速度ベクトル */
+	Cygnus::Float3 dashDirection_ = {0.0f, 0.0f, 0.0f}; /* ダッシュ方向保存用 */
+	bool isMoving_ = false;								/* 移動中フラグ */
+	int32_t currentHP_ = 0;								/* 現在HP */
 
 	bool invincible_ = false; /* 無敵フラグ（ボス撃破時に有効化） */
 	bool isDead_ = false;     /* 死亡フラグ */

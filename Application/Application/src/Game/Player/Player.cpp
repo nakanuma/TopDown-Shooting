@@ -321,23 +321,20 @@ void Player::FaceCursor() {
 }
 
 void Player::HandleMove() {
-	velocity_ = { 0.0f, 0.0f, 0.0f };
-
+	Cygnus::Float3 inputVelocity = {0.0f, 0.0f, 0.0f};
 	// キー入力で速度ベクトル加算
 	if (input_->PushKey(DIK_W))
-		velocity_.z += kVelocityNormalizeAdditive;
+		inputVelocity.z += kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_S))
-		velocity_.z -= kVelocityNormalizeAdditive;
+		inputVelocity.z -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_A))
-		velocity_.x -= kVelocityNormalizeAdditive;
+		inputVelocity.x -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_D))
-		velocity_.x += kVelocityNormalizeAdditive;
+		inputVelocity.x += kVelocityNormalizeAdditive;
 
-	// 移動しているか
-	isMoving_ = (velocity_.x != 0.0f || velocity_.z != 0.0f);
-
-	// 正規化
-	if (isMoving_) {
+	// 移動していれば正規化
+	bool hasInput = (inputVelocity.x != 0.0f || inputVelocity.z != 0.0f);
+	if (hasInput) {
 		velocity_ = Cygnus::Float3::Normalize(velocity_);
 	}
 
@@ -350,33 +347,50 @@ void Player::HandleMove() {
 		dashCooldownTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	}
 
-	// ダッシュ中処理
-	if (isDashing_) {
-		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime(); // ダッシュ時タイマー更新
-		invincible_ = true; // ダッシュ時は無敵状態
+	// ダッシュ開始判定
+	bool dashInput = input_->TriggerKey(DIK_SPACE);
+	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
+		isDashing_ = true; 
+		dashTimer_ = dashDuration_; // ダッシュ時間を設定
+		invincible_ = true; // ダッシュ中は無敵
 
+		if (hasInput) {
+			// 入力があればその方向へダッシュ
+			dashDirection_ = inputVelocity;
+		} else {
+			// 入力がなければ現在のプレイヤーの正面方向へダッシュ
+			float angle = objectPlayer_->GetRotate().y;
+			dashDirection_.x = std::sinf(angle);
+			dashDirection_.z = std::cosf(angle);
+			dashDirection_ = Cygnus::Float3::Normalize(dashDirection_);
+		}
+	}
+	
+	// velocityの決定
+	velocity_ = {0.0f, 0.0f, 0.0f};
+
+	if (isDashing_) {
+		// 固定した方向にダッシュ速度を適用
+		velocity_ = dashDirection_ * (moveSpeed_ * dashSpeedMultiplier_);
+
+		// ダッシュタイマー更新
+		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		// ダッシュ終了
 		if (dashTimer_ <= 0.0f) {
-			isDashing_ = false;                 // ダッシュ終了
-			invincible_ = false;				// 無敵終了
-			dashCooldownTimer_ = dashCoolDown_; // クールタイムをセット
+			isDashing_ = false;
+			invincible_ = false;
+			dashCooldownTimer_ = dashCoolDown_;
+		}
+	} else {
+		// 入力があれば通常速度を適用
+		if (hasInput) {
+			velocity_ = inputVelocity * moveSpeed_;
 		}
 	}
 
-	// ダッシュ入力
-	bool dashInput = input_->TriggerKey(DIK_SPACE); // SPACE
-	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
-		isDashing_ = true;          // ダッシュ中へ
-		dashTimer_ = dashDuration_; // ダッシュ時間をセット
-	}
+	isMoving_ = (hasInput || isDashing_); // 入力あり/ダッシュ中には動いていることを示す
 
-	// 速度を更新
-	float currentSpeed = moveSpeed_;
-	if (isDashing_) {
-		currentSpeed *= dashSpeedMultiplier_; // ダッシュ中は速度に倍率をかける
-	}
-	velocity_ = velocity_ * currentSpeed;
-
-	// プレイヤー位置更新
+	// プレイヤーの座標を更新
 	objectPlayer_->GetTranslate() += velocity_;
 }
 
