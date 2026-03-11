@@ -14,7 +14,7 @@
 // ---------------------------------------------------------
 // Application Includes
 // ---------------------------------------------------------
-#include <src/Game/Utility/Cursor.h>
+#include <src/Game/Utility/UI/MouseCursor.h>
 
 // =========================================================
 // ポーズメニュークラス
@@ -132,7 +132,7 @@ private:
 	std::function<void()> closeCallback_;	/* ゲームに戻る際のコールバック関数 */
 	std::function<void()> titleCallback_;	/* タイトルへ戻る際のコールバック関数 */
 
-	std::unique_ptr<Cursor> cursor_; /* カーソルUI */
+	std::unique_ptr<MouseCursor> cursor_; /* カーソルUI */
 };
 
 

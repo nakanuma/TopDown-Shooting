@@ -23,7 +23,7 @@
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
-#include <src/Game/Utility/Cursor.h>
+#include <src/Game/Utility/UI/MouseCursor.h>
 
 // =========================================================
 // タイトルシーンクラス
@@ -134,7 +134,7 @@ private:
 	// ----- Sprite -----
 	std::unique_ptr<Cygnus::Sprite> spriteTitle_;					/* タイトルロゴスプライト */
 	std::unique_ptr<Cygnus::Sprite> spriteStartButton_;				/* スタートボタンスプライト */
-	std::unique_ptr<Cursor> cursor_;                                /* カーソルUI */
+	std::unique_ptr<MouseCursor> cursor_;                                /* カーソルUI */
 
 	// ----- Objects -----
 	std::unique_ptr<Field> field_;							/* 床オブジェクト */

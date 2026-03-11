@@ -11,7 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\Utility\Cursor.cpp" />
+    <ClCompile Include="src\Game\Utility\UI\SpaceSkip.cpp" />
+    <ClCompile Include="src\Game\Utility\UI\MouseCursor.cpp" />
     <ClCompile Include="src\Game\Sequence\BossIntroSequence.cpp" />
     <ClCompile Include="src\Game\GameState\BossIntro\BossIntroState.cpp" />
     <ClCompile Include="src\Game\Player\UI\DashBar\DashBar.cpp" />
@@ -91,7 +92,8 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\Utility\Cursor.h" />
+    <ClInclude Include="src\Game\Utility\UI\SpaceSkip.h" />
+    <ClInclude Include="src\Game\Utility\UI\MouseCursor.h" />
     <ClInclude Include="src\Game\Sequence\BossIntroSequence.h" />
     <ClInclude Include="src\Game\GameState\BossIntro\BossIntroState.h" />
     <ClInclude Include="src\Game\Player\UI\DashBar\DashBar.h" />

@@ -1,10 +1,10 @@
-#include "Cursor.h"
+#include "MouseCursor.h"
 
 // Engine
 #include <TextureManager.h>
 #include <Input.h>
 
-void Cursor::Initialize() {
+void MouseCursor::Initialize() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
 
 	// スプライト基盤生成
@@ -17,7 +17,7 @@ void Cursor::Initialize() {
 	spriteCursor_->Initialize(spriteCommon_.get(), texture);
 }
 
-void Cursor::Update() { 
+void MouseCursor::Update() { 
 	// カーソルの位置に追従
 	Cygnus::Float2 mousePos = {
 		static_cast<float>(Cygnus::Input::GetInstance()->GetMousePosition().x), 
@@ -28,6 +28,6 @@ void Cursor::Update() {
 	spriteCursor_->Update(); 
 }
 
-void Cursor::Draw() { 
+void MouseCursor::Draw() { 
 	spriteCursor_->Draw(); 
 }

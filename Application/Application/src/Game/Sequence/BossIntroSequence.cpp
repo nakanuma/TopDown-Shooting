@@ -25,6 +25,10 @@ void BossIntroSequence::Initialize(Cygnus::SpriteCommon* spriteCommon, Player* p
 	objectCrumblingWall_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("CrumblingWall");
 	objectCrumblingWall_->transform_.scale_ = {1.0f, 1.5f, 1.0f};
 	objectCrumblingWall_->transform_.translate_ = { 156.0f, 3.5f, 68.0f }; // 初期位置
+
+	// SPACEでスキップのUI生成
+	spaceSkip_ = std::make_unique<SpaceSkip>();
+	spaceSkip_->Initialize();
 }
 
 void BossIntroSequence::Start() {
@@ -32,12 +36,19 @@ void BossIntroSequence::Start() {
 }
 
 void BossIntroSequence::Update() {
-	// 入力操作によるスキップ判定
-	HandleSkip();
+	// SPACEホールドが完了したらスキップ
+	if (spaceSkip_->IsSkipped()) {
+		Skip();
+	}
 
 	// オブジェクト更新
 	objectCrumblingWall_->UpdateMatrix();
 	objectCrumblingWall_->UpdateShadowMatrix();
+
+	// SPACEスキップUI更新
+	if (phase_ != Phase::Fade1 && phase_ != Phase::Fade2) { // フェードのフェーズでは更新しない
+		spaceSkip_->Update();
+	}
 
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
@@ -211,7 +222,12 @@ void BossIntroSequence::DrawShadow() {
 	objectCrumblingWall_->DrawShadow();
 }
 
-void BossIntroSequence::DrawUI() {}
+void BossIntroSequence::DrawUI() {
+	// SPACEでスキップUI描画
+	if (phase_ != Phase::Fade1 && phase_ != Phase::Fade2) { // フェードのフェーズでは描画しない
+		spaceSkip_->Draw();
+	}
+}
 
 void BossIntroSequence::Debug() {
 #ifdef USE_IMGUI
@@ -273,21 +289,5 @@ void BossIntroSequence::Skip() {
 		timer_ = 0.0f;
 
 		return;
-	}
-}
-
-void BossIntroSequence::HandleSkip() {
-	if (phase_ != Phase::Finish) {
-		// SPACEキーが押されている間タイマーを加算
-		if (Cygnus::Input::GetInstance()->PushKey(DIK_SPACE)) {
-			spaceHoldTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-			// 一定時間押し続けたらスキップ実行
-			if (spaceHoldTimer_ >= kSkipHoldTime) {
-				Skip();
-			}
-		} else {
-			spaceHoldTimer_ = 0.0f;
-		}
 	}
 }

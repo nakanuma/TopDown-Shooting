@@ -44,7 +44,7 @@ void PauseMenu::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	sizeBackToTitleBase_ = spriteBackToTitle_->GetSize(); // サイズを保持
 
 	// カーソルUI生成
-	cursor_ = std::make_unique<Cursor>();
+	cursor_ = std::make_unique<MouseCursor>();
 	cursor_->Initialize();
 }
 

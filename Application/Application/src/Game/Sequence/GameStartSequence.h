@@ -8,6 +8,11 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
+#include <src/Game/Utility/UI/SpaceSkip.h>
+
 // =========================================================
 // ゲームスタート時の演出を制御するクラス
 // =========================================================
@@ -82,11 +87,6 @@ private:
 	/// </summary>
 	void Skip();
 
-	/// <summary>
-	/// 入力操作によるスキップを行います
-	/// </summary>
-	void HandleSkip();
-
 private:
 	/// <summary>
 	/// 演出のフェーズ
@@ -115,8 +115,6 @@ private:
 	static constexpr Cygnus::Float2 kBottomBoxStartPos = {640.0f, 720.0f - 35.0f}; /* 下部の黒帯の初期位置 */
 	static constexpr Cygnus::Float2 kBottomBoxEndPos = {640.0f, 720.0f + 35.0f};   /* 下部の黒帯の最終位置（画面外） */
 
-	static constexpr float kSkipHoldTime = 1.0f; /* スキップに必要な秒数 */
-
 	// =========================================================
 	// Member Variables
 	// =========================================================
@@ -128,8 +126,6 @@ private:
 	float lerpT_ = 0.0f;      /* 補間用タイマー */
 	bool isFinished_ = false; /* 終了フラグ */
 
-	float spaceHoldTimer_ = 0.0f; /* スキップ用のタイマー */
-
 	// ----- Objects -----
 	std::unique_ptr<Cygnus::Object3D> objectCrumblingWall_; /* 壊れそうな壁オブジェクト */
 	std::unique_ptr<Cygnus::Object3D> objectDynamite_;      /* ダイナマイトオブジェクト */
@@ -140,4 +136,6 @@ private:
 	// ----- Sprite -----
 	std::unique_ptr<Cygnus::Sprite> spriteTopLetterBox_;    /* 上部の黒帯 */
 	std::unique_ptr<Cygnus::Sprite> spriteBottomLetterBox_; /* 下部の黒帯 */
+
+	std::unique_ptr<SpaceSkip> spaceSkip_; /* SPACEでスキップのUI */
 };

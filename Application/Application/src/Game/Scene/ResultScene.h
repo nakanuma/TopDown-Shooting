@@ -21,7 +21,7 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Utility/NumberSprite.h>
-#include <src/Game/Utility/Cursor.h>
+#include <src/Game/Utility/UI/MouseCursor.h>
 
 // =========================================================
 // リザルトシーンシーンクラス
@@ -95,7 +95,7 @@ private:
 	std::unique_ptr<NumberSprite> spriteHitRate_;			/* 命中率数字スプライト */
 	std::unique_ptr<NumberSprite> spriteClearTime_;			/* クリアタイム数字スプライト */
 
-	std::unique_ptr<Cursor> cursor_; /* カーソルUI */
+	std::unique_ptr<MouseCursor> cursor_; /* カーソルUI */
 
 	// ----- Others -----
 	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */

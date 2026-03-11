@@ -66,7 +66,7 @@ void TitleScene::Initialize() {
 	spriteStartButton_->SetPosition(kStartButtonPosition);
 	spriteStartButton_->SetAnchorPoint(kAnchorPoint);
 
-	cursor_ = std::make_unique<Cursor>();
+	cursor_ = std::make_unique<MouseCursor>();
 	cursor_->Initialize();
 
 	///

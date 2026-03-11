@@ -44,13 +44,19 @@ void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	spriteBottomLetterBox_->SetSize(kLetterBoxSize);
 	spriteBottomLetterBox_->SetPosition(kBottomBoxStartPos);
 
+	// SPACEでスキップのUI生成
+	spaceSkip_ = std::make_unique<SpaceSkip>();
+	spaceSkip_->Initialize();
+
 	// ダイナマイトの可視状態（初期は見えるように）
 	isDynamiteVisible_ = true;
 }
 
 void GameStartSequence::Update() {
-	// 入力操作によるスキップ判定
-	HandleSkip();
+	// SPACEホールドが完了したらスキップ
+	if (spaceSkip_->IsSkipped()) {
+		Skip();
+	}
 
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
@@ -65,6 +71,9 @@ void GameStartSequence::Update() {
 	// スプライト更新
 	spriteTopLetterBox_->Update();
 	spriteBottomLetterBox_->Update();
+
+	// SPACEスキップUI更新
+	spaceSkip_->Update();
 
 	// フェーズ毎の更新処理
 	switch (phase_) {
@@ -126,13 +135,15 @@ void GameStartSequence::DrawShadow() {
 void GameStartSequence::DrawUI() {
 	spriteTopLetterBox_->Draw();
 	spriteBottomLetterBox_->Draw();
+
+	// SPACEでスキップUI描画
+	spaceSkip_->Draw();
 }
 
 void GameStartSequence::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameStartSequence");
 
-	ImGui::DragFloat("SpaceHoldTimer", &spaceHoldTimer_, 0.01f);
 	if (ImGui::Button("Skip")) {
 		Skip();
 	}
@@ -259,21 +270,5 @@ void GameStartSequence::Skip() {
 		lerpT_ = 1.0f;
 
 		return;
-	}
-}
-
-void GameStartSequence::HandleSkip() {
-	if (phase_ != Phase::Finish) {
-		// SPACEキーが押されている間タイマーを加算
-		if (Cygnus::Input::GetInstance()->PushKey(DIK_SPACE)) {
-			spaceHoldTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-
-			// 一定時間押し続けたらスキップ実行
-			if (spaceHoldTimer_ >= kSkipHoldTime) {
-				Skip();
-			}
-		} else {
-			spaceHoldTimer_ = 0.0f;
-		}
 	}
 }

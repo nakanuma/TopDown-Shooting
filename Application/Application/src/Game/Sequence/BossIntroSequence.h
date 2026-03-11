@@ -9,6 +9,11 @@
 #include <SpriteCommon.h>
 
 // ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
+#include <src/Game/Utility/UI/SpaceSkip.h>
+
+// ---------------------------------------------------------
 // Forward Declaration
 // ---------------------------------------------------------
 class Player;
@@ -78,11 +83,6 @@ private:
 	/// </summary>
 	void Skip();
 
-	/// <summary>
-	/// 入力操作によるスキップを行います
-	/// </summary>
-	void HandleSkip();
-
 private:
 	/// <summary>
 	/// 演出のフェーズ
@@ -125,8 +125,6 @@ private:
 	static constexpr Cygnus::Float3 kTopdownCameraPos = { 156.0f, 51.8f, -6.0f };   /* トップダウン視点カメラ位置 */
 	static constexpr Cygnus::Float3 kTopdownCameraRot = { Cygnus::PIf / 4.0f, 0.0f, 0.0f }; /* トップダウン視点カメラ回転 */
 
-	static constexpr float kSkipHoldTime = 1.0f; /* スキップに必要な秒数 */
-
 	// =========================================================
 	// Member Variables
 	// =========================================================
@@ -152,7 +150,7 @@ private:
 	bool hasLaunchMissile_ = false; // ミサイル発射済みフラグ
 	bool hasPlayerShooted_ = false; // プレイヤー射撃済みフラグ
 
-	float spaceHoldTimer_ = 0.0f; /* スキップ用のタイマー */
-
 	std::unique_ptr<Cygnus::Object3D> objectCrumblingWall_; /* 壊れそうな壁オブジェクト */
+
+	std::unique_ptr<SpaceSkip> spaceSkip_; /* SPACEでスキップのUI */
 };

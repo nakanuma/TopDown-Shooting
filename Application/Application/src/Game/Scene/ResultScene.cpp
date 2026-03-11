@@ -75,7 +75,7 @@ void ResultScene::Initialize() {
 	spriteClearTime_ = std::make_unique<NumberSprite>();
 	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), kDecimalPlaces);
 
-	cursor_ = std::make_unique<Cursor>();
+	cursor_ = std::make_unique<MouseCursor>();
 	cursor_->Initialize();
 
 	///

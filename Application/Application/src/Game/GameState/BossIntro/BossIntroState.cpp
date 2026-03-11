@@ -56,6 +56,8 @@ void BossIntroState::DrawShadowSkinning() {
 }
 
 void BossIntroState::DrawUI() { 
+	bossIntroSequence_->DrawUI();
+
 	FadeTransition::GetInstance()->Draw(); 
 }
 
