@@ -30,7 +30,6 @@ void GamePlayState::Update() {
 		scene_->GetCamera()->transform_.translate_ = scene_->GetFollowCamera()->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
 	}
 
-
 	// プレイヤーが死亡したらゲームオーバー状態遷移フラグを立てる
 	if (scene_->GetPlayer()->IsDead()) {
 		shouldTransitionToGameOver_ = true;
@@ -39,25 +38,12 @@ void GamePlayState::Update() {
 	if (scene_->GetEnemyManager()->GetBoss()->IsDying()) {
 		shouldTransitionToGameClear_ = true;
 	}
-	// プレイヤーがボスに近づいたらボス登場演出遷移フラグを立てる（デバッグ用。あとで判定をイベントトリガーに置き換える）
-	if (!scene_->HasBossIntroPlayed() && !shouldTransitionToBossInrto_) {
-		const float kEncounterRadius = 50.0f;	// 接近の検知半径
-
-		// 両方の位置を取得
-		Cygnus::Float3 playerPos = scene_->GetPlayer()->GetTranslate();
-		Cygnus::Float3 bossPos = scene_->GetEnemyManager()->GetBoss()->GetTranslate();
-
-		// 2点間の距離を計算
-		Cygnus::Float3 diff = playerPos - bossPos;
-		float distance = Cygnus::Float3::Length(diff);
-
-		// 検知半径に入ったらフラグを立てる
-		if (distance <= kEncounterRadius) {
-			shouldTransitionToBossInrto_ = true;
-			scene_->SetBossIntroPlayed(true); // 既にボス登場演出を再生したことをゲームシーンに知らせる（再度判定防止用）
-		}
+	// ボス登場演出の開始
+	// : まだ再生していないかつ、プレイヤーがイベントトリガーに触れた際
+	if (!scene_->HasBossIntroPlayed() && scene_->GetEventManager()->CheckTrigger("BOSS_INTRO")) {
+		shouldTransitionToBossInrto_ = true;
+		scene_->SetBossIntroPlayed(true); // 既にボス登場演出を再生したことをゲームシーンに知らせる（再度判定防止用）
 	}
-
 
 	scene_->GetPlayer()->Update(true); // プレイヤーは操作可能
 	scene_->GetEnemyManager()->Update();
@@ -73,8 +59,6 @@ void GamePlayState::Update() {
 
 	FadeTransition::GetInstance()->Update();
 
-	
-
 	/*WaypointManager::GetInstance()->Update();*/
 }
 
@@ -88,8 +72,6 @@ void GamePlayState::Draw() {
 
 	BulletManager::GetInstance()->Draw();
 
-
-
 	/*WaypointManager::GetInstance()->Draw();*/
 }
 
@@ -101,8 +83,8 @@ void GamePlayState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GamePlayState::DrawShadowSkinning() { 
-	scene_->GetPlayer()->DrawShadowSkinning(); 
+void GamePlayState::DrawShadowSkinning() {
+	scene_->GetPlayer()->DrawShadowSkinning();
 	scene_->GetEnemyManager()->DrawShadowSkinning();
 }
 

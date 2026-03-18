@@ -90,6 +90,10 @@ void GamePlayScene::Initialize() {
 	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
 
+	// イベントトリガー管理クラス生成
+	eventManager_ = std::make_unique<EventManager>();
+	eventManager_->Initialize(loader_->GetAllDatas());
+
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -177,6 +181,8 @@ void GamePlayScene::Update() {
 	Cygnus::CollisionManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	Cygnus::ParticleEffectManager::GetInstance()->Update(Cygnus::TimeManager::GetInstance()->GetDeltaTime());
+	// イベントトリガー管理クラスの更新
+	eventManager_->Update();
 }
 
 void GamePlayScene::Draw() {
@@ -297,6 +303,9 @@ void GamePlayScene::Draw() {
 #ifdef _DEBUG
 	// デバッグ表示
 	Debug();
+
+	Cygnus::CollisionManager::GetInstance()->Debug();
+	Cygnus::CollisionManager::GetInstance()->Draw();
 #endif
 	// ImGuiの内部コマンドを生成する
 	Cygnus::ImguiWrapper::Render(cmd);
