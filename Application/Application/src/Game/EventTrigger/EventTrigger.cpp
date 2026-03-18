@@ -20,7 +20,7 @@ void EventTrigger::Update() {
 	collider_->Update();
 }
 
-void EventTrigger::OnCollisionEnter(Cygnus::Collider* other) {
+void EventTrigger::OnCollision(Cygnus::Collider* other) {
 	// アクティブ時のみ判定（再発火防止）
 	if (isActive_) {
 		// 自身がボス登場演出用トリガーの場合

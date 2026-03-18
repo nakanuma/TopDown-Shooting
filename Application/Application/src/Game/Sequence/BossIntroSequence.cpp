@@ -62,6 +62,10 @@ void BossIntroSequence::Update() {
 			FadeTransition::GetInstance()->StartFadeOut(kFadeDuration, [this]() {
 				/* 暗転した瞬間の処理（カメラ切り替え）*/
 
+				// プレイヤーを所定位置へ移動（ムービー位置を合わせるため）
+				player_->SetTranslate({156.0f, 2.0f, 40.0f});
+				player_->SetIsMoving(false); // 歩行アニメーション停止
+
 				// プレイヤー斜め後ろの視点へカメラを設定
 				Cygnus::Float3 playerPos = player_->GetTranslate();
 
@@ -79,9 +83,6 @@ void BossIntroSequence::Update() {
 
 				Cygnus::Camera::GetCurrent()->transform_.translate_ = cameraPos;
 				Cygnus::Camera::GetCurrent()->transform_.rotate_ = {rotX, rotY, 0.0f};
-
-				// プレイヤーを所定位置へ移動（ムービー位置を合わせるため）
-				player_->SetTranslate({156.0f, 2.0f, 32.0f});
 
 				// ボスの方向を向く
 				Cygnus::Float3 newPlayerPos = player_->GetTranslate();

@@ -73,7 +73,7 @@ void PlayerBullet::Update() {
 		if (Cygnus::CollisionManager::GetInstance()->RayCast(
 		        currentPos, rayDirection,
 		        moveDistance + kRadius, // 弾の半径分を追加
-		        &hit, {"PlayreBullet"}  // 自身は除外する
+		        &hit, {"PlayreBullet", "EventTrigger"} // 除外するタグを設定
 		        )) {
 			// 衝突した位置に弾を移動
 			objectBullet_->transform_.translate_ = hit.hitPoint;

@@ -177,6 +177,12 @@ public:
 	/// </summary>
 	void Fire() { Shoot(false); }
 
+	/// <summary>
+	/// プレイヤー移動状態をセットします
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsMoving(bool flag) { isMoving_ = flag; }
+
 private:
 	// =========================================================
 	// Internal Methods

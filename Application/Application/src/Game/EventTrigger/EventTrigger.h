@@ -38,7 +38,7 @@ public:
 	/// 衝突時のコールバック処理を行います。
 	/// </summary>
 	/// <param name="other"></param>
-	void OnCollisionEnter(Cygnus::Collider* other) override;
+	void OnCollision(Cygnus::Collider* other) override;
 
 	// =========================================================
 	// Accessor
