@@ -25,7 +25,8 @@ def create_material(tag):
     bsdf_node = nodes.new(type='ShaderNodeBsdfPrincipled')
 
     # 色設定
-    bsdf_node.inputs["Base Color"].default_value = info["color"]
+    color = info.get("color", (1.0, 1.0, 1.0, 1.0))
+    bsdf_node.inputs["Base Color"].default_value = color
 
     # ノード接続
     links.new(bsdf_node.outputs["BSDF"], output_node.inputs["Surface"])

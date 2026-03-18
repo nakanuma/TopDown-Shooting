@@ -50,6 +50,11 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
         obj.name = info['name']
         obj["tag"] = self.tag
 
+        # EVENT_TRIGGER用のモデル設定
+        if self.tag ==  "EVENTTRIGGER":
+            # 見た目をワイヤーフレームにする
+            obj.display_type = 'WIRE'
+
         mat = create_material(self.tag)
         if mat:
             if obj.data.materials:

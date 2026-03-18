@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\EventTrigger\EventManager.cpp" />
+    <ClCompile Include="src\Game\EventTrigger\EventTrigger.cpp" />
     <ClCompile Include="src\Game\Utility\UI\SpaceSkip.cpp" />
     <ClCompile Include="src\Game\Utility\UI\MouseCursor.cpp" />
     <ClCompile Include="src\Game\Sequence\BossIntroSequence.cpp" />
@@ -92,6 +94,8 @@
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\EventTrigger\EventManager.h" />
+    <ClInclude Include="src\Game\EventTrigger\EventTrigger.h" />
     <ClInclude Include="src\Game\Utility\UI\SpaceSkip.h" />
     <ClInclude Include="src\Game\Utility\UI\MouseCursor.h" />
     <ClInclude Include="src\Game\Sequence\BossIntroSequence.h" />

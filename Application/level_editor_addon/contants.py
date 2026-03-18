@@ -95,5 +95,11 @@ TAG_INFO = {
         "model": "Models/Teleporter/teleporter.obj",
         "location": (0, 0, 0),
         "colliderSize": (3.0, 3.0, 1.0), 
+    },
+    "EVENTTRIGGER": {
+        "name": "EventTrigger",
+        "model": "Models/EventTrigger/eventTrigger.obj",
+        "location": (0, 0, 1),
+        "colliderSize": (1.0, 1.0, 1.0),
     }
 }

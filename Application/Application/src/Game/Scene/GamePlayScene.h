@@ -31,6 +31,7 @@
 #include <src/Game/Pause/PauseMenu.h>
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
+#include <src/Game/EventTrigger/EventManager.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -80,6 +81,7 @@ public:
 	EnemyManager* GetEnemyManager() const { return enemyManager_.get(); }
 	ObstacleManager* GetObstacleManager() const { return obstacleManager_.get(); }
 	TeleporterManager* GetTeleportManager() const { return teleporterManager_.get(); }
+	EventManager* GetEventManager() const { return eventManager_.get(); }
 
 	bool HasBossIntroPlayed() const { return hasBossIntroPlayed_; }
 	void SetBossIntroPlayed(bool flag) { hasBossIntroPlayed_ = flag; }
@@ -142,6 +144,7 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_;           /* 敵管理クラス */
 	std::unique_ptr<ObstacleManager> obstacleManager_;     /* 障害物管理クラス */
 	std::unique_ptr<TeleporterManager> teleporterManager_; /* テレポーター管理クラス */
+	std::unique_ptr<EventManager> eventManager_;           /* イベントトリガー管理クラス */
 
 	// ----- Others -----
 	std::unique_ptr<FollowCamera> followCamera_;                   /* 追従カメラ管理クラス */
