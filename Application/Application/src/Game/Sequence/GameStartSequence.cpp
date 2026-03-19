@@ -53,11 +53,10 @@ void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 }
 
 void GameStartSequence::Update() {
-	Skip();
 	// SPACEホールドが完了したらスキップ
-	/*if (spaceSkip_->IsSkipped()) {
+	if (spaceSkip_->IsSkipped()) {
 		Skip();
-	}*/
+	}
 
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
