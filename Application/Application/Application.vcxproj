@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Title\UI\Parts\ExitButton.cpp" />
     <ClCompile Include="src\Game\EventTrigger\EventManager.cpp" />
     <ClCompile Include="src\Game\EventTrigger\EventTrigger.cpp" />
     <ClCompile Include="src\Game\Utility\UI\SpaceSkip.cpp" />
@@ -92,8 +93,12 @@
     <ClCompile Include="src\Game\Scene\SceneFactory.cpp" />
     <ClCompile Include="src\Game\Particles\WallCollapse\WallCollapseParticle.cpp" />
     <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp" />
+    <ClCompile Include="src\Game\Title\UI\TitleUIManager.cpp" />
+    <ClCompile Include="src\Game\Title\UI\Parts\TitleLogo.cpp" />
+    <ClCompile Include="src\Game\Title\UI\Parts\StartButton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Title\UI\Parts\ExitButton.h" />
     <ClInclude Include="src\Game\EventTrigger\EventManager.h" />
     <ClInclude Include="src\Game\EventTrigger\EventTrigger.h" />
     <ClInclude Include="src\Game\Utility\UI\SpaceSkip.h" />
@@ -176,6 +181,9 @@
     <ClInclude Include="src\Game\Scene\SceneFactory.h" />
     <ClInclude Include="src\Game\Particles\WallCollapse\WallCollapseParticle.h" />
     <ClInclude Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.h" />
+    <ClInclude Include="src\Game\Title\UI\TitleUIManager.h" />
+    <ClInclude Include="src\Game\Title\UI\Parts\TitleLogo.h" />
+    <ClInclude Include="src\Game\Title\UI\Parts\StartButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
