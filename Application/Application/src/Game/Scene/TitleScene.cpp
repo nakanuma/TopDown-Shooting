@@ -95,7 +95,9 @@ void TitleScene::Update() {
 	UpdateOrbitCamera(kCameraTargetPosition, kOrbitCameraRadius, kOrbitCameraHeight, kOrbitCameraSpeed);
 
 	// スタートボタンが押されたらゲームシーンへ移行
-	if (titleUIManager_->IsClickedStartButton()) {
+	if (!isClickedGameStartButton_ && titleUIManager_->IsClickedStartButton()) { // 連打防止で押下フラグ判定
+		isClickedGameStartButton_ = true; // 押したことを記録
+
 		SplitBlockTransition::GetInstance()->StartClose(
 			kSplitBlockCloseDuration,
 			[]() {
@@ -106,7 +108,7 @@ void TitleScene::Update() {
 	}
 
 	// 終了ボタンが押されたらゲーム終了
-	if(titleUIManager_->IsClickedExitButton()) {
+	if (titleUIManager_->IsClickedExitButton()) {
 		FadeTransition::GetInstance()->StartFadeOut(
 			kFadeInDuration,
 			[]() {

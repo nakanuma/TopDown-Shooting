@@ -128,4 +128,6 @@ private:
 	// ----- Others -----
 	std::unique_ptr<Loader> loader_;						/* ステージデータの管理クラス */
 	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
+
+	bool isClickedGameStartButton_ = false;	/* ゲームスタートボタン押下フラグ */
 };
