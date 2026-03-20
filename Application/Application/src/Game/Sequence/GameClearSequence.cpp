@@ -39,7 +39,7 @@ void GameClearSequence::Start() {
 	savedCameraRot_ = Cygnus::Camera::GetCurrent()->transform_.rotate_;
 
 	// カメラシェイクを開始（カメラ回転 + 爆発フェーズまで）
-	CameraShake::GetInstance()->StartShake(kCameraRotateDuration + kExplodeDuration, kCameraShakeIntensity);
+	CameraShake::GetInstance()->StartShake(kCameraRotateDuration + kExplodeDuration, kCameraShakeIntensity, CameraShake::ShakePriority::High); // 上書きされないよう優先度高
 
 	// ボスの最終位置を保存
 	if (boss_) {

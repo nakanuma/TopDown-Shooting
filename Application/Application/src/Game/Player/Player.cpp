@@ -442,6 +442,9 @@ void Player::Shoot(bool forCursorDirection) {
 
 	// 効果音発生
 	Cygnus::SoundManager::GetInstance()->Play("player_shoot", false, 0.1f);
+
+	// 揺れ発生
+	CameraShake::GetInstance()->StartShootShake();
 }
 
 void Player::HandleShooting() {

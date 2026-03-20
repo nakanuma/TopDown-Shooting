@@ -53,6 +53,8 @@ void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 }
 
 void GameStartSequence::Update() {
+	Skip();
+
 	// SPACEホールドが完了したらスキップ
 	if (spaceSkip_->IsSkipped()) {
 		Skip();
