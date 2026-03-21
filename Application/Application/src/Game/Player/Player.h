@@ -158,7 +158,7 @@ public:
 	/// 速度ベクトルを設定します。
 	/// </summary>
 	/// <param name="velocity"></param>
-	void SetVelovity(const Cygnus::Float3& velocity) { velocity_ = velocity; }
+	void SetVelocity(const Cygnus::Float3& velocity) { velocity_ = velocity; }
 
 	/// <summary>
 	/// 回転を設定します。
@@ -176,6 +176,12 @@ public:
 	/// プレイヤーの正面方向へ弾を1発射撃します。（ボス登場シーン用）
 	/// </summary>
 	void Fire() { Shoot(false); }
+
+	/// <summary>
+	/// プレイヤー移動状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsMoving() const { return isMoving_; }
 
 	/// <summary>
 	/// プレイヤー移動状態をセットします
@@ -227,15 +233,15 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f}; /* コライダーサイズ */
+	static constexpr Cygnus::Float3 kColliderSize = { 1.0f, 2.0f, 1.0f }; /* コライダーサイズ */
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f;              /* アニメーション再生速度 */
 
-	static constexpr Cygnus::Float4 kGunColor = {0.0f, 0.0f, 0.0f, 1.0f};	/* 銃の色（黒） */
+	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
 	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
 	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
 	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
-	static constexpr Cygnus::Float3 kGunEmissiveColor = {1.0f, 0.0f, 0.0f}; /* 銃のオーバーヒート時発光色（赤） */
+	static constexpr Cygnus::Float3 kGunEmissiveColor = { 1.0f, 0.0f, 0.0f }; /* 銃のオーバーヒート時発光色（赤） */
 	static constexpr float kGunIntensityFactor = 3.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
 	static constexpr float kOverheatSmokeInterval = 0.12f;                  /* オーバーヒート時煙パーティクルの頻度 */
 
@@ -252,7 +258,7 @@ private:
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
 	static constexpr float kHitBlinkDuration = 0.05f;                    /* 被弾時の発光時間 */
-	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f}; /* 被弾時の発光色 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f }; /* 被弾時の発光色 */
 
 	static constexpr float kDamageEffectDurationIn = 0.1f;         /* ダメージ演出増加の時間 */
 	static constexpr float kDamageEffectDurationHold = 0.2f;       /* ダメージ演出維持の時間 */
@@ -282,8 +288,8 @@ private:
 	std::unique_ptr<PlayerUIManager> ui_; /* UIマネージャー */
 
 	// ----- Parameters -----
-	Cygnus::Float3 velocity_ = {0.0f, 0.0f, 0.0f};		/* 速度ベクトル */
-	Cygnus::Float3 dashDirection_ = {0.0f, 0.0f, 0.0f}; /* ダッシュ方向保存用 */
+	Cygnus::Float3 velocity_ = { 0.0f, 0.0f, 0.0f };		/* 速度ベクトル */
+	Cygnus::Float3 dashDirection_ = { 0.0f, 0.0f, 0.0f }; /* ダッシュ方向保存用 */
 	bool isMoving_ = false;								/* 移動中フラグ */
 	int32_t currentHP_ = 0;								/* 現在HP */
 
@@ -345,7 +351,7 @@ private:
 	float overheatRecoveryThreshold_ = 3.0f; /* オーバーヒートした際、冷却が開始するまでの時間（秒） */
 
 	float recoveryDelayTimer_ = 0.0f;		/* 現在の待機カウント */
-	float recoveryDelayThreshould_ = 0.5f;	/* 射撃をやめてから冷却が始まるまでの時間（秒） */
+	float recoveryDelayThreshold_ = 0.5f;	/* 射撃をやめてから冷却が始まるまでの時間（秒） */
 
 	float coolingAccelerationTimer_ = 0.0f; /* 冷却が始まってからの経過時間 */
 	float coolingAccelerationRate_ = 1.5f;  /* 冷却時間の加速倍率*/

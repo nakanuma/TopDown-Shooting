@@ -118,7 +118,7 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("shootingBlurMultiplier", &shootingBlurMultiplier_, 0.01f);
 
 	AddSeparator();
-	RegisterParam("recoveryDelayThreshould", &recoveryDelayThreshould_, 0.01f);
+	RegisterParam("recoveryDelayThreshould", &recoveryDelayThreshold_, 0.01f);
 	RegisterParam("coolingAccelerationRate", &coolingAccelerationRate_, 0.01f);
 	RegisterParam("overheatRecoveryThreshold", &overheatRecoveryThreshold_, 0.01f);
 #endif
@@ -489,7 +489,7 @@ void Player::HandleOverHeat()
 		recoveryDelayTimer_ += deltaTime;
 
 		// 現在の状態によって冷却開始までの時間を変える
-		float currentThreshold = isOverheated_ ? overheatRecoveryThreshold_ : recoveryDelayThreshould_;
+		float currentThreshold = isOverheated_ ? overheatRecoveryThreshold_ : recoveryDelayThreshold_;
 
 		// 冷却処理（オーバーヒート済、又は冷却待機時間が終わった際）
 		if (recoveryDelayTimer_ >= currentThreshold) {

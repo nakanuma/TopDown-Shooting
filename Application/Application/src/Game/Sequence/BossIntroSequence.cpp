@@ -110,7 +110,7 @@ void BossIntroSequence::Update() {
 		break;
 	case Phase::RearCamera: {
 		// プレイヤーの歩行を止める
-		player_->SetVelovity({0.0f, 0.0f, 0.0f});
+		player_->SetVelocity({0.0f, 0.0f, 0.0f});
 
 		// ボスの方向を向く
 		Cygnus::Float3 playerPos = player_->GetTranslate();

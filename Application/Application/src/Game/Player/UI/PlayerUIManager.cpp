@@ -52,7 +52,7 @@ void PlayerUIManager::Initialize() {
 
 void PlayerUIManager::Update(const Player* player) {
 	// レティクル
-	reticle_->Update();
+	reticle_->Update(player);
 	// HPバー
 	hpBar_->Update(player);
 	// オーバーヒートゲージ
