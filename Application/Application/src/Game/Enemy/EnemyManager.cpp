@@ -107,6 +107,13 @@ void EnemyManager::Debug() {
 #endif
 }
 
+void EnemyManager::Clear() {
+	for (auto& enemy : enemies_) {
+		enemy->OnDestroy();
+	}
+	enemies_.clear();
+}
+
 BossEnemy* EnemyManager::GetBoss() const
 {
 	// 全ての敵の中からボスを探す
@@ -118,3 +125,5 @@ BossEnemy* EnemyManager::GetBoss() const
 	}
 	return nullptr;
 }
+
+
