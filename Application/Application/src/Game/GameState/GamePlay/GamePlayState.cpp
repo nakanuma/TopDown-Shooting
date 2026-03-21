@@ -35,8 +35,11 @@ void GamePlayState::Update() {
 		shouldTransitionToGameOver_ = true;
 	}
 	// ボスが死亡したらゲームクリア状態遷移フラグを立てる
-	if (scene_->GetEnemyManager()->GetBoss()->IsDying()) {
-		shouldTransitionToGameClear_ = true;
+	auto boss = scene_->GetEnemyManager()->GetBoss();
+	if (boss != nullptr) {
+		if (boss->IsDying()) {
+			shouldTransitionToGameClear_ = true;
+		}
 	}
 	// ボス登場演出の開始
 	// : まだ再生していないかつ、プレイヤーがイベントトリガーに触れた際

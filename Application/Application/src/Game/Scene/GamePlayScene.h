@@ -106,6 +106,11 @@ private:
 	/// </summary>
 	void InitializeGameStates();
 
+	/// <summary>
+	/// 次ステージのロードを行います。
+	/// </summary>
+	void LoadNextFloor();
+
 private:
 	// =========================================================
 	// Constants
@@ -124,6 +129,8 @@ private:
 	static constexpr float kDirectionalLightIntensity = 1.0f;                                /* 平行光源の強度 */
 
 	static constexpr Cygnus::Float3 kShadowBoundingBoxExtents = {30.0f, 10.0f, 30.0f}; /* シャドウマップ用AABBの範囲 */
+
+	static constexpr int32_t kMaxFloor = 3;	/* 最大階層 */
 
 	// =========================================================
 	// Member Variables
@@ -159,4 +166,7 @@ private:
 	std::unique_ptr<PauseMenu> pauseMenu_; /* ポーズメニュークラス */
 
 	bool hasBossIntroPlayed_ = false; /* ボス登場演出が再生されたかを記録 */
+
+	int32_t currentFloor_ = 1;			/* 現在の階層 */
+	bool needsNewFloorLoad_ = false;	/* 次フレームでリロードするためのフラグ */
 };

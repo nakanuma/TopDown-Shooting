@@ -40,6 +40,11 @@ public:
 	/// <param name="other"></param>
 	void OnCollision(Cygnus::Collider* other) override;
 
+	/// <summary>
+	/// 破棄を行います。
+	/// </summary>
+	void OnDestroy() { Cygnus::CollisionManager::GetInstance()->Unregister(collider_.get()); }
+
 	// =========================================================
 	// Accessor
 	// =========================================================

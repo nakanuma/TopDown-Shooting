@@ -24,7 +24,7 @@ void BossIntroSequence::Initialize(Cygnus::SpriteCommon* spriteCommon, Player* p
 	objectCrumblingWall_ = std::make_unique<Cygnus::Object3D>();
 	objectCrumblingWall_->model_ = &Cygnus::ModelManager::GetInstance()->GetModel("CrumblingWall");
 	objectCrumblingWall_->transform_.scale_ = {1.0f, 1.5f, 1.0f};
-	objectCrumblingWall_->transform_.translate_ = { 156.0f, 3.5f, 68.0f }; // 初期位置
+	objectCrumblingWall_->transform_.translate_ = { 36.0f, 3.5f, 68.0f }; // 初期位置
 
 	// SPACEでスキップのUI生成
 	spaceSkip_ = std::make_unique<SpaceSkip>();
@@ -63,7 +63,7 @@ void BossIntroSequence::Update() {
 				/* 暗転した瞬間の処理（カメラ切り替え）*/
 
 				// プレイヤーを所定位置へ移動（ムービー位置を合わせるため）
-				player_->SetTranslate({156.0f, 2.0f, 40.0f});
+				player_->SetTranslate({36.0f, 2.0f, 40.0f});
 				player_->SetIsMoving(false); // 歩行アニメーション停止
 
 				// プレイヤー斜め後ろの視点へカメラを設定

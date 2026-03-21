@@ -20,6 +20,13 @@ void EventManager::Update() {
 	}
 }
 
+void EventManager::Clear() {
+	for (auto& trigger : triggers_) {
+		trigger->OnDestroy();
+	}
+	triggers_.clear();
+}
+
 bool EventManager::CheckTrigger(const std::string& eventID) {
 	for (auto& trigger : triggers_) {
 		if (trigger->GetEventID() == eventID && trigger->IsTriggered()) { // 指定したIDのトリガーが引かれていればtrue

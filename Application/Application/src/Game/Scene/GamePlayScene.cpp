@@ -65,7 +65,7 @@ void GamePlayScene::Initialize() {
 
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();
-	loader_->LoadFromFile("resources/Stages/data.json");
+	loader_->LoadFromFile("resources/Stages/stage" + std::to_string(currentFloor_) + ".json");
 
 	/* オブジェクト関連 */
 
@@ -87,8 +87,9 @@ void GamePlayScene::Initialize() {
 
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
-	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
-	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
+	teleporterManager_->Initialize(loader_->GetAllDatas());								// ローダーから取得したデータを使用
+	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); });			// ゴール時のコールバック関数を設定
+	teleporterManager_->SetNextFloorCallback([this](){ needsNewFloorLoad_ = true; });	// 次ステージ移行時のコールバック関数を設定
 
 	// イベントトリガー管理クラス生成
 	eventManager_ = std::make_unique<EventManager>();
@@ -148,6 +149,12 @@ void GamePlayScene::Initialize() {
 void GamePlayScene::Finalize() { stateManager_->Finalize(); }
 
 void GamePlayScene::Update() {
+	// フラグが立ったら次ステージ用にリロードを実行（Clear時安全のためUpdateの最初に実行）
+	if(needsNewFloorLoad_) {
+		LoadNextFloor();
+		needsNewFloorLoad_ = false;
+	}
+
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
 	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
 
@@ -319,7 +326,10 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
-	ImGui::Checkbox("hasBossIntroPlayed", &hasBossIntroPlayed_);
+	ImGui::Text("currentFloor : %d", currentFloor_);
+	if(ImGui::Button("NextFloor")) {
+		needsNewFloorLoad_ = true;
+	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
@@ -376,4 +386,29 @@ void GamePlayScene::InitializeGameStates()
 
 	// 初期状態をゲームスタートに設定
 	stateManager_->ChangeState("GameStart");
+}
+
+void GamePlayScene::LoadNextFloor()
+{
+	// 次ステージへ
+	currentFloor_++;
+
+	// 前ステージデータのクリア
+	enemyManager_->Clear();
+	obstacleManager_->Clear();
+	teleporterManager_->Clear();
+	eventManager_->Clear();
+
+	// 次ステージデータの読み込み
+	std::string stagePath = "resources/Stages/stage" + std::to_string(currentFloor_) + ".json";
+	loader_->LoadFromFile(stagePath);
+
+	// 各マネージャーの再初期化
+	enemyManager_->Initialize(loader_->GetAllDatas(), player_.get());
+	obstacleManager_->Initialize(loader_->GetAllDatas());
+	teleporterManager_->Initialize(loader_->GetAllDatas());
+	eventManager_->Initialize(loader_->GetAllDatas());
+
+	// プレイヤー位置を設定
+	player_->SetTranslate(loader_->GetDataByTag("PLAYER").translate);
 }
