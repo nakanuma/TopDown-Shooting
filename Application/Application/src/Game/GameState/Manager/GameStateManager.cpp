@@ -3,6 +3,9 @@
 // C++
 #include <cassert>
 
+// Application
+#include <src/Game/Scene/GamePlayScene.h>
+
 void GameStateManager::RegisterState(const std::string& name, std::unique_ptr<IGameState> state) { states_[name] = std::move(state); }
 
 void GameStateManager::Finalize() { 
@@ -36,6 +39,7 @@ void GameStateManager::Update() {
 		// ゲーム開始 -> ゲームプレイ
 		if (GetCurrentState()->CanTransition()) {
 			ChangeState("GamePlay");
+			scene_->GetStageManager()->ShowInitialMissionLogo(); // 初回のみこの関数によってステージ目標演出開始を行う
 		}
 	}
 

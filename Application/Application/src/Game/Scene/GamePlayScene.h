@@ -85,6 +85,7 @@ public:
 	TeleporterManager* GetTeleportManager() const { return teleporterManager_.get(); }
 	EventManager* GetEventManager() const { return eventManager_.get(); }
 	PowerGeneratorManager* GetPowerGeneratorManager() const { return powerGeneratorManager_.get(); }
+	StageManager* GetStageManager() const { return stageManager_.get(); }
 
 	bool HasBossIntroPlayed() const { return hasBossIntroPlayed_; }
 	void SetBossIntroPlayed(bool flag) { hasBossIntroPlayed_ = flag; }

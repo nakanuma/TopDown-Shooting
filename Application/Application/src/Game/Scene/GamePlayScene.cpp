@@ -315,7 +315,8 @@ void GamePlayScene::Draw() {
 
 	// ゲーム状態ごとのUI描画処理
 	stateManager_->DrawUI();
-
+	// ステージごとのUI描画処理（ステージ開始/クリア時テロップ）
+	stageManager_->DrawUI();
 	// ポーズ中UI描画処理
 	pauseMenu_->DrawUI();
 
@@ -394,6 +395,7 @@ void GamePlayScene::InitializeGameStates()
 {
 	// ステートマネージャー生成
 	stateManager_ = std::make_unique<GameStateManager>();
+	stateManager_->Initialize(this);
 
 	// 各状態を登録
 	stateManager_->RegisterState("GameStart", std::make_unique<GameStartState>(this));

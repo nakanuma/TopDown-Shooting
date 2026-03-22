@@ -9,6 +9,10 @@ void StageManager::Initialize(EnemyManager* enemyMng, PowerGeneratorManager* pow
 	enemyManager_ = enemyMng;
 	powerGeneratorManager_ = powerGeneratorMng;
 	teleporterManager_ = teleporterMng;
+
+	// ステージ開始/終了ロゴクラスの生成
+	missionLogo_ = std::make_unique<MissionLogo>();
+	missionLogo_->Initialize();
 }
 
 void StageManager::PrepareNextState(int32_t floor) {
@@ -23,9 +27,15 @@ void StageManager::PrepareNextState(int32_t floor) {
 	} else if (currentFloor_ == 3) {
 		currentStageType_ = StageType::BossBattle;
 	}
+
+	// ステージ開始ロゴのアニメーション開始
+	missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_);
 }
 
 void StageManager::Update() {
+	// ステージ開始/終了ロゴクラスの更新（目標達成後にも更新を行うため最初に更新）
+	missionLogo_->Update();
+
 	// 目標達成済みなら更新スキップ
 	if(isObjectiveCleared_) return;
 
@@ -46,10 +56,19 @@ void StageManager::Update() {
 		break;
 	}
 
+	// クリア判定
 	if(cleared) {
 		isObjectiveCleared_ = true; // 目標達成したことを記録
 		teleporterManager_->EnableNextTeleporter(); // 次へのテレポーターを有効化
+
+		// 目標達成ロゴのアニメーション開始
+		missionLogo_->Start(MissionLogo::AnimationState::ObjectiveClear, currentStageType_);
 	}
+}
+
+void StageManager::DrawUI() {
+	// ステージ開始/終了ロゴクラスの描画
+	missionLogo_->DrawUI();
 }
 
 void StageManager::Debug() {

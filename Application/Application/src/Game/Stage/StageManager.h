@@ -12,6 +12,11 @@ class TeleporterManager;
 // ---------------------------------------------------------
 #include <cstdint>
 
+// ---------------------------------------------------------
+// Application includes
+// ---------------------------------------------------------
+#include <src/Game/Stage/UI/MissionLogo.h>
+
 /// <summary>
 /// ステージの目標タイプ
 /// </summary>
@@ -51,6 +56,11 @@ public:
 	void Update();
 
 	/// <summary>
+	/// UI描画処理を行います。
+	/// </summary>
+	void DrawUI();
+
+	/// <summary>
 	/// デバッグ表示を行います。
 	/// </summary>
 	void Debug();
@@ -64,6 +74,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int32_t GetCurrentFloor() const { return currentFloor_; }
+
+	/// <summary>
+	/// 初回ステージ目標の表示を行います。
+	/// : 1ステージ目は特殊な開始演出が入るため、終了した後に目標の表示を行うために使用
+	/// </summary>
+	void ShowInitialMissionLogo() { missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_); }
  
 private:
 	// =========================================================
@@ -77,6 +93,8 @@ private:
 	EnemyManager* enemyManager_ = nullptr;
 	PowerGeneratorManager* powerGeneratorManager_ = nullptr;
 	TeleporterManager* teleporterManager_ = nullptr;
+
+	std::unique_ptr<MissionLogo> missionLogo_;	/* ステージ開始/終了ロゴクラス */
 
 	int32_t currentFloor_ = 1;	/* 現在の階層 */
 	StageType currentStageType_ = StageType::killAllEnemies;	/* 現在の階層の目標 */
