@@ -101,5 +101,11 @@ TAG_INFO = {
         "model": "Models/EventTrigger/eventTrigger.obj",
         "location": (0, 0, 1),
         "colliderSize": (1.0, 1.0, 1.0),
-    }
+    },
+    "POWERGENERATOR": {
+        "name": "PowerGenerator",
+        "model": "Models/PowerGenerator/powerGenerator.obj",
+        "location": (0, 0, 3),
+        "colliderSize": (2.0, 2.0, 3.0),
+    },
 }

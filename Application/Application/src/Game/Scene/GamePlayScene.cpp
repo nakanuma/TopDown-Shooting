@@ -95,6 +95,10 @@ void GamePlayScene::Initialize() {
 	eventManager_ = std::make_unique<EventManager>();
 	eventManager_->Initialize(loader_->GetAllDatas());
 
+	// 発電機管理クラス生成
+	powerGeneratorManager_ = std::make_unique<PowerGeneratorManager>();
+	powerGeneratorManager_->Initialize(loader_->GetAllDatas());
+
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
 
@@ -398,6 +402,7 @@ void GamePlayScene::LoadNextFloor()
 	obstacleManager_->Clear();
 	teleporterManager_->Clear();
 	eventManager_->Clear();
+	powerGeneratorManager_->Clear();
 
 	// 次ステージデータの読み込み
 	std::string stagePath = "resources/Stages/stage" + std::to_string(currentFloor_) + ".json";
@@ -408,6 +413,7 @@ void GamePlayScene::LoadNextFloor()
 	obstacleManager_->Initialize(loader_->GetAllDatas());
 	teleporterManager_->Initialize(loader_->GetAllDatas());
 	eventManager_->Initialize(loader_->GetAllDatas());
+	powerGeneratorManager_->Initialize(loader_->GetAllDatas());
 
 	// プレイヤー位置を設定
 	player_->SetTranslate(loader_->GetDataByTag("PLAYER").translate);

@@ -54,6 +54,7 @@ void GamePlayState::Update() {
 	scene_->GetField()->Update();
 	scene_->GetObstacleManager()->Update(scene_->GetPlayer()->GetTranslate());
 	scene_->GetTeleportManager()->Update();
+	scene_->GetPowerGeneratorManager()->Update();
 
 	BulletManager::GetInstance()->Update();
 
@@ -72,6 +73,7 @@ void GamePlayState::Draw() {
 	scene_->GetField()->Draw();
 	scene_->GetObstacleManager()->Draw(scene_->GetPlayer()->GetTranslate());
 	scene_->GetTeleportManager()->Draw();
+	scene_->GetPowerGeneratorManager()->Draw();
 
 	BulletManager::GetInstance()->Draw();
 
@@ -84,6 +86,7 @@ void GamePlayState::DrawShadow() {
 
 	scene_->GetObstacleManager()->DrawShadow(scene_->GetPlayer()->GetTranslate());
 	scene_->GetTeleportManager()->DrawShadow();
+	scene_->GetPowerGeneratorManager()->DrawShadow();
 }
 
 void GamePlayState::DrawShadowSkinning() {
@@ -94,6 +97,7 @@ void GamePlayState::DrawShadowSkinning() {
 void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
 	scene_->GetEnemyManager()->DrawUI();
+	scene_->GetPowerGeneratorManager()->DrawUI();
 
 	FadeTransition::GetInstance()->Draw();
 }
@@ -103,6 +107,8 @@ void GamePlayState::Debug() {
 	scene_->GetEnemyManager()->Debug();
 
 	scene_->GetPlayer()->Debug();
+
+	scene_->GetPowerGeneratorManager()->Debug();
 #endif
 }
 

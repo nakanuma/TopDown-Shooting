@@ -242,6 +242,13 @@ void GameResourceLoader::LoadAllModelData() {
 		"Object/teleporter.png"
 	);
 
+	// 発電機
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
+		"PowerGenerator",
+		"Object/PowerGenerator/powerGenerator.obj",
+		"Object/powerGenerator.png"
+	);
+
 	// 銃
 	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Gun",

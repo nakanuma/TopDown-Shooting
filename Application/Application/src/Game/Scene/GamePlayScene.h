@@ -32,6 +32,7 @@
 #include <src/Game/Player/Player.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
 #include <src/Game/EventTrigger/EventManager.h>
+#include <src/Game/PowerGenerator/PowerGeneratorManager.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -82,6 +83,7 @@ public:
 	ObstacleManager* GetObstacleManager() const { return obstacleManager_.get(); }
 	TeleporterManager* GetTeleportManager() const { return teleporterManager_.get(); }
 	EventManager* GetEventManager() const { return eventManager_.get(); }
+	PowerGeneratorManager* GetPowerGeneratorManager() const { return powerGeneratorManager_.get(); }
 
 	bool HasBossIntroPlayed() const { return hasBossIntroPlayed_; }
 	void SetBossIntroPlayed(bool flag) { hasBossIntroPlayed_ = flag; }
@@ -146,12 +148,13 @@ private:
 	std::unique_ptr<Loader> loader_; /* ステージデータの管理クラス */
 
 	// ----- Object -----
-	std::unique_ptr<Field> field_;                         /* 床オブジェクト */
-	std::unique_ptr<Player> player_;                       /* プレイヤーオブジェクト */
-	std::unique_ptr<EnemyManager> enemyManager_;           /* 敵管理クラス */
-	std::unique_ptr<ObstacleManager> obstacleManager_;     /* 障害物管理クラス */
-	std::unique_ptr<TeleporterManager> teleporterManager_; /* テレポーター管理クラス */
-	std::unique_ptr<EventManager> eventManager_;           /* イベントトリガー管理クラス */
+	std::unique_ptr<Field> field_;									/* 床オブジェクト */
+	std::unique_ptr<Player> player_;								/* プレイヤーオブジェクト */
+	std::unique_ptr<EnemyManager> enemyManager_;					/* 敵管理クラス */
+	std::unique_ptr<ObstacleManager> obstacleManager_;				/* 障害物管理クラス */
+	std::unique_ptr<TeleporterManager> teleporterManager_;			/* テレポーター管理クラス */
+	std::unique_ptr<EventManager> eventManager_;					/* イベントトリガー管理クラス */
+	std::unique_ptr<PowerGeneratorManager> powerGeneratorManager_;	/* 発電機管理クラス */
 
 	// ----- Others -----
 	std::unique_ptr<FollowCamera> followCamera_;                   /* 追従カメラ管理クラス */

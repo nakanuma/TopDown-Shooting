@@ -11,6 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.cpp" />
+    <ClCompile Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.cpp" />
+    <ClCompile Include="src\Game\PowerGenerator\PowerGeneratorManager.cpp" />
+    <ClCompile Include="src\Game\PowerGenerator\PowerGenerator.cpp" />
     <ClCompile Include="src\Game\Title\UI\Parts\ExitButton.cpp" />
     <ClCompile Include="src\Game\EventTrigger\EventManager.cpp" />
     <ClCompile Include="src\Game\EventTrigger\EventTrigger.cpp" />
@@ -98,6 +102,10 @@
     <ClCompile Include="src\Game\Title\UI\Parts\StartButton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.h" />
+    <ClInclude Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.h" />
+    <ClInclude Include="src\Game\PowerGenerator\PowerGeneratorManager.h" />
+    <ClInclude Include="src\Game\PowerGenerator\PowerGenerator.h" />
     <ClInclude Include="src\Game\Title\UI\Parts\ExitButton.h" />
     <ClInclude Include="src\Game\EventTrigger\EventManager.h" />
     <ClInclude Include="src\Game\EventTrigger\EventTrigger.h" />

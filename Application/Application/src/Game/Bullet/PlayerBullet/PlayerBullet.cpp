@@ -73,7 +73,7 @@ void PlayerBullet::Update() {
 		if (Cygnus::CollisionManager::GetInstance()->RayCast(
 		        currentPos, rayDirection,
 		        moveDistance + kRadius, // 弾の半径分を追加
-		        &hit, {"PlayreBullet", "EventTrigger"} // 除外するタグを設定
+		        &hit, {"PlayreBullet", "EventTrigger", "PowerGenerator"} // 除外するタグを設定
 		        )) {
 			// 衝突した位置に弾を移動
 			objectBullet_->transform_.translate_ = hit.hitPoint;
@@ -160,7 +160,7 @@ void PlayerBullet::OnCollision(Cygnus::Collider* other) {
 	// ---------------------------------------------------------
 	// 障害物との衝突
 	// ---------------------------------------------------------
-	if (other->GetTag() == "Obstacle") {
+	if (other->GetTag() == "Obstacle" || other->GetTag() == "PowerGenerator") {
 		// ヒット時パーティクル発生
 		EmitHardHitParticles(bulletPos, velocity_);
 		// ライフサイクル終了
