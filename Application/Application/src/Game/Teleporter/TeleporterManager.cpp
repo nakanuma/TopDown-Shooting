@@ -38,8 +38,6 @@ void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& dat
 						nextFloorCallback_();
 					}
 					});
-
-				teleporter->SetActive(true); // デバッグ用に初期で使えるようにしておく
 			}
 
 			teleporters_.emplace_back(std::move(teleporter));
@@ -107,6 +105,17 @@ void TeleporterManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+void TeleporterManager::EnableNextTeleporter()
+{
+	// テレポーターを探索
+	for (auto& teleporter : teleporters_) {
+		if (teleporter->GetPairID() == "NEXT") {
+			// 有効化する
+			teleporter->SetActive(true);
+		}
+	}
 }
 
 void TeleporterManager::Clear() {

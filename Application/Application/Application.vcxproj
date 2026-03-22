@@ -100,6 +100,7 @@
     <ClCompile Include="src\Game\Title\UI\TitleUIManager.cpp" />
     <ClCompile Include="src\Game\Title\UI\Parts\TitleLogo.cpp" />
     <ClCompile Include="src\Game\Title\UI\Parts\StartButton.cpp" />
+    <ClCompile Include="src\Game\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="src\Game\Title\UI\TitleUIManager.h" />
     <ClInclude Include="src\Game\Title\UI\Parts\TitleLogo.h" />
     <ClInclude Include="src\Game\Title\UI\Parts\StartButton.h" />
+    <ClInclude Include="src\Game\Stage\StageManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

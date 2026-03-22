@@ -986,8 +986,8 @@
     {
         "tag": "POWERGENERATOR",
         "location": [
+            28.0,
             36.0,
-            32.0,
             3.0
         ],
         "rotation": [
@@ -1010,32 +1010,8 @@
     {
         "tag": "POWERGENERATOR",
         "location": [
-            60.0,
             44.0,
-            3.0
-        ],
-        "rotation": [
-            89.999995674289,
-            -0.0,
-            -180.00000500895632
-        ],
-        "scale": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "colliderSize": [
-            2.0,
-            2.0,
-            3.0
-        ],
-        "pair_id": "EMPTY"
-    },
-    {
-        "tag": "POWERGENERATOR",
-        "location": [
-            12.0,
-            44.0,
+            28.0,
             3.0
         ],
         "rotation": [

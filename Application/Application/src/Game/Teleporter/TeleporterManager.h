@@ -42,6 +42,11 @@ public:
 	void Debug();
 
 	/// <summary>
+	/// 次ステージへ進むテレポーターを有効化します。
+	/// </summary>
+	void EnableNextTeleporter();
+
+	/// <summary>
 	/// ゴールテレポーターを有効化します。
 	/// </summary>
 	void EnableGoalTeleporter();

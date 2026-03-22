@@ -56,6 +56,12 @@ public:
 	// Accessor
 	// =========================================================
 
+	/// <summary>
+	/// 全ての発電機が破壊されたかを確認します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsAllDestroyed() const;
+
 private:
 	// =========================================================
 	// Member Variables

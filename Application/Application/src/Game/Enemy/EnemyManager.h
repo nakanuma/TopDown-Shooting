@@ -79,6 +79,13 @@ public:
 	/// </summary>
 	/// <returns>ボスのポインタ</returns>
 	BossEnemy* GetBoss() const;
+
+	/// <summary>
+	/// 全ての敵が撃破されたかを取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsAllEnemiesDead() const;
+
 private:
 	// =========================================================
 	// Member Variables

@@ -126,4 +126,14 @@ BossEnemy* EnemyManager::GetBoss() const
 	return nullptr;
 }
 
+bool EnemyManager::IsAllEnemiesDead() const
+{
+	// 配列が空ならtrue
+	if(enemies_.empty()) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 

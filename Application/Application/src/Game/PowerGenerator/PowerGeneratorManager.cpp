@@ -82,3 +82,13 @@ void PowerGeneratorManager::Clear() {
 	}
 	generators_.clear();
 }
+
+bool PowerGeneratorManager::IsAllDestroyed() const
+{
+	// 配列が空ならtrue
+	if(generators_.empty()) {
+		return true;
+	} else {
+		return false;
+	}
+}

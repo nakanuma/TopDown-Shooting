@@ -89,7 +89,12 @@ void GamePlayScene::Initialize() {
 	teleporterManager_ = std::make_unique<TeleporterManager>();
 	teleporterManager_->Initialize(loader_->GetAllDatas());								// ローダーから取得したデータを使用
 	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); });			// ゴール時のコールバック関数を設定
-	teleporterManager_->SetNextFloorCallback([this](){ needsNewFloorLoad_ = true; });	// 次ステージ移行時のコールバック関数を設定
+	teleporterManager_->SetNextFloorCallback([this](){									// 次ステージのコールバック関数を設定
+		FadeTransition::GetInstance()->StartFadeOut(kFadeDuration, [this]() {
+			needsNewFloorLoad_ = true; // リロードのフラグを立てる
+			FadeTransition::GetInstance()->StartFadeIn(kFadeDuration, 0.0f);
+		}); 
+	});
 
 	// イベントトリガー管理クラス生成
 	eventManager_ = std::make_unique<EventManager>();
@@ -135,6 +140,10 @@ void GamePlayScene::Initialize() {
 	// ゲーム状態の初期化
 	InitializeGameStates();
 
+	// ステージ状態監視クラスの初期化
+	stageManager_ = std::make_unique<StageManager>();
+	stageManager_->Initialize(enemyManager_.get(), powerGeneratorManager_.get(), teleporterManager_.get());
+
 	// ポーズメニュー生成
 	pauseMenu_ = std::make_unique<PauseMenu>();
 	pauseMenu_->Initialize(spriteCommon_.get());
@@ -156,6 +165,7 @@ void GamePlayScene::Update() {
 	// フラグが立ったら次ステージ用にリロードを実行（Clear時安全のためUpdateの最初に実行）
 	if(needsNewFloorLoad_) {
 		LoadNextFloor();
+		stageManager_->PrepareNextState(currentFloor_); // ロード後にステージ設定更新
 		needsNewFloorLoad_ = false;
 	}
 
@@ -182,6 +192,8 @@ void GamePlayScene::Update() {
 
 	// ゲーム状態ごとの更新処理
 	stateManager_->Update();
+	// ステージクリア判定の更新
+	stageManager_->Update();
 
 	/* 全ての状態共通で更新するもの */
 	// カメラシェイクの更新
@@ -348,6 +360,8 @@ void GamePlayScene::Debug() {
 	ImGui::End();
 
 	stateManager_->Debug();
+
+	stageManager_->Debug();
 #endif
 }
 
