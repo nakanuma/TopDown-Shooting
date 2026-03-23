@@ -17,7 +17,6 @@ void GameStartState::Update() {
 	gameStartSequence_->Update();
 
 	scene_->GetPlayer()->Update(false); // プレイヤーは操作不可
-	scene_->GetEnemyManager()->Update();
 
 	scene_->GetField()->Update();
 	scene_->GetObstacleManager()->Update(scene_->GetPlayer()->GetTranslate());
@@ -30,7 +29,6 @@ void GameStartState::Draw() {
 	gameStartSequence_->Draw();
 
 	scene_->GetPlayer()->Draw();
-	scene_->GetEnemyManager()->Draw();
 
 	scene_->GetField()->Draw();
 	scene_->GetObstacleManager()->Draw(scene_->GetPlayer()->GetTranslate());
@@ -41,7 +39,6 @@ void GameStartState::DrawShadow() {
 	gameStartSequence_->DrawShadow();
 
 	scene_->GetPlayer()->DrawShadow();
-	scene_->GetEnemyManager()->DrawShadow();
 
 	scene_->GetObstacleManager()->DrawShadow(scene_->GetPlayer()->GetTranslate());
 	scene_->GetTeleportManager()->DrawShadow();

@@ -39,7 +39,7 @@ private:
 	// Constants
 	// =========================================================
 	static constexpr Cygnus::Float2 kReloadSize = { 100.0f, 10.0f }; /* リロード表示スプライトのサイズ */
-	static constexpr float kReloadBarOffsetY = 60.0f;				 /* リロード表示のY軸オフセット */
+	static constexpr float kReloadBarOffsetY = 50.0f;				 /* リロード表示のY軸オフセット */
 
 	// =========================================================
 	// Member Variables

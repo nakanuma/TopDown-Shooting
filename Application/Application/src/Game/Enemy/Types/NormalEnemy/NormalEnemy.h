@@ -99,8 +99,8 @@ private:
 	static constexpr float kFirstShootDelay = 1.5f;   /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
 	static constexpr int32_t kMaxMagazine = 6;        /* マガジン内最大弾数 */
 	static constexpr float kBulletSpreadAngle = 0.1f; /* 弾の拡散角 */
-	static constexpr float kShootMinInterval = 1.0f;  /* 発射最小間隔 */
-	static constexpr float kShootMaxInterval = 2.0f;  /* 発射最大間隔 */
+	static constexpr float kShootMinInterval = 0.75f; /* 発射最小間隔 */
+	static constexpr float kShootMaxInterval = 1.5f;  /* 発射最大間隔 */
 
 	static constexpr float kKeepDistance = 10.0f;    /* プレイヤーとの適正距離（移動場所判定用） */
 	static constexpr float kRotationSpeed = 4.0f;    /* 回転速度（プレイヤー発見時） */

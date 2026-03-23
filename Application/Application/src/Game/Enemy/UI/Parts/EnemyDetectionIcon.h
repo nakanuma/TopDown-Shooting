@@ -42,7 +42,7 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr float kDetectionIconOffsetY = 120.0f;
+	static constexpr float kDetectionIconOffsetY = 110.0f;
 
 	static constexpr float kFlashDuration = 0.25f;	/* 点滅時間 */
 	static constexpr float kHoldDuration = 1.5f;	/* 維持時間 */

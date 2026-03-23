@@ -132,7 +132,7 @@ private:
 	static constexpr Cygnus::Float3 kDirectionalLightDirection = {0.367f, -0.653f, -0.662f}; /* 平行光源の方向 */
 	static constexpr float kDirectionalLightIntensity = 1.0f;                                /* 平行光源の強度 */
 
-	static constexpr Cygnus::Float3 kShadowBoundingBoxExtents = {30.0f, 10.0f, 30.0f}; /* シャドウマップ用AABBの範囲 */
+	static constexpr Cygnus::Float3 kShadowBoundingBoxExtents = {35.0f, 10.0f, 35.0f}; /* シャドウマップ用AABBの範囲 */
 
 	static constexpr float kFadeDuration = 0.5f; /* フェード時間（ステージ移行時） */
 
