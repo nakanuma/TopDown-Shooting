@@ -43,7 +43,9 @@ void GameOverState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GameOverState::DrawShadowSkinning() {}
+void GameOverState::DrawShadowSkinning() { 
+	scene_->GetEnemyManager()->DrawShadowSkinning(); 
+}
 
 void GameOverState::DrawUI() {
 	gameOverSequence_->DrawUI();
@@ -64,3 +66,5 @@ bool GameOverState::CanTransition() const {
 bool GameOverState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GameOverState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GameOverState::ShouldShowBossIntro() const { return false; }

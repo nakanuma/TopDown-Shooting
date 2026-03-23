@@ -7,7 +7,7 @@
 #include <SpriteCommon.h>
 
 // ---------------------------------------------------------
-// Foward Declaration
+// Forward Declaration
 // ---------------------------------------------------------
 class Player;
 

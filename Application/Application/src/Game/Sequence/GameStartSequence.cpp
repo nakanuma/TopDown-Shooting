@@ -7,6 +7,7 @@
 #include <ParticleEffect/ParticleEffectManager.h>
 #include <RandomGenerator.h>
 #include <TimeManager.h>
+#include <Input/Input.h>
 
 // Application
 #include <src/Game/Camera/CameraShake.h>
@@ -32,24 +33,32 @@ void GameStartSequence::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	spriteTopLetterBox_ = std::make_unique<Cygnus::Sprite>();
 	spriteTopLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteTopLetterBox_->SetAnchorPoint({0.5f, 0.5f});
-	spriteTopLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 1.0f});
+	spriteTopLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 0.95f});
 	spriteTopLetterBox_->SetSize(kLetterBoxSize);
 	spriteTopLetterBox_->SetPosition(kTopBoxStartPos);
 
 	spriteBottomLetterBox_ = std::make_unique<Cygnus::Sprite>();
 	spriteBottomLetterBox_->Initialize(spriteCommon, textureWhite);
 	spriteBottomLetterBox_->SetAnchorPoint({0.5f, 0.5f});
-	spriteBottomLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 1.0f});
+	spriteBottomLetterBox_->SetColor({0.01f, 0.01f, 0.01f, 0.95f });
 	spriteBottomLetterBox_->SetSize(kLetterBoxSize);
 	spriteBottomLetterBox_->SetPosition(kBottomBoxStartPos);
+
+	// SPACEでスキップのUI生成
+	spaceSkip_ = std::make_unique<SpaceSkip>();
+	spaceSkip_->Initialize();
 
 	// ダイナマイトの可視状態（初期は見えるように）
 	isDynamiteVisible_ = true;
 }
 
 void GameStartSequence::Update() {
-	// デバッグスキップ用
-	DebugSkip();
+	/*Skip();*/
+
+	// SPACEホールドが完了したらスキップ
+	if (spaceSkip_->IsSkipped()) {
+		Skip();
+	}
 
 	// タイマー更新
 	timer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
@@ -64,6 +73,9 @@ void GameStartSequence::Update() {
 	// スプライト更新
 	spriteTopLetterBox_->Update();
 	spriteBottomLetterBox_->Update();
+
+	// SPACEスキップUI更新
+	spaceSkip_->Update();
 
 	// フェーズ毎の更新処理
 	switch (phase_) {
@@ -125,11 +137,18 @@ void GameStartSequence::DrawShadow() {
 void GameStartSequence::DrawUI() {
 	spriteTopLetterBox_->Draw();
 	spriteBottomLetterBox_->Draw();
+
+	// SPACEでスキップUI描画
+	spaceSkip_->Draw();
 }
 
 void GameStartSequence::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameStartSequence");
+
+	if (ImGui::Button("Skip")) {
+		Skip();
+	}
 
 	// フェーズ名を表示
 	const char* phaseStr = "";
@@ -151,10 +170,6 @@ void GameStartSequence::Debug() {
 		break;
 	}
 	ImGui::Text("Current Phase : %s", phaseStr);
-
-	if (ImGui::Button("Skip")) {
-		isDebugSkip_ = true;
-	}
 
 	ImGui::End();
 #endif
@@ -238,8 +253,8 @@ void GameStartSequence::UpdateTransition() {
 	}
 }
 
-void GameStartSequence::DebugSkip() {
-	if (isDebugSkip_ && phase_ != Phase::Finish) {
+void GameStartSequence::Skip() {
+	if (phase_ != Phase::Finish) {
 		// カメラを最終位置に設定
 		Cygnus::Camera::GetCurrent()->transform_.translate_ = kTopdownCameraPos;
 		Cygnus::Camera::GetCurrent()->transform_.rotate_ = kTopdownCameraRot;

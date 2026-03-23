@@ -42,6 +42,10 @@ void PauseMenu::Initialize(Cygnus::SpriteCommon* spriteCommon) {
 	spriteBackToTitle_->SetAnchorPoint({ 0.5f, 0.5f });
 	spriteBackToTitle_->SetPosition(kBackToTitleInitPos);
 	sizeBackToTitleBase_ = spriteBackToTitle_->GetSize(); // サイズを保持
+
+	// カーソルUI生成
+	cursor_ = std::make_unique<MouseCursor>();
+	cursor_->Initialize();
 }
 
 void PauseMenu::Update() {
@@ -52,6 +56,11 @@ void PauseMenu::Update() {
 	// メニュー項目のマウス判定処理
 	if(animationProgress_ > 0.0f) {
 		UpdateButtons();
+	}
+
+	// カーソルUI更新（ポーズ中のみ）
+	if (isShowing_) {
+		cursor_->Update();
 	}
 }
 
@@ -64,6 +73,11 @@ void PauseMenu::DrawUI() {
 	spriteContinue_->Draw();
 	// タイトルへ戻る文字スプライトの描画
 	spriteBackToTitle_->Draw();
+
+	// カーソルUI描画（ポーズ中のみ）
+	if (isShowing_) {
+		cursor_->Draw();
+	}
 }
 
 void PauseMenu::Show() {

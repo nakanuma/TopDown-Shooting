@@ -112,6 +112,13 @@ void ObstacleManager::Debug() {
 #endif
 }
 
+void ObstacleManager::Clear() {
+	for (auto& obstacle : obstacles_) {
+		obstacle->OnDestroy();
+	}
+	obstacles_.clear();
+}
+
 bool ObstacleManager::IsActiveDistance(const Cygnus::Float3& obstaclePos, const Cygnus::Float3& playerPos) const
 {
 	Cygnus::Float3 diff = obstaclePos - playerPos;

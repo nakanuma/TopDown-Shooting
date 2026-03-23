@@ -32,9 +32,6 @@ void Teleporter::Initialize(const Cygnus::Float3& position, Cygnus::ModelManager
 	Cygnus::CollisionManager::GetInstance()->Register(collider_.get());
 
 	collider_->Update(); // 生成時にコライダーの更新を行っておく（初期化時1フレームのみ衝突を回避）
-
-	// 使用可能にしておく
-	isActive_ = true;
 }
 
 void Teleporter::Update() {
@@ -88,21 +85,16 @@ void Teleporter::OnCollision(Cygnus::Collider* other) {
 			}
 			// 無効化状態にする
 			isActive_ = false;
+		}
 
-			// 通常テレポーターの場合
-		} else {
-			// プレイヤーをペアのテレポーター位置へ送る（todo : 今は直接移動なので、ここで数秒待ってテレポートする演出を入れる）
-			if (pair_ && pair_->isActive_) {
-				player->SetTranslate({
-					pair_->GetTranslate().x,
-					player->GetTranslate().y,
-					pair_->GetTranslate().z,
-					});
-
-				// 使用したテレポーターは無効化する
-				this->isActive_ = false;
-				pair_->isActive_ = false;
+		// このテレポーターが次ステージ移行の場合
+		if(pairID_ == "NEXT" && isActive_) {
+			// コールバック関数を呼び出す
+			if(onNextFloorCallback_) {
+				onNextFloorCallback_();
 			}
+			// 無効化状態にする
+			isActive_ = false;
 		}
 	}
 }

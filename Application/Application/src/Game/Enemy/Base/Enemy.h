@@ -13,17 +13,18 @@
 // Application Includes
 // ---------------------------------------------------------
 #include <src/Game/Bullet/Base/Bullet.h>
+#include <src/Game/Enemy/UI/EnemyUIManager.h>
+#include <src/Game/Enemy/VisualEffect/EnemyVisualEffects.h>
 
 // ---------------------------------------------------------
 // Forward Declaration
 // ---------------------------------------------------------
 class Player;
-namespace Cygnus { enum class BehaviorStatus; }
 
 // =========================================================
 // 敵の基底クラス
 // =========================================================
-class Enemy {
+class Enemy : public Cygnus::ICollisionCallback{
 public:
 	// =========================================================
 	// Public Methods
@@ -35,7 +36,7 @@ public:
 	/// <param name="position">初期位置</param>
 	/// <param name="model">モデルデータ</param>
 	/// <param name="player">プレイヤーのポインタ</param>
-	virtual void Initialize(const Cygnus::Float3& position, Cygnus::ModelManager::ModelData* model, Player* player) = 0;
+	virtual void Initialize(const Cygnus::Float3& position, Player* player) = 0;
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -48,14 +49,25 @@ public:
 	virtual void Draw() = 0;
 
 	/// <summary>
-	/// シャドウマップ用の描画処理を行います。
+	/// 通常モデルのシャドウマップ用の描画処理を行います。
 	/// </summary>
 	virtual void DrawShadow() = 0;
+
+	/// <summary>
+	/// スキニングモデルのシャドウマップ描画処理を行います。
+	/// </summary>
+	virtual void DrawShadowSkinning() = 0;
 
 	/// <summary>
 	/// UIの描画処理を行います。
 	/// </summary>
 	virtual void DrawUI() = 0;
+
+	/// <summary>
+	/// 衝突時のコールバック処理を行います。
+	/// </summary>
+	/// <param name="other">衝突した相手のコライダー</param>
+	virtual void OnCollision(Cygnus::Collider* other) override;
 
 	/// <summary>
 	/// 破棄を行います。
@@ -70,7 +82,7 @@ public:
 	/// 死亡フラグの取得を行います。
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
-	bool IsDead() { return isDead_; }
+	bool IsDead() const { return isDead_; }
 
 	/// <summary>
 	/// コライダーのタグを取得します。
@@ -97,18 +109,10 @@ public:
 	int32_t GetHP() const { return currentHP_; }
 
 	/// <summary>
-	/// ノードの状態を記録します。
+	/// プレイヤー検出フラグの取得を行います。
 	/// </summary>
-	/// <param name="nodePtr"></param>
-	/// <param name="status"></param>
-	void SetNodeStatus(const void* nodePtr, Cygnus::BehaviorStatus status);
-
-	/// <summary>
-	/// ノードの状態を取得します。
-	/// </summary>
-	/// <param name="nodePtr"></param>
 	/// <returns></returns>
-	Cygnus::BehaviorStatus GetNodeStatus(const void* nodePtr) const;
+	bool IsDetectedPlayer() const { return isDetectedPlayer_; }
 
 protected:
 	// =========================================================
@@ -116,75 +120,45 @@ protected:
 	// =========================================================
 
 	/// <summary>
-	/// HPバースプライトの生成と共通初期設定を行います。
+	/// プレイヤー弾衝突時のダメージ適用処理（パーティクル・SE・死亡判定も含む）
 	/// </summary>
-	/// <param name="spritePtr"></param>
-	/// <param name="color"></param>
-	void SetupHPBarSprite(std::unique_ptr<Cygnus::Sprite>& spritePtr, const Cygnus::Float4& color);
+	/// <param name="damage"></param>
+	void ApplyDamage(int32_t damage);
 
 	/// <summary>
-	/// リロードスプライトの生成と共通初期設定を行います。
+	/// 障害物との押し戻し処理
 	/// </summary>
-	/// <param name="spritePtr"></param>
-	void SetupReloadSprite(std::unique_ptr<Cygnus::Sprite>& spritePtr);
+	/// <param name="other"></param>
+	void ResolveObstacleCollision(Cygnus::Collider* other);
 
 	/// <summary>
-	/// 被弾時の発光処理を行います。
+	/// 発見時の共通処理
 	/// </summary>
-	void HandleHitBlink();
+	virtual void OnDetected();
 
 protected:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kHPBarSize = {100.0f, 20.0f};                     /* HPバーのサイズ */
-	static constexpr Cygnus::Float4 kHPBarBackgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* HPバー背景色 */
-	static constexpr Cygnus::Float4 kHPBarForegroundColor = {0.0f, 1.0f, 0.5f, 1.0f}; /* HPバー前景色 */
-
-	static constexpr Cygnus::Float2 kReloadSize = {100.0f, 10.0f}; /* リロード表示スプライトのサイズ */
-
-	static constexpr float kHitBlinkDuration = 0.05f;						/* 被弾時の発光時間 */
-	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f };	/* 被弾時の発光色 */
+	static constexpr int32_t kDeathCrossCount = 3;     /* 死亡時クロスパーティクルの発生数 */
+	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
+	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-
-	// ----- System -----
-	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_; /* スプライト共通処理 */
-
-	// ----- Object -----
-	std::unique_ptr<Cygnus::Object3D> objectEnemy_; /* 敵オブジェクト */
-
-	// ----- Collision -----
-	std::unique_ptr<Cygnus::Collider> collider_; /* コライダー */
-
-	// ----- Sprite -----
-	std::unique_ptr<Cygnus::Sprite> spriteHPBackground_; /* HPバー後景スプライト */
-	std::unique_ptr<Cygnus::Sprite> spriteHPForeground_; /* HPバー前景スプライト */
-	std::unique_ptr<Cygnus::Sprite> spriteReload_;       /* リロード表示スプライト */
+	std::unique_ptr<Cygnus::Object3D> objectEnemy_;		/* 敵オブジェクト */
+	std::unique_ptr<Cygnus::Object3D> objectGun_;       /* 銃オブジェクト */
+	std::unique_ptr<Cygnus::Collider> collider_;		/* コライダー */
+	std::unique_ptr<EnemyUIManager> ui_;				/* UI */
+	std::unique_ptr<EnemyVisualEffects> visualEffect_;	/* 発光演出管理 */
 
 	// ----- Parameters -----
-	bool isActive_ = false; /* 有効化フラグ */
-	bool isDead_ = false;   /* 死亡フラグ */
-
-	int32_t maxHP_ = 0;     /* 最大HP */
-	int32_t currentHP_ = 0; /* 現在HP */
+	bool isActive_ = false;			/* 有効化フラグ */
+	bool isDead_ = false;			/* 死亡フラグ */
+	bool isDetectedPlayer_ = false;	/* プレイヤー発見フラグ */
+	int32_t maxHP_ = 0;				/* 最大HP */
+	int32_t currentHP_ = 0;			/* 現在HP */
 
 	Player* targetPlayer_ = nullptr; /* プレイヤーのポインタ */
-
-	// ----- HitBlink -----
-	/// <summary>
-	/// 被弾時の発光演出フェーズ
-	/// </summary>
-	enum class HitBlinkPhase {
-		Wait,		// 待機
-		BlinkIn,	// 発光
-		BlinkOut	// 減光
-	} hitBlinkPhase_ = HitBlinkPhase::Wait;
-	bool isHitBlink_ = false;		/* 被弾時の発光演出中フラグ */
-	float hitBlinkTimer_ = 0.0f;	/* 被弾時の発光演出タイマー */
-
-	// ----- Others -----
-	std::unordered_map<const void*, Cygnus::BehaviorStatus> nodeStatusMap_; /* この個体でのノード実行状態を保存するマップ */
 };

@@ -50,21 +50,11 @@ void TitleScene::Initialize() {
 	loader_->LoadFromFile("resources/Stages/title.json");
 
 	///
-	///	スプライト生成
+	///	UI生成
 	///
 
-	// タイトル
-	uint32_t textureTitle = Cygnus::TextureManager::Load("UI/title.png");
-	spriteTitle_ = std::make_unique<Cygnus::Sprite>();
-	spriteTitle_->Initialize(spriteCommon_.get(), textureTitle);
-	spriteTitle_->SetPosition(kTitlePosition);
-	spriteTitle_->SetAnchorPoint(kAnchorPoint);
-
-	uint32_t textureStart = Cygnus::TextureManager::Load("UI/startButton.png");
-	spriteStartButton_ = std::make_unique<Cygnus::Sprite>();
-	spriteStartButton_->Initialize(spriteCommon_.get(), textureStart);
-	spriteStartButton_->SetPosition(kStartButtonPosition);
-	spriteStartButton_->SetAnchorPoint(kAnchorPoint);
+	titleUIManager_ = std::make_unique<TitleUIManager>();
+	titleUIManager_->Initialize();
 
 	///
 	///	オブジェクト
@@ -77,13 +67,6 @@ void TitleScene::Initialize() {
 	// 障害物の管理クラス生成
 	obstacleManager_ = std::make_unique<ObstacleManager>();
 	obstacleManager_->Initialize(loader_->GetAllDatas());
-
-	///
-	///	スプライト
-	///
-
-	spriteTitle_->Update();
-	spriteStartButton_->Update();
 
 	///
 	///	トランジション
@@ -111,8 +94,10 @@ void TitleScene::Update() {
 	// 中心を向きながらカメラ回転
 	UpdateOrbitCamera(kCameraTargetPosition, kOrbitCameraRadius, kOrbitCameraHeight, kOrbitCameraSpeed);
 
-	// 左クリック入力でゲームシーンへ移行
-	if (input_->IsTriggerMouse(0) && SplitBlockTransition::GetInstance()->IsFinished() && Utility::IsInsideClientCursor()) {
+	// スタートボタンが押されたらゲームシーンへ移行
+	if (!isClickedGameStartButton_ && titleUIManager_->IsClickedStartButton()) { // 連打防止で押下フラグ判定
+		isClickedGameStartButton_ = true; // 押したことを記録
+
 		SplitBlockTransition::GetInstance()->StartClose(
 			kSplitBlockCloseDuration,
 			[]() {
@@ -120,6 +105,16 @@ void TitleScene::Update() {
 				Cygnus::ParticleEffectManager::GetInstance()->Clear();
 			},
 			kSplitBlockCloseDelay);
+	}
+
+	// 終了ボタンが押されたらゲーム終了
+	if (titleUIManager_->IsClickedExitButton()) {
+		FadeTransition::GetInstance()->StartFadeOut(
+			kFadeInDuration,
+			[]() {
+				SendMessage(Cygnus::Window::GetHandle(), WM_CLOSE, 0, 0);
+			},
+			kFadeInDelay);
 	}
 
 	///
@@ -138,21 +133,8 @@ void TitleScene::Update() {
 	///	スプライト更新
 	///
 
-	spriteTitle_->Update();
-
-	// タイトルの上下移動
-	static float floatTimer = 0.0f;
-	floatTimer += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-	float floatAmount = sinf(floatTimer * kTitleFloatSpeed) * kTitleFloatAmplitude;
-	spriteTitle_->SetPosition({ kTitleBasePosition.x, kTitleBasePosition.y + floatAmount });
-
-	spriteStartButton_->Update();
-
-	// スタートボタンを点滅
-	static float blinkTimer = 0.0f;
-	blinkTimer += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-	float alpha = (sinf(blinkTimer * kStartButtonBlinkSpeed) + kStartButtonBlinkOffset) / kStartButtonBlinkScale;
-	spriteStartButton_->SetColor({ kStartButtonBaseColor.x, kStartButtonBaseColor.y, kStartButtonBaseColor.z, alpha });
+	// UI更新
+	titleUIManager_->Update();
 
 	// トランジション更新
 	SplitBlockTransition::GetInstance()->Update();
@@ -265,11 +247,8 @@ void TitleScene::Draw() {
 	/// ↓ ここからスプライトの描画コマンド
 	///
 
-	spriteTitle_->Draw();
-
-	if (FadeTransition::GetInstance()->IsFinished()) {
-		spriteStartButton_->Draw();
-	}
+	// UI描画
+	titleUIManager_->Draw();
 
 	// トランジション描画
 	SplitBlockTransition::GetInstance()->Draw();
@@ -284,19 +263,6 @@ void TitleScene::Draw() {
 	///
 #ifdef _DEBUG
 	ImGui::Begin("TitleSceneInfo");
-
-	if (ImGui::Button("yay")) {
-		Cygnus::SoundManager::GetInstance()->Play("yay");
-	}
-	if (ImGui::Button("shot")) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-	}
-	if (ImGui::Button("explode")) {
-		Cygnus::SoundManager::GetInstance()->Play("explode");
-	}
-	if (ImGui::Button("door")) {
-		Cygnus::SoundManager::GetInstance()->Play("door");
-	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 

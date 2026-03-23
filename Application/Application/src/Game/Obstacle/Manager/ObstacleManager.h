@@ -46,6 +46,11 @@ public:
 	/// </summary>
 	void Debug();
 
+	/// <summary>
+	/// データのクリアを行います。
+	/// </summary>
+	void Clear();
+
 private:
 	// =========================================================
 	// Internal Methods

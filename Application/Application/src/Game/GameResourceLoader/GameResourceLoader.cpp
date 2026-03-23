@@ -26,6 +26,7 @@
 #include <src/Game/Particles/BossFragments/BossFragmentsParticle.h>
 #include <src/Game/Particles/BloodScatter/BloodScatterParticle.h>
 #include <src/Game/Particles/TeleporterRing/TeleporterRingParticle.h>
+#include <src/Game/Particles/GunOverheatSmoke/GunOverheatSmokeParticle.h>
 
 GameResourceLoader* GameResourceLoader::GetInstance() {
 	static GameResourceLoader instance;
@@ -42,6 +43,10 @@ void GameResourceLoader::Initialize() {
 
 	// SkyBoxの初期化
 	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
+
+	// カーソル非表示 + フルスクリーン化
+	ShowCursor(FALSE);
+	Cygnus::Window::ToggleFullscreen();
 }
 
 void GameResourceLoader::LoadAllModelData() {
@@ -237,10 +242,24 @@ void GameResourceLoader::LoadAllModelData() {
 		"Object/teleporter.png"
 	);
 
+	// 発電機
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
+		"PowerGenerator",
+		"Object/PowerGenerator/powerGenerator.obj",
+		"Object/powerGenerator.png"
+	);
+
 	// 銃
 	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
 		"Gun",
 		"Object/Gun/gun.obj",
+		"white.png"
+	);
+
+	// ピストル
+	Cygnus::ModelManager::GetInstance()->LoadAndRegisterModel(
+		"Pistol", 
+		"Object/Gun/pistol.obj", 
 		"white.png"
 	);
 }
@@ -281,13 +300,21 @@ void GameResourceLoader::RegisterAllParticleEffect()
 	RegisterParticle<BloodScatterParticle>("bloodScatter", "Cube");
 	// テレポーターリングパーティクル
 	RegisterParticle<TeleporterRingParticle>("teleporterRing", "TeleporterRing");
+	// 銃のオーバーヒート時煙パーティクル
+	RegisterParticle<GunOverheatSmokeParticle>("gunOverheatSmoke", "Cube");
 }
 
 void GameResourceLoader::LoadAllSoundData() { 
 	auto soundManager = Cygnus::SoundManager::GetInstance();
 
-	soundManager->Load("resources/Sounds/yay.wav", "yay");
-	soundManager->Load("resources/Sounds/shot.wav", "shot");
-	soundManager->Load("resources/Sounds/explode.wav", "explode");
-	soundManager->Load("resources/Sounds/door.wav", "door");
+	// プレイヤー射撃音
+	soundManager->Load("resources/Sounds/player_shoot.wav", "player_shoot");
+	// 敵死亡音
+	soundManager->Load("resources/Sounds/enemy_dead.wav", "enemy_dead");
+	// 柔らかい敵ヒット音
+	soundManager->Load("resources/Sounds/hit_soft_enemy.wav", "hit_soft_enemy");
+	// 硬い敵ヒット音
+	soundManager->Load("resources/Sounds/hit_hard_enemy.wav", "hit_hard_enemy");
+	// 障害物ヒット音
+	soundManager->Load("resources/Sounds/hit_obstacle.wav", "hit_obstacle");
 }

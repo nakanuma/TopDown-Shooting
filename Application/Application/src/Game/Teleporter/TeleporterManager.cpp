@@ -17,7 +17,7 @@ void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& dat
 			// ペアIDを設定
 			teleporter->SetPairID(data.pairID);
 
-			// ペアIDが"GOAL"の場合は特別扱い
+			// ペアIDが"GOAL"の場合
 			if (data.pairID == "GOAL") {
 				// コールバック関数を設定
 				teleporter->SetOnGoalCallback([this]() {
@@ -28,6 +28,16 @@ void TeleporterManager::Initialize(const std::vector<Loader::TransformData>& dat
 
 				// 初期状態では無効化しておく
 				teleporter->SetActive(false);
+			}
+
+			// ペアIDが"NEXT"の場合
+			if(data.pairID == "NEXT") {
+				// コールバック関数を設定
+				teleporter->SetOnNextFloorCallback([this](){
+					if(nextFloorCallback_) {
+						nextFloorCallback_();
+					}
+					});
 			}
 
 			teleporters_.emplace_back(std::move(teleporter));
@@ -95,6 +105,24 @@ void TeleporterManager::Debug() {
 
 	ImGui::End();
 #endif
+}
+
+void TeleporterManager::EnableNextTeleporter()
+{
+	// テレポーターを探索
+	for (auto& teleporter : teleporters_) {
+		if (teleporter->GetPairID() == "NEXT") {
+			// 有効化する
+			teleporter->SetActive(true);
+		}
+	}
+}
+
+void TeleporterManager::Clear() {
+	for (auto& teleporter : teleporters_) {
+		teleporter->OnDestroy();
+	}
+	teleporters_.clear();
 }
 
 void TeleporterManager::EnableGoalTeleporter()

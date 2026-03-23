@@ -47,7 +47,10 @@ void GameStartState::DrawShadow() {
 	scene_->GetTeleportManager()->DrawShadow();
 }
 
-void GameStartState::DrawShadowSkinning() { scene_->GetPlayer()->DrawShadowSkinning(); }
+void GameStartState::DrawShadowSkinning() { 
+	scene_->GetPlayer()->DrawShadowSkinning(); 
+	scene_->GetEnemyManager()->DrawShadowSkinning();
+}
 
 void GameStartState::DrawUI() {
 	scene_->GetEnemyManager()->DrawUI();
@@ -71,3 +74,5 @@ bool GameStartState::CanTransition() const {
 bool GameStartState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GameStartState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GameStartState::ShouldShowBossIntro() const { return false; }

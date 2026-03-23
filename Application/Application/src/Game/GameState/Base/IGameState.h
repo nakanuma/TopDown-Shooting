@@ -74,6 +74,12 @@ public:
 	/// <returns>死亡していたらtrue</returns>
 	virtual bool IsBossDying() const = 0;
 
+	/// <summary>
+	/// ボス登場演出を再生するべきかを取得します
+	/// </summary>
+	/// <returns></returns>
+	virtual bool ShouldShowBossIntro() const = 0;
+
 protected:
 	// =========================================================
 	// Member Variables

@@ -3,6 +3,9 @@
 // C++
 #include <cassert>
 
+// Application
+#include <src/Game/Scene/GamePlayScene.h>
+
 void GameStateManager::RegisterState(const std::string& name, std::unique_ptr<IGameState> state) { states_[name] = std::move(state); }
 
 void GameStateManager::Finalize() { 
@@ -36,6 +39,7 @@ void GameStateManager::Update() {
 		// ゲーム開始 -> ゲームプレイ
 		if (GetCurrentState()->CanTransition()) {
 			ChangeState("GamePlay");
+			scene_->GetStageManager()->ShowInitialMissionLogo(); // 初回のみこの関数によってステージ目標演出開始を行う
 		}
 	}
 
@@ -50,6 +54,18 @@ void GameStateManager::Update() {
 			if (GetCurrentState()->IsBossDying()) {
 				ChangeState("GameClear");
 			}
+			// ゲームプレイ -> ボス登場演出
+			if (GetCurrentState()->ShouldShowBossIntro()) {
+				ChangeState("BossIntro");
+			}
+		}
+	}
+
+	// ボス登場演出時の遷移
+	if (GetCurrentStateName() == "BossIntro") {
+		// ボス登場演出が終了していたら通常ゲームプレイに戻す
+		if (GetCurrentState()->CanTransition()) {
+			ChangeState("GamePlay");
 		}
 	}
 }

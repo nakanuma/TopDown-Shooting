@@ -50,6 +50,11 @@ public:
 	/// <param name="other">衝突した相手のコライダー</param>
 	void OnCollision(Cygnus::Collider* other) override;
 
+	/// <summary>
+	/// 破棄を行います。
+	/// </summary>
+	void OnDestroy() { Cygnus::CollisionManager::GetInstance()->Unregister(collider_.get()); }
+
 	// =========================================================
 	// Getter / Setter
 	// =========================================================
@@ -102,6 +107,12 @@ public:
 	/// <param name="callback">ゴール時のコールバック関数</param>
 	void SetOnGoalCallback(std::function<void()> callback) { onGoalCallback_ = callback; }
 
+	/// <summary>
+	/// ゴール時のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback">ゴール時のコールバック関数</param>
+	void SetOnNextFloorCallback(std::function<void()> callback) { onNextFloorCallback_ = callback; }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -134,6 +145,7 @@ private:
 	bool isActive_ = false;      /* 使用可能フラグ */
 
 	// ----- Others -----
-	std::function<void()> onGoalCallback_ = nullptr;	/* ゴール時のコールバック関数 */
-	float emitTimer_;									/* パーティクル発生タイマー */
+	std::function<void()> onGoalCallback_ = nullptr;		/* ゴール時のコールバック関数 */
+	std::function<void()> onNextFloorCallback_ = nullptr;	/* 次ステージ移行時のコールバック関数 */
+	float emitTimer_;										/* パーティクル発生タイマー */
 };

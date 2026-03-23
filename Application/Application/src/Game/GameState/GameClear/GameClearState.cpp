@@ -72,6 +72,7 @@ void GameClearState::DrawShadow() {
 
 void GameClearState::DrawShadowSkinning() {
 	scene_->GetPlayer()->DrawShadowSkinning();
+	scene_->GetEnemyManager()->DrawShadowSkinning();
 }
 
 void GameClearState::DrawUI() { 
@@ -91,3 +92,5 @@ bool GameClearState::CanTransition() const {
 bool GameClearState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
 bool GameClearState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+
+bool GameClearState::ShouldShowBossIntro() const { return false; }

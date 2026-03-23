@@ -1,10 +1,20 @@
 #pragma once
 
 // ---------------------------------------------------------
+// C++ Includes
+// ---------------------------------------------------------
+#include <array>
+
+// ---------------------------------------------------------
 // Engine Includes
 // ---------------------------------------------------------
 #include <Sprite.h>
 #include <SpriteCommon.h>
+
+// ---------------------------------------------------------
+// Forward Declaration
+// ---------------------------------------------------------
+class Player;
 
 // =========================================================
 // プレイヤーのレティクルUIクラス
@@ -25,7 +35,7 @@ public:
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
 	/// </summary>
-	void Update();
+	void Update(const Player* player);
 
 	/// <summary>
 	/// スプライトの描画処理を行います。
@@ -36,11 +46,13 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float2 kAnchorPoint = { 0.5f, 0.5f };	/* アンカーポイント（中心） */
-	static constexpr Cygnus::Float2 kInitialSize = { 64.0f, 64.0f };	/* 初期サイズ */
+	static constexpr float kBaseOffset = 5.0f;		/* 待機状態での中心からの距離 */
+	static constexpr float kMovementScale = 20.0f;	/* 移動速度に応じた最大加算距離 */
+	static constexpr float kAnimSpeed = 0.2f;		/* 開閉の滑らかさ */
 
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::Sprite> spriteCrosshair_; /* クロスヘア用スプライト（十字架 */
+	std::array<std::unique_ptr<Cygnus::Sprite>, 4> sprites_;	/* スプライト配列 */
+	float currentOffset_ = kBaseOffset;	/* 現在のオフセット距離 */
 };

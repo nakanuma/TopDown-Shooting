@@ -75,6 +75,9 @@ void ResultScene::Initialize() {
 	spriteClearTime_ = std::make_unique<NumberSprite>();
 	spriteClearTime_->Initialize(ResultStats::GetInstance()->GetClearTime(), kDecimalPlaces);
 
+	cursor_ = std::make_unique<MouseCursor>();
+	cursor_->Initialize();
+
 	///
 	///	フェード
 	///
@@ -111,6 +114,9 @@ void ResultScene::Update() {
 	spriteDefeated_->Update(kDefeatedPosition);
 	spriteHitRate_->Update(kHitRatePosition);
 	spriteClearTime_->Update(kClearTimePosition);
+
+	// カーソルUI更新
+	cursor_->Update();
 }
 
 void ResultScene::Draw() {
@@ -156,6 +162,8 @@ void ResultScene::Draw() {
 	spriteHitRate_->Draw();
 	spriteClearTime_->Draw();
 
+	cursor_->Draw();
+
 	// フェード描画
 	FadeTransition::GetInstance()->Draw();
 
@@ -168,19 +176,6 @@ void ResultScene::Draw() {
 	///
 #ifdef USE_IMGUI
 	ImGui::Begin("ResultSceneInfo");
-
-	if (ImGui::Button("yay")) {
-		Cygnus::SoundManager::GetInstance()->Play("yay");
-	}
-	if (ImGui::Button("shot")) {
-		Cygnus::SoundManager::GetInstance()->Play("shot");
-	}
-	if (ImGui::Button("explode")) {
-		Cygnus::SoundManager::GetInstance()->Play("explode");
-	}
-	if (ImGui::Button("door")) {
-		Cygnus::SoundManager::GetInstance()->Play("door");
-	}
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 

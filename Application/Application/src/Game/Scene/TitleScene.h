@@ -23,6 +23,7 @@
 #include <src/Game/Field/Field.h>
 #include <src/Game/Loader/Loader.h>
 #include <src/Game/Obstacle/Manager/ObstacleManager.h>
+#include <src/Game/Title/UI/TitleUIManager.h>
 
 // =========================================================
 // タイトルシーンクラス
@@ -75,10 +76,6 @@ private:
 	static constexpr Cygnus::Float3 kInitialCameraRotation = { 0.5f, 0.0f, 0.0f };		/* 初期カメラ回転角 */
 	static constexpr float kCameraFovY = 0.45f;											/* カメラの視野角 */
 
-	static constexpr Cygnus::Float2 kTitlePosition = { 640.0f, 140.0f };		/* タイトル位置 */
-	static constexpr Cygnus::Float2 kStartButtonPosition = { 640.0f, 580.0f };	/* スタートボタン位置 */
-	static constexpr Cygnus::Float2 kAnchorPoint = { 0.5f, 0.5f };				/* アンカーポイント（中心） */
-
 	static constexpr float kFadeInDuration = 0.5f;			/* フェードインの演出時間 */
 	static constexpr float kFadeInDelay = 0.25f;			/* フェードイン開始時の遅延時間 */
 	static constexpr float kSplitBlockCloseDuration = 1.0f;	/* 分割ブロックトランジション開始時の演出時間 */
@@ -91,15 +88,6 @@ private:
 	static constexpr float kOrbitCameraRadius = 50.0f;								/* カメラ回転の半径 */
 	static constexpr float kOrbitCameraHeight = 30.0f;								/* カメラ回転時の高さ */
 	static constexpr float kOrbitCameraSpeed = 0.25f;								/* カメラ回転の速度 */
-
-	static constexpr float kTitleFloatSpeed = 1.2f;								/* sinfの係数 */
-	static constexpr float kTitleFloatAmplitude = 4.0f;							/* sinfの結果にかける係数（移動量） */
-	static constexpr Cygnus::Float2 kTitleBasePosition = { 640.0f, 140.0f };	/* タイトルスプライトの基準位置 */
-
-	static constexpr float kStartButtonBlinkSpeed = 4.0f;						/* sinfの係数 */
-	static constexpr float kStartButtonBlinkOffset = 1.0f;						/* sinfの結果に足すオフセット */
-	static constexpr float kStartButtonBlinkScale = 2.0f;						/* sinfの結果を割る値 */
-	static constexpr Cygnus::Float4 kStartButtonBaseColor = { 1.0f, 1.0f, 1.0f, 1.0f };	/* スタートボタンの色 */
 
 	static constexpr int32_t kSmokeEmitInterval = 5;							/* 煙パーティクルを発生させる間隔（フレーム） */
 	static constexpr int32_t kSmokeEmitCount = 1;								/* 煙パーティクルの発生数 */
@@ -131,9 +119,7 @@ private:
 	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_;			/* ポストエフェクト管理クラス */
 
 	// ----- Sprite -----
-	/// Todo : 適切なクラスへの整理
-	std::unique_ptr<Cygnus::Sprite> spriteTitle_;					/* タイトルロゴスプライト */
-	std::unique_ptr<Cygnus::Sprite> spriteStartButton_;				/* スタートボタンスプライト */
+	std::unique_ptr<TitleUIManager> titleUIManager_; /* タイトルUI管理クラス */
 
 	// ----- Objects -----
 	std::unique_ptr<Field> field_;							/* 床オブジェクト */
@@ -142,4 +128,6 @@ private:
 	// ----- Others -----
 	std::unique_ptr<Loader> loader_;						/* ステージデータの管理クラス */
 	int32_t shadowMapHandle_;								/* シャドウマップテクスチャ */
+
+	bool isClickedGameStartButton_ = false;	/* ゲームスタートボタン押下フラグ */
 };

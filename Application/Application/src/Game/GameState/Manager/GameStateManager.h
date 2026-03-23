@@ -26,6 +26,12 @@ public:
 	void RegisterState(const std::string& name, std::unique_ptr<IGameState> state);
 
 	/// <summary>
+	/// 初期化処理を行います。
+	/// </summary>
+	/// <param name="scene"></param>
+	void Initialize(GamePlayScene* scene) { scene_ = scene; }
+
+	/// <summary>
 	/// 終了処理を行います。
 	/// </summary>
 	void Finalize();
@@ -89,5 +95,7 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<IGameState>> states_;	// 名前で状態を保持
 	IGameState* currentState_ = nullptr;									// 現在の状態
 	std::string currentStateName_;											// 現在の状態の名前
+
+	GamePlayScene* scene_;	/* ゲームシーン */
 };
 

@@ -89,6 +89,12 @@ public:
 	void SetTranslate(const Cygnus::Float3& translate) { objectPlayer_->GetTranslate() = translate; }
 
 	/// <summary>
+	/// プレイヤーの回転を取得します。
+	/// </summary>
+	/// <returns>回転（Float3）</returns>
+	const Cygnus::Float3& GetRotate() const { return objectPlayer_->GetRotate(); }
+
+	/// <summary>
 	/// プレイヤーの現在HPを取得します。
 	/// </summary>
 	/// <returns>現在HP</returns>
@@ -107,6 +113,24 @@ public:
 	float GetOverheatRatio() const { return overheatTime_ / overheatLimit_; }
 
 	/// <summary>
+	/// オーバーヒート中状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsOverHeated() const { return isOverheated_; }
+
+	/// <summary>
+	/// ダッシュ中状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool IsDashing() const { return isDashing_; }
+
+	/// <summary>
+	/// ダッシュクールダウンの割合を取得します。
+	/// </summary>
+	/// <returns>クールダウン残り時間割合（0.0f～1.0f）</returns>
+	float GetDashCooldownRatio() const { return dashCooldownTimer_ / dashCoolDown_; }
+
+	/// <summary>
 	/// 死亡フラグを取得します。
 	/// </summary>
 	/// <returns>死亡フラグ</returns>
@@ -119,10 +143,51 @@ public:
 	void SetInvincible(bool flag) { invincible_ = flag; }
 
 	/// <summary>
+	/// このフレームで射撃したかどうかを取得します。
+	/// </summary>
+	/// <returns>このフレームでの射撃フラグ</returns>
+	bool IsShootedThisFrame() const { return isShootedThisFrame_; }
+
+	/// <summary>
 	/// ポストエフェクトマネージャーをセットします。
 	/// </summary>
 	/// <param name="manager">ポストエフェクトマネージャー</param>
 	void SetPostEffectManager(Cygnus::PostEffectManager* manager) { postEffectManager_ = manager; }
+
+	/// <summary>
+	/// 速度ベクトルを設定します。
+	/// </summary>
+	/// <param name="velocity"></param>
+	void SetVelocity(const Cygnus::Float3& velocity) { velocity_ = velocity; }
+
+	/// <summary>
+	/// 回転を設定します。
+	/// </summary>
+	/// <param name="rotate"></param>
+	void SetRotate(const Cygnus::Float3& rotate) { objectPlayer_->GetRotate() = rotate; }
+
+	/// <summary>
+	/// 移動速度を取得します
+	/// </summary>
+	/// <returns></returns>
+	float GetMoveSpeed() const { return moveSpeed_; }
+
+	/// <summary>
+	/// プレイヤーの正面方向へ弾を1発射撃します。（ボス登場シーン用）
+	/// </summary>
+	void Fire() { Shoot(false); }
+
+	/// <summary>
+	/// プレイヤー移動状態を取得します。
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsMoving() const { return isMoving_; }
+
+	/// <summary>
+	/// プレイヤー移動状態をセットします
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsMoving(bool flag) { isMoving_ = flag; }
 
 private:
 	// =========================================================
@@ -138,6 +203,11 @@ private:
 	/// 移動およびダッシュ入力の処理を行います。
 	/// </summary>
 	void HandleMove();
+
+	/// <summary>
+	/// 弾の生成処理を行います。
+	/// </summary>
+	void Shoot(bool forCursorDirection);
 
 	/// <summary>
 	/// 弾の入力発射処理を行います。
@@ -163,14 +233,17 @@ private:
 	// =========================================================
 	// Constants
 	// =========================================================
-	static constexpr Cygnus::Float3 kColliderSize = {1.0f, 2.0f, 1.0f}; /* コライダーサイズ */
+	static constexpr Cygnus::Float3 kColliderSize = { 1.0f, 2.0f, 1.0f }; /* コライダーサイズ */
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f;              /* アニメーション再生速度 */
 
-	static constexpr Cygnus::Float4 kGunColor = {0.0f, 0.0f, 0.0f, 1.0f}; /* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;                /* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;                      /* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;                        /* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float3 kGunEmissiveColor = { 1.0f, 0.0f, 0.0f }; /* 銃のオーバーヒート時発光色（赤） */
+	static constexpr float kGunIntensityFactor = 3.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
+	static constexpr float kOverheatSmokeInterval = 0.12f;                  /* オーバーヒート時煙パーティクルの頻度 */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f; /* 速度正規化用の加算値 */
 	static constexpr float kVelocityThreshold = 0.01f;        /* 速度判定のしきい値 */
@@ -185,7 +258,7 @@ private:
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
 	static constexpr float kHitBlinkDuration = 0.05f;                    /* 被弾時の発光時間 */
-	static constexpr Cygnus::Float3 kHitBlinkColor = {1.0f, 0.5f, 0.0f}; /* 被弾時の発光色 */
+	static constexpr Cygnus::Float3 kHitBlinkColor = { 1.0f, 0.5f, 0.0f }; /* 被弾時の発光色 */
 
 	static constexpr float kDamageEffectDurationIn = 0.1f;         /* ダメージ演出増加の時間 */
 	static constexpr float kDamageEffectDurationHold = 0.2f;       /* ダメージ演出維持の時間 */
@@ -215,9 +288,10 @@ private:
 	std::unique_ptr<PlayerUIManager> ui_; /* UIマネージャー */
 
 	// ----- Parameters -----
-	Cygnus::Float3 velocity_ = {0.0f, 0.0f, 0.0f}; /* 速度ベクトル */
-	bool isMoving_ = false;                        /* 移動中フラグ */
-	int32_t currentHP_ = 0;                        /* 現在HP */
+	Cygnus::Float3 velocity_ = { 0.0f, 0.0f, 0.0f };		/* 速度ベクトル */
+	Cygnus::Float3 dashDirection_ = { 0.0f, 0.0f, 0.0f }; /* ダッシュ方向保存用 */
+	bool isMoving_ = false;								/* 移動中フラグ */
+	int32_t currentHP_ = 0;								/* 現在HP */
 
 	bool invincible_ = false; /* 無敵フラグ（ボス撃破時に有効化） */
 	bool isDead_ = false;     /* 死亡フラグ */
@@ -228,12 +302,16 @@ private:
 	float dashCooldownTimer_ = 0.0f; /* ダッシュのクールダウンタイマー */
 
 	// ----- Shooting -----
-	bool isFiring_ = false;  /* 射撃中フラグ */
-	float fireTimer_ = 0.0f; /* 射撃タイマー */
+	bool isFiring_ = false;				/* 射撃中フラグ */
+	bool isShootedThisFrame_ = false;	/* このフレームで弾を発射したか */
+	float fireTimer_ = 0.0f;			/* 射撃タイマー */
 
 	// ----- Overheat -----
 	float overheatTime_ = 0.0f; /* オーバーヒートタイマー */
 	bool isOverheated_ = false; /* オーバーヒート中フラグ */
+
+	float gunEmissiveIntensity_ = 0.0f; /* 銃の発光強度（オーバーヒート時） */
+	float overheatSmokeTimer_ = 0.0f;   /* オーバーヒート時の煙パーティクル用タイマー */
 
 	// ----- HitBlink -----
 	/// <summary>
@@ -269,6 +347,15 @@ private:
 	float overheatLimit_ = 3.0f;          /* オーバーヒートになるまでの秒数 */
 	float overheatGainPerSecond_ = 1.0f;  /* オーバーヒート加熱速度（1秒あたり） */
 	float overheatRecoverySpeed_ = 1.6f;  /* オーバーヒート冷却速度（1秒あたり） */
+
+	float overheatRecoveryThreshold_ = 3.0f; /* オーバーヒートした際、冷却が開始するまでの時間（秒） */
+
+	float recoveryDelayTimer_ = 0.0f;		/* 現在の待機カウント */
+	float recoveryDelayThreshold_ = 0.5f;	/* 射撃をやめてから冷却が始まるまでの時間（秒） */
+
+	float coolingAccelerationTimer_ = 0.0f; /* 冷却が始まってからの経過時間 */
+	float coolingAccelerationRate_ = 1.5f;  /* 冷却時間の加速倍率*/
+
 	float maxRandomAngle_ = 0.02f;        /* 射撃ブレ角 */
 	float shootingBlurMultiplier_ = 3.0f; /* 移動時の射撃ブレ倍率 */
 };

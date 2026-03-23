@@ -81,6 +81,8 @@ public:
 	/// <returns>死亡していたらtrue</returns>
 	bool IsBossDying() const override;
 
+	bool ShouldShowBossIntro() const override;
+
 private:
 	// =========================================================
 	// Member Variables

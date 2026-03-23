@@ -45,5 +45,5 @@ private:
 	static constexpr float kRadius = 0.2f;      /* 弾の半径 */
 	static constexpr float kMaxLifeTime = 1.0f; /* 生存時間（秒）*/
 	static constexpr int32_t kDamage = 5;       /* 攻撃力 */
-	static constexpr float kSpeed = 1.8f;       /* 弾速 */
+	static constexpr float kSpeed = 1.6f;       /* 弾速 */
 };

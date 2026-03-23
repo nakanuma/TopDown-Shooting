@@ -8,6 +8,11 @@
 #include <Sprite.h>
 #include <SpriteCommon.h>
 
+// ---------------------------------------------------------
+// Application Includes
+// ---------------------------------------------------------
+#include <src/Game/Utility/UI/SpaceSkip.h>
+
 // =========================================================
 // ゲームスタート時の演出を制御するクラス
 // =========================================================
@@ -78,9 +83,9 @@ private:
 	void UpdateTransition();
 
 	/// <summary>
-	/// デバッグ用の演出スキップを行います。
+	/// 演出スキップを行います。
 	/// </summary>
-	void DebugSkip();
+	void Skip();
 
 private:
 	/// <summary>
@@ -121,8 +126,6 @@ private:
 	float lerpT_ = 0.0f;      /* 補間用タイマー */
 	bool isFinished_ = false; /* 終了フラグ */
 
-	bool isDebugSkip_ = false;	/* デバッグスキップ用フラグ */
-
 	// ----- Objects -----
 	std::unique_ptr<Cygnus::Object3D> objectCrumblingWall_; /* 壊れそうな壁オブジェクト */
 	std::unique_ptr<Cygnus::Object3D> objectDynamite_;      /* ダイナマイトオブジェクト */
@@ -133,4 +136,6 @@ private:
 	// ----- Sprite -----
 	std::unique_ptr<Cygnus::Sprite> spriteTopLetterBox_;    /* 上部の黒帯 */
 	std::unique_ptr<Cygnus::Sprite> spriteBottomLetterBox_; /* 下部の黒帯 */
+
+	std::unique_ptr<SpaceSkip> spaceSkip_; /* SPACEでスキップのUI */
 };

@@ -42,9 +42,19 @@ public:
 	void Debug();
 
 	/// <summary>
+	/// 次ステージへ進むテレポーターを有効化します。
+	/// </summary>
+	void EnableNextTeleporter();
+
+	/// <summary>
 	/// ゴールテレポーターを有効化します。
 	/// </summary>
 	void EnableGoalTeleporter();
+
+	/// <summary>
+	/// データのクリアを行います。
+	/// </summary>
+	void Clear();
 
 	// =========================================================
 	// Getter / Setter
@@ -56,6 +66,12 @@ public:
 	/// <param name="callback">ゴール時のコールバック関数</param>
 	void SetGoalCallback(std::function<void()> callback) { goalCallback_ = callback; }
 
+	/// <summary>
+	/// 次ステージ移行時のコールバック関数を設定します。
+	/// </summary>
+	/// <param name="callback"></param>
+	void SetNextFloorCallback(std::function<void()> callback) { nextFloorCallback_ = callback; }
+
 private:
 	// =========================================================
 	// Member Variables
@@ -66,4 +82,5 @@ private:
 
 	// ----- Others -----
 	std::function<void()> goalCallback_ = nullptr;			/* ゴール時のコールバック関数 */
+	std::function<void()> nextFloorCallback_ = nullptr;		/* 次ステージ移行時のコールバック関数 */
 };

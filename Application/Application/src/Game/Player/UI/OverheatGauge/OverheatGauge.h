@@ -51,6 +51,10 @@ private:
 	static constexpr float kColorPhase2Duration = 0.25f;	/* 色変更フェーズ2の期間 */
 	static constexpr float kColorPhase3Duration = 0.25f;	/* 色変更フェーズ3の期間 */
 
+	static constexpr float kOverheatedBlinkSpeed = 15.0f;	/* オーバーヒート中点滅時の速度 */
+	static constexpr float kBlinkingAlphaMin = 0.3f;		/* オーバーヒート時点滅中の最低アルファ値 */
+	static constexpr float kBlinkingAlphaMax = 1.0f;		/* オーバーヒート時点滅中の最大アルファ値 */
+
 	static constexpr Cygnus::Float3 kColorGreen = { 0.5f, 1.0f, 0.0f };		/* 緑色 */
 	static constexpr Cygnus::Float3 kColorYellow = { 1.0f, 1.0f, 0.0f };	/* 黄色 */
 	static constexpr Cygnus::Float3 kColorOrange = { 1.0f, 0.5f, 0.0f };	/* 橙色 */
@@ -60,4 +64,6 @@ private:
 	// Member Variables
 	// =========================================================
 	std::unique_ptr<Cygnus::Sprite> sprite_; /* ゲージ用スプライト */
+
+	float overheatBlinkTimer_ = 0.0f; /* オーバーヒート中の点滅に使用するタイマー */
 };

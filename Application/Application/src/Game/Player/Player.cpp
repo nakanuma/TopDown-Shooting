@@ -63,6 +63,8 @@ void Player::Initialize(const Loader::TransformData& data) {
 	objectGun_->materialCB_.data_->useEnvironmentMap = true;
 	objectGun_->materialCB_.data_->environmentStrength = kGunEnvironmentStrength;
 
+	objectGun_->materialCB_.data_->emissiveColor = kGunEmissiveColor;
+
 	///
 	///	コライダー生成
 	///
@@ -100,11 +102,13 @@ void Player::Initialize(const Loader::TransformData& data) {
 
 #ifdef USE_IMGUI
 	RegisterParam("maxHP", &maxHP_);
+
 	AddSeparator();
 	RegisterParam("moveSpeed", &moveSpeed_, 0.01f);
 	RegisterParam("dashDuration", &dashDuration_, 0.01f);
 	RegisterParam("dashCoolDown", &dashCoolDown_, 0.01f);
 	RegisterParam("dashSpeedMultiplier", &dashSpeedMultiplier_, 0.01f);
+
 	AddSeparator();
 	RegisterParam("fireCooldown", &fireCooldown_, 0.01f);
 	RegisterParam("overheatLimit", &overheatLimit_, 0.01f);
@@ -112,12 +116,19 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("overheatRecoverySpeed", &overheatRecoverySpeed_, 0.01f);
 	RegisterParam("maxRandomAngle", &maxRandomAngle_, 0.01f);
 	RegisterParam("shootingBlurMultiplier", &shootingBlurMultiplier_, 0.01f);
+
+	AddSeparator();
+	RegisterParam("recoveryDelayThreshould", &recoveryDelayThreshold_, 0.01f);
+	RegisterParam("coolingAccelerationRate", &coolingAccelerationRate_, 0.01f);
+	RegisterParam("overheatRecoveryThreshold", &overheatRecoveryThreshold_, 0.01f);
 #endif
 
 	InitConfig(); // 初回読み込み
 }
 
 void Player::Update(bool operable) {
+	// このフレームで射撃したかフラグのリセット
+	isShootedThisFrame_ = false;
 	// 前フレームでの死亡フラグを保持
 	bool wasDead = isDead_;
 
@@ -280,43 +291,12 @@ void Player::Debug() {
 
 	ImGui::Begin("Player");
 
-	ImGui::Checkbox("Invincible", &invincible_);
-
 	/* Translate */
 	ImGui::Text("Translate");
 
 	ImGui::DragFloat3("translate", &objectPlayer_->GetTranslate().x, 0.01f);
-
 	ImGui::DragFloat3("rotate", &objectPlayer_->GetRotate().x, 0.01f);
-
 	ImGui::DragFloat3("scale", &objectPlayer_->GetScale().x, 0.01f);
-
-	ImGui::Separator();
-	ImGui::DragFloat3("Gun:Translate", &objectGun_->transform_.translate_.x, 0.01f);
-	ImGui::DragFloat3("Gun:Rotate", &objectGun_->transform_.rotate_.x, 0.01f);
-	ImGui::DragFloat3("Gun:Scale", &objectGun_->transform_.scale_.x, 0.01f);
-
-	/* Parameter */
-	ImGui::Text("Parameter");
-
-	ImGui::Checkbox("isDead", &isDead_);
-	ImGui::Checkbox("invincible", &invincible_);
-
-	ImGui::BeginDisabled(true); // 操作不可
-	ImGui::DragFloat3("Velocity", &velocity_.x, 0.01f);
-	ImGui::EndDisabled();
-
-	ImGui::DragInt("HP", &currentHP_);
-
-	ImGui::Text("dashCooldown : %.2f", dashCooldownTimer_);
-
-	// オーバーヒート
-	ImGui::Text("overheatTime : %.2f", overheatTime_);
-	ImGui::Checkbox("isOverheated", &isOverheated_);
-
-	ImGui::Checkbox("isMoving", &isMoving_);
-
-	/*  */
 
 	ImGui::End();
 #endif
@@ -337,23 +317,20 @@ void Player::FaceCursor() {
 }
 
 void Player::HandleMove() {
-	velocity_ = { 0.0f, 0.0f, 0.0f };
-
+	Cygnus::Float3 inputVelocity = {0.0f, 0.0f, 0.0f};
 	// キー入力で速度ベクトル加算
 	if (input_->PushKey(DIK_W))
-		velocity_.z += kVelocityNormalizeAdditive;
+		inputVelocity.z += kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_S))
-		velocity_.z -= kVelocityNormalizeAdditive;
+		inputVelocity.z -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_A))
-		velocity_.x -= kVelocityNormalizeAdditive;
+		inputVelocity.x -= kVelocityNormalizeAdditive;
 	if (input_->PushKey(DIK_D))
-		velocity_.x += kVelocityNormalizeAdditive;
+		inputVelocity.x += kVelocityNormalizeAdditive;
 
-	// 移動しているか
-	isMoving_ = (velocity_.x != 0.0f || velocity_.z != 0.0f);
-
-	// 正規化
-	if (isMoving_) {
+	// 移動していれば正規化
+	bool hasInput = (inputVelocity.x != 0.0f || inputVelocity.z != 0.0f);
+	if (hasInput) {
 		velocity_ = Cygnus::Float3::Normalize(velocity_);
 	}
 
@@ -366,90 +343,135 @@ void Player::HandleMove() {
 		dashCooldownTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
 	}
 
-	// ダッシュ中処理
+	// ダッシュ開始判定
+	bool dashInput = input_->TriggerKey(DIK_SPACE);
+	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
+		isDashing_ = true; 
+		dashTimer_ = dashDuration_; // ダッシュ時間を設定
+		invincible_ = true; // ダッシュ中は無敵
+
+		if (hasInput) {
+			// 入力があればその方向へダッシュ
+			dashDirection_ = inputVelocity;
+		} else {
+			// 入力がなければ現在のプレイヤーの正面方向へダッシュ
+			float angle = objectPlayer_->GetRotate().y;
+			dashDirection_.x = std::sinf(angle);
+			dashDirection_.z = std::cosf(angle);
+			dashDirection_ = Cygnus::Float3::Normalize(dashDirection_);
+		}
+	}
+	
+	// velocityの決定
+	velocity_ = {0.0f, 0.0f, 0.0f};
+
 	if (isDashing_) {
+		// 固定した方向にダッシュ速度を適用
+		velocity_ = dashDirection_ * (moveSpeed_ * dashSpeedMultiplier_);
+
+		// ダッシュタイマー更新
 		dashTimer_ -= Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+		// ダッシュ終了
 		if (dashTimer_ <= 0.0f) {
-			isDashing_ = false;                 // ダッシュ終了
-			dashCooldownTimer_ = dashCoolDown_; // クールタイムをセット
+			isDashing_ = false;
+			invincible_ = false;
+			dashCooldownTimer_ = dashCoolDown_;
+		}
+	} else {
+		// 入力があれば通常速度を適用
+		if (hasInput) {
+			velocity_ = inputVelocity * moveSpeed_;
 		}
 	}
 
-	// ダッシュ入力
-	bool dashInput = input_->TriggerKey(DIK_LSHIFT) || input_->IsTriggerMouse(2); // 左SHIFT or 中央クリック
-	if (!isDashing_ && dashCooldownTimer_ <= 0.0f && dashInput) {
-		isDashing_ = true;          // ダッシュ中へ
-		dashTimer_ = dashDuration_; // ダッシュ時間をセット
-	}
+	isMoving_ = (hasInput || isDashing_); // 入力あり/ダッシュ中には動いていることを示す
 
-	// 速度を更新
-	float currentSpeed = moveSpeed_;
-	if (isDashing_) {
-		currentSpeed *= dashSpeedMultiplier_; // ダッシュ中は速度に倍率をかける
-	}
-	velocity_ = velocity_ * currentSpeed;
-
-	// プレイヤー位置更新
+	// プレイヤーの座標を更新
 	objectPlayer_->GetTranslate() += velocity_;
 }
 
-void Player::HandleShooting() {
-	///
-	///	左クリックで弾の生成
-	///
+void Player::Shoot(bool forCursorDirection) {
+	// このフレームで射撃したことを記録
+	isShootedThisFrame_ = true;
 
-	// 左クリックで弾を生成
-	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+	Cygnus::Float3 direction;
+
+	// カーソル方向への射撃
+	if (forCursorDirection) {
 		// カーソル位置の取得
 		Cygnus::Float3 cursorPos = Utility::CalculateCursorPosition();
 		// プレイヤー位置の取得
 		Cygnus::Float3 playerPos = objectPlayer_->GetTranslate();
-
-		// 発射方向
-		Cygnus::Float3 direction = cursorPos - playerPos;
+		direction = cursorPos - playerPos;
+	// プレイヤー正面方向への射撃
+	} else {
+		direction.x = sinf(objectGun_->transform_.rotate_.y);
 		direction.y = 0.0f;
-		direction = Cygnus::Float3::Normalize(direction);
+		direction.z = cosf(objectGun_->transform_.rotate_.y);
+	}
 
-		// 少しだけ方向をブレさせる
-		float blurAmount = maxRandomAngle_;
+	// 方向を正規化
+	direction.y = 0.0f;
+	direction = Cygnus::Float3::Normalize(direction);
 
-		if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
-			blurAmount *= shootingBlurMultiplier_; // プレイヤーが動いていたらブレの幅を増やす
-		}
+	// 少しだけ方向をブレさせる
+	float blurAmount = maxRandomAngle_;
 
-		float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
+	if (Cygnus::Float3::Length(velocity_) > kVelocityThreshold) {
+		blurAmount *= shootingBlurMultiplier_; // プレイヤーが動いていたらブレの幅を増やす
+	}
 
-		// Y成分以外のランダムベクトルを加算
-		direction.x += blurDist;
-		direction.z += blurDist;
-		direction = Cygnus::Float3::Normalize(direction); // 再正規化
+	float blurDist = Cygnus::RandomGenerator::GetInstance()->RandomValue(-blurAmount, blurAmount);
 
-		// 弾の生成・初期化
-		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
-		BulletManager::GetInstance()->AddBullet(std::move(newBullet));
-		ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
+	// Y成分以外のランダムベクトルを加算
+	direction.x += blurDist;
+	direction.z += blurDist;
+	direction = Cygnus::Float3::Normalize(direction); // 再正規化
 
-		// パーティクル発生
-		Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, { 0.0f, 0.0f, 0.0f }, objectGun_->transform_.rotate_.y); // 薬莢排出
+	// 弾の生成・初期化
+	auto newBullet = std::make_unique<PlayerBullet>();
+	newBullet->Initialize(objectPlayer_->GetTranslate(), direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
+	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
+	ResultStats::GetInstance()->AddShot(); // 弾を撃ったことを記録
 
-		Cygnus::Float3 forward = { sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y) }; // 前方向ベクトル
-		Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
+	// パーティクル発生
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", objectGun_->transform_.translate_, kShellEjectionCount, {0.0f, 0.0f, 0.0f}, objectGun_->transform_.rotate_.y); // 薬莢排出
+
+	Cygnus::Float3 forward = {sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y)};                                                 // 前方向ベクトル
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), kMuzzleFlashCount); // マズルフラッシュ
+
+	// 効果音発生
+	Cygnus::SoundManager::GetInstance()->Play("player_shoot", false, 0.1f);
+
+	// 揺れ発生
+	CameraShake::GetInstance()->StartShootShake();
+}
+
+void Player::HandleShooting() {
+	// 左クリックで弾を生成
+	if (input_->IsPressMouse(0) && Utility::IsInsideClientCursor()) {
+		Shoot(true); // カーソル方向への発射
 	}
 }
 
 void Player::HandleOverHeat()
 {
+	float deltaTime = Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
 	// 左クリック取得
 	isFiring_ = Cygnus::Input::GetInstance()->IsPressMouse(0);
-
 	// 発射タイマーを進める
-	fireTimer_ += Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+	fireTimer_ += deltaTime;
 
-	// オーバーヒートしていない場合の処理
+	// 射撃中（オーバーヒートしていない状態）処理
 	if (!isOverheated_ && isFiring_) {
-		// オーバーヒート処理
+		// 加熱処理
 		overheatTime_ += overheatGainPerSecond_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
+
+		// 冷却開始タイマーをリセット（射撃最中は冷却しないように）
+		recoveryDelayTimer_ = 0.0f;
+		coolingAccelerationTimer_ = 0.0f;
+
 		if (overheatTime_ >= overheatLimit_) {
 			overheatTime_ = overheatLimit_;
 			isOverheated_ = true;
@@ -461,16 +483,53 @@ void Player::HandleOverHeat()
 			fireTimer_ = 0.0f;
 		}
 
-		// オーバーヒート中の処理
+	// 冷却フェーズ（オーバーヒート済 or 非射撃時）
 	} else {
-		// 冷却処理（撃っていない間 or オーバーヒート中）
-		overheatTime_ -= overheatRecoverySpeed_ * Cygnus::TimeManager::GetInstance()->GetDeltaTime();
-		overheatTime_ = std::max(overheatTime_, 0.0f);
+		// 冷却開始までの待機時間をカウント
+		recoveryDelayTimer_ += deltaTime;
 
-		// 冷却時間完了でオーバーヒート解除
+		// 現在の状態によって冷却開始までの時間を変える
+		float currentThreshold = isOverheated_ ? overheatRecoveryThreshold_ : recoveryDelayThreshold_;
+
+		// 冷却処理（オーバーヒート済、又は冷却待機時間が終わった際）
+		if (recoveryDelayTimer_ >= currentThreshold) {
+			coolingAccelerationTimer_ += deltaTime; // 冷却が開始してからの経過時間をカウント
+
+			// 時間経過で冷却速度の倍率を上げる
+			float accelerationMultiplier = 1.0f + (coolingAccelerationTimer_ * coolingAccelerationRate_);
+
+			overheatTime_ -= (overheatRecoverySpeed_ * accelerationMultiplier) * deltaTime;
+			overheatTime_ = std::max(overheatTime_, 0.0f);
+		}
+
+		// 冷却完了でオーバーヒート解除
 		if (isOverheated_ && overheatTime_ <= 0.0f) {
 			isOverheated_ = false;
+			coolingAccelerationTimer_ = 0.0f;
 		}
+	}
+
+	///
+	///	銃モデルのオーバーヒート時更新処理
+	/// 
+
+	// 銃の発光強度変更処理（オーバーヒート時に銃身を赤くする処理）
+	float intensity = std::powf(GetOverheatRatio(), kGunIntensityFactor); // オーバーヒートに近づいたら急速に赤くしたいため累乗を使う
+	objectGun_->materialCB_.data_->emissiveIntensity = intensity;
+
+	// オーバーヒート中の煙パーティクル
+	if (IsOverHeated()) {
+		overheatSmokeTimer_ += deltaTime; // 煙用タイマー加算
+
+		// 指定した間隔を超えたら発生
+		if (overheatSmokeTimer_ >= kOverheatSmokeInterval) {
+			Cygnus::Float3 forward = {sinf(objectGun_->transform_.rotate_.y), 0.0f, cosf(objectGun_->transform_.rotate_.y)}; // 銃の前方向ベクトル
+			Cygnus::ParticleEffectManager::GetInstance()->Emit("gunOverheatSmoke", objectGun_->transform_.translate_ + (forward * kMuzzleFlashForwardOffset), 1); // 銃のオーバーヒート時煙パーティクル
+		
+			overheatSmokeTimer_ = 0.0f; // 発生したのでタイマーリセット
+		}
+	} else {
+		overheatSmokeTimer_ = 0.0f; // オーバーヒートしていないので常にリセット
 	}
 }
 

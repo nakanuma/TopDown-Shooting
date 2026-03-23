@@ -28,6 +28,7 @@
 #include <src/Game/GameState/GamePlay/GamePlayState.h>
 #include <src/Game/GameState/GameOver/GameOverState.h>
 #include <src/Game/GameState/GameClear/GameClearState.h>
+#include <src/Game/GameState/BossIntro/BossIntroState.h>
 
 void GamePlayScene::Initialize() {
 	Cygnus::DirectXBase* dxBase = Cygnus::DirectXBase::GetInstance();
@@ -64,7 +65,7 @@ void GamePlayScene::Initialize() {
 
 	// ローダー生成
 	loader_ = std::make_unique<Loader>();
-	loader_->LoadFromFile("resources/Stages/data.json");
+	loader_->LoadFromFile("resources/Stages/stage" + std::to_string(currentFloor_) + ".json");
 
 	/* オブジェクト関連 */
 
@@ -86,8 +87,22 @@ void GamePlayScene::Initialize() {
 
 	// テレポーターの管理クラス生成
 	teleporterManager_ = std::make_unique<TeleporterManager>();
-	teleporterManager_->Initialize(loader_->GetAllDatas());                  // ローダーから取得したデータを使用
-	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); }); // ゴール時のコールバック関数を設定
+	teleporterManager_->Initialize(loader_->GetAllDatas());								// ローダーから取得したデータを使用
+	teleporterManager_->SetGoalCallback([this]() { TransitionToResult(); });			// ゴール時のコールバック関数を設定
+	teleporterManager_->SetNextFloorCallback([this](){									// 次ステージのコールバック関数を設定
+		FadeTransition::GetInstance()->StartFadeOut(kFadeDuration, [this]() {
+			needsNewFloorLoad_ = true; // リロードのフラグを立てる
+			FadeTransition::GetInstance()->StartFadeIn(kFadeDuration, 0.0f);
+		}); 
+	});
+
+	// イベントトリガー管理クラス生成
+	eventManager_ = std::make_unique<EventManager>();
+	eventManager_->Initialize(loader_->GetAllDatas());
+
+	// 発電機管理クラス生成
+	powerGeneratorManager_ = std::make_unique<PowerGeneratorManager>();
+	powerGeneratorManager_->Initialize(loader_->GetAllDatas());
 
 	// 弾リストのクリア
 	BulletManager::GetInstance()->Clear();
@@ -125,6 +140,10 @@ void GamePlayScene::Initialize() {
 	// ゲーム状態の初期化
 	InitializeGameStates();
 
+	// ステージ状態監視クラスの初期化
+	stageManager_ = std::make_unique<StageManager>();
+	stageManager_->Initialize(enemyManager_.get(), powerGeneratorManager_.get(), teleporterManager_.get());
+
 	// ポーズメニュー生成
 	pauseMenu_ = std::make_unique<PauseMenu>();
 	pauseMenu_->Initialize(spriteCommon_.get());
@@ -143,6 +162,13 @@ void GamePlayScene::Initialize() {
 void GamePlayScene::Finalize() { stateManager_->Finalize(); }
 
 void GamePlayScene::Update() {
+	// フラグが立ったら次ステージ用にリロードを実行（Clear時安全のためUpdateの最初に実行）
+	if(needsNewFloorLoad_) {
+		LoadNextFloor();
+		stageManager_->PrepareNextState(currentFloor_); // ロード後にステージ設定更新
+		needsNewFloorLoad_ = false;
+	}
+
 	Cygnus::LightManager::GetInstance()->ClearEmissiveLights(); // エミッシブライトをクリア
 	Cygnus::LightManager::GetInstance()->ClearAreaLights();     // エリアライトをクリア
 
@@ -166,6 +192,8 @@ void GamePlayScene::Update() {
 
 	// ゲーム状態ごとの更新処理
 	stateManager_->Update();
+	// ステージクリア判定の更新
+	stageManager_->Update();
 
 	/* 全ての状態共通で更新するもの */
 	// カメラシェイクの更新
@@ -176,6 +204,8 @@ void GamePlayScene::Update() {
 	Cygnus::CollisionManager::GetInstance()->Update();
 	// パーティクルエフェクトマネージャー更新
 	Cygnus::ParticleEffectManager::GetInstance()->Update(Cygnus::TimeManager::GetInstance()->GetDeltaTime());
+	// イベントトリガー管理クラスの更新
+	eventManager_->Update();
 }
 
 void GamePlayScene::Draw() {
@@ -285,7 +315,8 @@ void GamePlayScene::Draw() {
 
 	// ゲーム状態ごとのUI描画処理
 	stateManager_->DrawUI();
-
+	// ステージごとのUI描画処理（ステージ開始/クリア時テロップ）
+	stageManager_->DrawUI();
 	// ポーズ中UI描画処理
 	pauseMenu_->DrawUI();
 
@@ -296,6 +327,9 @@ void GamePlayScene::Draw() {
 #ifdef _DEBUG
 	// デバッグ表示
 	Debug();
+
+	Cygnus::CollisionManager::GetInstance()->Debug();
+	Cygnus::CollisionManager::GetInstance()->Draw();
 #endif
 	// ImGuiの内部コマンドを生成する
 	Cygnus::ImguiWrapper::Render(cmd);
@@ -309,24 +343,26 @@ void GamePlayScene::Debug() {
 #ifdef USE_IMGUI
 	ImGui::Begin("GameSceneInfo");
 
+	ImGui::Text("currentFloor : %d", currentFloor_);
+	if(ImGui::Button("NextFloor")) {
+		needsNewFloorLoad_ = true;
+	}
+
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
 	ImGui::Checkbox("isPaused", &isPaused_);
 
+	ImGui::DragFloat3("Camera : Translate", &camera_->GetCurrent()->transform_.translate_.x, 0.01f);
+	ImGui::DragFloat3("Camera : Rotate", &camera_->GetCurrent()->transform_.rotate_.x, 0.01f);
+
 	if(ImGui::Button("TITLE")) {
 		Cygnus::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-
-	if(ImGui::Button("TtoR")) {
-		TransitionToResult();
-	}
-	if (ImGui::Button("TtoT")) {
-		TransitionToTitle();
-	}
-
 	ImGui::End();
 
 	stateManager_->Debug();
+
+	stageManager_->Debug();
 #endif
 }
 
@@ -359,13 +395,42 @@ void GamePlayScene::InitializeGameStates()
 {
 	// ステートマネージャー生成
 	stateManager_ = std::make_unique<GameStateManager>();
+	stateManager_->Initialize(this);
 
 	// 各状態を登録
 	stateManager_->RegisterState("GameStart", std::make_unique<GameStartState>(this));
 	stateManager_->RegisterState("GamePlay", std::make_unique<GamePlayState>(this));
 	stateManager_->RegisterState("GameOver", std::make_unique<GameOverState>(this));
 	stateManager_->RegisterState("GameClear", std::make_unique<GameClearState>(this));
+	stateManager_->RegisterState("BossIntro", std::make_unique<BossIntroState>(this));
 
 	// 初期状態をゲームスタートに設定
 	stateManager_->ChangeState("GameStart");
+}
+
+void GamePlayScene::LoadNextFloor()
+{
+	// 次ステージへ
+	currentFloor_++;
+
+	// 前ステージデータのクリア
+	enemyManager_->Clear();
+	obstacleManager_->Clear();
+	teleporterManager_->Clear();
+	eventManager_->Clear();
+	powerGeneratorManager_->Clear();
+
+	// 次ステージデータの読み込み
+	std::string stagePath = "resources/Stages/stage" + std::to_string(currentFloor_) + ".json";
+	loader_->LoadFromFile(stagePath);
+
+	// 各マネージャーの再初期化
+	enemyManager_->Initialize(loader_->GetAllDatas(), player_.get());
+	obstacleManager_->Initialize(loader_->GetAllDatas());
+	teleporterManager_->Initialize(loader_->GetAllDatas());
+	eventManager_->Initialize(loader_->GetAllDatas());
+	powerGeneratorManager_->Initialize(loader_->GetAllDatas());
+
+	// プレイヤー位置を設定
+	player_->SetTranslate(loader_->GetDataByTag("PLAYER").translate);
 }
