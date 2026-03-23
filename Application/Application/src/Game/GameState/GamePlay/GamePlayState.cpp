@@ -63,7 +63,7 @@ void GamePlayState::Update() {
 
 	FadeTransition::GetInstance()->Update();
 
-	/*WaypointManager::GetInstance()->Update();*/
+	WaypointManager::GetInstance()->Update();
 }
 
 void GamePlayState::Draw() {
@@ -77,7 +77,7 @@ void GamePlayState::Draw() {
 
 	BulletManager::GetInstance()->Draw();
 
-	/*WaypointManager::GetInstance()->Draw();*/
+	WaypointManager::GetInstance()->Draw();
 }
 
 void GamePlayState::DrawShadow() {

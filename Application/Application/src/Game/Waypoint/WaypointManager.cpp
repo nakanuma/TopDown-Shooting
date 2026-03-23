@@ -14,8 +14,17 @@ WaypointManager* WaypointManager::GetInstance() {
 	return &instance;
 }
 
-void WaypointManager::Initialize() {
+void WaypointManager::Initialize(const std::vector<Loader::TransformData>& datas) {
 	waypoints_.clear();
+
+	// データからウェイポイント配置範囲を探索して保存
+	for (const auto& data : datas) {
+		if (data.tag == "WAYPOINT_BOTTOMLEFT") {
+			bottomLeft_ = data.translate;
+		} else if (data.tag == "WAYPOINT_TOPRIGHT") {
+			topRight_ = data.translate;
+		}
+	}
 
 	uint32_t waypointID = 0; // カウント
 
@@ -23,8 +32,8 @@ void WaypointManager::Initialize() {
 	float spacing = kMaxDistance;
 
 	// 縦横のサイズを計算
-	uint32_t numX = static_cast<uint32_t>(std::floor((kTopRight.x - kBottomLeft.x) / spacing)) + 1;
-	uint32_t numZ = static_cast<uint32_t>(std::floor((kTopRight.z - kBottomLeft.z) / spacing)) + 1;
+	uint32_t numX = static_cast<uint32_t>(std::floor((topRight_.x - bottomLeft_.x) / spacing)) + 1;
+	uint32_t numZ = static_cast<uint32_t>(std::floor((topRight_.z - bottomLeft_.z) / spacing)) + 1;
 
 	// 生成時の衝突判定を行うコライダータグ
 	std::unordered_set<std::string> checkTags = {"Obstacle"};
@@ -32,9 +41,9 @@ void WaypointManager::Initialize() {
 	for (uint32_t x = 0; x < numX; ++x) {
 		for (uint32_t z = 0; z < numZ; ++z) {
 			Cygnus::Float3 pos;
-			pos.x = kBottomLeft.x + x * spacing;
+			pos.x = bottomLeft_.x + x * spacing;
 			pos.y = 1.0;
-			pos.z = kBottomLeft.z + z * spacing;
+			pos.z = bottomLeft_.z + z * spacing;
 
 			// 衝突していたら生成スキップ
 			if (Cygnus::CollisionManager::GetInstance()->CheckSphereCollisionWithTag(pos, kWaypointRadius, checkTags)) {

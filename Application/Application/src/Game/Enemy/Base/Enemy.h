@@ -129,7 +129,7 @@ protected:
 	/// 障害物との押し戻し処理
 	/// </summary>
 	/// <param name="other"></param>
-	void ResolveObstacleCollision(Cygnus::Collider* other);
+	void ResolveObstacleCollision(Cygnus::Collider* other, Cygnus::Transform& targetTransform);
 
 	/// <summary>
 	/// 発見時の共通処理

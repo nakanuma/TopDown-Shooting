@@ -1510,5 +1510,53 @@
             2.0
         ],
         "pair_id": "EMPTY"
+    },
+    {
+        "tag": "WAYPOINT_BOTTOMLEFT",
+        "location": [
+            0.0,
+            -36.0,
+            2.0
+        ],
+        "rotation": [
+            89.999995674289,
+            -0.0,
+            -180.00000500895632
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "colliderSize": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "pair_id": "EMPTY"
+    },
+    {
+        "tag": "WAYPOINT_TOPRIGHT",
+        "location": [
+            72.0,
+            84.0,
+            2.0
+        ],
+        "rotation": [
+            89.999995674289,
+            -0.0,
+            -180.00000500895632
+        ],
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "colliderSize": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "pair_id": "EMPTY"
     }
 ]

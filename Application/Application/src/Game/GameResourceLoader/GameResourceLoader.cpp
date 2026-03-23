@@ -45,8 +45,8 @@ void GameResourceLoader::Initialize() {
 	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 
 	// カーソル非表示 + フルスクリーン化
-	ShowCursor(FALSE);
-	Cygnus::Window::ToggleFullscreen();
+	/*ShowCursor(FALSE);
+	Cygnus::Window::ToggleFullscreen();*/
 }
 
 void GameResourceLoader::LoadAllModelData() {

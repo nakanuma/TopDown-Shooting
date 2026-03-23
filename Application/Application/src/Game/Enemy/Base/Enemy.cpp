@@ -46,7 +46,7 @@ void Enemy::ApplyDamage(int32_t damage)
 	}
 }
 
-void Enemy::ResolveObstacleCollision(Cygnus::Collider* other)
+void Enemy::ResolveObstacleCollision(Cygnus::Collider* other, Cygnus::Transform& targetTransform)
 {
 	Cygnus::AABBCollider* myAABB = dynamic_cast<Cygnus::AABBCollider*>(collider_.get());
 	Cygnus::AABBCollider* otherAABB = dynamic_cast<Cygnus::AABBCollider*>(other);
@@ -56,7 +56,7 @@ void Enemy::ResolveObstacleCollision(Cygnus::Collider* other)
 		// 押し戻しベクトル取得
 		Cygnus::Float3 pushVec = myAABB->GetPushBackVector(*otherAABB);
 		// 位置を補正
-		objectEnemy_->transform_.translate_ += pushVec;
+		targetTransform.translate_ += pushVec;
 
 		// コライダーも更新しておく
 		Cygnus::Float3 currentMin = myAABB->GetMin();

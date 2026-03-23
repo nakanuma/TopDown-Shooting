@@ -128,7 +128,7 @@ void GamePlayScene::Initialize() {
 	// ウェイポイント初期化
 	obstacleManager_->Update(player_->GetTranslate()); // レイキャストで障害物のコライダーが必要になるためここで一度更新しておく
 	Cygnus::CollisionManager::GetInstance()->Update();         // 障害物のコライダーが未登録状態のためここで一度更新しておく
-	WaypointManager::GetInstance()->Initialize();
+	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 
 	// シャドウマップ生成
 	shadowMapHandle_ = Cygnus::ShadowMapManager::GetInstance()->CreateShadowMap(Cygnus::Window::GetWidth(), Cygnus::Window::GetHeight());
@@ -361,7 +361,6 @@ void GamePlayScene::Debug() {
 	ImGui::End();
 
 	stateManager_->Debug();
-
 	stageManager_->Debug();
 #endif
 }
@@ -419,6 +418,7 @@ void GamePlayScene::LoadNextFloor()
 	teleporterManager_->Clear();
 	eventManager_->Clear();
 	powerGeneratorManager_->Clear();
+	WaypointManager::GetInstance()->Clear();
 
 	// 次ステージデータの読み込み
 	std::string stagePath = "resources/Stages/stage" + std::to_string(currentFloor_) + ".json";
@@ -430,6 +430,7 @@ void GamePlayScene::LoadNextFloor()
 	teleporterManager_->Initialize(loader_->GetAllDatas());
 	eventManager_->Initialize(loader_->GetAllDatas());
 	powerGeneratorManager_->Initialize(loader_->GetAllDatas());
+	WaypointManager::GetInstance()->Initialize(loader_->GetAllDatas());
 
 	// プレイヤー位置を設定
 	player_->SetTranslate(loader_->GetDataByTag("PLAYER").translate);
