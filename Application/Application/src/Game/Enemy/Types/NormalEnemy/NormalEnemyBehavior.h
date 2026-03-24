@@ -11,7 +11,7 @@
 #include <Engine/BehaviourTree/BehaviorTree.h>
 
 // ---------------------------------------------------------
-// Foward Declaration
+// Forward Declaration
 // ---------------------------------------------------------
 class NormalEnemy;
 
@@ -60,4 +60,14 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	static Cygnus::BehaviorStatus ActionMove(NormalEnemy* e, float dt);
+
+	/// <summary>
+	/// 索敵行動を行います。
+	/// </summary>
+	static Cygnus::BehaviorStatus ActionSearchLookAround(NormalEnemy* e, float dt);
+
+	/// <summary>
+	/// 経路探索を行ってプレイヤーに近づきます。
+	/// </summary>
+	static Cygnus::BehaviorStatus ActionApproachPlayer(NormalEnemy* e, float dt);
 };

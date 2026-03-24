@@ -109,6 +109,13 @@ private:
 	static constexpr float kMoveProbability = 0.7f;  /* 移動する確率（射撃時） */
 	static constexpr float kMoveMinDuration = 0.25f; /* 移動最小時間（射撃時） */
 	static constexpr float kMoveMaxDuration = 2.0f;  /* 移動最大時間（射撃時） */
+	
+	static constexpr float kSearchWaitMinTime = 1.5f;	/* 次の索敵行動までの最小待機時間 */
+	static constexpr float kSearchWaitMaxTime = 3.0f;	/* 次の索敵行動までの最大待機時間 */
+	static constexpr float kSearchRotationAngle = 1.0f;	/* 索敵時の首振り角度（ラジアン） */
+
+	static constexpr float kAttackRange = 15.0f;	/* この距離よりも近ければプレイヤーに攻撃する */
+	static constexpr float kApproachSpeed = 8.0f;	/* 攻撃範囲外の際、経路探索で移動する際の速度 */
 
 	static constexpr float kAnimationPlaybackSpeed = 0.5f; /* アニメーション再生速度 */
 
@@ -128,6 +135,9 @@ private:
 	float moveSpeed_ = 0.0f;             /* 移動速度 */
 	float moveTimer_ = 0.0f;             /* 移動残り時間 */
 	Cygnus::Float3 moveDir_ = {0, 0, 0}; /* 移動方向 */
+
+	float searchTimer_ = 0.0f;			/* 索敵行動用タイマー */
+	float searchTargetAngle_ = 0.0f;	/* 索敵時の目標角度 */
 
 	bool isWalking_ = false; /* 歩いているかどうか */
 
