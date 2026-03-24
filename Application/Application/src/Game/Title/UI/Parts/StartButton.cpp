@@ -3,6 +3,7 @@
 // Engine
 #include <TextureManager.h>
 #include <Input.h>
+#include <SoundManager.h>
 
 // Application
 #include <src/Game/Transition/FadeTransition.h>
@@ -49,6 +50,9 @@ void StartButton::Update() {
 
 	// クリック判定
 	if(isHover && Cygnus::Input::GetInstance()->IsTriggerMouse(0)) {
+		// ボタン押下音発生
+		Cygnus::SoundManager::GetInstance()->Play("title_button", false, 1.0f);
+
 		isClicked_ = true;
 	}
 

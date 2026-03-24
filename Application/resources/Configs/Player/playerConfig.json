@@ -12,5 +12,5 @@
     "overheatRecoverySpeed": 1.600000023841858,
     "overheatRecoveryThreshold": 2.5,
     "recoveryDelayThreshould": 0.5,
-    "shootingBlurMultiplier": 3.0
+    "shootingBlurMultiplier": 7.0
 }

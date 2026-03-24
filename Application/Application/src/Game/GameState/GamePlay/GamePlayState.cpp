@@ -62,8 +62,6 @@ void GamePlayState::Update() {
 	ResultStats::GetInstance()->AddTime();
 
 	FadeTransition::GetInstance()->Update();
-
-	WaypointManager::GetInstance()->Update();
 }
 
 void GamePlayState::Draw() {
@@ -76,8 +74,6 @@ void GamePlayState::Draw() {
 	scene_->GetPowerGeneratorManager()->Draw();
 
 	BulletManager::GetInstance()->Draw();
-
-	WaypointManager::GetInstance()->Draw();
 }
 
 void GamePlayState::DrawShadow() {

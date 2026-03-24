@@ -96,11 +96,11 @@ private:
 	static constexpr float kVisionRange = 20.0f;          /* 視界（扇形）の長さ */
 
 	static constexpr float kReloadTime = 2.0f;        /* リロード所要時間 */
-	static constexpr float kFirstShootDelay = 1.5f;   /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
+	static constexpr float kFirstShootDelay = 0.5f;   /* プレイヤー発見時に射撃を始めるまでの遅延時間 */
 	static constexpr int32_t kMaxMagazine = 6;        /* マガジン内最大弾数 */
 	static constexpr float kBulletSpreadAngle = 0.1f; /* 弾の拡散角 */
-	static constexpr float kShootMinInterval = 0.75f; /* 発射最小間隔 */
-	static constexpr float kShootMaxInterval = 1.5f;  /* 発射最大間隔 */
+	static constexpr float kShootMinInterval = 0.5f; /* 発射最小間隔 */
+	static constexpr float kShootMaxInterval = 1.0f;  /* 発射最大間隔 */
 
 	static constexpr float kKeepDistance = 10.0f;    /* プレイヤーとの適正距離（移動場所判定用） */
 	static constexpr float kRotationSpeed = 4.0f;    /* 回転速度（プレイヤー発見時） */
@@ -114,7 +114,7 @@ private:
 	static constexpr float kSearchWaitMaxTime = 3.0f;	/* 次の索敵行動までの最大待機時間 */
 	static constexpr float kSearchRotationAngle = 1.0f;	/* 索敵時の首振り角度（ラジアン） */
 
-	static constexpr float kAttackRange = 15.0f;	/* この距離よりも近ければプレイヤーに攻撃する */
+	static constexpr float kAttackRange = 20.0f;	/* この距離よりも近ければプレイヤーに攻撃する */
 	static constexpr float kApproachSpeed = 8.0f;	/* 攻撃範囲外の際、経路探索で移動する際の速度 */
 
 	static constexpr float kAnimationPlaybackSpeed = 0.5f; /* アニメーション再生速度 */

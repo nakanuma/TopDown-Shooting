@@ -237,13 +237,13 @@ private:
 
 	static constexpr float kAnimationPlaybackSpeed = 1.5f;              /* アニメーション再生速度 */
 
-	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	/* 銃の色（黒） */
-	static constexpr float kGunEnvironmentStrength = 0.2f;					/* 銃の環境マップ強度 */
-	static constexpr float kGunForwardOffset = 1.1f;						/* 銃の前方位置オフセット */
-	static constexpr float kGunRightOffset = 0.3f;							/* 銃の右方向位置オフセット */
+	static constexpr Cygnus::Float4 kGunColor = { 0.0f, 0.0f, 0.0f, 1.0f };	  /* 銃の色（黒） */
+	static constexpr float kGunEnvironmentStrength = 0.2f;					  /* 銃の環境マップ強度 */
+	static constexpr float kGunForwardOffset = 1.1f;						  /* 銃の前方位置オフセット */
+	static constexpr float kGunRightOffset = 0.3f;							  /* 銃の右方向位置オフセット */
 	static constexpr Cygnus::Float3 kGunEmissiveColor = { 1.0f, 0.0f, 0.0f }; /* 銃のオーバーヒート時発光色（赤） */
-	static constexpr float kGunIntensityFactor = 3.0f;                      /* 銃のオーバーヒート時の発光強度係数（倍率） */
-	static constexpr float kOverheatSmokeInterval = 0.12f;                  /* オーバーヒート時煙パーティクルの頻度 */
+	static constexpr float kGunIntensityFactor = 3.0f;                        /* 銃のオーバーヒート時の発光強度係数（倍率） */
+	static constexpr float kOverheatSmokeInterval = 0.12f;                    /* オーバーヒート時煙パーティクルの頻度 */
 
 	static constexpr float kVelocityNormalizeAdditive = 1.0f; /* 速度正規化用の加算値 */
 	static constexpr float kVelocityThreshold = 0.01f;        /* 速度判定のしきい値 */

@@ -45,8 +45,8 @@ void GameResourceLoader::Initialize() {
 	Cygnus::SkyBoxManager::GetInstance()->Initialize("skybox.dds");
 
 	// カーソル非表示 + フルスクリーン化
-	/*ShowCursor(FALSE);
-	Cygnus::Window::ToggleFullscreen();*/
+	ShowCursor(FALSE);
+	/*Cygnus::Window::ToggleFullscreen();*/
 }
 
 void GameResourceLoader::LoadAllModelData() {
@@ -317,4 +317,6 @@ void GameResourceLoader::LoadAllSoundData() {
 	soundManager->Load("resources/Sounds/hit_hard_enemy.wav", "hit_hard_enemy");
 	// 障害物ヒット音
 	soundManager->Load("resources/Sounds/hit_obstacle.wav", "hit_obstacle");
+	// タイトルのボタン押下音
+	soundManager->Load("resources/Sounds/title_button.wav", "title_button");
 }
