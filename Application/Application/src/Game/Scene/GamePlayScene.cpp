@@ -165,7 +165,7 @@ void GamePlayScene::Update() {
 	// フラグが立ったら次ステージ用にリロードを実行（Clear時安全のためUpdateの最初に実行）
 	if(needsNewFloorLoad_) {
 		LoadNextFloor();
-		stageManager_->PrepareNextState(currentFloor_); // ロード後にステージ設定更新
+		stageManager_->PrepareNextStage(currentFloor_); // ロード後にステージ設定更新
 		needsNewFloorLoad_ = false;
 	}
 

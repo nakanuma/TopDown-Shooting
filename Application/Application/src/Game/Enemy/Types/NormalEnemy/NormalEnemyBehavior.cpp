@@ -382,10 +382,6 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionApproachPlayer(NormalEnemy* e,
 	Waypoint* nextWP = path[1]; // [0]は敵の位置なので[1]が次に向かう目標ウェイポイントになる
 	Cygnus::Float3 targetPos = nextWP->GetPosition();
 
-	if(path.size() > 2) { // 2個先のウェイポイントがある場合、角を滑らかにするために補間を行う
-		targetPos = (path[1]->GetPosition() + path[2]->GetPosition()) * 0.5f;
-	}
-
 	Cygnus::Float3 diff = targetPos - e->objectEnemyAnim_->GetTranslate();
 	diff.y = 0.0f; // 水平移動
 
