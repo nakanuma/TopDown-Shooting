@@ -4,6 +4,7 @@
 #include <src/Game/Enemy/EnemyManager.h>
 #include <src/Game/PowerGenerator/PowerGeneratorManager.h>
 #include <src/Game/Teleporter/TeleporterManager.h>
+#include <src/Game/Transition/FadeTransition.h>
 
 void StageManager::Initialize(EnemyManager* enemyMng, PowerGeneratorManager* powerGeneratorMng, TeleporterManager* teleporterMng) {
 	enemyManager_ = enemyMng;
@@ -15,12 +16,12 @@ void StageManager::Initialize(EnemyManager* enemyMng, PowerGeneratorManager* pow
 	missionLogo_->Initialize();
 }
 
-void StageManager::PrepareNextState(int32_t floor) {
+void StageManager::PrepareNextStage(int32_t floor) {
 	currentFloor_ = floor; // 階層を設定
 	isObjectiveCleared_ = false;
 
 	// 階層毎にタイプを設定
-	if(currentFloor_ == 1) {
+	if (currentFloor_ == 1) {
 		currentStageType_ = StageType::killAllEnemies;
 	} else if (currentFloor_ == 2) {
 		currentStageType_ = StageType::DestroyAllGeneratos;
@@ -28,8 +29,8 @@ void StageManager::PrepareNextState(int32_t floor) {
 		currentStageType_ = StageType::BossBattle;
 	}
 
-	// ステージ開始ロゴのアニメーション開始
-	missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_);
+	// ステージ開始ロゴのアニメーション開始（フェードが終了したら）
+	missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_, 0.5f); // フェードと被らないよう遅延時間を設定
 }
 
 void StageManager::Update() {
@@ -37,27 +38,27 @@ void StageManager::Update() {
 	missionLogo_->Update();
 
 	// 目標達成済みなら更新スキップ
-	if(isObjectiveCleared_) return;
+	if (isObjectiveCleared_) return;
 
 	bool cleared = false;
 
-	switch(currentStageType_) {
+	switch (currentStageType_) {
 	case StageType::killAllEnemies:
 		// 全ての敵が撃破されていたらクリア判定
-		if(enemyManager_->IsAllEnemiesDead()) cleared = true;
+		if (enemyManager_->IsAllEnemiesDead()) cleared = true;
 		break;
 	case StageType::DestroyAllGeneratos:
 		// 全ての発電機が破壊されていたらクリア判定
-		if(powerGeneratorManager_->IsAllDestroyed()) cleared = true;
+		if (powerGeneratorManager_->IsAllDestroyed()) cleared = true;
 		break;
 	case StageType::BossBattle:
 		// ボスが死亡したらクリア判定
-		if(enemyManager_->GetBoss()->IsDying()) cleared = true;
+		if (enemyManager_->GetBoss()->IsDying()) cleared = true;
 		break;
 	}
 
 	// クリア判定
-	if(cleared) {
+	if (cleared) {
 		isObjectiveCleared_ = true; // 目標達成したことを記録
 		teleporterManager_->EnableNextTeleporter(); // 次へのテレポーターを有効化
 
@@ -80,16 +81,16 @@ void StageManager::Debug() {
 
 	// ステージタイプ表示
 	const char* typeStr = "Unknown";
-	switch(currentStageType_) {
-		case StageType::killAllEnemies: typeStr = "KillAllEnemies"; break;
-		case StageType::DestroyAllGeneratos: typeStr = "DestroyAllGeneratos"; break;
-		case StageType::BossBattle: typeStr = "BossBattle"; break;
+	switch (currentStageType_) {
+	case StageType::killAllEnemies: typeStr = "KillAllEnemies"; break;
+	case StageType::DestroyAllGeneratos: typeStr = "DestroyAllGeneratos"; break;
+	case StageType::BossBattle: typeStr = "BossBattle"; break;
 	}
 	ImGui::Text("CurrentStageType : %s", typeStr);
 
 	// 目標達成フラグ
 	ImGui::Checkbox("isObjectiveCleared", &isObjectiveCleared_);
-	
+
 	ImGui::End();
 #endif
 }

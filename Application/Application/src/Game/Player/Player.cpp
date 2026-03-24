@@ -100,7 +100,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 
 	SetConfigPath("Player/playerConfig.json"); // ファイルパス設定
 
-#ifdef USE_IMGUI
 	RegisterParam("maxHP", &maxHP_);
 
 	AddSeparator();
@@ -121,7 +120,6 @@ void Player::Initialize(const Loader::TransformData& data) {
 	RegisterParam("recoveryDelayThreshould", &recoveryDelayThreshold_, 0.01f);
 	RegisterParam("coolingAccelerationRate", &coolingAccelerationRate_, 0.01f);
 	RegisterParam("overheatRecoveryThreshold", &overheatRecoveryThreshold_, 0.01f);
-#endif
 
 	InitConfig(); // 初回読み込み
 }

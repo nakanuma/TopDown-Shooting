@@ -48,7 +48,7 @@ public:
 	/// ステージ開始時の設定を行います。（ステージ移行時に呼ぶ）
 	/// </summary>
 	/// <param name="floor"></param>
-	void PrepareNextState(int32_t floor);
+	void PrepareNextStage(int32_t floor);
 
 	/// <summary>
 	/// 更新処理を行います。

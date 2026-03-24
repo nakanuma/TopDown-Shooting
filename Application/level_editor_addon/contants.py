@@ -108,4 +108,17 @@ TAG_INFO = {
         "location": (0, 0, 3),
         "colliderSize": (2.0, 2.0, 3.0),
     },
+    "WAYPOINT_BOTTOMLEFT": {
+        "name": "Waypoint_BottomLeft",
+        "model": "Models/Waypoint/Waypoint.obj",
+        "location": (0, 0, 2),
+        "colliderSize": (1.0, 1.0, 1.0),
+    }
+    ,
+    "WAYPOINT_TOPRIGHT": {
+        "name": "Waypoint_TopRight",
+        "model": "Models/Waypoint/Waypoint.obj",
+        "location": (0, 0, 2),
+        "colliderSize": (1.0, 1.0, 1.0),
+    }
 }

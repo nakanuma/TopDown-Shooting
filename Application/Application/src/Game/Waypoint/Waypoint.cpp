@@ -15,6 +15,4 @@ Waypoint::Waypoint(const std::string& name, const Cygnus::Float3& pos, Cygnus::M
 
 void Waypoint::Update() { objectSphere_->UpdateMatrix(); }
 
-void Waypoint::Draw() {
-	objectSphere_->Draw();
-}
+void Waypoint::Draw() { objectSphere_->Draw(); }

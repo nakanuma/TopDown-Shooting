@@ -46,7 +46,7 @@ public:
 	/// </summary>
 	/// <param name="state">状態（開始/クリア）</param>
 	/// <param name="type">ステージの目標</param>
-	void Start(AnimationState state, StageType type);
+	void Start(AnimationState state, StageType type, float delayTime = 0.0f);
 
 	// =========================================================
 	// Accessor
@@ -64,6 +64,11 @@ private:
 	// =========================================================
 	static constexpr float kDisplayDuration = 2.0f;	/* 表示時間 */
 
+	static constexpr float kFadeDuration = 0.5f;	/* フェードにかける時間 */
+	static constexpr float kSlideDistance = 50.0f;	/* アウト時のスライド距離 */
+	static constexpr float kScaleStart = 1.5f;		/* 開始時の拡大率 */
+	static constexpr Cygnus::Float2 kBasePos = {640.0f, 360.0f};	/* 初期位置 */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================
@@ -72,6 +77,10 @@ private:
 	AnimationState currentState_ = AnimationState::None;	/* 現在の状態 */
 	StageType stageType_;	/* ステージ目標 */
 	float timer_ = 0.0f;	/* タイマー */
+	float startDelayTimer_ = 0.0f;	/* 最初の遅延時間 */
+
+	Cygnus::Float2 baseSize_ = {0.0f, 0.0f};	/* 基本サイズを保持 */
+	Cygnus::Float4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};	/* 色 */
 
 	// スプライト
 	std::unique_ptr<Cygnus::Sprite> spriteKill_;	/* 目標文字スプライト（「全ての敵を倒せ」） */

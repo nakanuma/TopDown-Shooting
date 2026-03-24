@@ -47,7 +47,7 @@ public:
 	/// <summary>
 	///	ウェイポイントの初期化処理を行います。
 	/// </summary>
-	void Initialize();
+	void Initialize(const std::vector<Loader::TransformData>& datas);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。
@@ -90,6 +90,11 @@ public:
 	/// <returns>ウェイポイントのリスト</returns>
 	const std::vector<std::unique_ptr<Waypoint>>& GetWaypoints() const { return waypoints_; }
 
+	/// <summary>
+	/// クリアを行います。
+	/// </summary>
+	void Clear() { waypoints_.clear(); }
+
 private:
 	// =========================================================
 	// Constants
@@ -97,11 +102,11 @@ private:
 	static constexpr float kMaxDistance = 4.0f;     /* 隣接ノードの最大距離 */
 	static constexpr float kWaypointRadius = 0.25f; /* ウェイポイントの生成時衝突判定に使用する半径 */
 
-	static constexpr Cygnus::Float3 kBottomLeft = {0.0f, 2.0f, 0.0f};  /* ウェイポイント生成左下位置 */
-	static constexpr Cygnus::Float3 kTopRight = {70.0f, 2.0f, 120.0f}; /* ウェイポイント生成右上位置 */
-
 	// =========================================================
 	// Internal Methods
 	// =========================================================
 	std::vector<std::unique_ptr<Waypoint>> waypoints_; /* 全てのウェイポイントを格納するコンテナ */
+
+	Cygnus::Float3 bottomLeft_ = {0.0f, 0.0f, 0.0f};	/* ウェイポイント生成左下位置 */
+	Cygnus::Float3 topRight_ = { 10.0f, 0.0f, 10.0f };	/* ウェイポイント生成右上位置 */
 };

@@ -8,66 +8,100 @@
 #include <src/Game/Bullet/Manager/BulletManager.h>
 
 std::unique_ptr<Cygnus::BehaviorTree<NormalEnemy>> NormalEnemyBehavior::CreateTree(NormalEnemy* e) {
-#pragma region 攻撃時ノード（シーケンス）構築
-
-	///
-	/// LeafNode
-	///
-
-	// プレイヤーの検出判定を行うノード
+#pragma region LeafNodeの生成
+	// プレイヤーの検出判定を行う条件ノード
 	auto checkDetectNode = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([](NormalEnemy* e) -> bool { return CheckDetect(e); });
-	// プレイヤーの方を向くノード
+	
+	// プレイヤーの方を向く行動ノード
 	auto faceToPlayerNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return FaceToPlayer(e, dt); }, "FaceToPlayer");
-	// 射撃を行うノード
+	
+	// 射撃を行う行動ノード
 	auto shootNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionShoot(e, dt); }, "ActionShoot");
-	// リロードを行うノード
+	
+	// リロードを行う行動ノード
 	auto reloadNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionReload(e, dt); }, "ActionReload");
-	// 移動判定・準備を行うノード
+	
+	// 移動判定・準備を行う行動ノード
 	auto decideMoveNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionDecideMove(e, dt); }, "ActionDecideMove");
-	// 移動を行うノード
+	
+	// 戦闘中微移動を行う行動ノード
 	auto moveNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionMove(e, dt); }, "ActionMove");
+	
+	// 距離チェックを行う条件ノード
+	auto isNearPlayerNode = std::make_unique<Cygnus::ConditionNode<NormalEnemy>>([](NormalEnemy* e){
+		float dist = Cygnus::Float3::Length(e->targetPlayer_->GetTranslate() - e->GetTranslate());
+		return dist <= e->kAttackRange;
+		});
+	
+	// 接近（経路探索）を行う行動ノード
+	auto approachNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionApproachPlayer(e, dt); }, "ActionApproachPlayer");
 
-	///
-	///	CompositeNode
-	///
+	// 索敵動作を行う行動ノード
+	auto searchLookNode = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return ActionSearchLookAround(e, dt); });
+#pragma endregion
 
-	// 射撃 / リロードの選択ノード
+#pragma region 戦闘・射撃フェーズ（近距離用）
+
+	// 射撃/リロードの選択ノード
 	auto shootOrReloadNode = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
 	shootOrReloadNode->AddChild(std::move(shootNode));
 	shootOrReloadNode->AddChild(std::move(reloadNode));
 
-	// 移動判定->射撃を行うノード
+	// 移動判定をしてから射撃/リロードを行う連続ノード
 	auto moveAndAttackSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
 	moveAndAttackSequence->AddChild(std::move(decideMoveNode));
 	moveAndAttackSequence->AddChild(std::move(shootOrReloadNode));
 
-	// 移動と攻撃の並列ノード
+	// 向き合わせ + 移動 + 攻撃判定の並列ノード
 	auto combatParallelNode = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>();
 	combatParallelNode->AddChild(std::move(faceToPlayerNode));
 	combatParallelNode->AddChild(std::move(moveNode));
 	combatParallelNode->AddChild(std::move(moveAndAttackSequence));
 
-	// 常にプレイヤー発見状態を確認し、発見していれば射撃行動を行うセレクタノード
+	// プレイヤーと距離が近いなら戦闘挙動を行う連続ノード
+	auto nearAttackSequence = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
+	nearAttackSequence->AddChild(std::move(isNearPlayerNode));
+	nearAttackSequence->AddChild(std::move(combatParallelNode));
+
+#pragma endregion
+
+#pragma region 接近フェーズ（遠距離用）
+
+	// プレイヤー方向を向く行動ノード
+	auto faceToPlayerNodeForApproach = std::make_unique<Cygnus::ActionNode<NormalEnemy>>([](NormalEnemy* e, float dt) { return FaceToPlayer(e, dt); }, "FaceToPlayer");
+
+	// 向き合わせ + 移動の並列ノード
+	auto approachParallel = std::make_unique<Cygnus::ParallelNode<NormalEnemy>>();
+	approachParallel->AddChild(std::move(faceToPlayerNodeForApproach));
+	approachParallel->AddChild(std::move(approachNode));
+
+#pragma endregion
+
+#pragma region 発見時セレクター（射撃 or 接近）
+
+	// プレイヤーを発見している場合のメイン分岐
+	auto combatSelector = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
+	combatSelector->AddChild(std::move(nearAttackSequence));	// 近ければ攻撃
+	combatSelector->AddChild(std::move(approachParallel));		// 遠ければ接近
+
+	// 発見状態チェックを先頭に置く
 	auto attackNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
 	attackNode->AddChild(std::move(checkDetectNode));
-	attackNode->AddChild(std::move(combatParallelNode));
+	attackNode->AddChild(std::move(combatSelector));
 
 #pragma endregion
 
-#pragma region 索敵時ノード（シーケンス）構築
+#pragma region 索敵・ルート構築
 
+	// 索敵フェーズ
 	auto searchNode = std::make_unique<Cygnus::SequenceNode<NormalEnemy>>();
-	// TODO : 巡回・待機など索敵時の行動追加
+	searchNode->AddChild(std::move(searchLookNode));
 
-#pragma endregion
-
-#pragma region ルートノード（セレクター）構築
-
+	// ルート選択ノード
 	auto rootNode = std::make_unique<Cygnus::SelectorNode<NormalEnemy>>();
-	rootNode->AddChild(std::move(attackNode)); // 攻撃時ノード追加
-	rootNode->AddChild(std::move(searchNode)); // 索敵時ノード追加
+	rootNode->AddChild(std::move(attackNode)); // 発見中
+	rootNode->AddChild(std::move(searchNode)); // 未発見
 
-	// ツリーを作成して返す
 	return std::make_unique<Cygnus::BehaviorTree<NormalEnemy>>(std::move(rootNode));
 
 #pragma endregion
@@ -290,5 +324,74 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionMove(NormalEnemy* e, float dt)
 
 	// タイマー更新
 	e->moveTimer_ -= dt;
+	return Cygnus::BehaviorStatus::Running;
+}
+
+Cygnus::BehaviorStatus NormalEnemyBehavior::ActionSearchLookAround(NormalEnemy* e, float dt)
+{
+	e->searchTimer_ -= dt;
+
+	if(e->searchTimer_ <= 0.0f) {
+		// 一定時間ごとに、現在の向きから左右ランダムな方向を向く
+		float baseRot = e->objectEnemyAnim_->GetRotate().y;
+		float offset = Cygnus::RandomGenerator::GetInstance()->RandomValue(-0.8f, 0.8f);
+		e->searchTargetAngle_ = baseRot + offset;
+
+		// 次の回転までのインターバルを設定
+		e->searchTimer_ = Cygnus::RandomGenerator::GetInstance()->RandomValue(e->kSearchWaitMinTime, e->kSearchWaitMaxTime);
+	}
+
+	// 目標角度に向けてゆっくり回転させる
+	float current = e->objectEnemyAnim_->GetRotate().y;
+	float diff = e->searchTargetAngle_ - current;
+
+	// 最短回転補正
+	while(diff > Cygnus::PIf) diff -= (Cygnus::PIf * 2.0f);
+	while(diff < -Cygnus::PIf) diff += (Cygnus::PIf * 2.0f);
+
+	float step = 1.5f * dt;
+	if(std::abs(diff) <= step) {
+		e->objectEnemyAnim_->GetRotate().y = e->searchTargetAngle_;
+	} else {
+		e->objectEnemyAnim_->GetRotate().y += (diff > 0 ? step : -step);
+	}
+
+	// 索敵時は歩きアニメーションはオフ
+	e->isWalking_ = false;
+
+	return Cygnus::BehaviorStatus::Running;
+}
+
+Cygnus::BehaviorStatus NormalEnemyBehavior::ActionApproachPlayer(NormalEnemy* e, float dt)
+{
+	// 自身とプレイヤーに最も近いウェイポイントを取得
+	Waypoint* start = WaypointManager::GetInstance()->FindClosestWaypoint(e->objectEnemyAnim_->GetTranslate());
+	Waypoint* goal = WaypointManager::GetInstance()->FindClosestWaypoint(e->targetPlayer_->GetTranslate());
+
+	if(!start || !goal) {
+		return Cygnus::BehaviorStatus::Failure;
+	}
+
+	// 経路の計算
+	std::vector<Waypoint*> path = WaypointManager::GetInstance()->FindPath(start, goal);
+	if(path.size() < 2) { // 経路が短すぎる場合には終了
+		return Cygnus::BehaviorStatus::Success;
+	}
+
+	// 移動処理
+	Waypoint* nextWP = path[1]; // [0]は敵の位置なので[1]が次に向かう目標ウェイポイントになる
+	Cygnus::Float3 targetPos = nextWP->GetPosition();
+
+	Cygnus::Float3 diff = targetPos - e->objectEnemyAnim_->GetTranslate();
+	diff.y = 0.0f; // 水平移動
+
+	float distSq = Cygnus::Float3::LengthSq(diff);
+	if(distSq > 0.001f) { // 極端に近い場合には移動スキップ
+		Cygnus::Float3 dir = Cygnus::Float3::Normalize(diff);
+
+		e->objectEnemyAnim_->GetTranslate() += dir * e->kApproachSpeed * dt;
+		e->isWalking_ = true;
+	}
+
 	return Cygnus::BehaviorStatus::Running;
 }

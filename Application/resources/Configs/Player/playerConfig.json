@@ -3,7 +3,7 @@
     "dashCoolDown": 1.5,
     "dashDuration": 0.20000000298023224,
     "dashSpeedMultiplier": 3.0,
-    "fireCooldown": 0.20000000298023224,
+    "fireCooldown": 0.25,
     "maxHP": 100,
     "maxRandomAngle": 0.019999999552965164,
     "moveSpeed": 0.25,
@@ -12,5 +12,5 @@
     "overheatRecoverySpeed": 1.600000023841858,
     "overheatRecoveryThreshold": 2.5,
     "recoveryDelayThreshould": 0.5,
-    "shootingBlurMultiplier": 3.0
+    "shootingBlurMultiplier": 7.0
 }

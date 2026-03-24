@@ -266,11 +266,8 @@ void TitleScene::Draw() {
 
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 
-	if (ImGui::Button("GAMEPLAY")) {
-		Cygnus::SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	}
-	if (ImGui::Button("RESULT")) {
-		Cygnus::SceneManager::GetInstance()->ChangeScene("RESULT");
+	if (ImGui::Button("title_button")) {
+		Cygnus::SoundManager::GetInstance()->Play("title_button", false, 1.0f);
 	}
 
 	ImGui::DragFloat3("camera.translate", &camera_->transform_.translate_.x, 0.01f);

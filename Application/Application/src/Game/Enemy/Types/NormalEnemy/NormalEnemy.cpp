@@ -122,14 +122,14 @@ void NormalEnemy::OnCollision(Cygnus::Collider* other) {
 	// 敵共通の衝突時処理
 	Enemy::OnCollision(other);
 
+	// vs PlayerBullet;
 	if (other->GetTag() == "PlayerBullet") {
-		OnDetected();
+		OnDetected(); // プレイヤー発見 + 初回射撃遅延時間を設定
 	}
 
-	// vs Obstacle
-	if (other->GetTag() == "Obstacle") {
-		// 障害物との押し戻し処理
-		ResolveObstacleCollision(other);
+	// vs Obstacle;
+	if(other->GetTag() == "Obstacle") {
+		ResolveObstacleCollision(other, objectEnemyAnim_->GetTransform());
 	}
 }
 
