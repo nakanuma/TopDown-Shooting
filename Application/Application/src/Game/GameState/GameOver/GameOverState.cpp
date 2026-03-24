@@ -3,6 +3,7 @@
 // Application
 #include <src/Game/Scene/GamePlayScene.h>
 #include <src/Game/Transition/FadeTransition.h>
+#include <src/Game/Enemy/Types/BossEnemy/BossEnemy.h>
 
 GameOverState::GameOverState(GamePlayScene* scene) { scene_ = scene; }
 
@@ -65,6 +66,14 @@ bool GameOverState::CanTransition() const {
 
 bool GameOverState::IsPlayerDead() const { return scene_->GetPlayer()->IsDead(); }
 
-bool GameOverState::IsBossDying() const { return scene_->GetEnemyManager()->GetBoss()->IsDying(); }
+bool GameOverState::IsBossDying() const { 
+	// ボスがいなければfalseを返す
+	BossEnemy* boss = scene_->GetEnemyManager()->GetBoss();
+	if(!boss) {
+		return false;
+	}
+
+	return scene_->GetEnemyManager()->GetBoss()->IsDying(); 
+}
 
 bool GameOverState::ShouldShowBossIntro() const { return false; }

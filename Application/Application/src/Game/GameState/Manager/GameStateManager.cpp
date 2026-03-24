@@ -51,11 +51,11 @@ void GameStateManager::Update() {
 				ChangeState("GameOver");
 			}
 			// ゲームプレイ -> ゲームクリア
-			if (GetCurrentState()->IsBossDying()) {
+			else if (GetCurrentState()->IsBossDying()) {
 				ChangeState("GameClear");
 			}
 			// ゲームプレイ -> ボス登場演出
-			if (GetCurrentState()->ShouldShowBossIntro()) {
+			else if (GetCurrentState()->ShouldShowBossIntro()) {
 				ChangeState("BossIntro");
 			}
 		}
