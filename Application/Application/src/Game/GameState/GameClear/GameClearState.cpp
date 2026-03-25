@@ -78,6 +78,10 @@ void GameClearState::DrawShadowSkinning() {
 void GameClearState::DrawUI() { 
 	gameClearSequence_->DrawUI(); 
 
+	if (gameClearSequence_->IsFinished()) {
+		scene_->GetPlayer()->DrawUI();
+	}
+
 	FadeTransition::GetInstance()->Draw();
 }
 
