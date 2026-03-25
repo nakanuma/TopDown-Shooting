@@ -123,6 +123,8 @@ private:
 	static constexpr float kGunForwardOffset = 1.8f;  /* 銃の前方位置オフセット */
 	static constexpr float kGunUpOffset = 0.9f;       /* 銃の上方向位置オフセット */
 
+	static constexpr float kMuzzleFlashForwardOffset = 0.4f; /* マズルフラッシュ発生位置の前方オフセット */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================

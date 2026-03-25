@@ -1,5 +1,8 @@
 #include "NormalEnemyBehavior.h"
 
+// Engine
+#include <ParticleEffect/ParticleEffectManager.h>
+
 // Application
 #include <src/Game/Enemy/Types/NormalEnemy/NormalEnemy.h>
 #include <src/Game/Player/Player.h>
@@ -223,6 +226,12 @@ Cygnus::BehaviorStatus NormalEnemyBehavior::ActionShoot(NormalEnemy* e, float dt
 	newBullet->Initialize(e->objectGun_->transform_.translate_, direction, &Cygnus::ModelManager::GetInstance()->GetModel("Bullet"));
 	BulletManager::GetInstance()->AddBullet(std::move(newBullet));
 
+	// パーティクル発生
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("shellEjection", e->objectGun_->transform_.translate_, e->kShellEjectionCount, {0.0f, 0.0f, 0.0f}, e->objectGun_->transform_.rotate_.y); // 薬莢排出
+	Cygnus::Float3 forward = {sinf(e->objectGun_->transform_.rotate_.y), 0.0f, cosf(e->objectGun_->transform_.rotate_.y)};                                              // 前方向ベクトル
+	Cygnus::ParticleEffectManager::GetInstance()->Emit("muzzleFlash", e->objectGun_->transform_.translate_ + (forward * e->kMuzzleFlashForwardOffset), e->kMuzzleFlashCount); // マズルフラッシュ
+
+	// マガジンの弾を減らす
 	e->magazine_--;
 
 	// 次までの射撃間隔時間を設定
