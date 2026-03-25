@@ -25,6 +25,7 @@ public:
 		Cygnus::Float3 rotate;				/* 回転（Euler） */
 		Cygnus::Float3 scale;				/* スケール */
 
+		bool isCollider;                    /* コライダー生成フラグ */
 		Cygnus::Float3 colliderSize;		/* コライダーサイズ */
 		std::string pairID;					/* ペアID（string） */
 	};

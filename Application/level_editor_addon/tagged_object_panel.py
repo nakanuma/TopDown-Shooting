@@ -25,5 +25,32 @@ class OBJECT_PT_tagged_object_panel(bpy.types.Panel):
             op.tag = tag
 
         layout.separator()
+
+        # コライダー一括設定
+        col = layout.column(align=True)
+        col.label(text="Collider Settings (Selected):")
+
+        row = col.row(align=True)
+        # コライダーONボタン
+        op_on = row.operator("object.set_collider_property", text="Collider ON")
+        op_on.is_collider = True
+
+        # コライダーOFFボタン
+        op_off = row.operator("object.set_collider_property", text='OFF')
+        op_off.is_collider = False
+
+        # 現在の選択物の状態を表示
+        if context.active_object and "is_collider" in context.active_object:
+            val = context.active_object["is_collider"]
+            state = "ON" if val == 1 else "OFF"
+            col.label(text=f"Current Active: {state}")
+
+        layout.separator()
+        col = layout.column(align=True)
+        col.label(text="Debug View")
+        # 可視化ボタン
+        op = col.operator("object.visualize_colliders", text="Highlight Non-Colliders")
+
+        layout.separator()
         layout.operator("object.import_tagged_objects_json", text="Import JSON")
         layout.operator("object.export_tagged_objects_json", text="Export JSON")

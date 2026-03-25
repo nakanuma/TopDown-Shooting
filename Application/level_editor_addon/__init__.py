@@ -15,6 +15,8 @@ bl_info = {
 
 import bpy
 from .add_object_operator import OBJECT_OT_add_tagged_object
+from .add_object_operator import OBJECT_OT_set_collider_property
+from .add_object_operator import OBJECT_OT_visualize_colliders
 from .export_json_operator import OBJECT_OT_export_tagged_objects
 from .import_json_operator import OBJECT_OT_import_tagged_objects
 from .tagged_object_panel import OBJECT_PT_tagged_object_panel
@@ -24,9 +26,11 @@ from .tagged_object_panel import OBJECT_PT_tagged_object_panel
 # ---------------------------
 classes = (
     OBJECT_OT_add_tagged_object,
+    OBJECT_OT_set_collider_property,
+    OBJECT_OT_visualize_colliders,
     OBJECT_OT_export_tagged_objects,
     OBJECT_OT_import_tagged_objects,
-    OBJECT_PT_tagged_object_panel
+    OBJECT_PT_tagged_object_panel,
 )
 
 def register():

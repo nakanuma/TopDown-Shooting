@@ -33,10 +33,15 @@ void Loader::LoadFromFile(const std::string& filepath) {
 		auto scl = item.value("scale", std::vector<float>{kDefaultScale.x, kDefaultScale.y, kDefaultScale.z});
 		auto col = item.value("colliderSize", std::vector<float>{kDefaultColliderSize.x, kDefaultColliderSize.y, kDefaultColliderSize.z});
 
-		// Blender -> Engine への座標変換
+		//Blender -> Engine への座標変換
 		data.translate = ConvertToEngineCoords(loc);
 		data.rotate = Cygnus::Float3(Cygnus::DegToRad(rot[kBlenderIndexX]), Cygnus::DegToRad(rot[kBlenderIndexY]), Cygnus::DegToRad(rot[kBlenderIndexZ]));
 		data.scale = ConvertToEngineCoords(scl);
+
+		// コライダー生成フラグ読み込み
+		data.isCollider = item.value("is_collider", 1) != 0;
+
+		// コライダーサイズ読み込み
 		data.colliderSize = ConvertToEngineCoords(col);
 
 		// ペアID読み込み
