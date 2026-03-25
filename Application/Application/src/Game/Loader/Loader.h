@@ -17,6 +17,13 @@
 class Loader {
 public:
 	/// <summary>
+	/// ステージの設定データ
+	/// </summary>
+	struct StageConfig {
+		int stageType = 0; // ステージの目標（全ての敵を撃破、全ての発電機を破壊...など）
+	};
+
+	/// <summary>
 	/// ステージオブジェクト1つ分の変換情報データ
 	/// </summary>
 	struct TransformData {
@@ -54,6 +61,12 @@ public:
 	/// <returns>トランスフォームデータ</returns>
 	TransformData GetDataByTag(const std::string& tag) const;
 
+	/// <summary>
+	/// ステージ設定を取得します。
+	/// </summary>
+	/// <returns></returns>
+	const StageConfig& GetStageConfig() const { return stageConfig_; }
+
 private:
 	// =========================================================
 	// Internal Methods
@@ -83,4 +96,5 @@ private:
 	// Member Variables
 	// =========================================================
 	std::vector<TransformData> datas_;		/* 全データのコンテナ */
+	StageConfig stageConfig_;          /* ステージの設定データ */
 };

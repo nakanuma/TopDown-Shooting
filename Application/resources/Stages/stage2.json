@@ -1,5 +1,9 @@
 [
     {
+        "tag": "STAGE_CONFIG",
+        "stage_type": "DESTROY_GENERATORS"
+    },
+    {
         "tag": "FENCE",
         "location": [
             0.0,

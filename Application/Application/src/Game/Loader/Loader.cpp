@@ -7,6 +7,9 @@
 // Externals
 #include <externals/nlohmann/json.hpp>
 
+// Application
+#include <src/Game/Stage/StageManager.h>
+
 void Loader::LoadFromFile(const std::string& filepath) {
 	std::ifstream file(filepath);
 	// ファイルを開けなかったらエラーを出力して終了
@@ -23,9 +26,27 @@ void Loader::LoadFromFile(const std::string& filepath) {
 	datas_.clear();
 
 	for (const auto& item : j) {
+		std::string tag = item.value("tag", "");
+
+		/* ステージ設定読み込み */
+		if (tag == "STAGE_CONFIG") {
+			std::string typeStr = item.value("stage_type", "KILL_ALL");
+
+			// 読み込んだ文字に応じてステージ目標を設定
+			if (typeStr == "KILL_ALL") {
+				stageConfig_.stageType = static_cast<int>(StageType::killAllEnemies);
+			} else if (typeStr == "DESTROY_GENERATORS") {
+				stageConfig_.stageType = static_cast<int>(StageType::DestroyAllGeneratos);
+			} else if (typeStr == "BOSS_BATTLE") {
+				stageConfig_.stageType = static_cast<int>(StageType::BossBattle);
+			}
+
+			continue;
+		}
+
+		/* 通常オブジェクト読み込み */
 		Loader::TransformData data;
-		// タグ読み込み
-		data.tag = item.value("tag", "");
+		data.tag = tag;
 
 		// 各種パラメータ読み込み
 		auto loc = item.value("location", std::vector<float>{kDefaultLocation.x, kDefaultLocation.y, kDefaultLocation.z});

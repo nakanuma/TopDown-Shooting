@@ -1,5 +1,9 @@
 [
     {
+        "tag": "STAGE_CONFIG",
+        "stage_type": "KILL_ALL"
+    },
+    {
         "tag": "FENCE",
         "location": [
             12.0,

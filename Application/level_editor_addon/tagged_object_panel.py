@@ -13,6 +13,15 @@ class OBJECT_PT_tagged_object_panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
+        
+        # ステージ全体設定
+        box = layout.box()
+        box.label(text="Global Stage Settings");
+        # シーンに登録したEnumPropertyを表示
+        box.prop(scene, "stage_type_enum", expand=True)
+
+        layout.separator()
         layout.label(text="Add Tagged Objects:")
 
         # 区分ごとにセパレーターを挿入

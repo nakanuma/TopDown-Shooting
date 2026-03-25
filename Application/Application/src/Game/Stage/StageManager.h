@@ -48,7 +48,9 @@ public:
 	/// ステージ開始時の設定を行います。（ステージ移行時に呼ぶ）
 	/// </summary>
 	/// <param name="floor"></param>
-	void PrepareNextStage(int32_t floor);
+	/// <param name="typeIndex"></param>
+	/// <param name="startLogoAnim">ロゴのアニメーション再生を開始するかどうか（初回は特殊演出があるので呼ばない）</param>
+	void PrepareNextStage(int32_t floor, int32_t typeIndex, bool startLogoAnim);
 
 	/// <summary>
 	/// 更新処理を行います。

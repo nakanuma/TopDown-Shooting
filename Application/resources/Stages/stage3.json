@@ -1,5 +1,9 @@
 [
     {
+        "tag": "STAGE_CONFIG",
+        "stage_type": "BOSS_BATTLE"
+    },
+    {
         "tag": "FENCE",
         "location": [
             0.0,

@@ -34,11 +34,26 @@ classes = (
 )
 
 def register():
+    # ステージタイプの選択肢をシーンプロパティとして登録
+    bpy.types.Scene.stage_type_enum = bpy.props.EnumProperty(
+        name="Stage Type",
+        description="ステージ目標を選択します。",
+        items=[
+            ('KILL_ALL', "Kill All Enemies", "敵を全滅させる"),
+            ('DESTROY_GENERATORS', "Destroy All Generators", "全ての発電機を破壊する"),
+            ('BOSS_BATTLE', "Boss Battle", "ボスを撃破する"),
+        ],
+        default='KILL_ALL'
+    )
+
     for cls in classes:
         bpy.utils.register_class(cls)
     print("エディタを有効化しました")
 
 def unregister():
+    # 登録解除
+    del bpy.types.Scene.stage_type_enum
+
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
     print("エディタを無効化しました")

@@ -143,6 +143,8 @@ void GamePlayScene::Initialize() {
 	// ステージ状態監視クラスの初期化
 	stageManager_ = std::make_unique<StageManager>();
 	stageManager_->Initialize(enemyManager_.get(), powerGeneratorManager_.get(), teleporterManager_.get());
+	int initialType = loader_->GetStageConfig().stageType;
+	stageManager_->PrepareNextStage(currentFloor_, initialType, false); // 初回は特殊開始演出があるためロゴアニメーションは行わない
 
 	// ポーズメニュー生成
 	pauseMenu_ = std::make_unique<PauseMenu>();
@@ -165,7 +167,6 @@ void GamePlayScene::Update() {
 	// フラグが立ったら次ステージ用にリロードを実行（Clear時安全のためUpdateの最初に実行）
 	if(needsNewFloorLoad_) {
 		LoadNextFloor();
-		stageManager_->PrepareNextStage(currentFloor_); // ロード後にステージ設定更新
 		needsNewFloorLoad_ = false;
 	}
 
@@ -423,6 +424,9 @@ void GamePlayScene::LoadNextFloor()
 	// 次ステージデータの読み込み
 	std::string stagePath = "resources/Stages/stage" + std::to_string(currentFloor_) + ".json";
 	loader_->LoadFromFile(stagePath);
+	// 読み込んだステージ設定を適用
+	int type = loader_->GetStageConfig().stageType;
+	stageManager_->PrepareNextStage(currentFloor_, type, true);
 
 	// 各マネージャーの再初期化
 	enemyManager_->Initialize(loader_->GetAllDatas(), player_.get());
