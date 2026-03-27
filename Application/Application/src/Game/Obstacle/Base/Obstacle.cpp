@@ -12,20 +12,20 @@ void Obstacle::Initialize(
 
 	Cygnus::Float3 size = colliderSize;
 
+	// 横向き配置かどうかを判定
+	if (std::abs(rotate.z - Cygnus::DegToRad(kHorizontalRotationAngle)) < kRotationTolerance) { // Blender上で横向き（-90度）になっているか確認
+		// オブジェクトを横向きにする
+		object_->transform_.rotate_.y -= Cygnus::DegToRad(kHorizontalAdjustmentAngle);
+		// コライダーのxとzを入れ替え
+		std::swap(size.x, size.z);
+	}
+
 	///
 	///	コライダー生成
 	///
 
 	// コライダーの生成
 	if (isCollider) {
-		// 横向き配置かどうかを判定
-		if (std::abs(rotate.z - Cygnus::DegToRad(kHorizontalRotationAngle)) < kRotationTolerance) { // Blender上で横向き（-90度）になっているか確認
-			// オブジェクトを横向きにする
-			object_->transform_.rotate_.y -= Cygnus::DegToRad(kHorizontalAdjustmentAngle);
-			// コライダーのxとzを入れ替え
-			std::swap(size.x, size.z);
-		}
-
 		auto aabb = std::make_unique<Cygnus::AABBCollider>();
 		aabb->SetTag("Obstacle");
 		aabb->SetFollowTarget(&object_->transform_.translate_);
