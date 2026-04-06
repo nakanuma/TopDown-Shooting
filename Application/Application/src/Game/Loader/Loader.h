@@ -17,6 +17,13 @@
 class Loader {
 public:
 	/// <summary>
+	/// ステージの設定データ
+	/// </summary>
+	struct StageConfig {
+		int stageType = 0; // ステージの目標（全ての敵を撃破、全ての発電機を破壊...など）
+	};
+
+	/// <summary>
 	/// ステージオブジェクト1つ分の変換情報データ
 	/// </summary>
 	struct TransformData {
@@ -25,6 +32,7 @@ public:
 		Cygnus::Float3 rotate;				/* 回転（Euler） */
 		Cygnus::Float3 scale;				/* スケール */
 
+		bool isCollider;                    /* コライダー生成フラグ */
 		Cygnus::Float3 colliderSize;		/* コライダーサイズ */
 		std::string pairID;					/* ペアID（string） */
 	};
@@ -52,6 +60,12 @@ public:
 	/// <param name="tag">タグ（string）</param>
 	/// <returns>トランスフォームデータ</returns>
 	TransformData GetDataByTag(const std::string& tag) const;
+
+	/// <summary>
+	/// ステージ設定を取得します。
+	/// </summary>
+	/// <returns></returns>
+	const StageConfig& GetStageConfig() const { return stageConfig_; }
 
 private:
 	// =========================================================
@@ -82,4 +96,5 @@ private:
 	// Member Variables
 	// =========================================================
 	std::vector<TransformData> datas_;		/* 全データのコンテナ */
+	StageConfig stageConfig_;          /* ステージの設定データ */
 };

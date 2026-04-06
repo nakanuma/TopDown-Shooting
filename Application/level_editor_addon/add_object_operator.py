@@ -63,3 +63,60 @@ class OBJECT_OT_add_tagged_object(bpy.types.Operator):
                 obj.data.materials.append(mat)
         
         return {'FINISHED'}
+    
+# ---------------------------
+# コライダー一括設定オペレーター
+# ---------------------------
+class OBJECT_OT_set_collider_property(bpy.types.Operator):
+    bl_idname = "object.set_collider_property"
+    bl_label = "Set Collider Property"
+    bl_description = "選択中のオブジェクトのコライダー有効/無効を一括設定します"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    is_collider: bpy.props.BoolProperty(name="Is Collider")
+
+    def execute(self, context):
+        count = 0
+        for obj in context.selected_objects:
+            if obj.type == 'MESH':
+                obj["is_collider"] = 1 if self.is_collider else 0
+                count += 1
+            
+        status = "ON" if self.is_collider else "OFF"
+        self.report({'INFO'}, f"{count}個のオブジェクトのコライダーを{status}にしました")
+        return {'FINISHED'}
+    
+# ---------------------------
+# コライダー無効オブジェクトをワイヤーフレーム表示するオペレーター
+# ---------------------------
+class OBJECT_OT_visualize_colliders(bpy.types.Operator):
+    bl_idname = "object.visualize_colliders"
+    bl_label = "Visualize Colliders"
+    bl_description = "コライダー設定に応じて表示形式を切り替えます"
+
+    # 状態保持用
+    show_visualization : bpy.props.BoolProperty(default=False)
+
+    def execute(self, context):
+        for obj in bpy.data.objects:
+            if obj.type != 'MESH':
+                continue
+
+            is_collider = obj.get("is_collider", 1)
+
+            if self.show_visualization:
+                # コライダー無しをワイヤーフレームにする
+                if is_collider == 0:
+                    obj.display_type = 'WIRE'
+                    obj.show_wire = True
+                else:
+                    obj.display_type = 'TEXTURED'
+                    obj.show_wire = False
+            else:
+                # 通常モードに戻す
+                obj.display_type = 'TEXTURED'
+                obj.show_wire = False
+
+        # 次回実行時のために状態を反転
+        self.show_visualization = not self.show_visualization
+        return {'FINISHED'}

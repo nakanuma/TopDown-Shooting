@@ -144,6 +144,9 @@ protected:
 	static constexpr float kDeathCrossAngle1 = 45.0f;  /* 死亡時クロスパーティクル1の角度（度） */
 	static constexpr float kDeathCrossAngle2 = 135.0f; /* 死亡時クロスパーティクル2の角度（度） */
 
+	static constexpr int32_t kShellEjectionCount = 1;  /* 薬莢排出パーティクル発生数 */
+	static constexpr int32_t kMuzzleFlashCount = 6;    /* マズルフラッシュパーティクル発生数 */
+
 	// =========================================================
 	// Member Variables
 	// =========================================================

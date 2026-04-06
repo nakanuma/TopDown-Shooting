@@ -36,7 +36,7 @@ void ObstacleManager::Initialize(const std::vector<Loader::TransformData>& datas
 		// タグと一致した障害物のモデルを適用して生成
 		if (it != tagModelMap_.end()) {
 			auto obstacle = std::make_unique<Obstacle>();
-			obstacle->Initialize(data.translate, data.scale, data.rotate, data.colliderSize, &Cygnus::ModelManager::GetInstance()->GetModel(it->second));
+			obstacle->Initialize(data.translate, data.scale, data.rotate, data.isCollider, data.colliderSize, &Cygnus::ModelManager::GetInstance()->GetModel(it->second));
 			obstacles_.emplace_back(std::move(obstacle));
 		}
 	}

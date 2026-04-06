@@ -16,21 +16,17 @@ void StageManager::Initialize(EnemyManager* enemyMng, PowerGeneratorManager* pow
 	missionLogo_->Initialize();
 }
 
-void StageManager::PrepareNextStage(int32_t floor) {
+void StageManager::PrepareNextStage(int32_t floor, int32_t typeIndex, bool startLogoAnim) {
 	currentFloor_ = floor; // 階層を設定
 	isObjectiveCleared_ = false;
 
-	// 階層毎にタイプを設定
-	if (currentFloor_ == 1) {
-		currentStageType_ = StageType::killAllEnemies;
-	} else if (currentFloor_ == 2) {
-		currentStageType_ = StageType::DestroyAllGeneratos;
-	} else if (currentFloor_ == 3) {
-		currentStageType_ = StageType::BossBattle;
-	}
+	// 受け取ったステージ目標を設定
+	currentStageType_ = static_cast<StageType>(typeIndex);
 
 	// ステージ開始ロゴのアニメーション開始（フェードが終了したら）
-	missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_, 0.5f); // フェードと被らないよう遅延時間を設定
+	if (startLogoAnim) {
+		missionLogo_->Start(MissionLogo::AnimationState::StartMission, currentStageType_, 0.5f); // フェードと被らないよう遅延時間を設定
+	}
 }
 
 void StageManager::Update() {

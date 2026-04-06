@@ -20,7 +20,7 @@ public:
 	/// <param name="rotate">回転（Float3）</param>
 	/// <param name="colliderSize">コライダーサイズ（Float3）</param>
 	/// <param name="model">モデルデータ</param>
-	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& scale, const Cygnus::Float3& rotate, const Cygnus::Float3& colliderSize, Cygnus::ModelManager::ModelData* model);
+	void Initialize(const Cygnus::Float3& position, const Cygnus::Float3& scale, const Cygnus::Float3& rotate, bool isCollider, const Cygnus::Float3& colliderSize, Cygnus::ModelManager::ModelData* model);
 
 	/// <summary>
 	/// 毎フレームの更新処理を行います。

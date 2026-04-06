@@ -46,7 +46,6 @@ void GameResourceLoader::Initialize() {
 
 	// カーソル非表示 + フルスクリーン化
 	ShowCursor(FALSE);
-	/*Cygnus::Window::ToggleFullscreen();*/
 }
 
 void GameResourceLoader::LoadAllModelData() {

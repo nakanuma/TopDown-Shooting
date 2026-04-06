@@ -67,6 +67,7 @@ class OBJECT_OT_import_tagged_objects(bpy.types.Operator):
                     obj["object_tag"] = tag
                     obj["colliderSize"] = info.get("colliderSize", (1.0, 1.0, 1.0))
                     obj["pair_id"] = item.get("pair_id", "EMPTY")
+                    obj["is_collider"] = item.get("is_collider", 1)
                 else:
                     self.report({'WARNING'}, f"Model file '{model_path}' not found. Skipping object.")
                     continue

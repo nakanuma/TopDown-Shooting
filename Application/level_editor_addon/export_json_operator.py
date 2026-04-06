@@ -21,6 +21,14 @@ class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
     def execute(self, context):
         # JSONに書き出すデータを格納するリスト
         export_data = []
+        scene = context.scene
+
+        # ステージ設定データを最初に追加
+        stage_config = {
+            "tag": "STAGE_CONFIG",
+            "stage_type": scene.stage_type_enum
+        }
+        export_data.append(stage_config)
 
         # シーン内全てのオブジェクトをループ
         for obj in bpy.context.scene.objects:
@@ -31,6 +39,7 @@ class OBJECT_OT_export_tagged_objects(bpy.types.Operator):
                     "location": list(obj.location),
                     "rotation": [math.degrees(angle) for angle in obj.rotation_euler], #degreeに変換
                     "scale": list(obj.scale),
+                    "is_collider": obj.get("is_collider", 1)
                 }
 
                 if "colliderSize" in obj:
