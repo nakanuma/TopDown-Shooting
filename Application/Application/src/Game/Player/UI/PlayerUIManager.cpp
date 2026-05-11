@@ -33,18 +33,6 @@ void PlayerUIManager::Initialize() {
 	overheatGauge_ = std::make_unique<OverheatGauge>();
 	overheatGauge_->Initialize(dxBase, spriteCommon_.get());
 
-	// 移動キー
-	movementKeys_ = std::make_unique<MovementKeys>();
-	movementKeys_->Initialize(spriteCommon_.get());
-
-	// マウス
-	mouse_ = std::make_unique<Mouse>();
-	mouse_->Initialize(spriteCommon_.get());
-
-	// ポーズキー
-	pauseKey_ = std::make_unique<PauseKey>();
-	pauseKey_->Initialize(spriteCommon_.get());
-
 	// ダッシュ時クールタイム表示
 	dashBar_ = std::make_unique<DashBar>();
 	dashBar_->Initialize(spriteCommon_.get());
@@ -57,12 +45,6 @@ void PlayerUIManager::Update(const Player* player) {
 	hpBar_->Update(player);
 	// オーバーヒートゲージ
 	overheatGauge_->Update(player);
-	// 移動キー
-	movementKeys_->Update(player);
-	// マウス
-	mouse_->Update();
-	// ポーズキー
-	pauseKey_->Update();
 	// ダッシュ時クールタイム表示
 	dashBar_->Update(player);
 }
@@ -74,12 +56,6 @@ void PlayerUIManager::Draw() {
 	reticle_->Draw();
 	// オーバーヒートゲージ
 	overheatGauge_->Draw();
-	// 移動キー
-	movementKeys_->Draw();
-	// マウス
-	mouse_->Draw();
-	// ポーズキー
-	pauseKey_->Draw();
 	// ダッシュ時クールタイム表示
 	dashBar_->Draw();
 }
