@@ -34,6 +34,7 @@
 #include <src/Game/EventTrigger/EventManager.h>
 #include <src/Game/PowerGenerator/PowerGeneratorManager.h>
 #include <src/Game/Stage/StageManager.h>
+#include <src/Game/System/UI/InputGuideUIManager.h>
 
 // =========================================================
 // ゲームプレイシーンクラス
@@ -86,6 +87,7 @@ public:
 	EventManager* GetEventManager() const { return eventManager_.get(); }
 	PowerGeneratorManager* GetPowerGeneratorManager() const { return powerGeneratorManager_.get(); }
 	StageManager* GetStageManager() const { return stageManager_.get(); }
+	InputGuideUIManager* GetInputGuideUIManager() const { return inputGuideUIManager_.get(); }
 
 	bool HasBossIntroPlayed() const { return hasBossIntroPlayed_; }
 	void SetBossIntroPlayed(bool flag) { hasBossIntroPlayed_ = flag; }
@@ -162,6 +164,7 @@ private:
 
 	// ----- Others -----
 	std::unique_ptr<FollowCamera> followCamera_;                   /* 追従カメラ管理クラス */
+	std::unique_ptr<InputGuideUIManager> inputGuideUIManager_;     /* キー操作UI管理クラス */
 	std::unique_ptr<Cygnus::PostEffectManager> postEffectManager_; /* ポストエフェクト管理クラス */
 	uint32_t shadowMapHandle_;                                     /* シャドウマップテクスチャ */
 

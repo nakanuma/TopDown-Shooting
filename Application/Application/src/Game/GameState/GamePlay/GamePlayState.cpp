@@ -55,6 +55,7 @@ void GamePlayState::Update() {
 	scene_->GetObstacleManager()->Update(scene_->GetPlayer()->GetTranslate());
 	scene_->GetTeleportManager()->Update();
 	scene_->GetPowerGeneratorManager()->Update();
+	scene_->GetInputGuideUIManager()->Update(scene_->GetPlayer());
 
 	BulletManager::GetInstance()->Update();
 
@@ -94,6 +95,7 @@ void GamePlayState::DrawUI() {
 	scene_->GetPlayer()->DrawUI();
 	scene_->GetEnemyManager()->DrawUI();
 	scene_->GetPowerGeneratorManager()->DrawUI();
+	scene_->GetInputGuideUIManager()->Draw();
 
 	FadeTransition::GetInstance()->Draw();
 }

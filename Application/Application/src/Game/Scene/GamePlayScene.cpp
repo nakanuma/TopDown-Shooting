@@ -159,6 +159,10 @@ void GamePlayScene::Initialize() {
 		pauseMenu_->Hide(); // ボーズ終了呼び出し
 		TransitionToTitle(); // タイトルシーンへ移行
 	});
+
+	// キー操作UI管理クラス生成
+	inputGuideUIManager_ = std::make_unique<InputGuideUIManager>();
+	inputGuideUIManager_->Initialize();
 }
 
 void GamePlayScene::Finalize() { stateManager_->Finalize(); }

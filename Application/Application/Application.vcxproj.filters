@@ -345,16 +345,16 @@
     <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\MovementKeys\MovementKeys.cpp">
+    <ClCompile Include="src\Game\System\UI\MovementKeys\MovementKeys.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\Mouse\Mouse.cpp">
+    <ClCompile Include="src\Game\System\UI\Mouse\Mouse.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Pause\PauseMenu.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\PauseKey\PauseKey.cpp">
+    <ClCompile Include="src\Game\System\UI\PauseKey\PauseKey.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp">
@@ -433,6 +433,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Stage\UI\MissionLogo.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\System\UI\InputGuideUIManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -626,16 +629,16 @@
     <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\MovementKeys\MovementKeys.h">
+    <ClInclude Include="src\Game\System\UI\MovementKeys\MovementKeys.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\Mouse\Mouse.h">
+    <ClInclude Include="src\Game\System\UI\Mouse\Mouse.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Pause\PauseMenu.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\PauseKey\PauseKey.h">
+    <ClInclude Include="src\Game\System\UI\PauseKey\PauseKey.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h">
@@ -711,6 +714,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Stage\UI\MissionLogo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\System\UI\InputGuideUIManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

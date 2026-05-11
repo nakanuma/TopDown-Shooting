@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\System\UI\InputGuideUIManager.cpp" />
     <ClCompile Include="src\Game\Stage\UI\MissionLogo.cpp" />
     <ClCompile Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.cpp" />
     <ClCompile Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.cpp" />
@@ -33,10 +34,10 @@
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp" />
     <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp" />
-    <ClCompile Include="src\Game\Player\UI\PauseKey\PauseKey.cpp" />
+    <ClCompile Include="src\Game\System\UI\PauseKey\PauseKey.cpp" />
     <ClCompile Include="src\Game\Pause\PauseMenu.cpp" />
-    <ClCompile Include="src\Game\Player\UI\Mouse\Mouse.cpp" />
-    <ClCompile Include="src\Game\Player\UI\MovementKeys\MovementKeys.cpp" />
+    <ClCompile Include="src\Game\System\UI\Mouse\Mouse.cpp" />
+    <ClCompile Include="src\Game\System\UI\MovementKeys\MovementKeys.cpp" />
     <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp" />
     <ClCompile Include="src\Game\GameState\GameOver\GameOverState.cpp" />
     <ClCompile Include="src\Game\GameState\Manager\GameStateManager.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="src\Game\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\System\UI\InputGuideUIManager.h" />
     <ClInclude Include="src\Game\Stage\UI\MissionLogo.h" />
     <ClInclude Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.h" />
     <ClInclude Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.h" />
@@ -125,10 +127,10 @@
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h" />
     <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h" />
     <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h" />
-    <ClInclude Include="src\Game\Player\UI\PauseKey\PauseKey.h" />
+    <ClInclude Include="src\Game\System\UI\PauseKey\PauseKey.h" />
     <ClInclude Include="src\Game\Pause\PauseMenu.h" />
-    <ClInclude Include="src\Game\Player\UI\Mouse\Mouse.h" />
-    <ClInclude Include="src\Game\Player\UI\MovementKeys\MovementKeys.h" />
+    <ClInclude Include="src\Game\System\UI\Mouse\Mouse.h" />
+    <ClInclude Include="src\Game\System\UI\MovementKeys\MovementKeys.h" />
     <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h" />
     <ClInclude Include="src\Game\GameState\GameOver\GameOverState.h" />
     <ClInclude Include="src\Game\GameState\Manager\GameStateManager.h" />

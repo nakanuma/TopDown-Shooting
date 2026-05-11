@@ -9,10 +9,9 @@
 // ---------------------------------------------------------
 // Application Includes
 // ---------------------------------------------------------
-#include <src/Game/Player/UI/HPBar/HPBar.h>
-#include <src/Game/Player/UI/OverheatGauge/OverheatGauge.h>
-#include <src/Game/Player/UI/Reticle/Reticle.h>
-#include <src/Game/Player/UI/DashBar/DashBar.h>
+#include <src/Game/System/UI/Mouse/Mouse.h>
+#include <src/Game/System/UI/MovementKeys/MovementKeys.h>
+#include <src/Game/System/UI/PauseKey/PauseKey.h>
 
 // ---------------------------------------------------------
 // Forward Declaration
@@ -20,9 +19,9 @@
 class Player;
 
 // =========================================================
-// プレイヤーの全てのUI管理を行うクラス
+// 操作キーのUI管理を行うクラス
 // =========================================================
-class PlayerUIManager {
+class InputGuideUIManager {
 public:
 	// =========================================================
 	// Public Methods
@@ -47,10 +46,9 @@ private:
 	// =========================================================
 	// Member Variables
 	// =========================================================
-	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_;			/* スプライト共通処理 */
+	std::unique_ptr<Cygnus::SpriteCommon> spriteCommon_; /* スプライト共通処理 */
 
-	std::unique_ptr<Reticle> reticle_;						/* レティクル */
-	std::unique_ptr<HPBar> hpBar_;							/* HPバー */
-	std::unique_ptr<OverheatGauge> overheatGauge_;			/* オーバーヒートゲージ */
-	std::unique_ptr<DashBar> dashBar_;						/* ダッシュ時クールタイム表示 */
+	std::unique_ptr<MovementKeys> movementKeys_;   /* 移動キー */
+	std::unique_ptr<Mouse> mouse_;                 /* マウス */
+	std::unique_ptr<PauseKey> pauseKey_;           /* ポーズキー */
 };
