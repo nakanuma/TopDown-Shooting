@@ -49,17 +49,8 @@
     <Filter Include="src\Game\Enemy\Base">
       <UniqueIdentifier>{8dc02f46-bf2d-49ca-97ac-3033baf3d7c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Game\Enemy\BossEnemy">
-      <UniqueIdentifier>{88043127-6965-4d71-9e82-dd11417f8cad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Game\Enemy\ImmobileEnemy">
-      <UniqueIdentifier>{587c4f6c-799f-4391-95a0-b72774a3a666}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Game\Enemy\Manager">
       <UniqueIdentifier>{b691def0-19c8-4766-8227-3d226e88614b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Game\Enemy\NormalEnemy">
-      <UniqueIdentifier>{85d28bb7-c9fa-4ab6-b053-da2621e232c5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Game\Field">
       <UniqueIdentifier>{8597fe36-b3b9-432f-b3c5-edc27b44600e}</UniqueIdentifier>
@@ -160,6 +151,114 @@
     <Filter Include="src\Game\Particles\ShellEjection">
       <UniqueIdentifier>{8de83806-f9b5-4f50-9073-063e57c55e95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Game\Particles\BloodScatter">
+      <UniqueIdentifier>{d41356e8-4e6a-4133-8f32-13e1fda6cb6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\BossFragments">
+      <UniqueIdentifier>{d406d12c-590e-45c1-92df-c342bb224ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState">
+      <UniqueIdentifier>{46e36452-32d8-448a-9bba-42395ccfa1dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\Base">
+      <UniqueIdentifier>{692366a5-976d-4e14-9a80-b7168382c922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\BossIntro">
+      <UniqueIdentifier>{36ccc7a3-8ef3-468b-9d45-e8dd69592a9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\GameClear">
+      <UniqueIdentifier>{36709a4d-6c0f-4612-ac6c-bd7b910abccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\GameOver">
+      <UniqueIdentifier>{42826b54-02c9-46a6-96b5-508a5a0975e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\GamePlay">
+      <UniqueIdentifier>{a54ce4d7-aa51-44e2-a0d0-0192284ae590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\GameStart">
+      <UniqueIdentifier>{1ce45618-90ac-4d1c-93de-087ee7f1dde5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\GameState\Manager">
+      <UniqueIdentifier>{39370800-bd35-42c5-af66-c95c015c271e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\GunOverheatSmoke">
+      <UniqueIdentifier>{d060c53f-bbc6-4c9a-8bba-ba9044521035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Particles\TeleporterRing">
+      <UniqueIdentifier>{00ed2784-27c9-4123-987e-ac84a47d3ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Player\UI\DashBar">
+      <UniqueIdentifier>{c04e29a1-1375-4b0f-9a0d-700301fa06aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\EmissiveObject">
+      <UniqueIdentifier>{522a32c8-76ca-4027-aac6-c03fe1617207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\PowerGenerator">
+      <UniqueIdentifier>{cb0553bc-b1a3-4735-9438-d07efc4dc830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\PowerGenerator\UI">
+      <UniqueIdentifier>{b2e6ece5-00c5-4519-b864-b329c47ed88a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\PowerGenerator\UI\Parts">
+      <UniqueIdentifier>{1e202440-5e67-4374-a041-e89db3b7f8a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\UI">
+      <UniqueIdentifier>{3e69f7bd-c1a8-4020-9a49-b11682b9b64a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\UI\Parts">
+      <UniqueIdentifier>{46a7ad72-8e3c-4a5b-aa94-03425f552124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\VisualEffect">
+      <UniqueIdentifier>{0a5628aa-46bc-437c-afff-06e099bc280e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\EventTrigger">
+      <UniqueIdentifier>{96c67a69-eed9-4916-b0b7-8b163ca90080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Title">
+      <UniqueIdentifier>{a5b56e74-2637-4f7f-878d-ac4265b63933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Title\UI">
+      <UniqueIdentifier>{4b1df6db-8545-4512-932d-94f75ca469ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Title\UI\Parts">
+      <UniqueIdentifier>{769c7c86-aad6-4d7c-bfd1-f7e33846305d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\System\UI">
+      <UniqueIdentifier>{8c1ba007-defc-499e-aa8e-727829052a7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\System\UI\Mouse">
+      <UniqueIdentifier>{a86add86-5da2-45a4-a1ef-0b6b4c666b8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\System\UI\MovementKeys">
+      <UniqueIdentifier>{ea212c3a-9f48-4efb-a002-7e53ae3a4d23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\System\UI\PauseKey">
+      <UniqueIdentifier>{faa486ab-5c00-4fb1-a492-ab7d86df4f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Stage">
+      <UniqueIdentifier>{fa6ca88d-f8dc-482e-9958-19109dfd53c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Stage\UI">
+      <UniqueIdentifier>{3f105b1e-8334-430f-9779-d75a9ca8b302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Types">
+      <UniqueIdentifier>{37ad328b-2c0b-4860-9c4d-caf3fa844a4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Types\NormalEnemy">
+      <UniqueIdentifier>{85d28bb7-c9fa-4ab6-b053-da2621e232c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Types\ImmobileEnemy">
+      <UniqueIdentifier>{587c4f6c-799f-4391-95a0-b72774a3a666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Enemy\Types\BossEnemy">
+      <UniqueIdentifier>{88043127-6965-4d71-9e82-dd11417f8cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Utility\UI">
+      <UniqueIdentifier>{d30dcc36-140f-488b-9975-f55887453f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Pause">
+      <UniqueIdentifier>{bb8737b0-b310-4cb8-b241-a2078d17d509}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Bullet\EnemyBullet\EnemyBullet.cpp">
@@ -184,16 +283,16 @@
       <Filter>src\Game\Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.cpp">
-      <Filter>src\Game\Enemy\BossEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\BossEnemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.cpp">
-      <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\ImmobileEnemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Enemy\EnemyManager.cpp">
       <Filter>src\Game\Enemy\Manager</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.cpp">
-      <Filter>src\Game\Enemy\NormalEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\NormalEnemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Field\Field.cpp">
       <Filter>src\Game\Field</Filter>
@@ -312,131 +411,131 @@
     <ClCompile Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.cpp">
       <Filter>src\Game\Particles\ShellEjection</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp">
+      <Filter>src\Game\Particles\BloodScatter</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Particles\BossFragments\BossFragmentsParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Particles\BloodScatter\BloodScatterParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Bullet\Base\Bullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\GameStart\GameStartState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\GamePlay\GamePlayState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\Manager\GameStateManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\GameOver\GameOverState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\System\UI\MovementKeys\MovementKeys.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\System\UI\Mouse\Mouse.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Pause\PauseMenu.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\System\UI\PauseKey\PauseKey.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Player\UI\DashBar\DashBar.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameState\BossIntro\BossIntroState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Particles\BossFragments</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Sequence\BossIntroSequence.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\Sequence</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Utility\UI\MouseCursor.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\BossIntro\BossIntroState.cpp">
+      <Filter>src\Game\GameState\BossIntro</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Utility\UI\SpaceSkip.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\GameClear\GameClearState.cpp">
+      <Filter>src\Game\GameState\GameClear</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\EventTrigger\EventTrigger.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\GameOver\GameOverState.cpp">
+      <Filter>src\Game\GameState\GameOver</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\EventTrigger\EventManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\GamePlay\GamePlayState.cpp">
+      <Filter>src\Game\GameState\GamePlay</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Title\UI\TitleUIManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\GameStart\GameStartState.cpp">
+      <Filter>src\Game\GameState\GameStart</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Title\UI\Parts\TitleLogo.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\GameState\Manager\GameStateManager.cpp">
+      <Filter>src\Game\GameState\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Title\UI\Parts\StartButton.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Bullet\Base\Bullet.cpp">
+      <Filter>src\Game\Bullet\Base</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Title\UI\Parts\ExitButton.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.cpp">
+      <Filter>src\Game\Particles\GunOverheatSmoke</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\PowerGenerator\PowerGenerator.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.cpp">
+      <Filter>src\Game\Particles\TeleporterRing</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\PowerGenerator\PowerGeneratorManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\Player\UI\DashBar\DashBar.cpp">
+      <Filter>src\Game\Player\UI\DashBar</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\EmissiveObject\EmissiveObject.cpp">
+      <Filter>src\Game\EmissiveObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\PowerGenerator\UI\Parts</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Stage\StageManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.cpp">
+      <Filter>src\Game\PowerGenerator\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Stage\UI\MissionLogo.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\PowerGenerator\PowerGenerator.cpp">
+      <Filter>src\Game\PowerGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\PowerGenerator\PowerGeneratorManager.cpp">
+      <Filter>src\Game\PowerGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.cpp">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyHPBar.cpp">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.cpp">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.cpp">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\UI\EnemyUIManager.cpp">
+      <Filter>src\Game\Enemy\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.cpp">
+      <Filter>src\Game\Enemy\VisualEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\Base\Enemy.cpp">
+      <Filter>src\Game\Enemy\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\EventTrigger\EventTrigger.cpp">
+      <Filter>src\Game\EventTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\EventTrigger\EventManager.cpp">
+      <Filter>src\Game\EventTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Title\UI\Parts\ExitButton.cpp">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Title\UI\Parts\StartButton.cpp">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Title\UI\Parts\TitleLogo.cpp">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Title\UI\TitleUIManager.cpp">
+      <Filter>src\Game\Title\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Sequence\GameClearSequence.cpp">
+      <Filter>src\Game\Sequence</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\System\UI\InputGuideUIManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>src\Game\System\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\System\UI\Mouse\Mouse.cpp">
+      <Filter>src\Game\System\UI\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\System\UI\MovementKeys\MovementKeys.cpp">
+      <Filter>src\Game\System\UI\MovementKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\System\UI\PauseKey\PauseKey.cpp">
+      <Filter>src\Game\System\UI\PauseKey</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Stage\UI\MissionLogo.cpp">
+      <Filter>src\Game\Stage\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Stage\StageManager.cpp">
+      <Filter>src\Game\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.cpp">
+      <Filter>src\Game\Enemy\Types\NormalEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Utility\UI\MouseCursor.cpp">
+      <Filter>src\Game\Utility\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Utility\UI\SpaceSkip.cpp">
+      <Filter>src\Game\Utility\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Pause\PauseMenu.cpp">
+      <Filter>src\Game\Pause</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -468,16 +567,16 @@
       <Filter>src\Game\Enemy\Base</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\Types\BossEnemy\BossEnemy.h">
-      <Filter>src\Game\Enemy\BossEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\BossEnemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\Types\ImmobileEnemy\ImmobileEnemy.h">
-      <Filter>src\Game\Enemy\ImmobileEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\ImmobileEnemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\EnemyManager.h">
       <Filter>src\Game\Enemy\Manager</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemy.h">
-      <Filter>src\Game\Enemy\NormalEnemy</Filter>
+      <Filter>src\Game\Enemy\Types\NormalEnemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Field\Field.h">
       <Filter>src\Game\Field</Filter>
@@ -596,128 +695,128 @@
     <ClInclude Include="src\Game\Particles\ShellEjection\ShellEjectionParticle.h">
       <Filter>src\Game\Particles\ShellEjection</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Sequence\GameClearSequence.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\BloodScatter\BloodScatterParticle.h">
+      <Filter>src\Game\Particles\BloodScatter</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Particles\BossFragments\BossFragmentsParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Particles\BloodScatter\BloodScatterParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\EmissiveObject\EmissiveObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\Base\IGameState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\GameStart\GameStartState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\GamePlay\GamePlayState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\Manager\GameStateManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\GameOver\GameOverState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\System\UI\MovementKeys\MovementKeys.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\System\UI\Mouse\Mouse.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Pause\PauseMenu.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\System\UI\PauseKey\PauseKey.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Player\UI\DashBar\DashBar.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\GameState\BossIntro\BossIntroState.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Particles\BossFragments</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Sequence\BossIntroSequence.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\Sequence</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Utility\UI\MouseCursor.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\Base\IGameState.h">
+      <Filter>src\Game\GameState\Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Utility\UI\SpaceSkip.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\BossIntro\BossIntroState.h">
+      <Filter>src\Game\GameState\BossIntro</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\EventTrigger\EventTrigger.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\GameClear\GameClearState.h">
+      <Filter>src\Game\GameState\GameClear</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\EventTrigger\EventManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\GameOver\GameOverState.h">
+      <Filter>src\Game\GameState\GameOver</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Title\UI\TitleUIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\GamePlay\GamePlayState.h">
+      <Filter>src\Game\GameState\GamePlay</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Title\UI\Parts\TitleLogo.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\GameStart\GameStartState.h">
+      <Filter>src\Game\GameState\GameStart</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Title\UI\Parts\StartButton.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\GameState\Manager\GameStateManager.h">
+      <Filter>src\Game\GameState\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Title\UI\Parts\ExitButton.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\GunOverheatSmoke\GunOverheatSmokeParticle.h">
+      <Filter>src\Game\Particles\GunOverheatSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\PowerGenerator\PowerGenerator.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Particles\TeleporterRing\TeleporterRingParticle.h">
+      <Filter>src\Game\Particles\TeleporterRing</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\PowerGenerator\PowerGeneratorManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\Player\UI\DashBar\DashBar.h">
+      <Filter>src\Game\Player\UI\DashBar</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\EmissiveObject\EmissiveObject.h">
+      <Filter>src\Game\EmissiveObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\PowerGenerator\UI\Parts\PowerGeneratorHPBar.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\PowerGenerator\UI\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Stage\StageManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\PowerGenerator\UI\PowerGeneratorUIManager.h">
+      <Filter>src\Game\PowerGenerator\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Stage\UI\MissionLogo.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Game\PowerGenerator\PowerGenerator.h">
+      <Filter>src\Game\PowerGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\PowerGenerator\PowerGeneratorManager.h">
+      <Filter>src\Game\PowerGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyDetectionIcon.h">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyHPBar.h">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadBar.h">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\Parts\EnemyReloadIcon.h">
+      <Filter>src\Game\Enemy\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\UI\EnemyUIManager.h">
+      <Filter>src\Game\Enemy\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\VisualEffect\EnemyVisualEffects.h">
+      <Filter>src\Game\Enemy\VisualEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\EventTrigger\EventTrigger.h">
+      <Filter>src\Game\EventTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\EventTrigger\EventManager.h">
+      <Filter>src\Game\EventTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Title\UI\Parts\ExitButton.h">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Title\UI\Parts\StartButton.h">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Title\UI\Parts\TitleLogo.h">
+      <Filter>src\Game\Title\UI\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Title\UI\TitleUIManager.h">
+      <Filter>src\Game\Title\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Sequence\GameClearSequence.h">
+      <Filter>src\Game\Sequence</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\System\UI\InputGuideUIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>src\Game\System\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\System\UI\Mouse\Mouse.h">
+      <Filter>src\Game\System\UI\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\System\UI\MovementKeys\MovementKeys.h">
+      <Filter>src\Game\System\UI\MovementKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\System\UI\PauseKey\PauseKey.h">
+      <Filter>src\Game\System\UI\PauseKey</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Stage\UI\MissionLogo.h">
+      <Filter>src\Game\Stage\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Stage\StageManager.h">
+      <Filter>src\Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\Types\NormalEnemy\NormalEnemyBehavior.h">
+      <Filter>src\Game\Enemy\Types\NormalEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Utility\UI\MouseCursor.h">
+      <Filter>src\Game\Utility\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Utility\UI\SpaceSkip.h">
+      <Filter>src\Game\Utility\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Pause\PauseMenu.h">
+      <Filter>src\Game\Pause</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
